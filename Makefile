@@ -4,6 +4,7 @@ IMAGE_NAME = shopping-list-be
 VERSION := $(shell cat version.txt)
 
 clean:
+	rm -rf static/
 	rm -rf .coverage coverage.xml .pytest_cache
 	rm -rf **/migrations/0*.py
 
@@ -41,3 +42,6 @@ lint: clean
 test:
 	python manage.py makemigrations --settings=shoppingapp.settings.test_settings
 	pytest -v --cov=. --cov-report term-missing
+
+static:
+	python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
