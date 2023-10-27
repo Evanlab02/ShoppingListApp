@@ -41,7 +41,10 @@ jobs:
           python manage.py migrate --settings=shoppingapp.settings.test_settings
       - name: Run Tests
         run: |
-          python manage.py test --settings=shoppingapp.settings.test_settings
+          pytest -v --cov=. --cov-report term-missing
+      - name: Generate Coverage Report
+        run: |
+          coverage xml
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
