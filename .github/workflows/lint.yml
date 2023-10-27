@@ -24,6 +24,6 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Lint and Docs Styling
         run: |
-          pipenv run black . --check
-          pipenv run flake8 . --max-line-length=100
-          pipenv run pydocstyle .
+          black . --check
+          flake8 . --max-line-length=100
+          pydocstyle .
