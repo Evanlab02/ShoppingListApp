@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
         with:
@@ -40,3 +42,8 @@ jobs:
       - name: Run Tests
         run: |
           python manage.py test --settings=shoppingapp.settings.test_settings
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
