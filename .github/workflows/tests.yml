@@ -1,0 +1,42 @@
+name: Tests and Sonarcloud
+
+on:
+  pull_request:
+    branches: [trunk]
+  push:
+    branches: [trunk]
+
+permissions:
+  contents: read
+
+jobs:
+  tests-and-sonarcloud:
+    runs-on: ubuntu-latest
+
+    env:
+      DEV_DJANGO_KEY: ${{ vars.CI_DJANGO_KEY }}
+      DEV_DJANGO_DATABASE_USER: ${{ vars.CI_DJANGO_DATABASE_USER }}
+      DEV_DJANGO_DATABASE_PASSWORD: ${{ vars.CI_DJANGO_DATABASE_PASSWORD }}
+      DEV_DJANGO_DATABASE_NAME: ${{ vars.CI_DJANGO_DATABASE_NAME }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Setup
+        run: |
+          pip install -r requirements-dev.txt
+      - name: Start Develop DB
+        run: |
+          docker-compose up -d --build
+      - name: Create Migrations
+        run: |
+          python manage.py makemigrations --settings=shoppingapp.settings.test_settings
+      - name: Run Migrations
+        run: |
+          python manage.py migrate --settings=shoppingapp.settings.test_settings
+      - name: Run Tests
+        run: |
+          python manage.py test --settings=shoppingapp.settings.test_settings
