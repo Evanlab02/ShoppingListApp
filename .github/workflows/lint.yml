@@ -1,4 +1,4 @@
-name: Checks
+name: Lint and Docs Styling
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  Backend-Checks:
+  lint-and-docs-styling:
     runs-on: ubuntu-latest
 
     steps:
