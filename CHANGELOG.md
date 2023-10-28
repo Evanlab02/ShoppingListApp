@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.11.0 (2023-10-28)
+
+
+### Features
+
+* **Project:** Backend project migration ([1f90046](https://github.com/Evanlab02/ShoppingListApp-BE/commit/1f900461ab06f79a541bbc091828f1f1c5da0b9a))
+* **Sonarcloud:** Added sonarcloud scan to tests workflow ([638f00d](https://github.com/Evanlab02/ShoppingListApp-BE/commit/638f00d725b2904e54ebaad2cd21c01e73164f9f))
+* **Workflows:** Added lint workflow ([3f28930](https://github.com/Evanlab02/ShoppingListApp-BE/commit/3f289300c3120ec9097c132ea86507d4f6c6c988))
+* **Workflows:** Added release-please workflow ([5e33a38](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5e33a38adcfe005c3311b72a831c56cd926330b8))
+* **Workflows:** Added tests workflow ([5352aae](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5352aaeb3cd1e3d617edd96cd886f60994d11dc7))
+* **Workflows:** Created workflow for build steps ([f844bf7](https://github.com/Evanlab02/ShoppingListApp-BE/commit/f844bf7050f086aff630725c0defcac8d9eceb7a))
+
+
+### Miscellaneous Chores
+
+* release 0.11.0 ([96fab6a](https://github.com/Evanlab02/ShoppingListApp-BE/commit/96fab6accddcb8e8db75e4d0746abcb2e01e8821))
+
 ## [0.10.0](https://github.com/Evanlab02/ShoppingListApp/compare/shopping-app-backend-v0.9.1...shopping-app-backend-v0.10.0) (2023-10-26)
 
 
