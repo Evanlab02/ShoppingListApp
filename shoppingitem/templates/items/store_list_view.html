@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping App</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.9.0/cdn/themes/light.css" />
+    <script type="module"
+        src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.9.0/cdn/shoelace-autoloader.js"></script>
+
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'items/base.css' %}">
+    <link rel="stylesheet" href="{% static 'items/overview.css' %}">
+    <link rel="stylesheet" href="{% static 'items/cards.css' %}">
+    <link rel="stylesheet" href="{% static 'items/table.css' %}">
+</head>
+
+<body class="body-block">
+    <header class="navbar">
+        <div class="navbar-item">
+            <h2>{{ page_title }}</h2>
+            <div class="menu-list-button">
+                <sl-icon-button name="speedometer" onclick="window.location.href='/shopping/dashboard/'" />
+            </div>
+            {% if add_user_col %}
+            <div class="menu-list-button">
+                <sl-icon-button name="person" onclick="window.location.href='/items/stores/me'" />
+            </div>
+            {% else %}
+            <div class="menu-list-button">
+                <sl-icon-button name="people" onclick="window.location.href='/items/stores'" />
+            </div>
+            {% endif %}
+            <div class="menu-list-button">
+                <sl-icon-button name="bag" onclick="window.location.href='/items/me'" />
+            </div>
+            <div class="menu-list-button">
+                <sl-icon-button name="plus-circle" onclick="window.location.href='/items/stores/create'" />
+            </div>
+        </div>
+    </header>
+    <div class="content-wrapper">
+        <div class="card-wrapper">
+            <div class="mini-card total-card">
+                <div class="mini-card-icon total-card-icon">
+                    <sl-icon name="shop-window" />
+                </div>
+                <div class="mini-card-content">
+                    <p class="value">Total stores</p>
+                    <p id="total-items-sub-value" class="sub-value">{{ total }}</p>
+                </div>
+            </div>
+            <div class="mini-card total-in-stores-card">
+                <div class="mini-card-icon total-in-stores-icon">
+                    <sl-icon name="cart4" />
+                </div>
+                <div class="mini-card-content">
+                    <p class="value">Total in-store stores</p>
+                    <p id="total-in-stores-sub-value" class="sub-value">{{ in_store_stores }}</p>
+                </div>
+            </div>
+            <div class="mini-card total-online-stores-card">
+                <div class="mini-card-icon total-online-stores-icon">
+                    <sl-icon name="browser-chrome" />
+                </div>
+                <div class="mini-card-content">
+                    <p class="value">Total online stores</p>
+                    <p id="total-online-stores-sub-value" class="sub-value">{{ online_stores }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="overview-table">
+                <caption>{{ table_caption }}</caption>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Store Type</th>
+                        <th>Description</th>
+                        {% if add_user_col %}
+                        <th>Owner</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for store in stores %}
+                    <tr>
+                        <td><a href="/items/stores/detail/{{ store.id }}">{{ store.name }}</a></td>
+
+                        {% if store.store_type == 1 %}
+                        <td>Online</td>
+                        {% elif store.store_type == 2 %}
+                        <td>In-Store</td>
+                        {% else %}
+                        <td>Online & In-Store</td>
+                        {% endif %}
+
+                        {% if store.description != "" %}
+                        <td>{{ store.description }}</td>
+                        {% else %}
+                        <td>No description</td>
+                        {% endif %}
+
+                        {% if add_user_col %}
+                        <td>{{ store.user.username }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            <span class="step-links">
+                {% if has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ previous_page_no }}">Previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_no }} of {{ total_pages }}.
+                </span>
+
+                {% if has_next %}
+                <a href="?page={{ next_page_no }}">next</a>
+                <a href="?page={{ total_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+
+</html>
