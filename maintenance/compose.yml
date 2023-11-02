@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  shopping-django-maintenance:
+    image: maintenance:1.0.0
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    restart: always
+

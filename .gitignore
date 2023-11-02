@@ -1,0 +1,11 @@
+.env
+.env.backup
+dbpass.txt
+djkey.txt
+pgadmin.txt
+secrets/*
+secrets/
+backend/
+*.zip
+dist/
+static/
