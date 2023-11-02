@@ -1,0 +1,20 @@
+:80 {
+  handle_path /* {
+    reverse_proxy shopping-django-app:8000
+  }
+
+  handle_path /static/* {
+    root * /var/www/html/static/
+    file_server
+  }
+
+  handle_path /shopping/dashboard/* {
+    root * /var/www/html/site/
+    file_server
+  }
+
+  handle_path /assets/* {
+    root * /var/www/html/site/assets/
+    file_server
+  }
+}
