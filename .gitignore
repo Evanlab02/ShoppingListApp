@@ -9,3 +9,6 @@ backend/
 *.zip
 dist/
 static/
+*/ShoppingApp/
+*.spec
+build/

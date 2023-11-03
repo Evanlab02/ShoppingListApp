@@ -1,43 +1,34 @@
-BE_NAME = shopping-django-app
-BE_VERSION := $(shell cat backend/version.txt)
 BE_DJ_KEY := $(shell cat secrets/djkey.txt)
-SERVER_NAME = shopping-django-site
-SERVER_VERSION := $(shell cat version.txt)
 
-.PHONY : build-backend build-server build up down uninstall maintenance maintenance-down
+.PHONY : all clean static sync up down maintenance maintenance-down
 
-build-backend:
-	@echo "----- BACKEND -----"
-	@echo "Removing old static files"
-	@rm -rf static
-	@echo "Building Backend"
-	@docker build -t $(BE_NAME):$(BE_VERSION) ./backend
-	@echo "Creating Static Files"
-	@docker run --name setup --env DJANGO_KEY=$(BE_DJ_KEY) -it ${BE_NAME}:${BE_VERSION} python manage.py collectstatic --noinput
-	@ echo "Copying Static Files"
-	@docker cp setup:/app/static/ ./static/
-	@echo "Cleaning up"
-	@docker rm setup
-	@echo ""
+uninstall:
+	rm -rf app
+	rm -rf backend
+	rm -rf dist
+	rm -rf maintenance
+	rm -rf static
 
-build-server:
-	@echo "----- SERVER -----"
-	@docker build -t $(SERVER_NAME):$(SERVER_VERSION) .
-	@echo ""
+clean:
+	rm -rf backend
+	rm -rf dist
+	rm -rf static
 
-build: build-backend build-server
-	@echo "----- MAINTENANCE -----"
-	docker build -t maintenance:1.0.0 ./maintenance
-	@echo "Created Images"
+static: secrets/djkey.txt .env
+	docker build -t static-collector:latest ./backend
+	docker run --name setup --env DJANGO_KEY=$(BE_DJ_KEY) -it static-collector:latest python manage.py collectstatic --noinput
+	docker cp setup:/app/static/ ./static/
+	docker rm setup
+	docker rmi static-collector:latest
 
-up:
-	docker compose up -d
+sync:
+	cp ./app/application.properties ./backend/
 
-down: 
-	docker compose down
+up: secrets/djkey.txt .env static/ backend/application.properties
+	docker compose up -d --build
 
-uninstall: clean
-	docker compose down -v --rmi all --remove-orphans
+down:
+	docker compose down 
 
 maintenance:
 	docker compose -f maintenance/compose.yml up -d
