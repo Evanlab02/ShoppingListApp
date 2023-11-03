@@ -38,7 +38,7 @@ services:
       - dbpass
 
   shopping-django-app:
-    image: shopping-django-app:${BACKEND_VERSION}
+    build: ./backend
     environment:
       DJANGO_DATABASE_USER: ${DJANGO_DATABASE_USER}
       DJANGO_DATABASE_PASSWORD: /run/secrets/dbpass
@@ -61,7 +61,7 @@ services:
       - djkey
 
   shopping-django-site:
-    image: shopping-django-site:${SERVER_VERSION}
+    build: .
     environment:
       DJANGO_KEY: /run/secrets/djkey
     expose:

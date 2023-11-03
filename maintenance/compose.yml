@@ -2,7 +2,7 @@ version: "3"
 
 services:
   shopping-django-maintenance:
-    image: maintenance:1.0.0
+    build: .
     expose:
       - "80"
     ports:

@@ -20,3 +20,29 @@ jobs:
           package-name: ShoppingListApp
           token: ${{ secrets.GITHUB_TOKEN }}
           default-branch: trunk
+      - uses: actions/checkout@v3
+        if: ${{ steps.release.outputs.releases_created }}
+        with:
+          fetch-depth: 0
+      - name: Create Installer Zip
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          mkdir ShoppingApp
+          cp -r download ShoppingApp
+          zip -r installer.zip ShoppingApp
+      - name: Upload Installer Zip
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          gh release upload ${{ steps.release.outputs.tag_name }} installer.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+      - name: Create App Zip
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          zip -r app.zip app maintenance Dockerfile compose.yml setup.sh Makefile
+      - name: Upload App Zip
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          gh release upload ${{ steps.release.outputs.tag_name }} app.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
