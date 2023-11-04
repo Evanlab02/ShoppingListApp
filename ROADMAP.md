@@ -10,3 +10,7 @@ Find below the roadmap for the project. It is subject to change.
 ## Server - v0.6.1
 
 - [x] Simplify installation process
+
+## Server - v0.6.2
+
+- [x] Squash installer bugs
