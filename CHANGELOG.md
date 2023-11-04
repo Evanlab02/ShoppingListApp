@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.1...v0.12.2) (2023-11-04)
+
+
+### Bug Fixes
+
+* **Settings:** Removed trying to access data value on environment value/string ([5788136](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5788136ec4b9ff79d922fb0f39edacca7d04737b))
+
 ## [0.12.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.0...v0.12.1) (2023-11-04)
 
 
