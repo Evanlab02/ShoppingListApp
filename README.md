@@ -12,3 +12,6 @@ This making it easier to create shopping lists with your partner or roommates, b
 
 The goal of this project is primarily to learn but also create a useful app for myself and others and to also give developers the power to edit and update the app to their liking, and in turn running it on their own server at home.
 
+## Installation Guide
+
+Please find the installation guide [here](./docs/installation.md).
