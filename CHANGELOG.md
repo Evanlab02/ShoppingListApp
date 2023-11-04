@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/Evanlab02/ShoppingListApp/compare/v0.6.1...v0.6.2) (2023-11-04)
+
+
+### Bug Fixes
+
+* **Installer:** Dealt with final installer bugs ([1f2fc81](https://github.com/Evanlab02/ShoppingListApp/commit/1f2fc81302ffafd3214cabb106973136eb374835))
+
 ## [0.6.1](https://github.com/Evanlab02/ShoppingListApp/compare/v0.6.0...v0.6.1) (2023-11-03)
 
 
