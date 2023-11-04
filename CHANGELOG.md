@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.11.0...v0.12.0) (2023-11-04)
+
+
+### Features
+
+* **Workflows:** Containers now get released to github container registry with each release ([e42a3a9](https://github.com/Evanlab02/ShoppingListApp-BE/commit/e42a3a9dd4d184c9911507fc26178c73d306a17c))
+* **Workflows:** Now create dedicated artifact for release ([bdfb4a2](https://github.com/Evanlab02/ShoppingListApp-BE/commit/bdfb4a2f9d5c8bea185e5537ffe55878f37f5f5c))
+
 ## 0.11.0 (2023-10-28)
 
 
