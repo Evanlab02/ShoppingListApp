@@ -1,7 +1,11 @@
 ## Backend - V0.11.0
-- [ ] Migration to Single Repository
+- [x] Migration to Single Repository
 
 ## Backend - V0.12.0
+- [x] Deploy new containers to github container registry with each release
+- [x] Create dedicated release artifact with each release
+
+## Future Improvements
 - [ ] Edit stores
 - [ ] Edit items
 - [ ] Delete stores
@@ -13,7 +17,7 @@
 - [ ] Add to register endpoint to check for matching passwords
 - [ ] Add tests for database repositories in Shopping List App
 
-## Backend - V1.1.0
+## V1 Improvements
 
 - [ ] Add functionality for wishlists
 - [ ] Add functionality for linking to online stores
