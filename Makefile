@@ -7,8 +7,13 @@ BE_DJ_KEY := $(shell cat secrets/djkey.txt)
 clean:
 	rm -rf static
 
-up: secrets/djkey.txt .env
+up: secrets/djkey.txt .env clean
 	docker compose up -d
+	docker run --name setup --env DJANGO_KEY=$(BE_DJ_KEY) -it ghcr.io/evanlab02/shoppingappbe:latest python manage.py collectstatic --noinput
+	docker cp setup:/app/static/ ./static/
+	docker rm setup
+	docker cp ./static/ shoppinglistapp-shopping-django-site-1:/var/www/html/static/
+	docker restart shoppinglistapp-shopping-django-site-1
 
 down:
 	docker compose down 
@@ -19,7 +24,7 @@ maintenance:
 maintenance-down:
 	docker compose -f maintenance/compose.yml down
 
-static:
+static: clean
 	docker run --name setup --env DJANGO_KEY=$(BE_DJ_KEY) -it ghcr.io/evanlab02/shoppingappbe:latest python manage.py collectstatic --noinput
 	docker cp setup:/app/static/ ./static/
 	docker rm setup

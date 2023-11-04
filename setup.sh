@@ -22,8 +22,8 @@ echo DJANGO_DATABASE_USER="$dbuser" >> .env
 echo DJANGO_DATABASE_NAME="$dbname" >> .env
 echo PGADMIN_DEFAULT_EMAIL="$pguser" >> .env
 echo PROD_HOST="$host" >> .env
-echo BACKEND_VERSION="" >> .env
-echo FRONTEND_VERSION="" >> .env
+echo BACKEND_VERSION=latest >> .env
+echo FRONTEND_VERSION=latest >> .env
 echo -------------------------------------------------
 echo ""
 
