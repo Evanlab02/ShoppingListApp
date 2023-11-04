@@ -2,7 +2,8 @@
 - [x] Migration to Single Repository
 
 ## Backend - V0.12.0
-- [ ] Deploy new containers to github container registry with each release
+- [x] Deploy new containers to github container registry with each release
+- [x] Create dedicated release artifact with each release
 
 ## Future Improvements
 - [ ] Edit stores
