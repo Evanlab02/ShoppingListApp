@@ -20,3 +20,17 @@ jobs:
           package-name: ShoppingListApp-Backend
           token: ${{ secrets.GITHUB_TOKEN }}
           default-branch: trunk
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.releases_created }}
+      - name: Build Docker Image
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          docker build -t shoppinglistapp-backend:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
+      - name: Log in to registry
+        if: ${{ steps.release.outputs.releases_created }}
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Push image
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          docker tag shoppinglistapp-backend:${{steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} ghcr.io/evanlab02/shoppingappbe:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+          docker push ghcr.io/evanlab02/shoppingappbe:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
