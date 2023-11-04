@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.3](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.2...v0.12.3) (2023-11-04)
+
+
+### Bug Fixes
+
+* **Workflows:** Tag the newest image with its version number and as latest ([9e9f32f](https://github.com/Evanlab02/ShoppingListApp-BE/commit/9e9f32f6f279374b4822a438270a44c773c97afa))
+
 ## [0.12.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.1...v0.12.2) (2023-11-04)
 
 
