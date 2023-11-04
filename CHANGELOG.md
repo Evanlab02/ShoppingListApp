@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.3](https://github.com/Evanlab02/ShoppingListApp/compare/v0.6.2...v0.6.3) (2023-11-04)
+
+
+### Bug Fixes
+
+* **Containers:** Removed the reliance on a install script, compose will now pull images from github container registry ([f70a7a6](https://github.com/Evanlab02/ShoppingListApp/commit/f70a7a64ec5682083073bcfd14a59371fac26aa9))
+* **Docs:** Adjusted installation documentation for new release method ([e614166](https://github.com/Evanlab02/ShoppingListApp/commit/e6141665d417a89c2dd275912f287e3a5a5c3fd1))
+* **Installation:** Further installation improvements ([7695029](https://github.com/Evanlab02/ShoppingListApp/commit/7695029db0e6710a469c8bfe9c1cd758d3ee4a4f))
+* **Release:** Changed release artifact to only contain essential files ([7b7b6f9](https://github.com/Evanlab02/ShoppingListApp/commit/7b7b6f9d26dafb35f8c3d372ffcb1ca495d71a1a))
+
 ## [0.6.2](https://github.com/Evanlab02/ShoppingListApp/compare/v0.6.1...v0.6.2) (2023-11-04)
 
 
