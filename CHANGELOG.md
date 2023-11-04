@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.0...v0.12.1) (2023-11-04)
+
+
+### Bug Fixes
+
+* **Workflows:** Release please workflow now has enough permissions ([14cf61a](https://github.com/Evanlab02/ShoppingListApp-BE/commit/14cf61a4482afea6c6f42ae5f075824a5c55b2c4))
+
 ## [0.12.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.11.0...v0.12.0) (2023-11-04)
 
 
