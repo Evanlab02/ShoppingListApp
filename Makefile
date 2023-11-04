@@ -8,6 +8,9 @@ uninstall:
 	rm -rf dist
 	rm -rf maintenance
 	rm -rf static
+	rm -rf Dockerfile
+	rm -rf compose.yml
+	rm -rf setup.sh
 
 clean:
 	rm -rf backend

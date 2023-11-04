@@ -15,7 +15,7 @@ def download_app_release():
     response.raise_for_status()
     data = response.json()
     assets = data.get("assets")
-    download_url = asset[0].get("browser_download_url")
+    download_url = assets[0].get("browser_download_url")
     for asset in assets:
         if asset.get("name") == "app.zip":
             download_url = asset.get("browser_download_url")
