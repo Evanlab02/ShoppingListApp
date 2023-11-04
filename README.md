@@ -15,3 +15,8 @@ The goal of this project is primarily to learn but also create a useful app for 
 ## Installation Guide
 
 Please find the installation guide [here](./docs/installation.md).
+
+## Related Repos
+
+- Home for the dashboard page: [ShoppingListAppFE](https://github.com/Evanlab02/ShoppingListApp-FE)
+- Home for the backend and rest of the pages: [ShoppingListAppBE](https://github.com/Evanlab02/ShoppingListApp-BE)
