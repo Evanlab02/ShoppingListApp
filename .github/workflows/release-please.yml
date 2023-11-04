@@ -24,25 +24,15 @@ jobs:
         if: ${{ steps.release.outputs.releases_created }}
         with:
           fetch-depth: 0
-      - name: Create Installer Zip
-        if: ${{ steps.release.outputs.releases_created }}
-        run: |
-          mkdir ShoppingApp
-          cp -r download ShoppingApp
-          zip -r installer.zip ShoppingApp
-      - name: Upload Installer Zip
-        if: ${{ steps.release.outputs.releases_created }}
-        run: |
-          gh release upload ${{ steps.release.outputs.tag_name }} installer.zip
-        env:
-          GITHUB_TOKEN: ${{ github.TOKEN }}
       - name: Create App Zip
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          zip -r app.zip app maintenance Dockerfile compose.yml setup.sh Makefile
+          mkdir ShoppingListApp
+          cp -r maintenance compose.yml Makefile setup.sh ShoppingListApp
+          zip -r ShoppingListApp.zip ShoppingListApp
       - name: Upload App Zip
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          gh release upload ${{ steps.release.outputs.tag_name }} app.zip
+          gh release upload ${{ steps.release.outputs.tag_name }} ShoppingListApp.zip
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
