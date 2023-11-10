@@ -7,8 +7,6 @@ services:
       - "5432"
     ports:
       - "5435:5432"
-    env_file:
-      - .env
     environment:
       POSTGRES_USER: ${DEV_DJANGO_DATABASE_USER}
       POSTGRES_PASSWORD: ${DEV_DJANGO_DATABASE_PASSWORD}
@@ -21,8 +19,6 @@ services:
 
   dev-shopping-app-be:
     build: .
-    env_file:
-      - .env
     environment:
       DEV_DJANGO_DATABASE_USER: ${DEV_DJANGO_DATABASE_USER}
       DEV_DJANGO_DATABASE_PASSWORD: ${DEV_DJANGO_DATABASE_PASSWORD}
