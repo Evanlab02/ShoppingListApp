@@ -13,11 +13,6 @@ services:
       POSTGRES_DB: ${DEV_DJANGO_DATABASE_NAME}
     volumes:
       - dev-shopping-app-db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DEV_DJANGO_DATABASE_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
     networks:
       - dev-shopping-app-network
     restart: always
@@ -35,9 +30,6 @@ services:
       - "7001"
     ports:
       - "7001:7001"
-    depends_on:
-      dev-shopping-app-db:
-        condition: service_healthy
     networks:
       - dev-shopping-app-network
     restart: always
