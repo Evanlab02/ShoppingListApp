@@ -2,7 +2,10 @@ FROM python:3.10.0-slim-buster
 
 RUN apt-get update \
     && apt-get install libpq-dev -y \
+    && apt-get install make -y \
     && apt-get clean
+
+RUN pip install pipenv
 
 COPY authenticationapp /app/authenticationapp
 COPY shoppingapp /app/shoppingapp
