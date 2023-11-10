@@ -16,6 +16,7 @@
 
 - [ ] Add to register endpoint to check for matching passwords
 - [ ] Add tests for database repositories in Shopping List App
+- [ ] Create README documentation
 
 ## V1.0.0
 
