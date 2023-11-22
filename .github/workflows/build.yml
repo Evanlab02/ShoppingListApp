@@ -13,12 +13,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Do not use any sensitve values within in the variables. Should only contain test values.
-    env:
-      DEV_DJANGO_KEY: ${{ vars.CI_DJANGO_KEY }}
-
     steps:
       - uses: actions/checkout@v3
+      - name: Load .env file
+        uses: aarcangeli/load-dotenv@v1.0.0
+        with:
+          path: ''
+          filenames: |
+            .env.template
+          quiet: false
+          if-file-not-found: error
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
         with:
