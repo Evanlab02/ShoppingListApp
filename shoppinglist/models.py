@@ -28,13 +28,13 @@ class ShoppingList(Model):
     start_date = DateField()
     end_date = DateField()
     user = ForeignKey(User, on_delete=CASCADE)
-    items = ManyToManyField(ShoppingItem, blank=True, through="ShoppingItemQuantity")
+    items = ManyToManyField(ShoppingItem, blank=True, through="ShoppingItemQuantity") # type: ignore
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the shopping list."""
         return self.name
 
-    def is_current(self):
+    def is_current(self) -> bool:
         """Return True if the shopping list is current."""
         return self.start_date <= timezone.now().date() <= self.end_date
 
@@ -46,7 +46,7 @@ class ShoppingItemQuantity(Model):
     shopping_item = ForeignKey(ShoppingItem, on_delete=CASCADE)
     shopping_list = ForeignKey(ShoppingList, on_delete=CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the shopping item quantity."""
         return f"{self.quantity} {self.shopping_item.name} @ {self.shopping_list.name}"
 
@@ -58,6 +58,6 @@ class ShoppingBudget(Model):
     shopping_list = ForeignKey(ShoppingList, on_delete=CASCADE)
     user = ForeignKey(User, on_delete=CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the shopping budget."""
         return f"{self.amount} @ {self.shopping_list.name} for {self.user.username}"

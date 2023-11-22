@@ -34,7 +34,9 @@ class ItemRepository:
         Returns:
             list[ShoppingItem]: The shopping items for the user.
         """
-        return ShoppingItem.objects.filter(user=user).order_by("-updated_at")
+        items_for_user = ShoppingItem.objects.filter(user=user).order_by("-updated_at")
+        items = [item for item in items_for_user]
+        return items
 
     def get_all_items(self) -> list[ShoppingItem]:
         """
@@ -43,7 +45,9 @@ class ItemRepository:
         Returns:
             list[ShoppingItem]: All shopping items.
         """
-        return ShoppingItem.objects.all().order_by("-updated_at")
+        all_items = ShoppingItem.objects.all().order_by("-updated_at")
+        items = [item for item in all_items]
+        return items
 
     def get_item_by_id(self, item_id: int) -> ShoppingItem:
         """
@@ -81,7 +85,7 @@ class ItemRepository:
         """
         return ShoppingItem.objects.filter(store=store).count()
 
-    def get_items_from_store(self, store: ShoppingStore):
+    def get_items_from_store(self, store: ShoppingStore) -> list[ShoppingItem]:
         """
         Get all items from a store.
 
@@ -91,7 +95,9 @@ class ItemRepository:
         Returns:
             list[ShoppingItem]: The items from the store.
         """
-        return ShoppingItem.objects.filter(store=store).order_by("-updated_at")
+        items_from_store = ShoppingItem.objects.filter(store=store).order_by("-updated_at")
+        items = [item for item in items_from_store]
+        return items
 
     def does_item_exist(self, name: str, store: ShoppingStore) -> bool:
         """

@@ -10,7 +10,7 @@ from ..types import User
 class ShoppingListRepository:
     """The shopping list repository."""
 
-    def get_current(self, user: User) -> ShoppingList:
+    def get_current(self, user: User) -> ShoppingList | None:
         """
         Return the current shopping list.
 
@@ -51,7 +51,8 @@ class ShoppingListRepository:
             float: The total price of items in the shopping list.
         """
         list_items = ShoppingItemQuantity.objects.filter(shopping_list=list_id)
-        return sum([item.shopping_item.price * item.quantity for item in list_items])
+        list_prices = [item.shopping_item.price * item.quantity for item in list_items]
+        return sum(list_prices) # type: ignore
 
     def get_average_price_of_items_on_shopping_list(self, list_id: int) -> float:
         """
@@ -65,7 +66,7 @@ class ShoppingListRepository:
         """
         total_items = self.get_number_of_items_on_shopping_list(list_id)
         total_price = self.get_total_price_of_items_on_shopping_list(list_id)
-        average_item_price = 0
+        average_item_price = float(0)
 
         if total_items != 0:
             average_item_price = total_price / total_items
@@ -99,4 +100,6 @@ class ShoppingListRepository:
         Returns:
             list[ShoppingList]: The shopping lists created in a year.
         """
-        return ShoppingList.objects.filter(user=user, created_at__year=year)
+        shopping_lists = ShoppingList.objects.filter(user=user, created_at__year=year)
+        list_of_shopping_lists = [shopping_list for shopping_list in shopping_lists]
+        return list_of_shopping_lists

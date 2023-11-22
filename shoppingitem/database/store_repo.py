@@ -7,7 +7,7 @@ from ..types import User
 class StoreRepository:
     """The store repository class."""
 
-    def get_all_stores_for_user(self, user: User):
+    def get_all_stores_for_user(self, user: User) -> list[ShoppingStore]:
         """
         Get all stores for a user.
 
@@ -17,18 +17,22 @@ class StoreRepository:
         Returns:
             list[ShoppingStore]: The stores for the user.
         """
-        return ShoppingStore.objects.filter(user=user).order_by("-updated_at")
+        stores = ShoppingStore.objects.filter(user=user).order_by("-updated_at")
+        list_of_stores = [store for store in stores]
+        return list_of_stores
 
-    def get_all_stores(self):
+    def get_all_stores(self) -> list[ShoppingStore]:
         """
         Get all stores.
 
         Returns:
             list[ShoppingStore]: All stores.
         """
-        return ShoppingStore.objects.all().order_by("-updated_at")
+        stores = ShoppingStore.objects.all().order_by("-updated_at")
+        list_of_stores = [store for store in stores]
+        return list_of_stores
 
-    def count_stores_by_type(self, store_type: int):
+    def count_stores_by_type(self, store_type: int) -> int:
         """
         Count the number of stores by type.
 
@@ -40,7 +44,7 @@ class StoreRepository:
         """
         return ShoppingStore.objects.filter(store_type=store_type).count()
 
-    def count_stores_by_type_for_user(self, store_type: int, user: User):
+    def count_stores_by_type_for_user(self, store_type: int, user: User) -> int:
         """
         Count the number of stores by type for a user.
 
@@ -53,7 +57,7 @@ class StoreRepository:
         """
         return ShoppingStore.objects.filter(store_type=store_type, user=user).count()
 
-    def get_store_by_id(self, store_id: int):
+    def get_store_by_id(self, store_id: int) -> ShoppingStore:
         """
         Get a store by id.
 
@@ -65,7 +69,7 @@ class StoreRepository:
         """
         return ShoppingStore.objects.get(id=store_id)
 
-    def get_store_by_name(self, name: str):
+    def get_store_by_name(self, name: str) -> ShoppingStore:
         """
         Get a store by name.
 
@@ -77,7 +81,7 @@ class StoreRepository:
         """
         return ShoppingStore.objects.get(name=name)
 
-    def does_store_exist(self, name: str):
+    def does_store_exist(self, name: str) -> bool:
         """
         Check if a store exists.
 
@@ -89,7 +93,7 @@ class StoreRepository:
         """
         return ShoppingStore.objects.filter(name=name).exists()
 
-    def create_store(self, name: str, store_type: int, description: str, user: User):
+    def create_store(self, name: str, store_type: int, description: str, user: User) -> ShoppingStore:
         """
         Create a store.
 
