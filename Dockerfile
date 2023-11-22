@@ -12,7 +12,6 @@ COPY shoppingapp /app/shoppingapp
 COPY shoppingitem /app/shoppingitem
 COPY shoppinglist /app/shoppinglist
 COPY manage.py /app/manage.py
-COPY application.properties /app/application.properties
 
 COPY requirements.txt /app/requirements.txt
 
