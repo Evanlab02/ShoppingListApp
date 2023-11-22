@@ -13,15 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-from jproperties import Properties
-
-load_dotenv(".env")
-
-with open("application.properties", "rb") as app_properties:
-    properties = Properties()
-    properties.load(app_properties)
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,8 +85,8 @@ DATABASES = {
         "NAME": os.environ.get("DJANGO_DATABASE_NAME"),
         "USER": os.environ.get("DJANGO_DATABASE_USER"),
         "PASSWORD": os.environ.get("DJANGO_DATABASE_PASSWORD"),
-        "HOST": properties.get("DB_HOST").data,
-        "PORT": int(properties.get("DB_PORT").data),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": int(os.environ.get("DB_PORT", "5432")),
     }
 }
 
