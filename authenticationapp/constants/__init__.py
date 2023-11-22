@@ -1,12 +1,9 @@
 """Contains constants for the authentication app."""
 
-from jproperties import Properties
+# Third party imports
+from os import environ
 
-properties = Properties()
-
-with open("application.properties", "rb") as properties_file:
-    properties.load(properties_file)
-
-API_KEY_PARAM = properties.get("API_KEY_PARAM").data
+# Set API key parameter
+API_KEY_PARAM = environ.get("API_KEY_PARAM", "X-API-Key")
 
 __all__ = ["API_KEY_PARAM"]

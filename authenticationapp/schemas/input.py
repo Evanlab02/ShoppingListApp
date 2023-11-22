@@ -1,6 +1,6 @@
 """Contains schemas that are used for incoming requests."""
 
-from ..types import Schema
+from ninja import Schema
 
 
 class NewUser(Schema):
@@ -10,6 +10,7 @@ class NewUser(Schema):
     attributes:
         username: str
         password: str
+        password_confirmation: str
         email: str
         first_name: str
         last_name: str
@@ -17,6 +18,7 @@ class NewUser(Schema):
 
     username: str
     password: str
+    password_confirmation: str
     email: str
     first_name: str
     last_name: str

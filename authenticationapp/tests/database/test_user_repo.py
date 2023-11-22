@@ -3,7 +3,6 @@
 import pytest
 
 from authenticationapp.database import UserRepository
-from authenticationapp.schemas.input import NewUser
 
 from ..helpers import DjangoClient, TestCase, create_test_user, create_test_user_client
 
@@ -25,43 +24,82 @@ class TestUserRepo(TestCase):
         self.django_client.force_login(self.user)
         assert self.user_repo.is_authenticated(self.user) is True
 
-    def test_create_user_with_existing_username(self):
-        """Test the create_user method with an existing username."""
-        payload = NewUser(
-            username=self.user.username,
-            password="test_password",
-            email="test_email",
-            first_name="test_first_name",
-            last_name="test_last_name",
-        )
+    def test_create_user_with_non_matching_passwords(self):
+        """Test the create_user method with invalid passwords."""
+        username = "test_username"
+        password = "test_password"
+        confirm_password = "test_pa"
+        email = "test_email"
+        first_name = "test_first_name"
+        last_name = "test_last_name"
 
         with pytest.raises(ValueError):
-            self.user_repo.create_user(payload)
+            self.user_repo.create_user(
+                username=username,
+                password=password,
+                password_confirmation=confirm_password,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+            )
+
+    def test_create_user_with_existing_username(self):
+        """Test the create_user method with an existing username."""
+        username = self.user.username
+        password = "test_password"
+        confirm_password = "test_password"
+        email = "test_email"
+        first_name = "test_first_name"
+        last_name = "test_last_name"
+
+        with pytest.raises(ValueError):
+            self.user_repo.create_user(
+                username=username,
+                password=password,
+                password_confirmation=confirm_password,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+            )
 
     def test_create_user_with_existing_email(self):
         """Test the create_user method with an existing email."""
-        payload = NewUser(
-            username="test_username",
-            password="test_password",
-            email=self.user.email,
-            first_name="test_first_name",
-            last_name="test_last_name",
-        )
+        username = "test_username"
+        password = "test_password"
+        confirm_password = "test_password"
+        email = self.user.email
+        first_name = "test_first_name"
+        last_name = "test_last_name"
 
         with pytest.raises(ValueError):
-            self.user_repo.create_user(payload)
+            self.user_repo.create_user(
+                username=username,
+                password=password,
+                password_confirmation=confirm_password,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+            )
 
     def test_create_user(self):
         """Test the create_user method."""
-        payload = NewUser(
-            username="test_username",
-            password="test_password",
-            email="test_email",
-            first_name="test_first_name",
-            last_name="test_last_name",
+        username = "test_username"
+        email = "test_email"
+        password = "test_password"
+        password_confirmation = "test_password"
+        first_name = "test_first_name"
+        last_name = "test_last_name"
+
+        user = self.user_repo.create_user(
+            username=username,
+            email=email,
+            password=password,
+            password_confirmation=password_confirmation,
+            first_name=first_name,
+            last_name=last_name,
         )
-        user = self.user_repo.create_user(payload)
-        assert user.username == payload.username
-        assert user.email == payload.email
-        assert user.first_name == payload.first_name
-        assert user.last_name == payload.last_name
+
+        assert user.username == username
+        assert user.email == email
+        assert user.first_name == first_name
+        assert user.last_name == last_name

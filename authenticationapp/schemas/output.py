@@ -1,6 +1,6 @@
 """Contains schemas that are used for outgoing responses."""
 
-from ..types import Schema
+from ninja import Schema
 
 
 class ErrorSchema(Schema):
