@@ -23,7 +23,7 @@ class ShoppingStore(Model):
     updated_at = DateTimeField(auto_now=True)
     user = ForeignKey(User, on_delete=CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the shopping store."""
         return f"{self.name}"
 
@@ -38,6 +38,6 @@ class ShoppingItem(Model):
     updated_at = DateTimeField(auto_now=True)
     user = ForeignKey(User, on_delete=CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the shopping item."""
         return f"{self.name}@{self.store}"

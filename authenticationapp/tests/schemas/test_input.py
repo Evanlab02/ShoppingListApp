@@ -13,6 +13,7 @@ class TestInputSchemas(TestCase):
         new_user = NewUser(
             username="test",
             password="test",
+            password_confirmation="test",
             email="test@gmail.com",
             first_name="test",
             last_name="user",
@@ -23,6 +24,7 @@ class TestInputSchemas(TestCase):
         assert new_user.email == "test@gmail.com"
         assert new_user.first_name == "test"
         assert new_user.last_name == "user"
+        assert new_user.password_confirmation == "test"
 
     def test_user_credentials_schema(self):
         """Test the UserCredentials schema."""

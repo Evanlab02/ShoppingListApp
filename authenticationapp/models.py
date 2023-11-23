@@ -1,8 +1,13 @@
 """Contains models for the authentication app."""
 
+# System imports
+from uuid import uuid4
 
-from .helpers import timezone, uuid4
-from .types import CASCADE, CharField, DateTimeField, Model, OneToOneField, User
+# Third party imports
+from django.contrib.auth.models import User
+from django.db.models import CASCADE, CharField, DateTimeField, Model, OneToOneField
+from django.utils import timezone
+from django.utils.timezone import timedelta  # type: ignore
 
 
 class Client(Model):
@@ -23,13 +28,13 @@ class Client(Model):
     token = CharField(max_length=100, blank=True)
     token_expiration = DateTimeField(blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the string representation of the client."""
         return f"{self.user.username} ({self.user.email})"
 
-    def generate_token(self):
+    def generate_token(self) -> None:
         """Generate a token for the client."""
         if self.token_expiration is None or self.token_expiration < timezone.now():
             self.token = uuid4().hex
-            self.token_expiration = timezone.now() + timezone.timedelta(days=1)
+            self.token_expiration = timezone.now() + timedelta(days=1)
             self.save()

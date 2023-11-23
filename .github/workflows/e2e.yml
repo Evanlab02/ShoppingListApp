@@ -1,4 +1,4 @@
-name: Tests and Sonarcloud
+name: E2E Tests
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  tests-and-sonarcloud:
+  e2e-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,13 +24,20 @@ jobs:
             .env.template
           quiet: false
           if-file-not-found: error
+      - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+        id: setup-chrome
+      - run: |
+          echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
+          ${{ steps.setup-chrome.outputs.chrome-path }} --version
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
       - name: Start Develop DB
         run: |
-          docker-compose up -d --build
+          docker compose -f docker-compose.e2e.yaml up -d --build 
       - name: Setup
         run: |
           pip install -r requirements-dev.txt
@@ -42,12 +49,5 @@ jobs:
           python manage.py migrate --settings=shoppingapp.settings.test_settings
       - name: Run Tests
         run: |
-          pytest -v --cov=. --cov-report term-missing --ignore=tests/e2e/
-      - name: Generate Coverage Report
-        run: |
-          coverage xml
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          pytest -v tests/e2e/
+

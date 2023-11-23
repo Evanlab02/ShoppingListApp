@@ -31,7 +31,7 @@ class RenderHelper:
         else:
             items = self.item_repo.get_all_items()
 
-        total_items = items.count()
+        total_items = len(items)
         total_price = sum([item.price for item in items])
         average_price = 0
 
@@ -87,7 +87,7 @@ class RenderHelper:
         else:
             stores = self.store_repo.get_all_stores()
 
-        total_stores = stores.count()
+        total_stores = len(stores)
 
         page_no = req.GET.get("page", 1)
         paginator = Paginator(stores, 10)

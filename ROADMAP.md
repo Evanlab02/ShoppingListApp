@@ -6,6 +6,21 @@
 - [x] Create dedicated release artifact with each release
 
 ## V0.13.0
+
+### General improvements
+- [x] Remove Application Properties file (Add support for this on V0.6.4 in https://github.com/Evanlab02/ShoppingListApp)
+- [x] Project Wide MyPy Checks
+- [x] Workflows MyPy Checks
+- [x] Adjust workflows for new env file changes
+- [x] Workflows E2E Tests
+
+### Auth App
+
+- [x] Auth App Refactor
+- [x] Auth App e2e Tests
+
+### New features
+
 - [ ] Edit stores
 - [ ] Edit items
 - [ ] Delete stores
@@ -14,7 +29,7 @@
 
 ### V0.13.1
 
-- [ ] Add to register endpoint to check for matching passwords
+- [x] Add to register endpoint to check for matching passwords
 - [ ] Add tests for database repositories in Shopping List App
 - [ ] Create README documentation
 

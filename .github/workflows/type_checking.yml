@@ -1,4 +1,4 @@
-name: Build
+name: Type Checking
 
 on:
   pull_request:
@@ -10,11 +10,13 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  mypy-types:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Load .env file
         uses: aarcangeli/load-dotenv@v1.0.0
         with:
@@ -30,9 +32,6 @@ jobs:
       - name: Setup
         run: |
           pip install -r requirements-dev.txt
-      - name: Create/Build Static Files
+      - name: Run Type Checks
         run: |
-          python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
-      - name: Build Docker Image
-        run: |
-          docker build -t shoppingapp .
+          mypy --strict shoppingapp/

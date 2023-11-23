@@ -1,7 +1,10 @@
 """Contains the client repository."""
 
+# Third party imports
+from django.contrib.auth.models import User
+
+# Local application imports
 from ..models import Client
-from ..types import User
 
 
 class ClientRepository:
@@ -10,6 +13,7 @@ class ClientRepository:
 
     Methods:
         get_client(user: User) -> Client | None
+        generate_token(user: User) -> str
     """
 
     def get_client(self, user: User) -> Client | None:
@@ -28,7 +32,7 @@ class ClientRepository:
             client = None
         return client
 
-    def generate_token(self, user: User):
+    def generate_token(self, user: User) -> str:
         """
         Generate a token for a user.
 
@@ -40,15 +44,19 @@ class ClientRepository:
         """
         client = None
 
+        # Attempt to get client
         try:
             client = Client.objects.filter(user=user).get()
         except Client.DoesNotExist:
             client = None
 
+        # If client does not exist, create it
         if client is None:
             client = Client.objects.create(user=user)
             client.save()
 
+        # Generate token for client
         client.generate_token()
 
+        # Return client token
         return client.token

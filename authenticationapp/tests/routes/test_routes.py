@@ -26,6 +26,7 @@ class TestAuthentication(TestCase):
                 "username": "test",
                 "email": "test@testuser.com",
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -45,6 +46,7 @@ class TestAuthentication(TestCase):
                 "username": "test",
                 "email": "test@testuser.com",
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -60,6 +62,7 @@ class TestAuthentication(TestCase):
                 "username": "test",
                 "email": "test@gmail.com",
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -79,6 +82,7 @@ class TestAuthentication(TestCase):
                 "username": "test-login",
                 "email": TEST_EMAIL,
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -94,7 +98,7 @@ class TestAuthentication(TestCase):
             content_type=CONTENT_TYPE,
         )
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"detail": "Invalid credentials."})
 
     def test_login_valid_credentials(self):
@@ -107,6 +111,7 @@ class TestAuthentication(TestCase):
                 "username": "test-login",
                 "email": TEST_EMAIL,
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -135,6 +140,7 @@ class TestAuthentication(TestCase):
                 "username": "test-login",
                 "email": TEST_EMAIL,
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -172,6 +178,7 @@ class TestAuthentication(TestCase):
                 "username": "test-login",
                 "email": TEST_EMAIL,
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -196,6 +203,7 @@ class TestAuthentication(TestCase):
                 "username": "test-login",
                 "email": TEST_EMAIL,
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -216,6 +224,7 @@ class TestAuthentication(TestCase):
                 "username": "test-logout",
                 "email": "test@logout.com",
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },
@@ -254,6 +263,7 @@ class TestAuthentication(TestCase):
                 "username": "test-token",
                 "email": "test@token.com",
                 "password": "testpassword",
+                "password_confirmation": "testpassword",
                 "first_name": "test",
                 "last_name": "user",
             },

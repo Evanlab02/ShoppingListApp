@@ -32,11 +32,11 @@ class TestLogoutView(TestCase):
         """Test the logout action."""
         self.client.force_login(self.user)
         response = self.client.post("/logout/action")
-        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
             "/",
-            status_code=301,
+            status_code=302,
             target_status_code=200,
             fetch_redirect_response=False,
         )
@@ -60,26 +60,6 @@ class TestLogoutView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get("/logout")
         self.assertEqual(response.status_code, 200)
-
-        self.assertTemplateUsed(response, "auth/logout.html")
-
-        self.assertContains(response, "<title>Shopping App</title>")
-        self.assertContains(
-            response, '<link rel="stylesheet" href="/static/auth/base.css">'
-        )
-        self.assertContains(
-            response,
-            FONT,
-        )
-        self.assertContains(response, '<h2 id="auth-heading">Shopping App Logout</h2>')
-        self.assertContains(
-            response,
-            '<form class="auth-bottom" action="/logout/action" method="post">',
-        )
-        self.assertContains(response, "<legend>Confirm Logout</legend>")
-        self.assertContains(
-            response, '<input class="submit-input" type="submit" value="Yes">'
-        )
 
     def test_get_logout_page_redirects_if_not_logged_in(self):
         """Test the logout page redirects if the user is not logged in."""

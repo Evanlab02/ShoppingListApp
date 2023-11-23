@@ -1,18 +1,19 @@
 """Contains views for the authentication app."""
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .database import UserRepository
-from .helpers import authenticate, login, logout, render
-from .types import HttpRequest, HttpResponse, HttpResponsePermanentRedirect, User
 
 USER_REPOSITORY = UserRepository()
 DASHBOARD_ROUTE = "/shopping/dashboard/"
 
 
 @require_http_methods(["GET"])
-def login_page(request: HttpRequest) -> HttpResponsePermanentRedirect | HttpResponse:
+def login_page(request: HttpRequest) -> HttpResponse:
     """
     Render the login page.
 
@@ -20,38 +21,14 @@ def login_page(request: HttpRequest) -> HttpResponsePermanentRedirect | HttpResp
         request(HttpRequest): The request object.
 
     Returns:
-        HttpResponsePermanentRedirect: Redirects the user to the dashboard.
         HttpResponse: The rendered login page.
     """
-    return USER_REPOSITORY.render_or_redirect(
-        request, DASHBOARD_ROUTE, "auth/index.html"
-    )
-
-
-@require_http_methods(["GET"])
-def login_page_with_error(
-    request: HttpRequest,
-) -> HttpResponsePermanentRedirect | HttpResponse:
-    """
-    Render the login page with an error message.
-
-    Args:
-        request(HttpRequest): The request object.
-
-    Returns:
-        HttpResponsePermanentRedirect: Redirects the user to the dashboard.
-        HttpResponse: The rendered login page with an error message.
-    """
-    return USER_REPOSITORY.render_or_redirect(
-        request,
-        DASHBOARD_ROUTE,
-        "auth/index.html",
-        {"error": "Invalid username or password."},
-    )
+    error = request.GET.get("error")
+    return render(request, "auth/index.html", {"error": error})
 
 
 @require_http_methods(["POST"])
-def login_action(request: HttpRequest) -> HttpResponsePermanentRedirect:
+def login_action(request: HttpRequest) -> HttpResponseRedirect:
     """
     Log the user in.
 
@@ -62,22 +39,21 @@ def login_action(request: HttpRequest) -> HttpResponsePermanentRedirect:
         HttpResponsePermanentRedirect: Redirects the user to the dashboard or the error page.
     """
     if USER_REPOSITORY.is_authenticated(request.user):
-        return HttpResponsePermanentRedirect(DASHBOARD_ROUTE)
+        return HttpResponseRedirect("/?error='Already logged in.'")
 
     username = request.POST.get("username-input")
     password = request.POST.get("password-input")
-    authenticated_user = authenticate(request, username=username, password=password)
+    successful_login = USER_REPOSITORY.login_user(request, username, password)
 
-    if authenticated_user is not None:
-        login(request, authenticated_user)
-        return HttpResponsePermanentRedirect(DASHBOARD_ROUTE)
+    if successful_login:
+        return HttpResponseRedirect(DASHBOARD_ROUTE)
 
-    return HttpResponsePermanentRedirect("/error")
+    return HttpResponseRedirect("/?error='Invalid credentials.'")
 
 
 @login_required(login_url="/", redirect_field_name=None)
 @require_http_methods(["GET"])
-def logout_page(request: HttpRequest) -> HttpResponsePermanentRedirect | HttpResponse:
+def logout_page(request: HttpRequest) -> HttpResponse:
     """
     Log the user out.
 
@@ -87,14 +63,12 @@ def logout_page(request: HttpRequest) -> HttpResponsePermanentRedirect | HttpRes
     Returns:
         HttpResponse: The rendered logout page.
     """
-    return USER_REPOSITORY.render_or_redirect(
-        request, "/", "auth/logout.html", auth=False
-    )
+    return render(request, "auth/logout.html")
 
 
 @login_required(login_url="/", redirect_field_name=None)
 @require_http_methods(["POST"])
-def logout_action(request: HttpRequest):
+def logout_action(request: HttpRequest) -> HttpResponseRedirect:
     """
     Log the user out.
 
@@ -104,11 +78,15 @@ def logout_action(request: HttpRequest):
     Returns:
         HttpResponsePermanentRedirect: Redirects the user to the login page.
     """
-    if not USER_REPOSITORY.is_authenticated(request.user):
-        return HttpResponsePermanentRedirect("/")
+    successful_logout = USER_REPOSITORY.logout_user(request)
+    error = ""
 
-    logout(request)
-    return HttpResponsePermanentRedirect("/")
+    if not successful_logout:
+        error = "Unexpected error when logging out, please try again."
+
+    error_param = "" if not error else f"?error='{error}'"
+
+    return HttpResponseRedirect(f"/{error_param}")
 
 
 @require_http_methods(["GET"])
@@ -123,13 +101,12 @@ def register_page(request: HttpRequest):
         HttpResponsePermanentRedirect: Redirects the user to the dashboard.
         HttpResponse: The rendered register page.
     """
-    return USER_REPOSITORY.render_or_redirect(
-        request, DASHBOARD_ROUTE, "auth/register.html"
-    )
+    error = request.GET.get("error")
+    return render(request, "auth/register.html", {"error": error})
 
 
 @require_http_methods(["POST"])
-def register_action(request: HttpRequest):
+def register_action(request: HttpRequest) -> HttpResponseRedirect:
     """
     Register a new user.
 
@@ -137,24 +114,31 @@ def register_action(request: HttpRequest):
         request(HttpRequest): The request object.
 
     Returns:
-        HttpResponsePermanentRedirect: Redirects the user to the login or error page.
+        HttpResponsePermanentRedirect: Redirects the user to the dashboard or the error page.
     """
     if USER_REPOSITORY.is_authenticated(request.user):
-        return HttpResponsePermanentRedirect(DASHBOARD_ROUTE)
+        return HttpResponseRedirect("/?error='Already logged in.'")
 
     username = request.POST.get("username-input")
     password = request.POST.get("password-input")
     confirm_password = request.POST.get("confirm-password-input")
-    email = request.POST.get("email-input")
     first_name = request.POST.get("first-name-input")
     last_name = request.POST.get("last-name-input")
 
-    if password != confirm_password:
-        return HttpResponsePermanentRedirect("/register/error/non-matching-passwords")
+    # Need to make it none, otherwise empty strings get registered as an email
+    email = request.POST.get("email-input")
+    email = None if not email else email
+
+    if not username and not password and not confirm_password:
+        return HttpResponseRedirect(
+            "/register?error='Please fill in all required fields.'"
+        )
+    elif password != confirm_password:
+        return HttpResponseRedirect("/register?error='Passwords do not match.'")
     elif User.objects.filter(username=username).exists():
-        return HttpResponsePermanentRedirect("/register/error/username-already-exists")
+        return HttpResponseRedirect("/register?error='Username already exists.'")
     elif User.objects.filter(email=email).exists():
-        return HttpResponsePermanentRedirect("/register/error/email-already-exists")
+        return HttpResponseRedirect("/register?error='Email already exists.'")
 
     user = User.objects.create_user(
         username=username,
@@ -165,32 +149,4 @@ def register_action(request: HttpRequest):
     )
     user.save()
 
-    return HttpResponsePermanentRedirect("/")
-
-
-@require_http_methods(["GET"])
-def register_page_error(request: HttpRequest, error: str):
-    """
-    Render the register page with an error message.
-
-    Args:
-        request(HttpRequest): The request object.
-        error(str): The error message.
-
-    Returns:
-        HttpResponsePermanentRedirect: Redirects the user to the dashboard.
-        HttpResponse: The rendered register page with an error message.
-    """
-    if USER_REPOSITORY.is_authenticated(request.user):
-        return HttpResponsePermanentRedirect(DASHBOARD_ROUTE)
-
-    if (error) == "non-matching-passwords":
-        error = "Passwords do not match."
-    elif (error) == "username-already-exists":
-        error = "Username already exists."
-    elif (error) == "email-already-exists":
-        error = "Email already exists."
-    else:
-        error = "Unexpected error."
-
-    return render(request, "auth/register.html", {"error": error})
+    return HttpResponseRedirect("/")
