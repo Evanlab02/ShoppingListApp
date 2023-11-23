@@ -29,6 +29,7 @@ MOCK_FIRST_NAME = "Selenium"
 MOCK_LAST_NAME = "Login"
 MOCK_EMAIL = "testlogin@selenium.com"
 
+
 class TestLoginPage(TestCase):
     """Contains end-to-end tests for the register page."""
 
@@ -38,8 +39,7 @@ class TestLoginPage(TestCase):
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         cls.driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
-            options=options
+            service=ChromeService(ChromeDriverManager().install()), options=options
         )
         cls.delay = 3
 
@@ -58,7 +58,7 @@ class TestLoginPage(TestCase):
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
-        
+
     def test_2_login(self) -> None:
         self.driver.get(LOGIN_URL)
 

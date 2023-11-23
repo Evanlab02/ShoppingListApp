@@ -27,6 +27,7 @@ MOCK_PASSWORD = "TestRegister"
 MOCK_FIRST_NAME = "Selenium"
 MOCK_LAST_NAME = "Register"
 
+
 class TestLoginPage(TestCase):
     """Contains end-to-end tests for the register page."""
 
@@ -35,8 +36,7 @@ class TestLoginPage(TestCase):
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         self.driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
-            options=options
+            service=ChromeService(ChromeDriverManager().install()), options=options
         )
         self.delay = 3
         return super().setUp()
@@ -56,7 +56,7 @@ class TestLoginPage(TestCase):
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
-        
+
         self.assertEqual(self.driver.current_url, LOGIN_URL)
 
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 1")
@@ -72,7 +72,7 @@ class TestLoginPage(TestCase):
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
-        
+
         self.assertEqual(self.driver.current_url, LOGIN_URL)
 
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 2")
@@ -86,9 +86,11 @@ class TestLoginPage(TestCase):
         self.driver.get(REGISTER_URL)
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 3")
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
-        self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys("MismatchedPassword")
+        self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(
+            "MismatchedPassword"
+        )
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
-        
+
         elementText = self.driver.find_element(value=ERROR_TEXT).text
         self.assertEqual(elementText, "'Passwords do not match.'")
 
@@ -115,14 +117,18 @@ class TestLoginPage(TestCase):
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 5")
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
-        self.driver.find_element(value=EMAIL_INPUT).send_keys("registeruser5@register.com")
+        self.driver.find_element(value=EMAIL_INPUT).send_keys(
+            "registeruser5@register.com"
+        )
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
         self.driver.get(REGISTER_URL)
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 6")
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
-        self.driver.find_element(value=EMAIL_INPUT).send_keys("registeruser5@register.com")
+        self.driver.find_element(value=EMAIL_INPUT).send_keys(
+            "registeruser5@register.com"
+        )
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
         elementText = self.driver.find_element(value=ERROR_TEXT).text
