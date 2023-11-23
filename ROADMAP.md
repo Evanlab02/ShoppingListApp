@@ -12,12 +12,12 @@
 - [x] Project Wide MyPy Checks
 - [x] Workflows MyPy Checks
 - [x] Adjust workflows for new env file changes
-- [ ] Workflows E2E Tests
+- [x] Workflows E2E Tests
 
 ### Auth App
 
 - [x] Auth App Refactor
-- [ ] Auth App e2e Tests
+- [x] Auth App e2e Tests
 
 ### New features
 

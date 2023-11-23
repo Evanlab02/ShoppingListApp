@@ -122,11 +122,18 @@ def register_action(request: HttpRequest) -> HttpResponseRedirect:
     username = request.POST.get("username-input")
     password = request.POST.get("password-input")
     confirm_password = request.POST.get("confirm-password-input")
-    email = request.POST.get("email-input")
     first_name = request.POST.get("first-name-input")
     last_name = request.POST.get("last-name-input")
 
-    if password != confirm_password:
+    # Need to make it none, otherwise empty strings get registered as an email
+    email = request.POST.get("email-input")
+    email = None if not email else email
+
+    if not username and not password and not confirm_password:
+        return HttpResponseRedirect(
+            "/register?error='Please fill in all required fields.'"
+        )
+    elif password != confirm_password:
         return HttpResponseRedirect("/register?error='Passwords do not match.'")
     elif User.objects.filter(username=username).exists():
         return HttpResponseRedirect("/register?error='Username already exists.'")

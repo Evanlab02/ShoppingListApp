@@ -55,7 +55,10 @@ test-auth: test-migrations
 static:
 	python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
 
-e2e:
+e2e-refresh:
+	docker compose -f docker-compose.e2e.yaml down --remove-orphans --volumes
+
+e2e: e2e-refresh
 	docker compose -f docker-compose.e2e.yaml up -d --build 
 	python manage.py makemigrations --settings=shoppingapp.settings.test_settings
 	python manage.py migrate --settings=shoppingapp.settings.test_settings

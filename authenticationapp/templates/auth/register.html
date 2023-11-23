@@ -16,7 +16,7 @@
         </div>
         {% if error %}
         <div class="auth-middle">
-            <p class="error-message">{{ error }}</p>
+            <p class="error-message" id="error-text">{{ error }}</p>
         </div>
         {% endif %}
         <form class="auth-bottom" action="{% url 'register_action' %}" method="post">
