@@ -52,7 +52,7 @@ class ShoppingListRepository:
         """
         list_items = ShoppingItemQuantity.objects.filter(shopping_list=list_id)
         list_prices = [item.shopping_item.price * item.quantity for item in list_items]
-        return float(sum(list_prices))  # type: ignore
+        return float(sum(list_prices))
 
     def get_average_price_of_items_on_shopping_list(self, list_id: int) -> float:
         """
