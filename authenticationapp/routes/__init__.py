@@ -16,7 +16,9 @@ CLIENT_REPO = ClientRepository()
 
 
 @auth_router.post("/register", response={201: SuccessSchema, 400: ErrorSchema})
-def register(request: HttpRequest, payload: NewUser) -> tuple[int, SuccessSchema | ErrorSchema]:
+def register(
+    request: HttpRequest, payload: NewUser
+) -> tuple[int, SuccessSchema | ErrorSchema]:
     """
     Register a user/create a new user.
 
@@ -29,7 +31,7 @@ def register(request: HttpRequest, payload: NewUser) -> tuple[int, SuccessSchema
     Returns:
         (int, SuccessSchema | ErrorSchema): The status code and the response as a schema.
     """
-    if USER_REPO.is_authenticated(request.user): # type: ignore
+    if USER_REPO.is_authenticated(request.user):  # type: ignore
         return 400, ErrorSchema(detail="User is already authenticated.")
 
     username = payload.username
@@ -55,7 +57,9 @@ def register(request: HttpRequest, payload: NewUser) -> tuple[int, SuccessSchema
 
 
 @auth_router.post("/login", response={200: SuccessSchema, 400: ErrorSchema})
-def login(request: HttpRequest, payload: UserCredentials) -> tuple[int, SuccessSchema | ErrorSchema]:
+def login(
+    request: HttpRequest, payload: UserCredentials
+) -> tuple[int, SuccessSchema | ErrorSchema]:
     """
     Login a user.
 
@@ -68,7 +72,7 @@ def login(request: HttpRequest, payload: UserCredentials) -> tuple[int, SuccessS
     Returns:
         (int, SuccessSchema | ErrorSchema): The status code and the response as a schema.
     """
-    if USER_REPO.is_authenticated(request.user): # type: ignore
+    if USER_REPO.is_authenticated(request.user):  # type: ignore
         return 400, ErrorSchema(detail="User is already authenticated.")
 
     username = payload.username
@@ -115,8 +119,8 @@ def token(request: HttpRequest) -> tuple[int, SuccessSchema | ErrorSchema]:
     Returns:
         (int, SuccessSchema | ErrorSchema): The status code and the response as a schema.
     """
-    if not USER_REPO.is_authenticated(request.user): # type: ignore
+    if not USER_REPO.is_authenticated(request.user):  # type: ignore
         return 400, ErrorSchema(detail="User is not authenticated.")
 
-    user_api_token = CLIENT_REPO.generate_token(request.user) # type: ignore
+    user_api_token = CLIENT_REPO.generate_token(request.user)  # type: ignore
     return 200, SuccessSchema(message=user_api_token)

@@ -28,7 +28,7 @@ class ShoppingList(Model):
     start_date = DateField()
     end_date = DateField()
     user = ForeignKey(User, on_delete=CASCADE)
-    items = ManyToManyField(ShoppingItem, blank=True, through="ShoppingItemQuantity") # type: ignore
+    items = ManyToManyField(ShoppingItem, blank=True, through="ShoppingItemQuantity")  # type: ignore # noqa: E501
 
     def __str__(self) -> str:
         """Return a string representation of the shopping list."""

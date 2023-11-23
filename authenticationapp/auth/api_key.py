@@ -39,11 +39,11 @@ class ApiKey(APIKeyHeader):
             Client | None: The client if the authentication was successful, otherwise None.
         """
         # Check if user is authenticated, if not return None (Fail)
-        if not USER_REPO.is_authenticated(request.user): # type: ignore
+        if not USER_REPO.is_authenticated(request.user):  # type: ignore
             return None
 
         # Get client related to user
-        client = CLIENT_REPO.get_client(request.user) # type: ignore
+        client = CLIENT_REPO.get_client(request.user)  # type: ignore
 
         # If Client does not exist or key is empty string, return None (Fail)
         if client is None or key == "":

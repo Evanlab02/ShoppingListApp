@@ -4,13 +4,12 @@ from authenticationapp.auth import ApiKey
 from shoppingitem.database import ItemRepository
 
 from ..database import BudgetRepository, ShoppingListRepository
-from ..models import ShoppingList
 from ..schemas.output import (
     DashboardCurrentSchema,
     DashboardHistorySchema,
     DashboardRecentSchema,
 )
-from ..types import HttpRequest, Router, User
+from ..types import HttpRequest, Router
 
 dashboard_router = Router(tags=["Dashboard Routes"], auth=ApiKey())
 
@@ -20,7 +19,9 @@ BUDGET_REPOSITORY = BudgetRepository()
 
 
 @dashboard_router.get("current", response={200: DashboardCurrentSchema})
-def get_current_shopping_list_dashboard_data(request: HttpRequest) -> DashboardCurrentSchema:
+def get_current_shopping_list_dashboard_data(
+    request: HttpRequest,
+) -> DashboardCurrentSchema:
     """
     Return the current shopping list dashboard data.
 
@@ -31,7 +32,7 @@ def get_current_shopping_list_dashboard_data(request: HttpRequest) -> DashboardC
         DashboardCurrentSchema: The current shopping list dashboard data.
     """
     user = request.user
-    shopping_list = LIST_REPOSITORY.get_current(user) # type: ignore
+    shopping_list = LIST_REPOSITORY.get_current(user)  # type: ignore
 
     if shopping_list is None:
         return DashboardCurrentSchema()
@@ -83,7 +84,7 @@ def get_shopping_list_history(request: HttpRequest) -> DashboardHistorySchema:
     """
     user = request.user
 
-    history = BUDGET_REPOSITORY.get_price_history_current_year_for_user(user=user) # type: ignore
+    history = BUDGET_REPOSITORY.get_price_history_current_year_for_user(user=user)  # type: ignore
 
     return DashboardHistorySchema(
         labels=history.get("months", []),

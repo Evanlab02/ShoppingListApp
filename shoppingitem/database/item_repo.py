@@ -95,7 +95,9 @@ class ItemRepository:
         Returns:
             list[ShoppingItem]: The items from the store.
         """
-        items_from_store = ShoppingItem.objects.filter(store=store).order_by("-updated_at")
+        items_from_store = ShoppingItem.objects.filter(store=store).order_by(
+            "-updated_at"
+        )
         items = [item for item in items_from_store]
         return items
 

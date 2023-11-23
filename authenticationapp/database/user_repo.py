@@ -107,7 +107,7 @@ class UserRepository:
         Returns:
             bool: True if the user is was logged out, otherwise False.
         """
-        if not self.is_authenticated(request.user): # type: ignore
+        if not self.is_authenticated(request.user):  # type: ignore
             return False
 
         logout(request)

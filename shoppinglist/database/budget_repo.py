@@ -1,7 +1,5 @@
 """Contains the budget repository."""
 
-from typing import Union
-
 from ..helpers import MONTH_MAPPING, datetime
 from ..models import ShoppingBudget
 from ..types import User
@@ -51,7 +49,9 @@ class BudgetRepository:
 
         return budget_remaining
 
-    def get_price_history_current_year_for_user(self, user: User) -> dict[str, list[str] | list[float] | list[int]]:
+    def get_price_history_current_year_for_user(
+        self, user: User
+    ) -> dict[str, list[str] | list[float] | list[int]]:
         """
         Get the price history for the current year for a user.
 

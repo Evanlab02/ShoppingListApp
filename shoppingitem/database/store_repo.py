@@ -93,7 +93,9 @@ class StoreRepository:
         """
         return ShoppingStore.objects.filter(name=name).exists()
 
-    def create_store(self, name: str, store_type: int, description: str, user: User) -> ShoppingStore:
+    def create_store(
+        self, name: str, store_type: int, description: str, user: User
+    ) -> ShoppingStore:
         """
         Create a store.
 

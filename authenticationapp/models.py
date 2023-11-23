@@ -7,7 +7,7 @@ from uuid import uuid4
 from django.contrib.auth.models import User
 from django.db.models import CASCADE, CharField, DateTimeField, Model, OneToOneField
 from django.utils import timezone
-from django.utils.timezone import timedelta # type: ignore
+from django.utils.timezone import timedelta  # type: ignore
 
 
 class Client(Model):
