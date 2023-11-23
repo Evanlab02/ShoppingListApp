@@ -57,4 +57,3 @@ class TestItemView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "items/items_list_view.html")
-

@@ -1,11 +1,7 @@
 """Contains the shoppingitem app views."""
 
 from django.contrib.auth.decorators import login_required
-from django.http import (
-    HttpRequest,
-    HttpResponse,
-    HttpResponseRedirect
-)
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
@@ -99,6 +95,7 @@ def create_item(request: HttpRequest) -> HttpResponse:
     redirect_url = ITEM_SERVICE.create_item(request)
     return HttpResponseRedirect(redirect_url)
 
+
 @login_required(login_url="/")
 @require_http_methods(["GET"])
 def get_user_store_view(request: HttpRequest) -> HttpRequest:
@@ -132,6 +129,7 @@ def get_store_view(request: HttpRequest) -> HttpRequest:
     rendered_page = render(request, "items/store_list_view.html", context=context)
     return rendered_page
 
+
 @login_required(login_url="/")
 @require_http_methods(["GET"])
 def get_store_detail_view(request: HttpRequest, store_id: int) -> HttpResponse:
@@ -148,6 +146,7 @@ def get_store_detail_view(request: HttpRequest, store_id: int) -> HttpResponse:
     context = STORE_SERVICE.detail_view(request, store_id)
     rendered_page = render(request, "items/store_detail.html", context=context)
     return rendered_page
+
 
 @login_required(login_url="/")
 @require_http_methods(["GET"])

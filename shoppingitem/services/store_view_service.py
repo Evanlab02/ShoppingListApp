@@ -6,6 +6,7 @@ from django.http import HttpRequest
 from ..database import StoreRepository, ItemRepository
 from ..models import ShoppingStore
 
+
 class StoreViewService:
     """The service for the store views."""
 
@@ -14,7 +15,12 @@ class StoreViewService:
         self.item_repo = ItemRepository()
         self.store_repo = StoreRepository()
 
-    def _overview_page(self, request: HttpRequest, stores: list[ShoppingStore], is_user_page: bool = False) -> dict:  # type: ignore
+    def _overview_page(
+        self,
+        request: HttpRequest,
+        stores: list[ShoppingStore],
+        is_user_page: bool = False,
+    ) -> dict:  # type: ignore
         """
         Construct the context for the overview page based on the values passed in.
 
@@ -75,7 +81,7 @@ class StoreViewService:
             "in_store_stores": in_store_stores,
             "online_stores": online_stores,
         }
-    
+
     def user_overview_page(self, request: HttpRequest) -> dict:
         """
         Construct the context for the user overview page.
@@ -175,10 +181,10 @@ class StoreViewService:
             store_type = int(store_type)
         except ValueError:
             return "/items/stores/create?error=Store type must be a number."
-            
+
         if store_type not in [1, 2, 3]:
             return "/items/stores/create?error=Invalid store type."
-            
+
         try:
             store = self.store_repo.create_store(name, store_type, description, user)
         except ValueError as error:

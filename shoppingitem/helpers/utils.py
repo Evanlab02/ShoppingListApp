@@ -1,7 +1,5 @@
 """Contains utility functions for the shoppingitem app."""
 
-from django.contrib.auth.models import User
-
 
 def determine_average_price_of_items(total_price: int, total_items: int) -> float:
     """
