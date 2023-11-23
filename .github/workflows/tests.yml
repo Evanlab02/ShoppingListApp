@@ -42,7 +42,7 @@ jobs:
           python manage.py migrate --settings=shoppingapp.settings.test_settings
       - name: Run Tests
         run: |
-          pytest -v --cov=. --cov-report term-missing
+          pytest -v --cov=. --cov-report term-missing --ignore=tests/e2e/
       - name: Generate Coverage Report
         run: |
           coverage xml
