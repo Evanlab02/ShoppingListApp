@@ -18,7 +18,7 @@
 
 - [x] Auth App Refactor
 - [x] Auth App e2e Tests
-- [ ] Auth App Acceptance Tests
+- [x] Auth App Integration Tests
 
 ### Shopping Item App
 
