@@ -7,7 +7,7 @@ from shoppingitem.models import ShoppingItem, ShoppingStore
 from ..helpers import DjangoClient, TestCase, create_test_user
 
 CREATE_POST_URL = "/items/create/item/action"
-FIELD_ERROR_URL = "/items/create/error?error=Please+fill+in+all+fields."
+FIELD_ERROR_URL = "/items/create?error=Please+fill+in+all+fields."
 
 
 class TestCreatePostView(TestCase):
@@ -27,7 +27,7 @@ class TestCreatePostView(TestCase):
         self.assertRedirects(
             response,
             FIELD_ERROR_URL,
-            301,
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -38,7 +38,7 @@ class TestCreatePostView(TestCase):
         self.assertRedirects(
             response,
             FIELD_ERROR_URL,
-            301,
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -49,7 +49,7 @@ class TestCreatePostView(TestCase):
         self.assertRedirects(
             response,
             FIELD_ERROR_URL,
-            301,
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -62,7 +62,7 @@ class TestCreatePostView(TestCase):
         self.assertRedirects(
             response,
             FIELD_ERROR_URL,
-            301,
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -91,8 +91,8 @@ class TestCreatePostView(TestCase):
         )
         self.assertRedirects(
             response,
-            "/items/create/error?error=Item+already+exists.",
-            301,
+            "/items/create?error=Item+already+exists.",
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -126,8 +126,8 @@ class TestCreatePostView(TestCase):
 
         self.assertRedirects(
             response,
-            "/items/create/error?error=Price+must+be+a+number.",
-            301,
+            "/items/create?error=Price+must+be+a+number.",
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -161,8 +161,8 @@ class TestCreatePostView(TestCase):
 
         self.assertRedirects(
             response,
-            "/items/create/error?error=Price+must+be+a+number.",
-            301,
+            "/items/create?error=Price+must+be+a+number.",
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -196,14 +196,14 @@ class TestCreatePostView(TestCase):
 
         self.assertRedirects(
             response,
-            "/items/create/error?error=Price+cannot+be+negative+and+must+be+greater+than+0.",
-            301,
+            "/items/create?error=Price+cannot+be+negative+and+must+be+greater+than+0.",
+            302,
             200,
             fetch_redirect_response=False,
         )
 
     def test_that_item_gets_created(self):
-        """Should redirect to the create error page when the price is zero."""
+        """Should create the item and redirect to the detail page."""
         store = ShoppingStore.objects.create(
             name="test-store",
             description="test-description",
@@ -234,7 +234,7 @@ class TestCreatePostView(TestCase):
         self.assertRedirects(
             response,
             f"/items/detail/{item.id}",
-            301,
+            302,
             200,
             fetch_redirect_response=False,
         )

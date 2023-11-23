@@ -2,7 +2,7 @@
 
 from .test_item_create_view import TestItemCreateView
 
-ITEMS_CREATE_VIEW = "/items/create/error?error=This+is+a+test+error."
+ITEMS_CREATE_VIEW = "/items/create?error=This+is+a+test+error."
 
 
 class TestItemErrorView(TestItemCreateView):

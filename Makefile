@@ -1,4 +1,4 @@
-.PHONY: requirements build up down dev migrate createsuperuser migrations test-migrations format lint test static
+.PHONY: requirements build up down dev migrate createsuperuser migrations test-migrations format lint test static unit-test test-refresh
 
 IMAGE_NAME = shopping-list-be
 VERSION := $(shell cat version.txt)
@@ -8,6 +8,7 @@ clean:
 	rm -rf .coverage coverage.xml .pytest_cache
 	rm -rf **/migrations/0*.py
 	rm -rf **/__pycache__/
+	rm -rf **/**/__pycache__/
 	rm -rf .mypy_cache/
 
 requirements:
@@ -46,8 +47,8 @@ lint: clean
 	flake8 . --max-line-length=100
 	pydocstyle .
 
-test: test-migrations
-	pytest -v --cov=. --cov-report term-missing --ignore=tests/e2e/
+unit-test: test-migrations
+	pytest -v --cov=. --cov-report term-missing --ignore=tests/
 
 test-auth: test-migrations
 	pytest -v authenticationapp/tests/ --cov=authenticationapp/ --cov-report term-missing
@@ -55,15 +56,15 @@ test-auth: test-migrations
 static:
 	python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
 
-e2e-refresh:
-	docker compose -f docker-compose.e2e.yaml down --remove-orphans --volumes
+test-refresh:
+	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
-e2e: e2e-refresh
-	docker compose -f docker-compose.e2e.yaml up -d --build 
+test: test-refresh
+	docker compose -f docker-compose.test.yaml up -d --build 
 	python manage.py makemigrations --settings=shoppingapp.settings.test_settings
 	python manage.py migrate --settings=shoppingapp.settings.test_settings
-	pytest -v tests/e2e/
-	docker compose -f docker-compose.e2e.yaml down --remove-orphans --volumes
+	pytest -v tests/
+	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
 type-check:
 	mypy --strict shoppingapp/
