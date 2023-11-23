@@ -1,6 +1,7 @@
 """Contains the shoppingitem app."""
 
-from .types import (
+from django.contrib.auth.models import User
+from django.db.models import (
     CASCADE,
     CharField,
     DateTimeField,
@@ -9,7 +10,6 @@ from .types import (
     IntegerField,
     Model,
     TextField,
-    User,
 )
 
 

@@ -42,7 +42,7 @@ class TestStoreCreatePostView(TestCase):
         self.assertRedirects(
             response,
             f"/items/stores/detail/{store.id}",
-            301,
+            302,
             200,
             fetch_redirect_response=False,
         )
@@ -63,7 +63,7 @@ class TestStoreCreatePostView(TestCase):
         self.assertRedirects(
             response,
             "/items/stores/create?error=Store type must be a number.",
-            301,
+            302,
             404,
             fetch_redirect_response=False,
         )
@@ -82,7 +82,7 @@ class TestStoreCreatePostView(TestCase):
         self.assertRedirects(
             response,
             "/items/stores/create?error=Invalid store type.",
-            301,
+            302,
             404,
             fetch_redirect_response=False,
         )
@@ -109,7 +109,7 @@ class TestStoreCreatePostView(TestCase):
         self.assertRedirects(
             response,
             "/items/stores/create?error=Store with name 'test-store-name' already exists.",
-            301,
+            302,
             404,
             fetch_redirect_response=False,
         )

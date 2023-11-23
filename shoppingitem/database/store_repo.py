@@ -1,7 +1,8 @@
 """Contains the store repository for the shoppingitem app."""
 
+from django.contrib.auth.models import User
+
 from ..models import ShoppingStore
-from ..types import User
 
 
 class StoreRepository:

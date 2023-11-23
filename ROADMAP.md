@@ -18,6 +18,12 @@
 
 - [x] Auth App Refactor
 - [x] Auth App e2e Tests
+- [ ] Auth App Acceptance Tests
+
+### Shopping Item App
+
+- [x] Shopping Item App Refactor
+- [ ] Shopping Item App e2e Tests
 
 ### New features
 

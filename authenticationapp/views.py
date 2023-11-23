@@ -23,6 +23,9 @@ def login_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The rendered login page.
     """
+    if USER_REPOSITORY.is_authenticated(request.user):
+        return HttpResponseRedirect("/shopping/dashboard/")
+
     error = request.GET.get("error")
     return render(request, "auth/index.html", {"error": error})
 
