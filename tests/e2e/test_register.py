@@ -91,8 +91,8 @@ class TestLoginPage(TestCase):
         )
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
-        elementText = self.driver.find_element(value=ERROR_TEXT).text
-        self.assertEqual(elementText, "'Passwords do not match.'")
+        element_text = self.driver.find_element(value=ERROR_TEXT).text
+        self.assertEqual(element_text, "'Passwords do not match.'")
 
     def test_register_with_existing_username(self) -> None:
         """Test that a user cannot register with an existing username."""
@@ -108,8 +108,8 @@ class TestLoginPage(TestCase):
         self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
-        elementText = self.driver.find_element(value=ERROR_TEXT).text
-        self.assertEqual(elementText, "'Username already exists.'")
+        element_text = self.driver.find_element(value=ERROR_TEXT).text
+        self.assertEqual(element_text, "'Username already exists.'")
 
     def test_register_with_existing_email(self) -> None:
         """Test that a user cannot register with an existing email."""
@@ -131,5 +131,5 @@ class TestLoginPage(TestCase):
         )
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
-        elementText = self.driver.find_element(value=ERROR_TEXT).text
-        self.assertEqual(elementText, "'Email already exists.'")
+        element_text = self.driver.find_element(value=ERROR_TEXT).text
+        self.assertEqual(element_text, "'Email already exists.'")
