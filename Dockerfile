@@ -7,17 +7,15 @@ RUN apt-get update \
 
 RUN pip install pipenv
 
-COPY authenticationapp /app/authenticationapp
+WORKDIR /app
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+
 COPY shoppingapp /app/shoppingapp
+COPY authenticationapp /app/authenticationapp
 COPY shoppingitem /app/shoppingitem
 COPY shoppinglist /app/shoppinglist
 COPY manage.py /app/manage.py
-
-COPY requirements.txt /app/requirements.txt
-
-WORKDIR /app
-
-RUN pip install -r requirements.txt
 
 EXPOSE 8000
 

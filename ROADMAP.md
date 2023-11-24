@@ -23,7 +23,7 @@
 ### Shopping Item App
 
 - [x] Shopping Item App Refactor
-- [ ] Shopping Item App e2e Tests
+- [x] Shopping Item App e2e Tests
 
 ### New features
 

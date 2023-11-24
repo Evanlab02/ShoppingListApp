@@ -86,7 +86,7 @@
                 </thead>
                 <tbody>
                     {% for store in stores %}
-                    <tr>
+                    <tr class="store-table-row">
                         <td><a href="/items/stores/detail/{{ store.id }}">{{ store.name }}</a></td>
 
                         {% if store.store_type == 1 %}

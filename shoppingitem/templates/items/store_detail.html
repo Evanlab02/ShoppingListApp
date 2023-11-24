@@ -112,7 +112,7 @@
                 </thead>
                 <tbody>
                     {% for item in items %}
-                    <tr>
+                    <tr class="store-item-row">
                         <td><a href="/items/detail/{{ item.id }}">{{ item.name }}</a></td>
                         <td>{{ item.price }}</td>
                         <td>{{ item.user.username }}</td>
