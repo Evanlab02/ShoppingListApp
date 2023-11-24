@@ -31,7 +31,7 @@ MOCK_EMAIL = "testlogin@selenium.com"
 
 
 class TestLoginPage(TestCase):
-    """Contains end-to-end tests for the register page."""
+    """Contains end-to-end tests for the login page."""
 
     @classmethod
     def setUpClass(cls) -> None:
