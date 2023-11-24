@@ -23,10 +23,14 @@ MOCK_PASSWORD = "TestItem"
 MOCK_FIRST_NAME = "Selenium"
 MOCK_LAST_NAME = "Item"
 MOCK_EMAIL = "selenium@item.com"
+TEST_STORE_NAME = "Test Item Store"
 
 
 class ItemViewTests(TestCase):
     """Contains end-to-end tests for the item views."""
+
+    driver: webdriver.Chrome
+    delay: int
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -64,9 +68,15 @@ class ItemViewTests(TestCase):
     def test_03_store_page_is_empty(self) -> None:
         """Test that the store page is empty."""
         self.driver.get("http://localhost:7001/items/stores")
-        self.driver.find_element(value="total-items-sub-value").text == "0"
-        self.driver.find_element(value="total-in-stores-sub-value").text == "0"
-        self.driver.find_element(value="total-online-stores-sub-value").text == "0"
+        self.assertEqual(
+            self.driver.find_element(value="total-items-sub-value").text, "0"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="total-in-stores-sub-value").text, "0"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="total-online-stores-sub-value").text, "0"
+        )
         row_elements = self.driver.find_elements(
             by=By.CLASS_NAME, value="store-table-row"
         )
@@ -75,22 +85,27 @@ class ItemViewTests(TestCase):
     def test_04_create_store(self) -> None:
         """Test that a store can be added."""
         self.driver.get("http://localhost:7001/items/stores/create")
-        self.driver.find_element(value="store-input").send_keys("Test Item Store")
+        self.driver.find_element(value="store-input").send_keys(TEST_STORE_NAME)
         select = Select(self.driver.find_element(value="store-type-input"))
         select.select_by_index(2)
         self.driver.find_element(value="submit-create-store").click()
 
     def test_05_detail_view(self) -> None:
         """Test that a store detail view can be accessed."""
-        self.driver.find_element(value="store-name-sub-value").text == "Test Item Store"
-        self.driver.find_element(
-            value="store-type-sub-value"
-        ).text == "Online & In-Store"
-        self.driver.find_element(value="number-of-items-sub-value").text == "0"
-        self.driver.find_element(value="user-sub-value").text == MOCK_USERNAME
-        self.driver.find_element(value="created-on-sub-value")
-        self.driver.find_element(value="last-updated-sub-value")
-
+        self.assertEqual(
+            self.driver.find_element(value="store-name-sub-value").text,
+            TEST_STORE_NAME,
+        )
+        self.assertEqual(
+            self.driver.find_element(value="store-type-sub-value").text,
+            "Online & In-Store",
+        )
+        self.assertEqual(
+            self.driver.find_element(value="number-of-items-sub-value").text, "0"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="user-sub-value").text, MOCK_USERNAME
+        )
         row_elements = self.driver.find_elements(
             by=By.CLASS_NAME, value="store-item-row"
         )
@@ -99,9 +114,15 @@ class ItemViewTests(TestCase):
     def test_06_store_page_has_1_row(self) -> None:
         """Test that the store page has 1 row."""
         self.driver.get("http://localhost:7001/items/stores/me")
-        self.driver.find_element(value="total-items-sub-value").text == "1"
-        self.driver.find_element(value="total-in-stores-sub-value").text == "1"
-        self.driver.find_element(value="total-online-stores-sub-value").text == "1"
+        self.assertEqual(
+            self.driver.find_element(value="total-items-sub-value").text, "1"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="total-in-stores-sub-value").text, "1"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="total-online-stores-sub-value").text, "1"
+        )
         row_elements = self.driver.find_elements(
             by=By.CLASS_NAME, value="store-table-row"
         )
@@ -120,20 +141,29 @@ class ItemViewTests(TestCase):
         self.driver.get("http://localhost:7001/items/create")
         self.driver.find_element(value="item-input").send_keys("Test Item")
         select = Select(self.driver.find_element(value="store-input"))
-        select.select_by_value("Test Item Store")
+        select.select_by_value(TEST_STORE_NAME)
         self.driver.find_element(value="price-input").send_keys("100")
         self.driver.find_element(value="submit-create-item").click()
 
     def test_09_item_detail_view(self) -> None:
         """Test that an item detail view can be accessed."""
-        self.driver.find_element(value="item-name-sub-value").text == "Test Item"
-        self.driver.find_element(value="item-store-sub-value").text == "Takealot"
-        self.driver.find_element(value="item-price-sub-value").text == "100.00"
-        self.driver.find_element(value="user-sub-value").text == MOCK_USERNAME
-        self.driver.find_element(value="last-updated-sub-value")
-        self.driver.find_element(
-            value="item-related-lists"
-        ).text == "On 0 shopping lists"
+        self.assertEqual(
+            self.driver.find_element(value="item-name-sub-value").text, "Test Item"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="item-store-sub-value").text,
+            TEST_STORE_NAME,
+        )
+        self.assertEqual(
+            self.driver.find_element(value="item-price-sub-value").text, "100.00"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="user-sub-value").text, MOCK_USERNAME
+        )
+        self.assertEqual(
+            self.driver.find_element(value="item-related-lists").text,
+            "On 0 shopping lists",
+        )
 
     def test_10_item_list_view_has_1_row(self) -> None:
         """Test that the item list view has 1 row."""
