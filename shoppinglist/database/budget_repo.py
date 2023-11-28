@@ -1,8 +1,11 @@
 """Contains the budget repository."""
 
-from ..helpers import MONTH_MAPPING, datetime
+from datetime import datetime
+
+from django.contrib.auth.models import User
+
+from ..helpers import get_months_for_year_until_current_month
 from ..models import ShoppingBudget
-from ..types import User
 from .list_repo import ShoppingListRepository
 
 
@@ -23,8 +26,13 @@ class BudgetRepository:
         Returns:
             float: The total budget of a shopping list.
         """
-        budget = ShoppingBudget.objects.filter(shopping_list=list_id).first()
-        return float(budget.amount) if budget is not None else float(0)
+        budget = ShoppingBudget.objects.get(shopping_list=list_id)
+        budget_amount = float(0)
+
+        if budget is not None:
+            budget_amount = float(budget.amount)
+
+        return budget_amount
 
     def get_budget_remaining_of_shopping_list(self, list_id: int) -> float:
         """
@@ -49,55 +57,6 @@ class BudgetRepository:
 
         return budget_remaining
 
-    def get_price_history_current_year_for_user(
-        self, user: User
-    ) -> dict[str, list[str] | list[float] | list[int]]:
-        """
-        Get the price history for the current year for a user.
-
-        Args:
-            user (User): The user.
-
-        Returns:
-            dict[str, list]: The price history for the current year for a user.
-        """
-        current_year = datetime.now().year
-        current_month = datetime.now().month
-
-        labels = [MONTH_MAPPING[month] for month in range(1, current_month + 1)]
-
-        list_data = [float(0) for _ in range(1, current_month + 1)]
-        budget_data = [float(0) for _ in range(1, current_month + 1)]
-
-        shopping_lists = self.list_repo.get_lists_created_in_year_for_user(
-            user=user, year=current_year
-        )
-
-        list_ids = []
-
-        for shopping_list in shopping_lists:
-            end_date = shopping_list.end_date
-            month = end_date.month
-
-            total_price = self.list_repo.get_total_price_of_items_on_shopping_list(
-                shopping_list.id
-            )
-            list_data[month - 1] += total_price
-            list_ids.append(shopping_list.id)
-
-        budgets = self.get_budgets_for_many_shopping_lists(list_ids)
-
-        for shopping_budget in budgets:
-            end_date = shopping_budget.shopping_list.end_date
-            month = end_date.month
-            budget_data[month - 1] += float(shopping_budget.amount)
-
-        return {
-            "months": labels,
-            "list_data": list_data,
-            "budget_data": budget_data,
-        }
-
     def get_budgets_for_many_shopping_lists(
         self, list_ids: list[int]
     ) -> list[ShoppingBudget]:
@@ -113,3 +72,49 @@ class BudgetRepository:
         budgets = ShoppingBudget.objects.filter(shopping_list__in=list_ids)
         list_of_budgets = [budget for budget in budgets]
         return list_of_budgets
+
+    def get_price_history_current_year_for_user(
+        self, user: User
+    ) -> dict[str, list[str] | list[float] | list[int]]:
+        """
+        Get the price history for the current year for a user.
+
+        Args:
+            user (User): The user.
+
+        Returns:
+            dict[str, list]: The price history for the current year for a user.
+        """
+        current_year = datetime.now().year
+        current_year_months = get_months_for_year_until_current_month()
+
+        list_data = [float(0) for _ in current_year_months]
+        budget_data = [float(0) for _ in current_year_months]
+
+        shopping_lists = self.list_repo.get_lists_created_in_year_for_user(
+            user=user, year=current_year
+        )
+
+        list_ids = [shopping_list.id for shopping_list in shopping_lists]
+
+        for shopping_list in shopping_lists:
+            end_date = shopping_list.end_date
+            month = end_date.month
+
+            total_price = self.list_repo.get_total_price_of_items_on_shopping_list(
+                shopping_list.id
+            )
+            list_data[month - 1] += total_price
+
+        budgets = self.get_budgets_for_many_shopping_lists(list_ids)
+
+        for shopping_budget in budgets:
+            end_date = shopping_budget.shopping_list.end_date
+            month = end_date.month
+            budget_data[month - 1] += float(shopping_budget.amount)
+
+        return {
+            "months": current_year_months,
+            "list_data": list_data,
+            "budget_data": budget_data,
+        }

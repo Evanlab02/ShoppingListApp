@@ -25,6 +25,10 @@
 - [x] Shopping Item App Refactor
 - [x] Shopping Item App e2e Tests
 
+### Shopping List App
+
+- [x] Shopping List App Refactor
+
 ### New features
 
 - [ ] Edit stores

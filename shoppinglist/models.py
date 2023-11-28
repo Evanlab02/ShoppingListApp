@@ -1,9 +1,7 @@
 """Contains the shopping list app's models."""
 
-from shoppingitem.models import ShoppingItem
-
-from .helpers import timezone
-from .types import (
+from django.contrib.auth.models import User
+from django.db.models import (
     CASCADE,
     CharField,
     DateField,
@@ -14,8 +12,10 @@ from .types import (
     ManyToManyField,
     Model,
     TextField,
-    User,
 )
+from django.utils import timezone
+
+from shoppingitem.models import ShoppingItem
 
 
 class ShoppingList(Model):
