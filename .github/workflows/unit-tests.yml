@@ -24,7 +24,7 @@ jobs:
             .env.template
           quiet: false
           if-file-not-found: error
-      - name: Set up Python 3.11
+      - name: Set up Python 3.10
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
