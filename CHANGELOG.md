@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.13.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.3...v0.13.0) (2023-11-28)
+
+
+### Features
+
+* **Application-Properties:** Removed need for an application properties file ([59d7ee6](https://github.com/Evanlab02/ShoppingListApp-BE/commit/59d7ee679a7fcf5ab12ee0443604dc1011c9a41e))
+* **Auth-App:** Auth app refactor ([a351cba](https://github.com/Evanlab02/ShoppingListApp-BE/commit/a351cba6212db72c9f495a1ea103e8e1392a28d5))
+* **Dev-Containers:** Can now use Vscode dev containers for local development ([e7b21f9](https://github.com/Evanlab02/ShoppingListApp-BE/commit/e7b21f9e80b5b7a598e27edf3932e5815fcf866d))
+* **E2E Tests:** Created E2E for the authentication app ([5a9ee9b](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5a9ee9b4d17872bda9730a06adcd6eb4eb421717))
+* **E2E:** Added E2E Tests for Shopping Item App ([1d7fd20](https://github.com/Evanlab02/ShoppingListApp-BE/commit/1d7fd20c1d0a2f59a3908bb69cf161fce8746f77))
+* **Integration-Tests:** Added integration tests for auth app ([abdd803](https://github.com/Evanlab02/ShoppingListApp-BE/commit/abdd8035a127eee21401a2a364d66bdae89a7060))
+* **MyPy:** Adjusted entire project to meet mypy standards ([9c1ddd5](https://github.com/Evanlab02/ShoppingListApp-BE/commit/9c1ddd53ef72d87f2ed46ad7f4ab5b8411c5f712))
+* **Shopping-Item-App:** Refactored Shopping Item App ([6daa438](https://github.com/Evanlab02/ShoppingListApp-BE/commit/6daa4380998930ae4ecc66f3df3f23e6c3ade21d))
+* **Shopping-List-App:** App Refactor ([22d0473](https://github.com/Evanlab02/ShoppingListApp-BE/commit/22d0473fc6454c0aadf8b1d2f67ca411338dd5d7))
+* **Store-Repo:** New edit store method ([20448a3](https://github.com/Evanlab02/ShoppingListApp-BE/commit/20448a3d5902726b5eaf35dd9f9253eb3001d286))
+* **Workflows:** Adjusted workflows for .env file changes ([4ef9c21](https://github.com/Evanlab02/ShoppingListApp-BE/commit/4ef9c21153fbe8bbdde390a2ffe954123d1bb8ef))
+* **Workflows:** Created E2E tests workflow ([018adc5](https://github.com/Evanlab02/ShoppingListApp-BE/commit/018adc5a0052ca50aba4c57361b635c087d5349b))
+* **Workflows:** Created type checking workflow ([435d2e7](https://github.com/Evanlab02/ShoppingListApp-BE/commit/435d2e7639daeb98564796a4033f2d5429918451))
+
+
+### Bug Fixes
+
+* **Docker-Compose:** Renamed docker compose file along with minor env improvements ([f716e12](https://github.com/Evanlab02/ShoppingListApp-BE/commit/f716e12d6fab02291ae1a6da141686c21f8868ac))
+* **Dockerfile:** Added pipenv and make installation to Dockerfile ([3e9114c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/3e9114c2478b2ebe7cdf42cd1a22816272ebeba1))
+* **gitignore:** Updated gitignore to not include migration files ([35f42d5](https://github.com/Evanlab02/ShoppingListApp-BE/commit/35f42d52ca4daeac2d499dd9daa6ac1259217a58))
+* **Workflows:** Reordered test workflow steps ([98d3813](https://github.com/Evanlab02/ShoppingListApp-BE/commit/98d38138e2c33320e1eac45e31ccffd459d4a0d8))
+
+
+### Reverts
+
+* **Docker-Compose:** Removed reliance on .env files ([ebabc99](https://github.com/Evanlab02/ShoppingListApp-BE/commit/ebabc996b90cef5ace698ab4e63a174a70abac5d))
+
 ## [0.12.3](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.12.2...v0.12.3) (2023-11-04)
 
 
