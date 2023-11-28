@@ -6,8 +6,8 @@ name = "pypi"
 [packages]
 django = "==4.2.4"
 uvicorn = "==0.23.2"
-psycopg = "==3.1.10"
 django-ninja = "==0.22.2"
+psycopg = {extras = ["binary"], version = "==3.1.13"}
 
 [dev-packages]
 python-dotenv = "==1.0.0"

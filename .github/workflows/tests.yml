@@ -19,7 +19,7 @@ jobs:
       - name: Load .env file
         uses: aarcangeli/load-dotenv@v1.0.0
         with:
-          path: ''
+          path: ""
           filenames: |
             .env.template
           quiet: false
@@ -31,13 +31,13 @@ jobs:
       - run: |
           echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
           ${{ steps.setup-chrome.outputs.chrome-path }} --version
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
       - name: Start Develop DB
         run: |
-          docker compose -f docker-compose.test.yaml up -d --build 
+          docker compose -f docker-compose.test.yaml up -d --build
       - name: Setup
         run: |
           pip install -r requirements-dev.txt
@@ -50,4 +50,3 @@ jobs:
       - name: Run Tests
         run: |
           pytest -v tests/
-

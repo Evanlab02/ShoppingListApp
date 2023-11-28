@@ -2,8 +2,15 @@
 
 from datetime import datetime
 
-from django.utils import timezone
+from ..constants import MONTH_MAPPING
 
-from .constants import MONTH_MAPPING
 
-__all__ = ["datetime", "MONTH_MAPPING", "timezone"]
+def get_months_for_year_until_current_month() -> list[str]:
+    """
+    Get the months for the current year until the current month.
+
+    Returns:
+        list[str]: The months for the current year until the current month.
+    """
+    current_month = datetime.now().month
+    return [MONTH_MAPPING[month] for month in range(1, current_month + 1)]

@@ -1,5 +1,8 @@
 """Contains all the shopping list app's routes for dashboard pages."""
 
+from django.http import HttpRequest
+from ninja import Router
+
 from authenticationapp.auth import ApiKey
 from shoppingitem.database import ItemRepository
 
@@ -9,7 +12,6 @@ from ..schemas.output import (
     DashboardHistorySchema,
     DashboardRecentSchema,
 )
-from ..types import HttpRequest, Router
 
 dashboard_router = Router(tags=["Dashboard Routes"], auth=ApiKey())
 
@@ -37,10 +39,8 @@ def get_current_shopping_list_dashboard_data(
     if shopping_list is None:
         return DashboardCurrentSchema()
 
-    total_items = LIST_REPOSITORY.get_number_of_items_on_shopping_list(shopping_list.id)
-    total_price = LIST_REPOSITORY.get_total_price_of_items_on_shopping_list(
-        shopping_list.id
-    )
+    total = LIST_REPOSITORY.get_number_of_items_on_shopping_list(shopping_list.id)
+    price = LIST_REPOSITORY.get_total_price_of_items_on_shopping_list(shopping_list.id)
     average_price = LIST_REPOSITORY.get_average_price_of_items_on_shopping_list(
         shopping_list.id
     )
@@ -49,8 +49,8 @@ def get_current_shopping_list_dashboard_data(
     )
 
     return DashboardCurrentSchema(
-        total=total_items,
-        total_price=total_price,
+        total=total,
+        total_price=price,
         budget_remaining=budget_remaining,
         average_item_price=average_price,
     )

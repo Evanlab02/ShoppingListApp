@@ -1,6 +1,6 @@
 """Contains output sub-schemas for the shopping list app."""
 
-from shoppinglist.types import Schema
+from ninja import Schema
 
 
 class BarChartDataset(Schema):

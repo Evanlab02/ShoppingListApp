@@ -1,4 +1,4 @@
-"""Constants for the shoppinglist app."""
+"""Contains constants for the shopping list app."""
 
 MONTH_MAPPING = {
     1: "Jan",

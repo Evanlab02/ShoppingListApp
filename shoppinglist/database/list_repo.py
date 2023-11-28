@@ -1,10 +1,11 @@
 """Contains the shopping list repository."""
 
+from django.contrib.auth.models import User
+from django.utils import timezone
+
 from shoppingitem.models import ShoppingItem
 
-from ..helpers import timezone
 from ..models import ShoppingItemQuantity, ShoppingList
-from ..types import User
 
 
 class ShoppingListRepository:
