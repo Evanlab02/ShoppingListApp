@@ -293,3 +293,137 @@ class TestStoreRepo(TestCase):
                 store_type="1",
                 user=self.user,
             )
+
+    def test_edit_store(self):
+        """Test editing a store."""
+        store = ShoppingStore.objects.create(
+            name=TEST_STORE,
+            user=self.user,
+            description=TEST_DESCRIPTION,
+            store_type=1,
+        )
+        store.save()
+
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.user, self.user)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertEqual(store.store_type, 1)
+
+        self.repo.edit_store(
+            store_id=store.id,
+            name=ALT_TEST_STORE,
+            description=ALT_TEST_DESCRIPTION,
+            store_type=2,
+        )
+
+        store.refresh_from_db()
+
+        self.assertEqual(store.name, ALT_TEST_STORE)
+        self.assertEqual(store.user, self.user)
+        self.assertEqual(store.description, ALT_TEST_DESCRIPTION)
+        self.assertEqual(store.store_type, 2)
+
+    def test_edit_store_to_existing_name(self):
+        """Test editing a store to an existing name."""
+        store = ShoppingStore.objects.create(
+            name=TEST_STORE,
+            user=self.user,
+            description=TEST_DESCRIPTION,
+            store_type=1,
+        )
+        store.save()
+
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.user, self.user)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertEqual(store.store_type, 1)
+
+        secondary_store = ShoppingStore.objects.create(
+            name=ALT_TEST_STORE,
+            user=self.user,
+            description=ALT_TEST_DESCRIPTION,
+            store_type=2,
+        )
+        secondary_store.save()
+
+        self.assertEqual(secondary_store.name, ALT_TEST_STORE)
+        self.assertEqual(secondary_store.user, self.user)
+        self.assertEqual(secondary_store.description, ALT_TEST_DESCRIPTION)
+        self.assertEqual(secondary_store.store_type, 2)
+
+        with self.assertRaises(ValueError):
+            self.repo.edit_store(
+                store_id=store.id,
+                name=ALT_TEST_STORE,
+                description=ALT_TEST_DESCRIPTION,
+                store_type=2,
+            )
+
+    def test_edit_store_empty_name(self):
+        """Test editing a store with an empty name."""
+        store = ShoppingStore.objects.create(
+            name=TEST_STORE,
+            user=self.user,
+            description=TEST_DESCRIPTION,
+            store_type=1,
+        )
+        store.save()
+
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.user, self.user)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertEqual(store.store_type, 1)
+
+        with self.assertRaises(ValueError):
+            self.repo.edit_store(
+                store_id=store.id,
+                name="",
+                description=ALT_TEST_DESCRIPTION,
+                store_type=2,
+            )
+
+    def test_edit_store_string_store_type(self):
+        """Test editing a store with a string store type."""
+        store = ShoppingStore.objects.create(
+            name=TEST_STORE,
+            user=self.user,
+            description=TEST_DESCRIPTION,
+            store_type=1,
+        )
+        store.save()
+
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.user, self.user)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertEqual(store.store_type, 1)
+
+        with self.assertRaises(TypeError):
+            self.repo.edit_store(
+                store_id=store.id,
+                name=ALT_TEST_STORE,
+                description=ALT_TEST_DESCRIPTION,
+                store_type="2",
+            )
+
+    def test_edit_store_invalid_store_type(self):
+        """Test editing a store with an invalid store type."""
+        store = ShoppingStore.objects.create(
+            name=TEST_STORE,
+            user=self.user,
+            description=TEST_DESCRIPTION,
+            store_type=1,
+        )
+        store.save()
+
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.user, self.user)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertEqual(store.store_type, 1)
+
+        with self.assertRaises(ValueError):
+            self.repo.edit_store(
+                store_id=store.id,
+                name=ALT_TEST_STORE,
+                description=ALT_TEST_DESCRIPTION,
+                store_type=0,
+            )
