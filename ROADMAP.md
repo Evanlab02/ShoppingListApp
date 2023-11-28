@@ -28,7 +28,6 @@
 ### Shopping List App
 
 - [x] Shopping List App Refactor
-- [ ] Shopping List App integration tests
 
 ### New features
 
