@@ -36,11 +36,18 @@
 - [ ] Delete stores
 - [ ] Delete items
 - [ ] Change dashboard current endpoint to return total budget amount instead of average item price
-
-### V0.13.1
-
 - [x] Add to register endpoint to check for matching passwords
 - [ ] Create README documentation
+
+#### Edit stores
+
+- [x] Add edit store repository method
+- [ ] Add edit store service method
+- [ ] Add edit store endpoint
+- [ ] Update store overview page to have edit buttons
+- [ ] Create store edit page
+- [ ] Create store edit page endpoint
+
 
 ## V1.0.0
 

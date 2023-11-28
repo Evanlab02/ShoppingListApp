@@ -53,6 +53,9 @@ unit-test: test-migrations
 test-auth: test-migrations
 	pytest -v authenticationapp/tests/ --cov=authenticationapp/ --cov-report term-missing
 
+test-item: test-migrations
+	pytest -v shoppingitem/tests/ --cov=shoppingitem/ --cov-report term-missing
+
 static:
 	python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
 

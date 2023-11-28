@@ -121,3 +121,34 @@ class StoreRepository:
         )
         store.save()
         return store
+
+    def edit_store(
+        self, store_id: int, name: str, store_type: int, description: str
+    ) -> ShoppingStore:
+        """
+        Edit a store.
+
+        Args:
+            store_id (int): The id of the store to edit.
+            name (str): The name of the store to edit.
+            store_type (int): The type of store to edit.
+            description (str): The description of the store to edit.
+
+        Returns:
+            ShoppingStore: The edited store.
+        """
+        if self.does_store_exist(name):
+            raise ValueError(f"Store with name '{name}' already exists.")
+        elif name == "":
+            raise ValueError("Store name cannot be empty.")
+        elif not isinstance(store_type, int):
+            raise TypeError("Store type should be an integer.")
+        elif store_type not in [1, 2, 3]:
+            raise ValueError(f"Store type '{store_type}' is invalid.")
+
+        store = self.get_store_by_id(store_id)
+        store.name = name
+        store.store_type = store_type
+        store.description = description
+        store.save()
+        return store
