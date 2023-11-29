@@ -4,6 +4,7 @@ clean:
 	rm -rf .mypy_cache \
 	**/__pycache__ \
 	**/**/__pycache__ \
+	**/migrations/0*.py
 
 requirements:
 	pipenv requirements > requirements.txt

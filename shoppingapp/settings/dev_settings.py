@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [getenv("DEV_DJANGO_HOST", "localhost")]
 # Application definition
 
 INSTALLED_APPS = [
+    "authentication.apps.AuthenticationConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
