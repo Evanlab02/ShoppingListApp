@@ -34,6 +34,8 @@ All the values you specified as part of the setup can be changed in the `.env` f
 
 You can also change the secrets by changing the .txt files in the secrets folder.
 
+!IMPORTANT!: Please change the backend version to 0.12.0 in the .env file, this is due to a bug in the latest version of the backend.
+
 ## Running the app
 
 To run the app, run the following command(s):
