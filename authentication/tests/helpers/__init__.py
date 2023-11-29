@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from authentication.models import Client as UserClient
 
 
-def create_test_user():
+def create_test_user() -> User:
     """Create a test user."""
     user = User.objects.create_user(
         username="test",
@@ -16,7 +16,7 @@ def create_test_user():
     return user
 
 
-def create_test_user_client(user: User):
+def create_test_user_client(user: User) -> UserClient:
     """Create a test user client."""
     client = UserClient(user=user)
     client.save()
