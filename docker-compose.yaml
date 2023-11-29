@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  dev-shopping-app-db:
+    image: postgres:alpine3.18
+    expose:
+      - "5432"
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: ${DEV_DATABASE_USER}
+      POSTGRES_PASSWORD: ${DEV_DATABASE_PASSWORD}
+      POSTGRES_DB: ${DEV_DATABASE_NAME}
+    volumes:
+      - dev-shopping-app-db-data:/var/lib/postgresql/data
+    networks:
+      - dev-shopping-app-network
+    restart: always
+
+networks:
+  dev-shopping-app-network:
+    driver: bridge
+
+volumes:
+  dev-shopping-app-db-data:
+    external: false

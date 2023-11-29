@@ -1,4 +1,4 @@
-.PHONY: clean requirements format lint
+.PHONY: clean requirements format lint up down dev migrations
 
 clean:
 	rm -rf .mypy_cache \
@@ -19,3 +19,16 @@ lint:
 	flake8 . --max-line-length=100
 	mypy .
 	pydocstyle .
+
+up:
+	docker compose up -d
+
+down:
+	docker compose down
+
+dev:
+	pipenv run python manage.py runserver localhost:7001
+
+migrations:
+	python manage.py makemigrations
+	python manage.py migrate

@@ -24,3 +24,5 @@ sqlparse==0.4.4; python_version >= '3.5'
 types-pytz==2023.3.1.1
 types-pyyaml==6.0.12.12
 typing-extensions==4.8.0; python_version >= '3.8'
+psycopg[binary]==3.1.13; python_version >= '3.7'
+psycopg-binary==3.1.13
