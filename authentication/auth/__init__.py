@@ -1,0 +1,1 @@
+"""Contains authentication app modules."""
