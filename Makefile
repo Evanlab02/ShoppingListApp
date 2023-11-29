@@ -27,7 +27,7 @@ down:
 	docker compose down
 
 dev:
-	pipenv run python manage.py runserver localhost:7001
+	python manage.py runserver 0.0.0.0:7001
 
 migrations:
 	python manage.py makemigrations
