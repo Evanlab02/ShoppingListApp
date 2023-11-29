@@ -4,7 +4,9 @@ clean:
 	rm -rf .mypy_cache \
 	**/__pycache__ \
 	**/**/__pycache__ \
-	**/migrations/0*.py
+	**/migrations/0*.py \
+	.coverage \
+	.pytest_cache
 
 requirements:
 	pipenv requirements > requirements.txt
@@ -20,6 +22,9 @@ lint:
 	flake8 . --max-line-length=100
 	mypy .
 	pydocstyle .
+
+test: migrations
+	pytest -v --cov=. --cov-report term-missing --ignore=tests/
 
 up:
 	docker compose up -d
