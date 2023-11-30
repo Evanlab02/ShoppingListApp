@@ -19,17 +19,20 @@ class TestClient(TestCase):
 
     def test_client(self) -> None:
         """Test the Client model."""
-        assert self.user_client.user == self.user
-        assert self.user_client.token == ""
-        assert self.user_client.token_expiration is None
+        self.assertEqual(self.user_client.user, self.user)
+        self.assertEqual(self.user_client.token, "")
+        self.assertIsNone(self.user_client.token_expiration)
 
     def test_client_str(self) -> None:
         """Test the client __str__ method."""
-        assert str(self.user_client) == f"{self.user.username} ({self.user.email})"
+        self.assertEqual(
+            str(self.user_client), f"{self.user.username} ({self.user.email})"
+        )
 
-    def test_client_generate_token(self) -> None:
+    async def test_client_generate_token(self) -> None:
         """Test the client generate_token method."""
-        self.user_client.generate_token()
-        assert self.user_client.token != ""
-        assert self.user_client.token_expiration is not None
-        assert self.user_client.token_expiration > timezone.now()
+        await self.user_client.generate_token()
+        self.assertNotEqual(self.user_client.token, "")
+        self.assertIsNotNone(self.user_client.token_expiration)
+        if self.user_client.token_expiration:
+            self.assertGreater(self.user_client.token_expiration, timezone.now())

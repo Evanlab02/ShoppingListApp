@@ -30,9 +30,9 @@ class Client(Model):
         """Return the string representation of the client."""
         return f"{self.user.username} ({self.user.email})"
 
-    def generate_token(self) -> None:
+    async def generate_token(self) -> None:
         """Generate a token for the client."""
         if self.token_expiration is None or self.token_expiration < timezone.now():
             self.token = uuid4().hex
             self.token_expiration = timezone.now() + timedelta(days=1)
-            self.save()
+            await self.asave()

@@ -29,19 +29,19 @@ class TestUserRepository(TestCase):
 
         user = await create_user(username, password, first_name, last_name, email)
 
-        assert user.username == username
-        assert user.email == email
-        assert user.first_name == first_name
-        assert user.last_name == last_name
+        self.assertEqual(user.username, username)
+        self.assertEqual(user.email, email)
+        self.assertEqual(user.first_name, first_name)
+        self.assertEqual(user.last_name, last_name)
 
     def test_user_is_authenticated(self) -> None:
         """Test the is_user_authenticated method."""
         self.client.force_login(self.user)
         is_authenticated = is_user_authenticated(self.user)
-        assert is_authenticated is True
+        self.assertTrue(is_authenticated)
 
     def test_user_is_not_authenticated(self) -> None:
         """Test the is_user_authenticated method."""
         user = AnonymousUser()
         is_authenticated = is_user_authenticated(user)
-        assert is_authenticated is False
+        self.assertFalse(is_authenticated)
