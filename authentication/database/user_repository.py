@@ -36,16 +36,29 @@ async def create_user(
     return user
 
 
-async def does_username_exist(username: str) -> bool:
+async def does_email_exist(email: str) -> bool:
     """
-    Check if a user exists.
+    Check if a email exists.
 
     Args:
-        username (str): The username of the user.
         email (str): The email of the user.
 
     Returns:
-        bool: True if the user exists, False otherwise.
+        bool: True if the email exists, False otherwise.
+    """
+    email_exists = await User.objects.filter(email=email).aexists()
+    return email_exists
+
+
+async def does_username_exist(username: str) -> bool:
+    """
+    Check if a username exists.
+
+    Args:
+        username (str): The username of the user.
+
+    Returns:
+        bool: True if the username exists, False otherwise.
     """
     username_exists = await User.objects.filter(username=username).aexists()
     return username_exists

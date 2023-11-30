@@ -6,6 +6,7 @@ from django.test import Client, TestCase
 
 from authentication.database.user_repository import (
     create_user,
+    does_email_exist,
     does_username_exist,
     is_user_authenticated,
 )
@@ -59,3 +60,13 @@ class TestUserRepository(TestCase):
         """Test the does_username_exist method."""
         username_exists = await does_username_exist("thisshouldnotexist")
         self.assertFalse(username_exists)
+
+    async def test_email_exists(self) -> None:
+        """Test the does_email_exist method."""
+        email_exists = await does_email_exist(self.user.email)
+        self.assertTrue(email_exists)
+
+    async def test_email_does_not_exist(self) -> None:
+        """Test the does_email_exist method."""
+        email_exists = await does_email_exist("thisshouldnotexist@gmail.com")
+        self.assertFalse(email_exists)
