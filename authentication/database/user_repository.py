@@ -1,4 +1,4 @@
-"""Contains the user repository methods."""
+"""Contains the user repository functions."""
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
