@@ -1,27 +1,17 @@
-"""Contains the UserRepository class."""
+"""Contains the user repository methods."""
 
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 
-class UserRepository:
+def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool:
     """
-    The user repository to interact with User objects.
+    Check if the user is authenticated.
 
-    Methods:
-        is_user_authenticated(user): Check if the user is authenticated.
+    Args:
+        user (AbstractBaseUser | AnonymousUser | User): The user to check.
+
+    Returns:
+        bool: True if the user is authenticated, False otherwise.
     """
-
-    def is_user_authenticated(
-        self, user: AbstractBaseUser | AnonymousUser | User
-    ) -> bool:
-        """
-        Check if the user is authenticated.
-
-        Args:
-            user (AbstractBaseUser | AnonymousUser | User): The user to check.
-
-        Returns:
-            bool: True if the user is authenticated, False otherwise.
-        """
-        authenticated = user.is_authenticated
-        return authenticated
+    authenticated = user.is_authenticated
+    return authenticated
