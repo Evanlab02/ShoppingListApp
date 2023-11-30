@@ -1,7 +1,7 @@
 .PHONY: clean requirements format lint up down dev migrations
 
 clean:
-	rm -rf .mypy_cache \
+	@rm -rf .mypy_cache \
 	**/__pycache__ \
 	**/**/__pycache__ \
 	**/migrations/0*.py \
@@ -24,7 +24,7 @@ lint: clean
 	pydocstyle .
 
 test: migrations
-	pytest -v --cov=. --cov-report term-missing --ignore=tests/
+	pytest --cov=. --cov-report term-missing --ignore=tests/
 
 up:
 	docker compose up -d
