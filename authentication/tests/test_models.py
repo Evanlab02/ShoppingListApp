@@ -36,3 +36,10 @@ class TestClient(TestCase):
         self.assertIsNotNone(self.user_client.token_expiration)
         if self.user_client.token_expiration:
             self.assertGreater(self.user_client.token_expiration, timezone.now())
+
+    async def test_client_get_token(self) -> None:
+        """Test the client get_token method."""
+        await self.user_client.generate_token()
+        token = await self.user_client.get_token()
+        await self.user_client.arefresh_from_db()
+        self.assertEqual(token, self.user_client.token)

@@ -8,7 +8,8 @@ from ..models import Client
 async def get_client_by_user(
     user: int | AbstractBaseUser | AnonymousUser | User,
 ) -> Client:
-    """Get the client associated with the given user.
+    """
+    Get the client associated with the given user.
 
     Args:
         user (int | AbstractBaseUser | AnonymousUser | User): The user.
@@ -24,7 +25,8 @@ async def get_client_by_user(
 
 
 async def generate_token(user: AbstractBaseUser | AnonymousUser | User) -> str:
-    """Generate a new token for the given user.
+    """
+    Generate a new token for the given user.
 
     Args:
         user_id (int): The user id.
@@ -43,5 +45,5 @@ async def generate_token(user: AbstractBaseUser | AnonymousUser | User) -> str:
         await client.asave()
         await client.generate_token()
 
-    token = client.token
+    token = await client.get_token()
     return token
