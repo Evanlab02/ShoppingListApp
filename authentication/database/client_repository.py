@@ -34,7 +34,6 @@ async def generate_token(user: AbstractBaseUser | AnonymousUser | User) -> str:
     Returns:
         str: The token.
     """
-
     client = None
 
     try:
