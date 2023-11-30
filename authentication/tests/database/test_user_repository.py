@@ -4,7 +4,7 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import Client, TestCase
 
-from authentication.database.user_repository import is_user_authenticated
+from authentication.database.user_repository import create_user, is_user_authenticated
 
 from ..helpers import create_test_user
 
@@ -18,6 +18,35 @@ class TestUserRepository(TestCase):
         self.user = create_test_user()
         self.client = Client()
         return super().setUp()
+
+    def test_create_user(self) -> None:
+        """Test the create_user method."""
+        username = "testcreate"
+        password = "testcreate"
+        email = "test@gmail.com"
+        first_name = "test"
+        last_name = "create"
+
+        user = create_user(username, password, first_name, last_name, email)
+
+        assert user.username == username
+        assert user.email == email
+        assert user.first_name == first_name
+        assert user.last_name == last_name
+
+    def test_create_user_without_email(self) -> None:
+        """Test the create_user method without email"""
+        username = "testwithoutemail"
+        password = "testwithoutemail"
+        first_name = "test"
+        last_name = "withoutemail"
+
+        user = create_user(username, password, first_name, last_name)
+
+        assert user.username == username
+        assert user.email == ""
+        assert user.first_name == first_name
+        assert user.last_name == last_name
 
     def test_user_is_authenticated(self) -> None:
         """Test the is_user_authenticated method."""
