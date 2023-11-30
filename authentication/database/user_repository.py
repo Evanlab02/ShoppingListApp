@@ -5,12 +5,12 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
 
 
-def create_user(
+async def create_user(
     username: str,
     password: str,
     first_name: str,
     last_name: str,
-    email: str | None = None,
+    email: str,
 ) -> User:
     """
     Create a user.
@@ -18,14 +18,14 @@ def create_user(
     Returns:
         int: The user id.
     """
-    user = User.objects.create_user(
+    user = await User.objects.acreate(
         username=username,
         password=password,
         email=email,
         first_name=first_name,
         last_name=last_name,
     )
-    user.save()
+    await user.asave()
     return user
 
 

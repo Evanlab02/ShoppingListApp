@@ -19,7 +19,7 @@ class TestUserRepository(TestCase):
         self.client = Client()
         return super().setUp()
 
-    def test_create_user(self) -> None:
+    async def test_create_user(self) -> None:
         """Test the create_user method."""
         username = "testcreate"
         password = "testcreate"
@@ -27,24 +27,10 @@ class TestUserRepository(TestCase):
         first_name = "test"
         last_name = "create"
 
-        user = create_user(username, password, first_name, last_name, email)
+        user = await create_user(username, password, first_name, last_name, email)
 
         assert user.username == username
         assert user.email == email
-        assert user.first_name == first_name
-        assert user.last_name == last_name
-
-    def test_create_user_without_email(self) -> None:
-        """Test the create_user method without email"""
-        username = "testwithoutemail"
-        password = "testwithoutemail"
-        first_name = "test"
-        last_name = "withoutemail"
-
-        user = create_user(username, password, first_name, last_name)
-
-        assert user.username == username
-        assert user.email == ""
         assert user.first_name == first_name
         assert user.last_name == last_name
 
