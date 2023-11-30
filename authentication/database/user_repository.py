@@ -15,8 +15,15 @@ async def create_user(
     """
     Create a user.
 
+    Args:
+        username (str): The username of the user.
+        password (str): The password of the user.
+        first_name (str): The first name of the user.
+        last_name (str): The last name of the user.
+        email (str): The email of the user.
+
     Returns:
-        int: The user id.
+        User: The created user.
     """
     user = await User.objects.acreate(
         username=username,
@@ -27,6 +34,21 @@ async def create_user(
     )
     await user.asave()
     return user
+
+
+async def does_username_exist(username: str) -> bool:
+    """
+    Check if a user exists.
+
+    Args:
+        username (str): The username of the user.
+        email (str): The email of the user.
+
+    Returns:
+        bool: True if the user exists, False otherwise.
+    """
+    username_exists = await User.objects.filter(username=username).aexists()
+    return username_exists
 
 
 def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool:

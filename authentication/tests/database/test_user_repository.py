@@ -4,7 +4,11 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import Client, TestCase
 
-from authentication.database.user_repository import create_user, is_user_authenticated
+from authentication.database.user_repository import (
+    create_user,
+    does_username_exist,
+    is_user_authenticated,
+)
 
 from ..helpers import create_test_user
 
@@ -45,3 +49,13 @@ class TestUserRepository(TestCase):
         user = AnonymousUser()
         is_authenticated = is_user_authenticated(user)
         self.assertFalse(is_authenticated)
+
+    async def test_username_exists(self) -> None:
+        """Test the does_username_exist method."""
+        username_exists = await does_username_exist(self.user.username)
+        self.assertTrue(username_exists)
+
+    async def test_username_does_not_exist(self) -> None:
+        """Test the does_username_exist method."""
+        username_exists = await does_username_exist("thisshouldnotexist")
+        self.assertFalse(username_exists)
