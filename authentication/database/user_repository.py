@@ -1,6 +1,6 @@
 """Contains the user repository methods."""
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
 
@@ -43,23 +43,22 @@ def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool
     return authenticated
 
 
-def login_user(request: HttpRequest, username: str, password: str) -> bool:
+def login_user(request: HttpRequest, user: AbstractBaseUser) -> None:
     """
     Login a user.
 
     Args:
         request (HttpRequest): The request.
-        username (str): The username.
-        password (str): The password.
-
-    Returns:
-        bool: True if the user is authenticated, False otherwise.
+        user (AbstractBaseUser): The user to login.
     """
-    user = authenticate(request, username=username, password=password)
-
-    if user is not None:
-        return False
-
     login(request, user)
 
-    return True
+
+def logout_user(request: HttpRequest) -> None:
+    """
+    Logout a user.
+
+    Args:
+        request (HttpRequest): The request.
+    """
+    logout(request)
