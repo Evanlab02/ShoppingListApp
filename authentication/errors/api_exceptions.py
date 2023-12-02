@@ -49,3 +49,11 @@ class InvalidCredentials(Exception):
     def __init__(self) -> None:
         """Exception raised when a password or username is invalid."""
         super().__init__("Invalid Credentials.")
+
+
+class UserNotLoggedIn(Exception):
+    """Exception raised when a user is not logged in."""
+
+    def __init__(self) -> None:
+        """Exception raised when a user is not logged in."""
+        super().__init__("User is not logged in.")

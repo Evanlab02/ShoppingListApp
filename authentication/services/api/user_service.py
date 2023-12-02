@@ -10,6 +10,7 @@ from authentication.database.user_repository import (
     does_username_exist,
     is_user_authenticated,
     login_user,
+    logout_user,
 )
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
@@ -18,6 +19,7 @@ from authentication.errors.api_exceptions import (
     NonMatchingCredentials,
     UserAlreadyLoggedIn,
     UsernameAlreadyExists,
+    UserNotLoggedIn,
 )
 from authentication.schemas.input import NewUser
 from authentication.schemas.output import GeneralResponse
@@ -81,3 +83,20 @@ def login(request: HttpRequest, username: str, password: str) -> GeneralResponse
 
     login_user(request, user)
     return GeneralResponse(message="User successfully logged in.", detail="")
+
+
+def logout(request: HttpRequest) -> GeneralResponse:
+    """
+    Logout a user.
+
+    Args:
+        request (HttpRequest): The request.
+
+    Returns:
+        GeneralResponse: The general response.
+    """
+    if not is_user_authenticated(request.user):
+        raise UserNotLoggedIn()
+
+    logout_user(request)
+    return GeneralResponse(message="User successfully logged out.", detail="")
