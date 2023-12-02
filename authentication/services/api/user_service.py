@@ -1,15 +1,19 @@
 """Contains the api user service functions."""
 
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+from django.http import HttpRequest
 
 from authentication.database.user_repository import (
     create_user,
     does_email_exist,
     does_username_exist,
     is_user_authenticated,
+    login_user,
 )
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
+    InvalidCredentials,
     InvalidUserDetails,
     NonMatchingCredentials,
     UserAlreadyLoggedIn,
@@ -54,3 +58,26 @@ async def register_user(
     await create_user(username, password, first_name, last_name, email)
 
     return GeneralResponse(message="User successfully registered.", detail="")
+
+
+def login(request: HttpRequest, username: str, password: str) -> GeneralResponse:
+    """
+    Login a user.
+
+    Args:
+        request (HttpRequest): The request.
+        username (str): The username of the user.
+        password (str): The password of the user.
+
+    Returns:
+        GeneralResponse: The general response.
+    """
+    if is_user_authenticated(request.user):
+        raise UserAlreadyLoggedIn()
+
+    user = authenticate(request=request, username=username, password=password)
+    if user is None:
+        raise InvalidCredentials()
+
+    login_user(request, user)
+    return GeneralResponse(message="User successfully logged in.", detail="")

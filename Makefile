@@ -27,7 +27,7 @@ test: migrations
 	pytest --cov=. --cov-report term-missing --ignore=tests/
 
 up:
-	docker compose up -d
+	docker compose up -d --build
 
 down:
 	docker compose down

@@ -41,3 +41,11 @@ class NonMatchingCredentials(Exception):
     def __init__(self) -> None:
         """Exception raised when a password and password confirmation do not match."""
         super().__init__("Password and password confirmation do not match.")
+
+
+class InvalidCredentials(Exception):
+    """Exception raised when a password or username is invalid."""
+
+    def __init__(self) -> None:
+        """Exception raised when a password or username is invalid."""
+        super().__init__("Invalid Credentials.")
