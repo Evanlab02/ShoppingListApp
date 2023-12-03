@@ -40,7 +40,7 @@ api.add_router("/auth", auth_router)
 def email_already_exists_handler(
     request: HttpRequest, exception: EmailAlreadyExists
 ) -> HttpResponse:
-    """Handles EmailAlreadyExists exception."""
+    """Handle EmailAlreadyExists exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
@@ -48,7 +48,7 @@ def email_already_exists_handler(
 def invalid_credentials_handler(
     request: HttpRequest, exception: InvalidCredentials
 ) -> HttpResponse:
-    """Handles InvalidCredentials exception."""
+    """Handle InvalidCredentials exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
@@ -56,7 +56,7 @@ def invalid_credentials_handler(
 def invalid_user_details_handler(
     request: HttpRequest, exception: InvalidUserDetails
 ) -> HttpResponse:
-    """Handles InvalidUserDetails exception."""
+    """Handle InvalidUserDetails exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
@@ -64,7 +64,7 @@ def invalid_user_details_handler(
 def non_matching_credentials_handler(
     request: HttpRequest, exception: NonMatchingCredentials
 ) -> HttpResponse:
-    """Handles NonMatchingCredentials exception."""
+    """Handle NonMatchingCredentials exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
@@ -72,7 +72,7 @@ def non_matching_credentials_handler(
 def user_already_logged_in_handler(
     request: HttpRequest, exception: UserAlreadyLoggedIn
 ) -> HttpResponse:
-    """Handles UserAlreadyLoggedIn exception."""
+    """Handle UserAlreadyLoggedIn exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
@@ -80,7 +80,7 @@ def user_already_logged_in_handler(
 def username_already_exists_handler(
     request: HttpRequest, exception: UsernameAlreadyExists
 ) -> HttpResponse:
-    """Handles UsernameAlreadyExists exception."""
+    """Handle UsernameAlreadyExists exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
@@ -88,7 +88,7 @@ def username_already_exists_handler(
 def user_not_logged_in_handler(
     request: HttpRequest, exception: UserNotLoggedIn
 ) -> HttpResponse:
-    """Handles UserNotLoggedIn exception."""
+    """Handle UserNotLoggedIn exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 

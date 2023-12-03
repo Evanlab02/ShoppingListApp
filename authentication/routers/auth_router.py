@@ -1,4 +1,4 @@
-"""Contains authentication routes"""
+"""Contains authentication routes."""
 
 from django.http import HttpRequest
 from ninja import Router
@@ -13,7 +13,7 @@ auth_router = Router()
 @auth_router.post("/register", response={201: GeneralResponse})
 async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
     """
-    Registers a new user
+    Register a new user.
 
     Args:
         request (HttpRequest): The request object
