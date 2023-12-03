@@ -1,5 +1,6 @@
 """Contains the api user service functions."""
 
+from asgiref.sync import sync_to_async
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
@@ -38,7 +39,8 @@ async def register_user(
     Returns:
         GeneralResponse: The general response.
     """
-    if is_user_authenticated(user):
+    is_authenticated = await sync_to_async(is_user_authenticated)(user)
+    if is_authenticated:
         raise UserAlreadyLoggedIn()
 
     username = new_user.username

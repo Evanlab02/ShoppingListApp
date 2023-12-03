@@ -14,9 +14,84 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponse
 from django.urls import path
+from ninja import NinjaAPI
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-]
+from authentication.errors.api_exceptions import (
+    EmailAlreadyExists,
+    InvalidCredentials,
+    InvalidUserDetails,
+    NonMatchingCredentials,
+    UserAlreadyLoggedIn,
+    UsernameAlreadyExists,
+    UserNotLoggedIn,
+)
+from authentication.routers.auth_router import auth_router
+
+api = NinjaAPI()
+api.add_router("/auth", auth_router)
+
+
+@api.exception_handler(EmailAlreadyExists)
+def email_already_exists_handler(
+    request: HttpRequest, exception: EmailAlreadyExists
+) -> HttpResponse:
+    """Handles EmailAlreadyExists exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(InvalidCredentials)
+def invalid_credentials_handler(
+    request: HttpRequest, exception: InvalidCredentials
+) -> HttpResponse:
+    """Handles InvalidCredentials exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(InvalidUserDetails)
+def invalid_user_details_handler(
+    request: HttpRequest, exception: InvalidUserDetails
+) -> HttpResponse:
+    """Handles InvalidUserDetails exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(NonMatchingCredentials)
+def non_matching_credentials_handler(
+    request: HttpRequest, exception: NonMatchingCredentials
+) -> HttpResponse:
+    """Handles NonMatchingCredentials exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(UserAlreadyLoggedIn)
+def user_already_logged_in_handler(
+    request: HttpRequest, exception: UserAlreadyLoggedIn
+) -> HttpResponse:
+    """Handles UserAlreadyLoggedIn exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(UsernameAlreadyExists)
+def username_already_exists_handler(
+    request: HttpRequest, exception: UsernameAlreadyExists
+) -> HttpResponse:
+    """Handles UsernameAlreadyExists exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(UserNotLoggedIn)
+def user_not_logged_in_handler(
+    request: HttpRequest, exception: UserNotLoggedIn
+) -> HttpResponse:
+    """Handles UserNotLoggedIn exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+urlpatterns = [path("admin/", admin.site.urls), path("api/v1/", api.urls)] + static(
+    settings.STATIC_URL, document_root=settings.STATIC_ROOT
+)
