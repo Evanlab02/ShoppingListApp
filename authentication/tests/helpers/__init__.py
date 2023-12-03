@@ -2,8 +2,6 @@
 
 from django.contrib.auth.models import User
 
-from authentication.models import Client as UserClient
-
 
 def create_test_user() -> User:
     """Create a test user."""
@@ -14,10 +12,3 @@ def create_test_user() -> User:
     )
     user.save()
     return user
-
-
-def create_test_user_client(user: User) -> UserClient:
-    """Create a test user client."""
-    client = UserClient(user=user)
-    client.save()
-    return client
