@@ -11,6 +11,7 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 COPY shoppingapp /app/shoppingapp
+COPY authentication /app/authentication
 COPY manage.py /app/manage.py
 
 EXPOSE 8000

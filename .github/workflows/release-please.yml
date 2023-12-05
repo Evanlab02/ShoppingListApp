@@ -1,0 +1,47 @@
+on:
+  push:
+    branches:
+      - trunk
+
+permissions: write-all
+
+name: Release Please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: simple
+          package-name: ShoppingListApp-Backend
+          token: ${{ secrets.GITHUB_TOKEN }}
+          default-branch: trunk
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.releases_created }}
+      - name: Build Docker Image
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          docker build -t shoppinglistapp-backend:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
+          docker build -t shoppinglistapp-backend:latest .
+      - name: Log in to registry
+        if: ${{ steps.release.outputs.releases_created }}
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Push image
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          docker tag shoppinglistapp-backend:${{steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} ghcr.io/evanlab02/shoppingappbe:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+          docker push ghcr.io/evanlab02/shoppingappbe:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+          docker tag shoppinglistapp-backend:latest ghcr.io/evanlab02/shoppingappbe:latest
+          docker push ghcr.io/evanlab02/shoppingappbe:latest
+      - name: Zip App
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          zip -r backend.zip authentication shoppingapp items stores lists .dockerignore Dockerfile Pipfile Pipfile.lock manage.py env.template requirements.txt requirements-dev.txt CHANGELOG.md README.md docker-compose.yml
+      - name: Upload Artifact
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          gh release upload ${{ steps.release.outputs.tag_name }} backend.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
