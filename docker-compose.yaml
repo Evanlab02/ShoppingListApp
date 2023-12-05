@@ -20,7 +20,7 @@ services:
   dev-shopping-app-be:
     build: .
     environment:
-      DEFAULT_SETTINGS_MODULE: ${DEFAULT_SETTINGS_MODULE}
+      DEFAULT_SETTINGS_MODULE: shoppingapp.settings.dev_settings
       DEV_DATABASE_USER: ${DEV_DATABASE_USER}
       DEV_DATABASE_PASSWORD: ${DEV_DATABASE_PASSWORD}
       DEV_DATABASE_NAME: ${DEV_DATABASE_NAME}
