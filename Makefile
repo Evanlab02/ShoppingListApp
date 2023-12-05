@@ -20,8 +20,8 @@ lint: clean
 	black --check .
 	isort . --check-only --profile black
 	flake8 . --max-line-length=100
-	mypy . --strict
 	pydocstyle .
+	mypy . --strict
 
 test: migrations
 	pytest --cov=. --cov-report term-missing --ignore=tests/
