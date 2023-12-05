@@ -10,23 +10,6 @@ from authentication.services.api.user_service import login, logout, register_use
 auth_router = Router(tags=["Authentication"])
 
 
-@auth_router.post("/register", response={201: GeneralResponse})
-async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
-    """
-    Register a new user.
-
-    Args:
-        request (HttpRequest): The request object
-        new_user (NewUser): The new user data
-
-    Returns:
-        GeneralResponse: The response object
-    """
-    user = request.user
-    response = await register_user(user, new_user)
-    return response
-
-
 @auth_router.post("/login", response={200: GeneralResponse})
 def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResponse:
     """
@@ -55,4 +38,21 @@ def logout_user(request: HttpRequest) -> GeneralResponse:
         GeneralResponse: The response object
     """
     response = logout(request)
+    return response
+
+
+@auth_router.post("/register", response={201: GeneralResponse})
+async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
+    """
+    Register a new user.
+
+    Args:
+        request (HttpRequest): The request object
+        new_user (NewUser): The new user data
+
+    Returns:
+        GeneralResponse: The response object
+    """
+    user = request.user
+    response = await register_user(user, new_user)
     return response
