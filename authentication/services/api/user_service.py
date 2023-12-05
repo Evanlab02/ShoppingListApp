@@ -65,6 +65,20 @@ async def register_user(
     return GeneralResponse(message="User successfully registered.", detail="")
 
 
+def get_token(request: HttpRequest) -> GeneralResponse:
+    """
+    Get the CSRF token.
+
+    Args:
+        request (HttpRequest): The request.
+
+    Returns:
+        GeneralResponse: The general response.
+    """
+    token = get_csrf_token(request)
+    return GeneralResponse(message="Token successfully retrieved.", detail=token)
+
+
 def login(request: HttpRequest, username: str, password: str) -> GeneralResponse:
     """
     Login a user.
@@ -103,17 +117,3 @@ def logout(request: HttpRequest) -> GeneralResponse:
 
     logout_user(request)
     return GeneralResponse(message="User successfully logged out.", detail="")
-
-
-def get_token(request: HttpRequest) -> GeneralResponse:
-    """
-    Get the CSRF token.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        GeneralResponse: The general response.
-    """
-    token = get_csrf_token(request)
-    return GeneralResponse(message="Token successfully retrieved.", detail=token)
