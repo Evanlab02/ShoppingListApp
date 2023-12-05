@@ -1,4 +1,4 @@
-.PHONY: clean requirements format lint up down dev migrations
+.PHONY: clean requirements format lint up down dev migrations refresh e2e integration test
 
 clean:
 	@rm -rf .mypy_cache \
@@ -38,3 +38,20 @@ dev:
 migrations:
 	python manage.py makemigrations
 	python manage.py migrate
+
+refresh: down
+	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
+
+e2e: refresh
+	docker compose -f docker-compose.test.yaml up -d --build 
+	python manage.py makemigrations
+	python manage.py migrate
+	pytest -v tests/
+	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
+
+integration: refresh
+	docker compose -f docker-compose.test.yaml up -d --build 
+	python manage.py makemigrations
+	python manage.py migrate
+	pytest -v tests/
+	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
