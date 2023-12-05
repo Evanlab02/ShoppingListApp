@@ -37,6 +37,9 @@ def get_token(request: HttpRequest) -> GeneralResponse:
     Returns:
         GeneralResponse: The general response.
     """
+    if not is_user_authenticated(request.user):
+        raise UserNotLoggedIn()
+
     token = get_csrf_token(request)
     return GeneralResponse(message="Token successfully retrieved.", detail=token)
 
