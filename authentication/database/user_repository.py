@@ -65,20 +65,6 @@ async def does_username_exist(username: str) -> bool:
     return username_exists
 
 
-def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool:
-    """
-    Check if the user is authenticated.
-
-    Args:
-        user (AbstractBaseUser | AnonymousUser | User): The user to check.
-
-    Returns:
-        bool: True if the user is authenticated, False otherwise.
-    """
-    authenticated = user.is_authenticated
-    return authenticated
-
-
 def get_csrf_token(request: HttpRequest) -> str:
     """
     Get the CSRF token.
@@ -91,6 +77,20 @@ def get_csrf_token(request: HttpRequest) -> str:
     """
     csrf_token = get_token(request)
     return csrf_token
+
+
+def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool:
+    """
+    Check if the user is authenticated.
+
+    Args:
+        user (AbstractBaseUser | AnonymousUser | User): The user to check.
+
+    Returns:
+        bool: True if the user is authenticated, False otherwise.
+    """
+    authenticated = user.is_authenticated
+    return authenticated
 
 
 def login_user(request: HttpRequest, user: AbstractBaseUser | User) -> None:
