@@ -3,8 +3,9 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
+from authentication.views import DASHBOARD_ROUTE, LOGIN_ROUTE
+
 TEST_EMAIL = "user@test.com"
-DASHBOARD_ROUTE = "/shopping/dashboard/"
 
 
 class TestLoginView(TestCase):
@@ -30,13 +31,13 @@ class TestLoginView(TestCase):
 
     def test_get_login_page(self) -> None:
         """Test the login page."""
-        response = self.client.get("")
+        response = self.client.get(f"/{LOGIN_ROUTE}")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "auth/index.html")
 
     def test_get_login_page_when_already_logged_in(self) -> None:
         """Test the login page."""
         self.client.force_login(self.user)
-        response = self.client.get("")
+        response = self.client.get(f"/{LOGIN_ROUTE}")
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, DASHBOARD_ROUTE, 302, 404)
+        self.assertRedirects(response, f"/{DASHBOARD_ROUTE}", 302, 404)

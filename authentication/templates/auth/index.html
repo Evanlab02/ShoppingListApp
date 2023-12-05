@@ -10,7 +10,7 @@
         <p>{{ error }}</p>
     </div>
     {% endif %}
-    <form class="auth-bottom" method="post">
+    <form class="auth-bottom" method="post" action="{% url 'login_action' %}">
         {% csrf_token %}
         <fieldset>
             <div class="form-row">
