@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpRequest, HttpResponse
-from django.urls import path
+from django.urls import include, path
 from ninja import NinjaAPI
 
 from authentication.errors.api_exceptions import (
@@ -92,6 +92,8 @@ def user_not_logged_in_handler(
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
-urlpatterns = [path("admin/", admin.site.urls), path("api/v1/", api.urls)] + static(
-    settings.STATIC_URL, document_root=settings.STATIC_ROOT
-)
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/v1/", api.urls),
+    path("", include("authentication.urls")),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
