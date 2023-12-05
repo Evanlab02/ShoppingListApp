@@ -3,6 +3,7 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
+from django.middleware.csrf import get_token
 
 
 async def create_user(
@@ -76,6 +77,20 @@ def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool
     """
     authenticated = user.is_authenticated
     return authenticated
+
+
+def get_csrf_token(request: HttpRequest) -> str:
+    """
+    Get the CSRF token.
+
+    Args:
+        request (HttpRequest): The request.
+
+    Returns:
+        str: The CSRF token.
+    """
+    csrf_token = get_token(request)
+    return csrf_token
 
 
 def login_user(request: HttpRequest, user: AbstractBaseUser | User) -> None:
