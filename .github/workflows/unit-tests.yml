@@ -1,0 +1,53 @@
+name: Unit Tests and Sonarcloud
+
+on:
+  pull_request:
+    branches: [trunk]
+  push:
+    branches: [trunk]
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests-and-sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Load .env file
+        uses: aarcangeli/load-dotenv@v1.0.0
+        with:
+          path: ""
+          filenames: |
+            .env.template
+          quiet: false
+          if-file-not-found: error
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Start Develop DB
+        run: |
+          docker-compose up -d --build
+      - name: Setup
+        run: |
+          pip install -r requirements-dev.txt
+      - name: Create Migrations
+        run: |
+          python manage.py makemigrations
+      - name: Run Migrations
+        run: |
+          python manage.py migrate
+      - name: Run Tests
+        run: |
+          pytest -v --cov=. --cov-report term-missing --ignore=tests/
+      - name: Generate Coverage Report
+        run: |
+          coverage xml
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
