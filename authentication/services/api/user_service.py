@@ -27,44 +27,6 @@ from authentication.schemas.input import NewUser
 from authentication.schemas.output import GeneralResponse
 
 
-async def register_user(
-    user: AnonymousUser | AbstractBaseUser | User, new_user: NewUser
-) -> GeneralResponse:
-    """
-    Create a user.
-
-    Args:
-        request (HttpRequest): The request.
-        new_user (NewUser): The new user.
-
-    Returns:
-        GeneralResponse: The general response.
-    """
-    is_authenticated = await sync_to_async(is_user_authenticated)(user)
-    if is_authenticated:
-        raise UserAlreadyLoggedIn()
-
-    username = new_user.username
-    password = new_user.password
-    password_confirmation = new_user.password_confirmation
-    first_name = new_user.first_name
-    last_name = new_user.last_name
-    email = new_user.email
-
-    if not username or not email or not first_name or not last_name:
-        raise InvalidUserDetails()
-    elif await does_username_exist(username):
-        raise UsernameAlreadyExists()
-    elif await does_email_exist(email):
-        raise EmailAlreadyExists()
-    elif password != password_confirmation:
-        raise NonMatchingCredentials()
-
-    await create_user(username, password, first_name, last_name, email)
-
-    return GeneralResponse(message="User successfully registered.", detail="")
-
-
 def get_token(request: HttpRequest) -> GeneralResponse:
     """
     Get the CSRF token.
@@ -117,3 +79,41 @@ def logout(request: HttpRequest) -> GeneralResponse:
 
     logout_user(request)
     return GeneralResponse(message="User successfully logged out.", detail="")
+
+
+async def register_user(
+    user: AnonymousUser | AbstractBaseUser | User, new_user: NewUser
+) -> GeneralResponse:
+    """
+    Create a user.
+
+    Args:
+        request (HttpRequest): The request.
+        new_user (NewUser): The new user.
+
+    Returns:
+        GeneralResponse: The general response.
+    """
+    is_authenticated = await sync_to_async(is_user_authenticated)(user)
+    if is_authenticated:
+        raise UserAlreadyLoggedIn()
+
+    username = new_user.username
+    password = new_user.password
+    password_confirmation = new_user.password_confirmation
+    first_name = new_user.first_name
+    last_name = new_user.last_name
+    email = new_user.email
+
+    if not username or not email or not first_name or not last_name:
+        raise InvalidUserDetails()
+    elif await does_username_exist(username):
+        raise UsernameAlreadyExists()
+    elif await does_email_exist(email):
+        raise EmailAlreadyExists()
+    elif password != password_confirmation:
+        raise NonMatchingCredentials()
+
+    await create_user(username, password, first_name, last_name, email)
+
+    return GeneralResponse(message="User successfully registered.", detail="")
