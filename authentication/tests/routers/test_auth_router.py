@@ -5,8 +5,11 @@ from django.test import TestCase
 from django.test.client import Client
 
 REGISTER_ENDPOINT = "/api/v1/auth/register"
+LOGIN_ENDPOINT = "/api/v1/auth/login"
 CONTENT_TYPE = "application/json"
 SUCCESS_REGISTER_MESSAGE = "User successfully registered."
+SUCCESS_LOGIN_MESSAGE = "User successfully logged in."
+TEST_EMAIL = "test@login.com"
 
 
 class TestAuthentication(TestCase):
@@ -163,3 +166,109 @@ class TestAuthentication(TestCase):
             response.json(),
             {"detail": "Password and password confirmation do not match."},
         )
+
+    def test_login_valid_credentials(self) -> None:
+        """Test the login endpoint."""
+        client = Client()
+
+        response = client.post(
+            REGISTER_ENDPOINT,
+            {
+                "username": "test-login",
+                "email": TEST_EMAIL,
+                "password": "testpassword",
+                "password_confirmation": "testpassword",
+                "first_name": "test",
+                "last_name": "user",
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
+        )
+
+        response = client.post(
+            LOGIN_ENDPOINT,
+            {"username": "test-login", "password": "testpassword"},
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""}
+        )
+
+    def test_login_retry(self) -> None:
+        """Test the login endpoint."""
+        client = Client()
+
+        response = client.post(
+            REGISTER_ENDPOINT,
+            {
+                "username": "test-login",
+                "email": TEST_EMAIL,
+                "password": "testpassword",
+                "password_confirmation": "testpassword",
+                "first_name": "test",
+                "last_name": "user",
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
+        )
+
+        response = client.post(
+            LOGIN_ENDPOINT,
+            {"username": "test-login", "password": "testpassword"},
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""}
+        )
+
+        response = client.post(
+            LOGIN_ENDPOINT,
+            {"username": "test-login", "password": "testpassword"},
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "User is already logged in."})
+
+    def test_login_invalid_credentials(self) -> None:
+        """Test the login endpoint."""
+        client = Client()
+
+        response = client.post(
+            REGISTER_ENDPOINT,
+            {
+                "username": "test-login",
+                "email": TEST_EMAIL,
+                "password": "testpassword",
+                "password_confirmation": "testpassword",
+                "first_name": "test",
+                "last_name": "user",
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
+        )
+
+        response = client.post(
+            LOGIN_ENDPOINT,
+            {"username": "test-login", "password": "test"},
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "Invalid Credentials."})

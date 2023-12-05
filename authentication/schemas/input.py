@@ -12,3 +12,10 @@ class NewUser(Schema):
     first_name: str
     last_name: str
     email: str
+
+
+class UserCredentials(Schema):
+    """The schema for a user's details."""
+
+    username: str
+    password: str
