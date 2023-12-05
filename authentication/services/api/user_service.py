@@ -9,6 +9,7 @@ from authentication.database.user_repository import (
     create_user,
     does_email_exist,
     does_username_exist,
+    get_csrf_token,
     is_user_authenticated,
     login_user,
     logout_user,
@@ -102,3 +103,17 @@ def logout(request: HttpRequest) -> GeneralResponse:
 
     logout_user(request)
     return GeneralResponse(message="User successfully logged out.", detail="")
+
+
+def get_token(request: HttpRequest) -> GeneralResponse:
+    """
+    Get the CSRF token.
+
+    Args:
+        request (HttpRequest): The request.
+
+    Returns:
+        GeneralResponse: The general response.
+    """
+    token = get_csrf_token(request)
+    return GeneralResponse(message="Token successfully retrieved.", detail=token)
