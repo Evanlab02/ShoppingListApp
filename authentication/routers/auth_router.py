@@ -5,9 +5,9 @@ from ninja import Router
 
 from authentication.schemas.input import NewUser, UserCredentials
 from authentication.schemas.output import GeneralResponse
-from authentication.services.api.user_service import login, register_user
+from authentication.services.api.user_service import login, logout, register_user
 
-auth_router = Router()
+auth_router = Router(tags=["Authentication"])
 
 
 @auth_router.post("/register", response={201: GeneralResponse})
@@ -40,4 +40,19 @@ def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResp
         GeneralResponse: The response object
     """
     response = login(request, user_creds.username, user_creds.password)
+    return response
+
+
+@auth_router.post("/logout", response={200: GeneralResponse})
+def logout_user(request: HttpRequest) -> GeneralResponse:
+    """
+    Logout a user.
+
+    Args:
+        request (HttpRequest): The request object
+
+    Returns:
+        GeneralResponse: The response object
+    """
+    response = logout(request)
     return response

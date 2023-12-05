@@ -6,6 +6,7 @@ from django.test.client import Client
 
 REGISTER_ENDPOINT = "/api/v1/auth/register"
 LOGIN_ENDPOINT = "/api/v1/auth/login"
+LOGOUT_ENDPOINT = "/api/v1/auth/logout"
 CONTENT_TYPE = "application/json"
 SUCCESS_REGISTER_MESSAGE = "User successfully registered."
 SUCCESS_LOGIN_MESSAGE = "User successfully logged in."
@@ -272,3 +273,52 @@ class TestAuthentication(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"detail": "Invalid Credentials."})
+
+    def test_logout(self) -> None:
+        """Test the logout endpoint."""
+        client = Client()
+
+        response = client.post(
+            REGISTER_ENDPOINT,
+            {
+                "username": "test-login",
+                "email": TEST_EMAIL,
+                "password": "testpassword",
+                "password_confirmation": "testpassword",
+                "first_name": "test",
+                "last_name": "user",
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
+        )
+
+        response = client.post(
+            LOGIN_ENDPOINT,
+            {"username": "test-login", "password": "testpassword"},
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""}
+        )
+
+        response = client.post(LOGOUT_ENDPOINT)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"message": "User successfully logged out.", "detail": ""}
+        )
+
+    def test_logout_without_being_logged_in(self) -> None:
+        """Test the logout endpoint."""
+        client = Client()
+
+        response = client.post(LOGOUT_ENDPOINT)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "User is not logged in."})
