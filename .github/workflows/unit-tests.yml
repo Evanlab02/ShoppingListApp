@@ -40,9 +40,6 @@ jobs:
       - name: Run Migrations
         run: |
           python manage.py migrate
-      - name: Get Logs
-        run: |
-          docker logs shoppinglistapp-be-dev-shopping-app-be-1
       - name: Run Tests
         run: |
           pytest -v --cov=. --cov-report term-missing --ignore=tests/
