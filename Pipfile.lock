@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2e52ee4b8ae1beb54e01911b549b90d848e1a2e57b45a03e87fc1ca39fce1763"
+            "sha256": "ee2ee1e17c01fea959c08bababcaad2ee31a7bb43c2fa1bccb58dccb938a4cf3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -44,12 +44,12 @@
         },
         "django-ninja": {
             "hashes": [
-                "sha256:5aabd453323ffa59695cc5acce452e93c08d8fb6f6f3cac457a7118a64aba329",
-                "sha256:88d85f7807042dcef712bc058d56b031445ea906dd804f86457f6bdd7873b0cd"
+                "sha256:6330c3497061d9fd1f43c1200f85c13aab7687110e2899f8304e5aa476c10b44",
+                "sha256:87bff046416a2653ed2fbef1408e101292bf8170684821bac82accfd73bef059"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.1"
+            "version": "==1.1.0"
         },
         "psycopg": {
             "extras": [
@@ -496,11 +496,11 @@
         },
         "django-stubs-ext": {
             "hashes": [
-                "sha256:8c4d1fb5f68419b3b2474c659681a189803e27d6a5e5abf5aa0da57601b58633",
-                "sha256:921cd7ae4614e74c234bc0fe86ee75537d163addfe1fc6f134bf03e29d86c01e"
+                "sha256:45a5d102417a412e3606e3c358adb4744988a92b7b58ccf3fd64bddd5d04d14c",
+                "sha256:519342ac0849cda1559746c9a563f03ff99f636b0ebe7c14b75e816a00dfddc3"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==4.2.5"
+            "version": "==4.2.7"
         },
         "flake8": {
             "hashes": [
