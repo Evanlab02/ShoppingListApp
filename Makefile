@@ -35,6 +35,9 @@ down:
 dev:
 	python manage.py runserver 0.0.0.0:7001
 
+run:
+	python -m uvicorn shoppingapp.config.asgi:application --host 0.0.0.0 --port 8000
+
 migrations:
 	python manage.py makemigrations
 	python manage.py migrate

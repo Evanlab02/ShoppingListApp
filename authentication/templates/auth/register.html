@@ -10,7 +10,7 @@
         <p class="error-message" id="error-text">{{ error }}</p>
     </div>
     {% endif %}
-    <form class="auth-bottom" method="post">
+    <form class="auth-bottom" method="post" action="{% url 'register_action' %}">
         {% csrf_token %}
         <fieldset>
             <div class="form-row">

@@ -16,4 +16,4 @@ COPY manage.py /app/manage.py
 
 EXPOSE 8000
 
-CMD ["python", "-m", "uvicorn", "shoppingapp.configs.asgi:application", "--host", "0.0.0.0"]
+CMD ["python", "-m", "uvicorn", "shoppingapp.config.asgi:application", "--host", "0.0.0.0"]

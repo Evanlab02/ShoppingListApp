@@ -1,6 +1,5 @@
 """Contains view user service functions."""
 
-import logging
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth import authenticate
@@ -116,8 +115,6 @@ async def register_user(request: HttpRequest) -> None:
     Args:
         request (HttpRequest): The request object.
     """
-    logging.info("Attempting to register user.")
-
     user = request.user
     is_authenticated = await sync_to_async(is_user_authenticated)(user)
     if is_authenticated:
