@@ -17,15 +17,15 @@
                 <legend>Login Details</legend>
             </div>
             <div class="form-row">
-                <label for="username-input">Username:</label>
-                <input class="text-input" type="text" name="username-input" id="username-input">
+                <label for="{{ username_input }}">Username:</label>
+                <input class="text-input" type="text" name="{{ username_input }}" id="{{ username_input }}">
             </div>
             <div class="form-row">
-                <label for="password-input">Password:</label>
-                <input class="text-input" type="password" name="password-input" id="password-input">
+                <label for="{{ password_input }}">Password:</label>
+                <input class="text-input" type="password" name="{{ password_input }}" id="{{ password_input }}">
             </div>
             <div class="form-row submit-row">
-                <input class="submit-input" type="submit" value="Login" id="submit-login">
+                <input class="submit-input" type="submit" value="Login" id="{{ submit_login }}">
             </div>
             <div class="form-row submit-row">
                 <input class="submit-input" type="button" value="Register" onclick="window.location.href='/register'">

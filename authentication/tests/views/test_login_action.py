@@ -3,9 +3,12 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
+from authentication.constants import INPUT_MAPPING
 from authentication.views import DASHBOARD_ROUTE, LOGIN_ACTION_ROUTE, LOGIN_ROUTE
 
 TEST_EMAIL = "user@test.com"
+USERNAME_INPUT = INPUT_MAPPING.get("username-input", "username-input")
+PASSWORD_INPUT = INPUT_MAPPING.get("password-input", "password-input")
 
 
 class TestLoginView(TestCase):
@@ -33,7 +36,7 @@ class TestLoginView(TestCase):
         """Test the login action endpoint redirects when the user logs in."""
         response = self.client.post(
             f"/{LOGIN_ACTION_ROUTE}",
-            {"username-input": "testuser", "password-input": "testpassword"},
+            {USERNAME_INPUT: "testuser", PASSWORD_INPUT: "testpassword"},
         )
         self.assertRedirects(
             response, f"/{DASHBOARD_ROUTE}", 302, 404, fetch_redirect_response=False
@@ -44,7 +47,7 @@ class TestLoginView(TestCase):
         self.client.force_login(self.user)
         response = self.client.post(
             f"/{LOGIN_ACTION_ROUTE}",
-            {"username-input": "testuser", "password-input": "testpassword"},
+            {USERNAME_INPUT: "testuser", PASSWORD_INPUT: "testpassword"},
         )
         self.assertRedirects(
             response, f"/{DASHBOARD_ROUTE}", 302, 404, fetch_redirect_response=False
@@ -54,7 +57,7 @@ class TestLoginView(TestCase):
         """Test the login action endpoint redirects when the user logs in."""
         response = self.client.post(
             f"/{LOGIN_ACTION_ROUTE}",
-            {"username-input": "testuser", "password-input": "invalidpassword"},
+            {USERNAME_INPUT: "testuser", PASSWORD_INPUT: "invalidpassword"},
         )
         self.assertRedirects(
             response,
