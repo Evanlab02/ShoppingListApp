@@ -5,11 +5,16 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from authentication.errors.api_exceptions import InvalidCredentials, UserAlreadyLoggedIn
-from authentication.services.views.user_service import get_login_view_context, login
+from authentication.services.views.user_service import (
+    get_login_view_context,
+    get_register_page_context,
+    login,
+)
 
 DASHBOARD_ROUTE = "shopping/dashboard/"
 LOGIN_ROUTE = ""
 LOGIN_ACTION_ROUTE = "action/login"
+REGISTER_ROUTE = "register"
 
 
 @require_http_methods(["GET"])
@@ -48,3 +53,21 @@ def login_action(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
     except InvalidCredentials as error:
         return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
+
+
+@require_http_methods(["GET"])
+def register_view(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the register view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    try:
+        context = get_register_page_context(request)
+        return render(request, "auth/register.html", context.model_dump())
+    except UserAlreadyLoggedIn:
+        return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
