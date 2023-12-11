@@ -1,0 +1,51 @@
+{% extends "auth/base.html" %}
+
+{% block content %}
+<div class="auth-block">
+    <div class="auth-top">
+        <h2 id="auth-heading">Shopping App Register</h2>
+    </div>
+    {% if error %}
+    <div class="auth-middle">
+        <p class="error-message" id="error-text">{{ error }}</p>
+    </div>
+    {% endif %}
+    <form class="auth-bottom" method="post" action="{% url 'register_action' %}">
+        {% csrf_token %}
+        <fieldset>
+            <div class="form-row">
+                <legend>User Details</legend>
+            </div>
+            <div class="form-row">
+                <label for="{{ username_input }}">Username:</label>
+                <input class="text-input" type="text" name="{{ username_input }}" id="{{ username_input }}" required>
+            </div>
+            <div class="form-row">
+                <label for="{{ password_input }}">Password:</label>
+                <input class="text-input" type="password" name="{{ password_input }}" id="{{ password_input }}"
+                    required>
+            </div>
+            <div class="form-row">
+                <label for="{{ password_confirm_input }}">Confirm Password:</label>
+                <input class="text-input" type="password" name="{{ password_confirm_input }}"
+                    id="{{ password_confirm_input }}" required>
+            </div>
+            <div class="form-row">
+                <label for="{{ email_input }}">Email:</label>
+                <input class="text-input" type="email" name="{{ email_input }}" id="{{ email_input }}">
+            </div>
+            <div class="form-row">
+                <label for="{{ first_name_input }}">First Name:</label>
+                <input class="text-input" type="text" name="{{ first_name_input }}" id="{{ first_name_input }}">
+            </div>
+            <div class="form-row">
+                <label for="{{ last_name_input }}">Last Name:</label>
+                <input class="text-input" type="text" name="{{ last_name_input }}" id="{{ last_name_input }}">
+            </div>
+            <div class="form-row submit-row">
+                <input class="submit-input" type="submit" value="Create Account" id="{{ submit_register }}">
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

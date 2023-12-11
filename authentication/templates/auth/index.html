@@ -1,0 +1,36 @@
+{% extends "auth/base.html" %}
+
+{% block content %}
+<div class="auth-block">
+    <div class="auth-top">
+        <h2 id="auth-heading">Shopping App Login</h2>
+    </div>
+    {% if error %}
+    <div class="auth-middle">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    <form class="auth-bottom" method="post" action="{% url 'login_action' %}">
+        {% csrf_token %}
+        <fieldset>
+            <div class="form-row">
+                <legend>Login Details</legend>
+            </div>
+            <div class="form-row">
+                <label for="{{ username_input }}">Username:</label>
+                <input class="text-input" type="text" name="{{ username_input }}" id="{{ username_input }}">
+            </div>
+            <div class="form-row">
+                <label for="{{ password_input }}">Password:</label>
+                <input class="text-input" type="password" name="{{ password_input }}" id="{{ password_input }}">
+            </div>
+            <div class="form-row submit-row">
+                <input class="submit-input" type="submit" value="Login" id="{{ submit_login }}">
+            </div>
+            <div class="form-row submit-row">
+                <input class="submit-input" type="button" value="Register" onclick="window.location.href='/register'">
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

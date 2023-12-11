@@ -13,7 +13,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Load .env file
@@ -31,10 +31,10 @@ jobs:
       - run: |
           echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
           ${{ steps.setup-chrome.outputs.chrome-path }} --version
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Start Develop DB
         run: |
           docker compose -f docker-compose.test.yaml up -d --build
@@ -43,10 +43,13 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Create Migrations
         run: |
-          python manage.py makemigrations --settings=shoppingapp.settings.test_settings
+          python manage.py makemigrations
       - name: Run Migrations
         run: |
-          python manage.py migrate --settings=shoppingapp.settings.test_settings
+          python manage.py migrate
+      - name: Get Logs
+        run: |
+          docker logs shoppinglistapp-be-dev-shopping-app-be-1
       - name: Run Tests
         run: |
           pytest -v tests/

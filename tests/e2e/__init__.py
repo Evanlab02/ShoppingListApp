@@ -1,1 +1,1 @@
-"""Contains end-to-end tests for the Shopping List App."""
+"""Contains end-to-end tests for the application."""

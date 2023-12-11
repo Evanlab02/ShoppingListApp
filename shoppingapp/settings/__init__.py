@@ -1,1 +1,1 @@
-"""Contains the settings for the project."""
+"""Contains settings for the project."""

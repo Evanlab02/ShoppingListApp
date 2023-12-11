@@ -1,0 +1,27 @@
+{% extends "auth/base.html" %}
+
+{% block content %}
+<div class="auth-block">
+    <div class="auth-top">
+        <h2 id="auth-heading">Shopping App Logout</h2>
+    </div>
+    {% if error %}
+    <div class="auth-middle">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    <form class="auth-bottom" method="post" action="{% url 'logout_action' %}">
+        {% csrf_token %}
+        <fieldset>
+            <div class="form-row">
+                <legend>Confirm Logout</legend>
+            </div>
+            <div class="form-row submit-row">
+                <input class="submit-input" type="submit" value="Yes" id="{{ submit_logout }}">
+                <input class="submit-input" type="button" value="No" id="{{ submit_cancel }}"
+                    onclick="location.href='/shopping/dashboard/'">
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

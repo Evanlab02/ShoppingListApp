@@ -1,1 +1,1 @@
-"""Contains tests for the Shopping List App."""
+"""Contains e2e and integration tests for the project."""

@@ -38,7 +38,7 @@ jobs:
       - name: Zip App
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          zip -r backend.zip authenticationapp shoppingapp shoppingitem shoppinglist .dockerignore Dockerfile Pipfile Pipfile.lock manage.py application.properties
+          zip -r backend.zip authentication shoppingapp items stores lists .dockerignore Dockerfile Pipfile Pipfile.lock manage.py env.template requirements.txt requirements-dev.txt CHANGELOG.md README.md docker-compose.yml
       - name: Upload Artifact
         if: ${{ steps.release.outputs.releases_created }}
         run: |

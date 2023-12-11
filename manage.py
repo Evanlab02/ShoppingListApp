@@ -6,9 +6,11 @@ import sys
 from django.core.management import execute_from_command_line
 
 
-def main():
+def main() -> None:
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoppingapp.settings.settings")
+    DEFAULT_SETTINGS = "shoppingapp.settings.settings"
+    SETTINGS_MODULE = os.getenv("DEFAULT_SETTINGS_MODULE", DEFAULT_SETTINGS)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
     execute_from_command_line(sys.argv)
 
 

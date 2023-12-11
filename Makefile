@@ -1,22 +1,30 @@
-.PHONY: requirements build up down dev migrate createsuperuser migrations test-migrations format lint test static unit-test test-refresh
-
-IMAGE_NAME = shopping-list-be
-VERSION := $(shell cat version.txt)
+.PHONY: clean requirements format lint up down dev migrations refresh e2e integration test
 
 clean:
-	rm -rf static/
-	rm -rf .coverage coverage.xml .pytest_cache
-	rm -rf **/migrations/0*.py
-	rm -rf **/__pycache__/
-	rm -rf **/**/__pycache__/
-	rm -rf .mypy_cache/
+	@rm -rf .mypy_cache \
+	**/__pycache__ \
+	**/**/__pycache__ \
+	**/migrations/0*.py \
+	.coverage \
+	.pytest_cache
 
 requirements:
 	pipenv requirements > requirements.txt
 	pipenv requirements --dev > requirements-dev.txt
 
-build:
-	docker build -t $(IMAGE_NAME):$(VERSION) .
+format:
+	black .
+	isort . --profile black
+
+lint: clean
+	black --check .
+	isort . --check-only --profile black
+	flake8 . --max-line-length=100
+	pydocstyle .
+	mypy . --strict
+
+test: migrations
+	pytest --cov=. --cov-report term-missing --ignore=tests/
 
 up:
 	docker compose up -d --build
@@ -25,49 +33,28 @@ down:
 	docker compose down
 
 dev:
-	python manage.py runserver localhost:7000 --settings=shoppingapp.settings.local_settings
+	python manage.py runserver 0.0.0.0:7001
+
+run:
+	python -m uvicorn shoppingapp.config.asgi:application --host 0.0.0.0 --port 8000
 
 migrations:
-	python manage.py makemigrations --settings=shoppingapp.settings.local_settings
+	python manage.py makemigrations
+	python manage.py migrate
 
-test-migrations:
-	python manage.py makemigrations --settings=shoppingapp.settings.test_settings
-
-migrate: migrations
-	python manage.py migrate --settings=shoppingapp.settings.local_settings
-
-createsuperuser:
-	python manage.py createsuperuser --settings=shoppingapp.settings.local_settings
-
-format: clean
-	black .
-
-lint: clean
-	black --check .
-	flake8 . --max-line-length=100
-	pydocstyle .
-
-unit-test: test-migrations
-	pytest -v --cov=. --cov-report term-missing --ignore=tests/
-
-test-auth: test-migrations
-	pytest -v authenticationapp/tests/ --cov=authenticationapp/ --cov-report term-missing
-
-test-item: test-migrations
-	pytest -v shoppingitem/tests/ --cov=shoppingitem/ --cov-report term-missing
-
-static:
-	python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
-
-test-refresh:
+refresh: down
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
-test: test-refresh
+e2e: refresh
 	docker compose -f docker-compose.test.yaml up -d --build 
-	python manage.py makemigrations --settings=shoppingapp.settings.test_settings
-	python manage.py migrate --settings=shoppingapp.settings.test_settings
+	python manage.py makemigrations
+	python manage.py migrate
 	pytest -v tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
-type-check:
-	mypy --strict shoppingapp/
+integration: refresh
+	docker compose -f docker-compose.test.yaml up -d --build 
+	python manage.py makemigrations
+	python manage.py migrate
+	pytest -v tests/
+	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes

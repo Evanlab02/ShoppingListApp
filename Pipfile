@@ -4,25 +4,27 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "==4.2.4"
-uvicorn = "==0.23.2"
-django-ninja = "==0.22.2"
-psycopg = {extras = ["binary"], version = "==3.1.13"}
+django = "==5.0.0"
+psycopg = {extras = ["binary"], version = "==3.1.14"}
+django-ninja = "==1.1.0"
+uvicorn = "==0.24.0.post1"
 
 [dev-packages]
-python-dotenv = "==1.0.0"
-black = "==23.7.0"
+black = "==23.11.0"
+mypy = "==1.7.1"
 flake8 = "==6.1.0"
 pydocstyle = "==6.3.0"
-pytest = "==7.4.2"
-pytest-django = "==4.5.2"
+pytest = "==7.4.3"
+isort = "==5.13.0"
+django-stubs = "==4.2.7"
+pytest-django = "==4.7.0"
 pytest-cov = "==4.1.0"
-coverage = "==7.3.1"
+coverage = "==7.3.2"
+requests = "==2.31.0"
+types-requests = "==2.31.0.10"
 selenium = "==4.15.2"
 webdriver-manager = "==4.0.1"
-mypy = "==1.7.0"
-django-stubs = "==4.2.6"
-requests = "==2.31.0"
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
+python_full_version = "3.11.6"
