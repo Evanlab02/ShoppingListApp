@@ -10,4 +10,5 @@ urlpatterns = [
     path(views.REGISTER_ROUTE, views.register_view, name="register_page"),
     path(views.REGISTER_ACTION_ROUTE, views.register_action, name="register_action"),  # type: ignore # noqa E501
     path(views.LOGOUT_ROUTE, views.logout_view, name="logout_page"),
+    path(views.LOGOUT_ACTION_ROUTE, views.logout_action, name="logout_action"),
 ]

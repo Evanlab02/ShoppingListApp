@@ -18,11 +18,13 @@ from authentication.services.views.user_service import (
     get_logout_view_context,
     get_register_page_context,
     login,
+    logout,
     register_user,
 )
 
 DASHBOARD_ROUTE = "shopping/dashboard/"
 LOGOUT_ROUTE = "logout"
+LOGOUT_ACTION_ROUTE = "action/logout"
 LOGIN_ROUTE = ""
 LOGIN_ACTION_ROUTE = "action/login"
 REGISTER_ROUTE = "register"
@@ -65,6 +67,24 @@ def login_view(request: HttpRequest) -> HttpResponse:
         return render(request, "auth/index.html", context.model_dump())
     except UserAlreadyLoggedIn:
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
+
+
+@require_http_methods(["POST"])
+def logout_action(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the logout action.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    try:
+        logout(request)
+        return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
+    except UserNotLoggedIn as error:
+        return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
 
 
 @require_http_methods(["GET"])
