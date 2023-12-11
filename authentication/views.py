@@ -1,6 +1,5 @@
 """Contains views for the authentication app."""
 
-from asgiref.sync import async_to_sync
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
@@ -65,7 +64,6 @@ def login_view(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
 
 
-@async_to_sync
 @require_http_methods(["POST"])
 async def register_action(request: HttpRequest) -> HttpResponse:
     """
