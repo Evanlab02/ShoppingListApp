@@ -20,8 +20,9 @@ from authentication.errors.api_exceptions import (
     NonMatchingCredentials,
     UserAlreadyLoggedIn,
     UsernameAlreadyExists,
+    UserNotLoggedIn,
 )
-from authentication.schemas.contexts import LoginContext, RegisterContext
+from authentication.schemas.contexts import LoginContext, LogoutContext, RegisterContext
 
 
 def get_login_view_context(request: HttpRequest) -> LoginContext:
@@ -47,6 +48,28 @@ def get_login_view_context(request: HttpRequest) -> LoginContext:
         username_input=username_input,
         password_input=password_input,
         submit_login=submit_login,
+    )
+
+
+def get_logout_view_context(request: HttpRequest) -> LogoutContext:
+    """
+    Generate context for the logout view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        LogoutContext: The context for the logout view.
+    """
+    if not is_user_authenticated(request.user):
+        raise UserNotLoggedIn()
+
+    error = request.GET.get("error")
+    submit_logout = INPUT_MAPPING.get("submit-logout", "submit-logout")
+    submit_cancel = INPUT_MAPPING.get("submit-cancel", "submit-cancel")
+
+    return LogoutContext(
+        error=error, submit_logout=submit_logout, submit_cancel=submit_cancel
     )
 
 

@@ -9,4 +9,6 @@ INPUT_MAPPING = {
     "password-input": "password",
     "submit-login": "submit",
     "submit-register": "submit",
+    "submit-logout": "submit",
+    "submit-cancel": "cancel",
 }

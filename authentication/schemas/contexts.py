@@ -27,3 +27,10 @@ class RegisterContext(BaseContext):
     password_input: str = "password-input"
     password_confirm_input: str = "password-confirm-input"
     submit_register: str = "submit-register"
+
+
+class LogoutContext(BaseContext):
+    """Logout context schema."""
+
+    submit_logout: str = "submit-logout"
+    submit_cancel: str = "submit-cancel"
