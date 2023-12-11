@@ -12,6 +12,7 @@ from authentication.database.user_repository import (
     does_username_exist,
     is_user_authenticated,
     login_user,
+    logout_user,
 )
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
@@ -129,6 +130,19 @@ def login(request: HttpRequest) -> None:
         raise InvalidCredentials()
 
     login_user(request, user)
+
+
+def logout(request: HttpRequest) -> None:
+    """
+    Log out the user.
+
+    Args:
+        request (HttpRequest): The request object.
+    """
+    if not is_user_authenticated(request.user):
+        raise UserNotLoggedIn()
+
+    logout_user(request)
 
 
 async def register_user(request: HttpRequest) -> None:
