@@ -182,3 +182,31 @@ async def filter_stores(
         updated_after,
         user,
     )
+
+
+async def edit_store(
+    store_id: int,
+    store_name: str | None = None,
+    store_type: int | None = None,
+    store_description: str | None = None,
+) -> Store:
+    """
+    Edit a store.
+
+    Args:
+        store_id (int): The id of the store.
+
+    Returns:
+        ShoppingStore: The edited store.
+    """
+    store = await Store.objects.aget(id=store_id)
+
+    if store_name:
+        store.name = store_name
+    if store_type:
+        store.store_type = store_type
+    if store_description:
+        store.description = store_description
+
+    await store.asave()
+    return store
