@@ -27,3 +27,37 @@ class ShoppingStore(Model):
     def __str__(self) -> str:
         """Return a string representation of the shopping store."""
         return f"{self.name}"
+
+
+class ShoppingStorePagination:
+    """Pagination Class for ShoppingStore."""
+
+    stores: list[ShoppingStore]
+    total: int
+    page_number: int
+    total_pages: int
+    has_previous: bool
+    previous_page: int | None
+    has_next: bool
+    next_page: int | None
+
+    def __init__(
+        self,
+        stores: list[ShoppingStore],
+        total: int,
+        page_number: int,
+        total_pages: int,
+        has_previous: bool,
+        previous_page: int | None,
+        has_next: bool,
+        next_page: int | None,
+    ) -> None:
+        """Initialize the class."""
+        self.stores = stores
+        self.total = total
+        self.page_number = page_number
+        self.total_pages = total_pages
+        self.has_previous = has_previous
+        self.previous_page = previous_page
+        self.has_next = has_next
+        self.next_page = next_page
