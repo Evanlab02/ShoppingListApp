@@ -24,7 +24,7 @@ lint: clean
 	mypy . --strict
 
 test: migrations
-	pytest --cov=. --cov-report term-missing --ignore=tests/
+	pytest --ignore=tests/
 
 up:
 	docker compose up -d --build
@@ -60,4 +60,4 @@ integration: refresh
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
 test-stores: migrations
-	pytest -v stores/
+	pytest stores/
