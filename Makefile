@@ -58,3 +58,6 @@ integration: refresh
 	python manage.py migrate
 	pytest -v tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
+
+test-stores: migrations
+	pytest -v stores/
