@@ -31,6 +31,14 @@ def _filter(
         page_number (int): The page number.
         stores_per_page (int): The number of stores per page.
         name (str | None): The name of the store.
+        store_types (list[int] | None): The store types.
+        created_on (date | None): The date the store was created.
+        created_before (date | None): The date the store was created before.
+        created_after (date | None): The date the store was created after.
+        updated_on (date | None): The date the store was updated.
+        updated_before (date | None): The date the store was updated before.
+        updated_after (date | None): The date the store was updated after.
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
 
     Returns:
         ShoppingStorePagination: Store pagination object.
@@ -126,7 +134,7 @@ async def get_stores(
     Returns:
         ShoppingStorePagination: Store pagination object.
     """
-    return await filter_stores(page_number, stores_per_page)
+    return await _filter(page_number, stores_per_page)
 
 
 async def filter_stores(
@@ -149,6 +157,14 @@ async def filter_stores(
         page_number (int): The page number.
         stores_per_page (int): The number of stores per page.
         name (str | None): The name of the store.
+        store_types (list[int] | None): The store types.
+        created_on (date | None): The date the store was created.
+        created_before (date | None): The date the store was created before.
+        created_after (date | None): The date the store was created after.
+        updated_on (date | None): The date the store was updated.
+        updated_before (date | None): The date the store was updated before.
+        updated_after (date | None): The date the store was updated after.
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
 
     Returns:
         ShoppingStorePagination: Store pagination object.
