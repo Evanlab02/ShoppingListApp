@@ -20,6 +20,15 @@ class TestStoreRepoCreate(TestCase):
     @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
+        self.base_user = User.objects.create(
+            username="baseuser",
+            email="baseuser@gmail.com",
+            password="basepass",
+            first_name="Base",
+            last_name="User",
+        )
+        self.base_user.save()
+
         self.user = User.objects.create(
             username="testuser",
             email="testuser@gmail.com",
@@ -33,7 +42,7 @@ class TestStoreRepoCreate(TestCase):
             name="Base Test Store",
             store_type=3,
             description=TEST_DESCRIPTION,
-            user=self.user,
+            user=self.base_user,
         )
         self.base_store.save()
 
@@ -136,4 +145,9 @@ class TestStoreRepoCreate(TestCase):
             created_before=self.store.created_at.date() + timedelta(days=1),
             created_after=self.store.created_at.date() - timedelta(days=5),
         )
+        await self.base_check(paginated_data)
+
+    async def test_filter_stores_by_user(self) -> None:
+        """Test filter_stores by user."""
+        paginated_data = await filter_stores(user=self.user)
         await self.base_check(paginated_data)
