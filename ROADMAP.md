@@ -12,7 +12,15 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Add vscode settings
 - [x] Setup initial project
 - [x] Setup initial auth app
-- [ ] Setup User Repository
-- [ ] Setup User Service(s)
-- [ ] Setup Auth Routes
-- [ ] Setup Auth Views
+- [x] Setup User Repository
+- [x] Setup User Service(s)
+- [x] Setup Auth Routes
+- [x] Setup Auth Views
+
+### Store App
+
+- [x] Setup Store App
+- [ ] Setup Store Repository
+- [ ] Setup Store Service(s)
+- [ ] Setup Store Routes
+- [ ] Setup Store Views
