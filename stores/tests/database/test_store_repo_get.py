@@ -5,7 +5,7 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from stores.database.store_repo import get_stores
+from stores.database.store_repo import get_store, get_stores
 from stores.models import ShoppingStore, ShoppingStorePagination
 
 TEST_STORE = "Test User Store"
@@ -128,3 +128,15 @@ class TestStoreRepoCreate(TestCase):
         self.assertEqual(page_number, 2)
         self.assertIsInstance(stores, list)
         self.assertEqual(len(stores), 1)
+
+    async def test_get_store(self) -> None:
+        """Test get_store."""
+        store = await get_store(self.store.id)
+        self.assertEqual(store.name, self.store.name)
+        self.assertEqual(store.store_type, self.store.store_type)
+        self.assertEqual(store.description, self.store.description)
+
+    async def test_get_store_invalid_id(self) -> None:
+        """Test get_store with invalid id."""
+        with self.assertRaises(ShoppingStore.DoesNotExist):
+            await get_store(100)

@@ -203,6 +203,9 @@ async def edit_store(
 
     Returns:
         ShoppingStore: The edited store.
+
+    Raises:
+        Store.DoesNotExist: If the store does not exist.
     """
     store = await Store.objects.aget(id=store_id, user=user)
 
@@ -226,6 +229,26 @@ async def delete_store(
     Args:
         store_id (int): The id of the store.
         user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+
+    Raises:
+        Store.DoesNotExist: If the store does not exist.
     """
     store = await Store.objects.aget(id=store_id, user=user)
     await store.adelete()
+
+
+async def get_store(store_id: int) -> Store:
+    """
+    Get a store.
+
+    Args:
+        store_id (int): The id of the store.
+
+    Returns:
+        ShoppingStore: The store.
+
+    Raises:
+        Store.DoesNotExist: If the store does not exist.
+    """
+    store = await Store.objects.aget(id=store_id)
+    return store
