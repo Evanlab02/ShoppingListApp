@@ -9,7 +9,6 @@ from authentication.database.user_repository import (
     create_user,
     does_email_exist,
     does_username_exist,
-    get_csrf_token,
     is_user_authenticated,
     login_user,
     logout_user,
@@ -25,23 +24,6 @@ from authentication.errors.api_exceptions import (
 )
 from authentication.schemas.input import NewUser
 from authentication.schemas.output import GeneralResponse
-
-
-def get_token(request: HttpRequest) -> GeneralResponse:
-    """
-    Get the CSRF token.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        GeneralResponse: The general response.
-    """
-    if not is_user_authenticated(request.user):
-        raise UserNotLoggedIn()
-
-    token = get_csrf_token(request)
-    return GeneralResponse(message="Token successfully retrieved.", detail=token)
 
 
 def login(request: HttpRequest, username: str, password: str) -> GeneralResponse:

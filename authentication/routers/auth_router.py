@@ -5,12 +5,7 @@ from ninja import Router
 
 from authentication.schemas.input import NewUser, UserCredentials
 from authentication.schemas.output import GeneralResponse
-from authentication.services.api.user_service import (
-    get_token,
-    login,
-    logout,
-    register_user,
-)
+from authentication.services.api.user_service import login, logout, register_user
 
 auth_router = Router(tags=["Authentication"])
 
@@ -60,19 +55,4 @@ async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
     """
     user = request.user
     response = await register_user(user, new_user)
-    return response
-
-
-@auth_router.get("/token", response={200: GeneralResponse})
-def token(request: HttpRequest) -> GeneralResponse:
-    """
-    Get the CSRF token.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        GeneralResponse: The response object
-    """
-    response = get_token(request)
     return response

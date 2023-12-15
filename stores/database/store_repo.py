@@ -306,3 +306,16 @@ async def aggregate_stores(
     )
 
     return result
+
+
+async def does_name_exist(name: str) -> bool:
+    """
+    Check if a store name exists.
+
+    Args:
+        name (str): The name of the store.
+
+    Returns:
+        bool: True if the store name exists, False otherwise.
+    """
+    return await Store.objects.filter(name=name).aexists()
