@@ -62,6 +62,7 @@ async def create(
 
     Raises:
         InvalidStoreType: If the store type is invalid.
+        StoreAlreadyExists: If the store already exists.
     """
     name = new_store.name
     store_type_label = new_store.store_type

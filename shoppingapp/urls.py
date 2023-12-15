@@ -31,9 +31,12 @@ from authentication.errors.api_exceptions import (
     UserNotLoggedIn,
 )
 from authentication.routers.auth_router import auth_router
+from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
+from stores.routers.store_router import store_router
 
-api = NinjaAPI()
+api = NinjaAPI(csrf=True)
 api.add_router("/auth", auth_router)
+api.add_router("/stores", store_router)
 
 
 @api.exception_handler(EmailAlreadyExists)
@@ -89,6 +92,22 @@ def user_not_logged_in_handler(
     request: HttpRequest, exception: UserNotLoggedIn
 ) -> HttpResponse:
     """Handle UserNotLoggedIn exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(InvalidStoreType)
+def invalid_store_type_handler(
+    request: HttpRequest, exception: InvalidStoreType
+) -> HttpResponse:
+    """Handle InvalidStoreType exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(StoreAlreadyExists)
+def store_already_exists_handler(
+    request: HttpRequest, exception: StoreAlreadyExists
+) -> HttpResponse:
+    """Handle StoreAlreadyExists exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
