@@ -10,8 +10,12 @@
         <p>{{ error }}</p>
     </div>
     {% endif %}
-    <div class="auth-bottom" method="post" action="{% url 'login_action' %}">
-        {% csrf_token %}
+    <div class="auth-bottom">
+        <div class="form-row disclaimer">
+            <p>
+                Please store your token in a safe place. You will not be able to retrieve it again.
+            </p>
+        </div>
         <div class="form-row disclaimer">
             <p id="api-token">
                 {{ token }}

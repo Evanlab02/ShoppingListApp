@@ -10,8 +10,7 @@
         <p>{{ error }}</p>
     </div>
     {% endif %}
-    <div class="auth-bottom" method="post" action="{% url 'login_action' %}">
-        {% csrf_token %}
+    <div class="auth-bottom">
         <div class="form-row disclaimer">
             <p>
                 Are you sure you would like to create and register an API Client with your user. Please note that if
