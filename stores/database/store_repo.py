@@ -210,3 +210,13 @@ async def edit_store(
 
     await store.asave()
     return store
+
+
+async def delete_store(store_id: int) -> None:
+    """
+    Delete a store.
+
+    Args:
+        store_id (int): The id of the store.
+    """
+    await Store.objects.filter(id=store_id).adelete()
