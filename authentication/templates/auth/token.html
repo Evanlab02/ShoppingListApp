@@ -13,7 +13,7 @@
     <div class="auth-bottom" method="post" action="{% url 'login_action' %}">
         {% csrf_token %}
         <div class="form-row disclaimer">
-            <p>
+            <p id="api-token">
                 {{ token }}
             </p>
         </div>

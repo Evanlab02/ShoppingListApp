@@ -12,9 +12,14 @@ from authentication.errors.api_exceptions import ApiClientAlreadyRegistered
 class ApiClient(Model):
     """Model for an API client."""
 
+    name = CharField(max_length=255)
     user = ForeignKey(User, on_delete=CASCADE)
     is_active = BooleanField(default=False)
     client_secret = CharField(max_length=255)
+
+    def __str__(self) -> str:
+        """Return the string representation of the model."""
+        return f"ApiClient for {self.user.username}"
 
     @classmethod
     async def enable_client(cls, user: User | AbstractBaseUser | AnonymousUser) -> str:
@@ -33,7 +38,10 @@ class ApiClient(Model):
             raise ApiClientAlreadyRegistered()
 
         client = await cls.objects.acreate(
-            user=user, is_active=True, client_secret=make_password(client_secret)
+            name=f"{user.username}'s API Client",  # type: ignore
+            user=user,
+            is_active=True,
+            client_secret=make_password(client_secret),
         )
         await client.asave()
         return client_secret
