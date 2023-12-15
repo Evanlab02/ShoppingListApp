@@ -66,3 +66,42 @@ class TestStoreService(TestCase):
         await create(new_store, self.user)
         with self.assertRaises(StoreAlreadyExists):
             await create(new_store, self.user)
+
+    async def test_create_store_online_type_int(self) -> None:
+        """Test create store with online type as int."""
+        new_store = NewStore(
+            name=TEST_STORE,
+            store_type=1,
+            description=TEST_DESCRIPTION,
+        )
+        store = await create(new_store, self.user)
+        store_dict = store.model_dump()
+        self.assertEqual(store_dict.get("name"), TEST_STORE)
+        self.assertEqual(store_dict.get("store_type"), TEST_STORE_TYPE)
+        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
+
+    async def test_create_store_in_store_type_int(self) -> None:
+        """Test create store with in store type as int."""
+        new_store = NewStore(
+            name=TEST_STORE,
+            store_type=2,
+            description=TEST_DESCRIPTION,
+        )
+        store = await create(new_store, self.user)
+        store_dict = store.model_dump()
+        self.assertEqual(store_dict.get("name"), TEST_STORE)
+        self.assertEqual(store_dict.get("store_type"), "In-Store")
+        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
+
+    async def test_create_store_both_type_int(self) -> None:
+        """Test create store with both type as int."""
+        new_store = NewStore(
+            name=TEST_STORE,
+            store_type=3,
+            description=TEST_DESCRIPTION,
+        )
+        store = await create(new_store, self.user)
+        store_dict = store.model_dump()
+        self.assertEqual(store_dict.get("name"), TEST_STORE)
+        self.assertEqual(store_dict.get("store_type"), "Both")
+        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)

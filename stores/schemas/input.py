@@ -7,5 +7,5 @@ class NewStore(Schema):
     """New store schema for incoming data."""
 
     name: str
-    store_type: str
+    store_type: str | int
     description: str

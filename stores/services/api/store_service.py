@@ -65,14 +65,21 @@ async def create(
         StoreAlreadyExists: If the store already exists.
     """
     name = new_store.name
-    store_type_label = new_store.store_type
+    store_type = new_store.store_type
+    store_type_label = ""
     description = new_store.description
+
+    if isinstance(store_type, int):
+        store_type_label = _get_store_type_label(store_type)
+    elif isinstance(store_type, str):
+        store_type_label = store_type
 
     if await does_name_exist(name):
         raise StoreAlreadyExists(name)
 
     store_type_value = _get_store_type_value(store_type_label)
     store = await create_store(name, store_type_value, description, user)
+
     store_type_label = _get_store_type_label(store.store_type)
     store_schema = StoreSchema(
         name=store.name,

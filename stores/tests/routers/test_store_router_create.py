@@ -140,3 +140,60 @@ class TestStoreRouter(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["detail"], "Store type 'Invalid' is invalid.")
+
+    def test_create_store_online_int(self) -> None:
+        """Test creating a store."""
+        response = self.client.post(
+            CREATE_ENDPOINT,
+            {
+                "name": TEST_STORE,
+                "store_type": 1,
+                "description": TEST_DESCRIPTION,
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+        response_json = response.json()
+        self.assertEqual(response_json["name"], TEST_STORE)
+        self.assertEqual(response_json["store_type"], TEST_STORE_TYPE)
+        self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+
+    def test_create_store_in_store_type_int(self) -> None:
+        """Test creating a store with an in-store store type."""
+        response = self.client.post(
+            CREATE_ENDPOINT,
+            {
+                "name": TEST_STORE,
+                "store_type": 2,
+                "description": TEST_DESCRIPTION,
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+        response_json = response.json()
+        self.assertEqual(response_json["name"], TEST_STORE)
+        self.assertEqual(response_json["store_type"], "In-Store")
+        self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+
+    def test_create_store_both_store_type_int(self) -> None:
+        """Test creating a store with a both store type."""
+        response = self.client.post(
+            CREATE_ENDPOINT,
+            {
+                "name": TEST_STORE,
+                "store_type": 3,
+                "description": TEST_DESCRIPTION,
+            },
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+        response_json = response.json()
+        self.assertEqual(response_json["name"], TEST_STORE)
+        self.assertEqual(response_json["store_type"], "Both")
+        self.assertEqual(response_json["description"], TEST_DESCRIPTION)

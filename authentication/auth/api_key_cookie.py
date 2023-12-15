@@ -9,17 +9,19 @@ from ninja.security.apikey import APIKeyCookie
 
 
 class SessionAuth(APIKeyCookie):
-    "Reusing Django session authentication"
+    """Reusing Django session authentication."""
 
     param_name: str = settings.SESSION_COOKIE_NAME
 
     @sync_to_async
     def _is_authenticated(self, request: HttpRequest) -> bool:
+        """Check if the user is authenticated."""
         return request.user.is_authenticated
 
     async def authenticate(
         self, request: HttpRequest, key: Optional[str]
     ) -> Optional[Any]:
+        """Authenticate the user."""
         if await self._is_authenticated(request):
             return request.user
 
