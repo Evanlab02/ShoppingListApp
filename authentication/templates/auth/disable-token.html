@@ -1,0 +1,25 @@
+{% extends "auth/base.html" %}
+
+{% block content %}
+<div class="auth-block">
+    <div class="auth-top">
+        <h2 id="auth-heading">TOKEN</h2>
+    </div>
+    {% if error %}
+    <div class="auth-middle">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    <div class="auth-bottom" method="post" action="{% url 'login_action' %}">
+        {% csrf_token %}
+        <div class="form-row disclaimer">
+            {% if not error %}
+            <p>
+                You have successfully disabled your token. You will need to contact support to reset your account if
+                you wish to use it again.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 """Contains views for the authentication app."""
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
@@ -13,6 +14,7 @@ from authentication.errors.api_exceptions import (
     UsernameAlreadyExists,
     UserNotLoggedIn,
 )
+from authentication.services.views.client_service import disable_client, enable_client
 from authentication.services.views.user_service import (
     get_login_view_context,
     get_logout_view_context,
@@ -29,6 +31,9 @@ LOGIN_ROUTE = ""
 LOGIN_ACTION_ROUTE = "action/login"
 REGISTER_ROUTE = "register"
 REGISTER_ACTION_ROUTE = "action/register"
+CONFIRM_TOKEN_ROUTE = "token"
+ENABLE_CLIENT_ROUTE = "token/register"
+DISABLE_CLIENT_ROUTE = "token/disable"
 
 
 @require_http_methods(["POST"])
@@ -146,3 +151,50 @@ def register_view(request: HttpRequest) -> HttpResponse:
         return render(request, "auth/register.html", context.model_dump())
     except UserAlreadyLoggedIn:
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
+
+
+@require_http_methods(["GET"])
+@login_required(login_url=f"/{LOGIN_ROUTE}")
+def confirm_token(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the register view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    return render(request, "auth/confirm_token.html", {})
+
+
+@require_http_methods(["GET"])
+async def enable_api_client(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the register view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    user = request.user
+    context = await enable_client(user)
+    return render(request, "auth/token.html", context.model_dump())
+
+
+@require_http_methods(["GET"])
+async def disable_api_client(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the register view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    user = request.user
+    context = await disable_client(user)
+    return render(request, "auth/disable-token.html", context.model_dump())

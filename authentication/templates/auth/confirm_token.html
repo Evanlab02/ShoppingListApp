@@ -1,0 +1,31 @@
+{% extends "auth/base.html" %}
+
+{% block content %}
+<div class="auth-block">
+    <div class="auth-top">
+        <h2 id="auth-heading">Confirm Api Client Registration</h2>
+    </div>
+    {% if error %}
+    <div class="auth-middle">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    <div class="auth-bottom" method="post" action="{% url 'login_action' %}">
+        {% csrf_token %}
+        <div class="form-row disclaimer">
+            <p>
+                Are you sure you would like to create and register an API Client with your user. Please note that if
+                anyone gets hold of your token, they could potentially cause malicious damage.
+            </p>
+        </div>
+        <div class="form-row submit-row">
+            <button class="submit-input" onclick="window.location.href='/token/register'">Yes</button>
+            <button class="submit-input" onclick="window.location.href='/'">No</button>
+        </div>
+        <div class="form-row submit-row">
+            <button class="submit-input" onclick="window.location.href='/token/disable'">My token is
+                compromised</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

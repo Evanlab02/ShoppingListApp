@@ -35,3 +35,9 @@ class LogoutContext(BaseContext):
     submit_logout: str = "submit-logout"
     submit_cancel: str = "submit-cancel"
     dashboard_route: str = "/shopping/dashboard/"
+
+
+class TokenContext(BaseContext):
+    """Token context schema."""
+
+    token: str | None = None

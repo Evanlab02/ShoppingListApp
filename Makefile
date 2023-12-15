@@ -24,7 +24,7 @@ lint: clean
 	mypy . --strict
 
 test: migrations
-	pytest --ignore=tests/
+	pytest -v --ignore=tests/
 
 up:
 	docker compose up -d --build
