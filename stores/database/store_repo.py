@@ -186,6 +186,7 @@ async def filter_stores(
 
 async def edit_store(
     store_id: int,
+    user: User | AnonymousUser | AbstractBaseUser,
     store_name: str | None = None,
     store_type: int | None = None,
     store_description: str | None = None,
@@ -195,11 +196,15 @@ async def edit_store(
 
     Args:
         store_id (int): The id of the store.
+        user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+        store_name (str | None): The new name of the store.
+        store_type (int | None): The new type of the store.
+        store_description (str | None): The new description of the store.
 
     Returns:
         ShoppingStore: The edited store.
     """
-    store = await Store.objects.aget(id=store_id)
+    store = await Store.objects.aget(id=store_id, user=user)
 
     if store_name:
         store.name = store_name
@@ -212,11 +217,15 @@ async def edit_store(
     return store
 
 
-async def delete_store(store_id: int) -> None:
+async def delete_store(
+    store_id: int, user: User | AnonymousUser | AbstractBaseUser
+) -> None:
     """
     Delete a store.
 
     Args:
         store_id (int): The id of the store.
+        user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
     """
-    await Store.objects.filter(id=store_id).adelete()
+    store = await Store.objects.aget(id=store_id, user=user)
+    await store.adelete()

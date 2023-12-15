@@ -46,12 +46,30 @@ class TestStoreRepoCreate(TestCase):
 
     async def test_delete_store(self) -> None:
         """Test delete_store."""
-        await delete_store(self.store.id)
+        await delete_store(self.store.id, self.user)
         store_exists = await ShoppingStore.objects.filter(id=self.store.id).aexists()
         self.assertFalse(store_exists)
 
     async def test_delete_store_invalid_id(self) -> None:
         """Test delete_store with an invalid id."""
-        await delete_store(100)
+        with self.assertRaises(ShoppingStore.DoesNotExist):
+            await delete_store(100, self.user)
+        store_exists = await ShoppingStore.objects.filter(id=self.store.id).aexists()
+        self.assertTrue(store_exists)
+
+    async def test_delete_store_invalid_user(self) -> None:
+        """Test delete_store with an invalid user."""
+        user = await User.objects.acreate(
+            username="testuser2",
+            email="testuser2@gmail.com",
+            password="testpass",
+            first_name="Test",
+            last_name="User",
+        )
+        await user.asave()
+
+        with self.assertRaises(ShoppingStore.DoesNotExist):
+            await delete_store(self.store.id, user)
+
         store_exists = await ShoppingStore.objects.filter(id=self.store.id).aexists()
         self.assertTrue(store_exists)
