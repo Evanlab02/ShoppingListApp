@@ -74,23 +74,14 @@ class TestAuthEndpoints(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["detail"], "User is already logged in.")
 
-    def test_5_get_token(self) -> None:
-        """Test that a user can get their token."""
-        url = "http://localhost:7001/api/v1/auth/token"
-        response = self.session.get(url)
-        self.assertEqual(response.status_code, 200)
-        response_json = response.json()
-        self.assertEqual(response_json["message"], "Token successfully retrieved.")
-        self.assertIn("detail", response_json)
-
-    def test_6_logout(self) -> None:
+    def test_5_logout(self) -> None:
         """Test that a user can logout."""
         url = "http://localhost:7001/api/v1/auth/logout"
         response = self.session.post(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["message"], "User successfully logged out.")
 
-    def test_7_logout_again(self) -> None:
+    def test_6_logout_again(self) -> None:
         """Test that a user cannot logout again."""
         url = "http://localhost:7001/api/v1/auth/logout"
         response = self.session.post(url)
