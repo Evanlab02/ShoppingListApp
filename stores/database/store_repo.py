@@ -1,10 +1,12 @@
 """Contains store repository functions."""
 
 from datetime import date
+from typing import Any, no_type_check
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.core.paginator import Paginator
+from django.db.models import Case, Count, F, IntegerField, When
 
 from stores.models import ShoppingStore as Store
 from stores.models import ShoppingStorePagination as StorePagination
@@ -252,3 +254,55 @@ async def get_store(store_id: int) -> Store:
     """
     store = await Store.objects.aget(id=store_id)
     return store
+
+
+@sync_to_async
+@no_type_check
+def _pre_aggregate_filter(
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+):
+    """
+    Filter stores by user pre-aggregation.
+
+    Args:
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+
+    Returns:
+        list[ShoppingStore]: The stores.
+    """
+    stores = Store.objects.all()
+
+    if user:
+        stores = stores.filter(user=user)
+
+    return stores
+
+
+@no_type_check
+async def aggregate_stores(
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+) -> dict[str, Any]:
+    """
+    Aggregate stores.
+
+    Args:
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+
+    Returns:
+        dict[str, Any]: The aggregated stores.
+    """
+    pre_filtered_stores = await _pre_aggregate_filter(user=user)
+    result = await pre_filtered_stores.aaggregate(
+        online_stores=Count(
+            Case(When(store_type=1, then=1), output_field=IntegerField())
+        ),
+        in_store_stores=Count(
+            Case(When(store_type=2, then=1), output_field=IntegerField())
+        ),
+        combined_stores=Count(
+            Case(When(store_type=3, then=1), output_field=IntegerField())
+        ),
+        total_stores=Count(F("id")),
+    )
+
+    return result
