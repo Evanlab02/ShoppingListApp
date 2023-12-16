@@ -7,7 +7,7 @@ from django.test import TestCase
 from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
-from stores.services.api.store_service import create
+from stores.services.store_service import create
 
 TEST_STORE = "Test Store"
 TEST_STORE_TYPE = "Online"
