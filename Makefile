@@ -62,7 +62,6 @@ integration: refresh
 test-stores: migrations
 	pytest stores/
 
-clean-windows:
-	rm -rf windows/*
+sync-windows:
+	rm -rf windows/Pipfile
 	cp Pipfile windows/
-	cp .env.template windows/
