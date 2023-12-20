@@ -34,7 +34,9 @@ from authentication.routers.auth_router import auth_router
 from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
 from stores.routers.store_router import store_router
 
-api = NinjaAPI()
+
+version = open("version.txt").read().strip()
+api = NinjaAPI(title="Shopping App API", version=version)
 api.add_router("/auth", auth_router)
 api.add_router("/stores", store_router)
 

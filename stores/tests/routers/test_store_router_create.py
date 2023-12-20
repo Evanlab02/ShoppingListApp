@@ -53,6 +53,7 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], TEST_STORE_TYPE)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)
 
     def test_create_store_in_store_type(self) -> None:
         """Test creating a store with an in-store store type."""
@@ -72,6 +73,7 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], "In-Store")
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)
 
     def test_create_store_both_store_type(self) -> None:
         """Test creating a store with a both store type."""
@@ -91,6 +93,7 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], "Both")
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)
 
     def test_create_store_duplicate(self) -> None:
         """Test creating a store with a duplicate name."""
@@ -110,6 +113,7 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], TEST_STORE_TYPE)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)
 
         response = self.client.post(
             CREATE_ENDPOINT,
@@ -159,6 +163,7 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], TEST_STORE_TYPE)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)
 
     def test_create_store_in_store_type_int(self) -> None:
         """Test creating a store with an in-store store type."""
@@ -178,6 +183,7 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], "In-Store")
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)
 
     def test_create_store_both_store_type_int(self) -> None:
         """Test creating a store with a both store type."""
@@ -197,3 +203,4 @@ class TestStoreRouter(TestCase):
         self.assertEqual(response_json["name"], TEST_STORE)
         self.assertEqual(response_json["store_type"], "Both")
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
+        self.assertIsInstance(response_json["id"], int)

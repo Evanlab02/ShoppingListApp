@@ -4,7 +4,6 @@ Makefile
 README.md
 Pipfile
 Pipfile.lock
-version.txt
 .gitignore
 dev-requirements.txt
 .pytest_cache

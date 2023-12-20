@@ -14,4 +14,4 @@ class StoreSchema(ModelSchema):
         """Meta class for the StoreSchema."""
 
         model = Store
-        exclude = ["id", "created_at", "updated_at", "user", "store_type"]
+        exclude = ["created_at", "updated_at", "user", "store_type"]

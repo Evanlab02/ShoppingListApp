@@ -7,6 +7,7 @@ RUN apt-get update \
 RUN pip install pipenv
 
 WORKDIR /app
+COPY version.txt /app/version.txt
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 

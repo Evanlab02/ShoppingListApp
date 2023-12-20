@@ -98,3 +98,4 @@ class TestAuthEndpoints(TestCase):
         self.assertEqual(response.json()["name"], "CreateStoreTester1")
         self.assertEqual(response.json()["description"], "CreateStoreTester1")
         self.assertEqual(response.json()["store_type"], "Both")
+        self.assertIsInstance(response.json()["id"], int)

@@ -82,6 +82,7 @@ async def create(
 
     store_type_label = _get_store_type_label(store.store_type)
     store_schema = StoreSchema(
+        id=store.id,
         name=store.name,
         store_type=store_type_label,
         description=store.description,

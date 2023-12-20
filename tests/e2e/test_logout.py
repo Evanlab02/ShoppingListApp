@@ -38,7 +38,7 @@ MOCK_LAST_NAME = "Logout"
 MOCK_EMAIL = "testlogout@selenium.com"
 
 
-class TestLoginPage(TestCase):
+class TestLogoutPage(TestCase):
     """Contains end-to-end tests for the logout page."""
 
     driver: webdriver.Chrome

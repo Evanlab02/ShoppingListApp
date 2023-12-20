@@ -45,6 +45,7 @@ class TestStoreService(TestCase):
         self.assertEqual(store_dict.get("name"), TEST_STORE)
         self.assertEqual(store_dict.get("store_type"), TEST_STORE_TYPE)
         self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
+        self.assertIsInstance(store_dict.get("id"), int)
 
     async def test_create_store_invalid_store_type(self) -> None:
         """Test create store with invalid store type."""
@@ -79,6 +80,7 @@ class TestStoreService(TestCase):
         self.assertEqual(store_dict.get("name"), TEST_STORE)
         self.assertEqual(store_dict.get("store_type"), TEST_STORE_TYPE)
         self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
+        self.assertIsInstance(store_dict.get("id"), int)
 
     async def test_create_store_in_store_type_int(self) -> None:
         """Test create store with in store type as int."""
@@ -92,6 +94,7 @@ class TestStoreService(TestCase):
         self.assertEqual(store_dict.get("name"), TEST_STORE)
         self.assertEqual(store_dict.get("store_type"), "In-Store")
         self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
+        self.assertIsInstance(store_dict.get("id"), int)
 
     async def test_create_store_both_type_int(self) -> None:
         """Test create store with both type as int."""
@@ -105,3 +108,4 @@ class TestStoreService(TestCase):
         self.assertEqual(store_dict.get("name"), TEST_STORE)
         self.assertEqual(store_dict.get("store_type"), "Both")
         self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
+        self.assertIsInstance(store_dict.get("id"), int)
