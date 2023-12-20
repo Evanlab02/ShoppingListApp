@@ -20,3 +20,4 @@ shoppingapp/settings/*
 !shoppingapp/settings/settings.py
 !shoppingapp/settings/dev_settings.py
 .env
+windows/*
