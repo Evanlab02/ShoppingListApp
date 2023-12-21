@@ -42,5 +42,8 @@ class TestLogoutView(TestCase):
         response = self.client.get(f"/{LOGOUT_ROUTE}")
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
-            response, f"/{LOGIN_ROUTE}?error=User is not logged in.", 302, 200
+            response,
+            f"/{LOGIN_ROUTE}?error=You+must+be+logged+in+to+access+that+page.",
+            302,
+            200,
         )

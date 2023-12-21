@@ -43,14 +43,18 @@ class TestStoreCreateView(TestCase):
         self.client.logout()
         response = self.client.get(f"/stores/{CREATE_PAGE}")
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, "/?next=/stores/create", 302, 200)
+        self.assertRedirects(
+            response, "/?error=You must be logged in to access that page.", 302, 200
+        )
 
     def test_post_create_page_when_not_logged_in(self) -> None:
         """Test the create page action when not logged in."""
         self.client.logout()
         response = self.client.post(f"/stores/{CREATE_ACTION}")
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, "/?next=/stores/create/action", 302, 200)
+        self.assertRedirects(
+            response, "/?error=You must be logged in to access that page.", 302, 200
+        )
 
     def test_post_create_page(self) -> None:
         """Test the create page action."""

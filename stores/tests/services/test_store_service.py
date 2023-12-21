@@ -109,3 +109,13 @@ class TestStoreService(TestCase):
         self.assertEqual(store_dict.get("store_type"), "Both")
         self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
         self.assertIsInstance(store_dict.get("id"), int)
+
+    async def test_create_store_invalid_store_type_int(self) -> None:
+        """Test create store with invalid store type int."""
+        new_store = NewStore(
+            name=TEST_STORE,
+            store_type=4,
+            description=TEST_DESCRIPTION,
+        )
+        with self.assertRaises(InvalidStoreType):
+            await create(new_store, self.user)

@@ -1,11 +1,11 @@
 """Contains the views for the stores app."""
 
-from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from pydantic import ValidationError
 
+from authentication.decorators import async_login_required
 from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
 from stores.schemas.input import NewStore
 from stores.services.store_service import create
@@ -15,8 +15,8 @@ CREATE_ACTION = "create/action"
 
 
 @require_http_methods(["GET"])
-@login_required(login_url="/")
-def create_page(request: HttpRequest) -> HttpResponse:
+@async_login_required
+async def create_page(request: HttpRequest) -> HttpResponse:
     """
     Render the create page.
 
@@ -31,8 +31,8 @@ def create_page(request: HttpRequest) -> HttpResponse:
     return render(request, "stores/create.html", context)
 
 
-# TODO: Add custom auth decorators to all views
 @require_http_methods(["POST"])
+@async_login_required
 async def create_page_action(request: HttpRequest) -> HttpResponse:
     """
     Create page action.

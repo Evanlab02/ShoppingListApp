@@ -1,10 +1,11 @@
 """Contains views for the authentication app."""
 
-from django.contrib.auth.decorators import login_required
+
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
+from authentication.decorators import async_login_required, login_required
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
@@ -12,7 +13,6 @@ from authentication.errors.api_exceptions import (
     NonMatchingCredentials,
     UserAlreadyLoggedIn,
     UsernameAlreadyExists,
-    UserNotLoggedIn,
 )
 from authentication.services.views.client_service import disable_client, enable_client
 from authentication.services.views.user_service import (
@@ -75,6 +75,7 @@ def login_view(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["POST"])
+@login_required
 def logout_action(request: HttpRequest) -> HttpResponse:
     """
     Handle the logout action.
@@ -85,14 +86,12 @@ def logout_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    try:
-        logout(request)
-        return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
-    except UserNotLoggedIn as error:
-        return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
+    logout(request)
+    return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
 
 
 @require_http_methods(["GET"])
+@login_required
 def logout_view(request: HttpRequest) -> HttpResponse:
     """
     Render the logout view.
@@ -103,11 +102,8 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    try:
-        context = get_logout_view_context(request)
-        return render(request, "auth/logout.html", context.model_dump())
-    except UserNotLoggedIn as error:
-        return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
+    context = get_logout_view_context(request)
+    return render(request, "auth/logout.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
@@ -154,7 +150,7 @@ def register_view(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
-@login_required(login_url=f"/{LOGIN_ROUTE}")
+@login_required
 def confirm_token(request: HttpRequest) -> HttpResponse:
     """
     Handle the register view.
@@ -169,6 +165,7 @@ def confirm_token(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
+@async_login_required
 async def enable_api_client(request: HttpRequest) -> HttpResponse:
     """
     Handle the register view.
@@ -185,6 +182,7 @@ async def enable_api_client(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
+@async_login_required
 async def disable_api_client(request: HttpRequest) -> HttpResponse:
     """
     Handle the register view.
