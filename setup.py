@@ -2,9 +2,11 @@
 
 from setuptools import find_packages, setup  # type: ignore
 
+version = open("version.txt").read().strip()
+
 
 def read_requirements() -> list[str]:
-    """Reads the requirements from the requirements.txt file."""
+    """Read the requirements from the requirements.txt file."""
     lines = []
     with open("requirements.txt") as req:
         lines = req.readlines()
@@ -31,7 +33,7 @@ exclude_files = [
 
 setup(
     name="shoppingapp-be",
-    version="0.13.0",
+    version=version,
     install_requires=read_requirements(),
     packages=find_packages(
         where=".",
@@ -40,7 +42,7 @@ setup(
     ),
     entry_points={
         "console_scripts": [
-            "shoppingapp = shoppingapp.config.dev_config:main",
+            "shoppingapp = shoppingapp.config.asgi:main",
         ]
     },
     include_package_data=True,

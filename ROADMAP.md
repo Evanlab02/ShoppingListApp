@@ -71,9 +71,9 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Add pyproject.toml to project
 - [x] Add new app configs to project
 - [x] Add build to makefile rules
-- [ ] Update dockerfile to utilize new run method
-- [ ] Update docker-compose to utilize new run method
-- [ ] Setup release please with pyproject.toml
+- [x] Update dockerfile to utilize new run method
+- [x] Update docker-compose to utilize new run method
+- [ ] Update release-please worklows to upload new artifacts
 
 #### Dependencies (Repos) (High Priority)
 
