@@ -12,6 +12,6 @@ urlpatterns = [
     path(views.LOGOUT_ROUTE, views.logout_view, name="logout_page"),
     path(views.LOGOUT_ACTION_ROUTE, views.logout_action, name="logout_action"),
     path(views.CONFIRM_TOKEN_ROUTE, views.confirm_token, name="confirm_token"),
-    path(views.ENABLE_CLIENT_ROUTE, views.enable_api_client, name="enable_client"),  # type: ignore # noqa E501
-    path(views.DISABLE_CLIENT_ROUTE, views.disable_api_client, name="disable_client"),  # type: ignore # noqa E501
+    path(views.ENABLE_CLIENT_ROUTE, views.enable_api_client, name="enable_client"),
+    path(views.DISABLE_CLIENT_ROUTE, views.disable_api_client, name="disable_client"),
 ]

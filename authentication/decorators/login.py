@@ -9,13 +9,10 @@ from authentication.database.user_repository import is_user_authenticated
 
 
 def login_required(function: Any) -> Any:
-    """Decorator for login required."""
+    """Enforces user to be logged in."""
 
     def wrapper(request: HttpRequest, *args: Any, **kw: Any) -> Any:
-        """
-        Wrapper for login required.
-        """
-
+        """Wrap around child function."""
         user = request.user
         is_authenticated = is_user_authenticated(user)
         if not is_authenticated:
@@ -29,13 +26,10 @@ def login_required(function: Any) -> Any:
 
 
 def async_login_required(function: Any) -> Any:
-    """Decorator for login required."""
+    """Enforces user to be logged in."""
 
     async def wrapper(request: HttpRequest, *args: Any, **kw: Any) -> Any:
-        """
-        Wrapper for login required.
-        """
-
+        """Wrap around child function."""
         user = request.user
         is_authenticated = await sync_to_async(is_user_authenticated)(user)
         if not is_authenticated:
