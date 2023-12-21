@@ -6,7 +6,10 @@ clean:
 	**/**/__pycache__ \
 	**/migrations/0*.py \
 	.coverage \
-	.pytest_cache
+	.pytest_cache \
+	build/ \
+	dist/ \
+	*.egg-info
 
 requirements:
 	pipenv requirements > requirements.txt
@@ -62,3 +65,6 @@ test-stores: migrations
 sync-windows:
 	rm -rf windows/Pipfile
 	cp Pipfile windows/
+
+build:
+	python setup.py sdist bdist_wheel

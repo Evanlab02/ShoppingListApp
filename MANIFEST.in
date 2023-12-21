@@ -1,0 +1,9 @@
+include LICENSE
+include README.md
+recursive-include shoppingapp/ *
+recursive-include authentication/ *
+recursive-include stores/ *
+recursive-include authentication/templates/ *
+recursive-include stores/templates/ *
+recursive-include authentication/static/ *
+recursive-include stores/static/ *

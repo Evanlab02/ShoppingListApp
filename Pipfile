@@ -8,6 +8,7 @@ django = "==5.0.0"
 psycopg = {extras = ["binary"], version = "==3.1.16"}
 django-ninja = "==1.1.0"
 uvicorn = "==0.25.0"
+setuptools = "==69.0.2"
 
 [dev-packages]
 black = "==23.12.0"
