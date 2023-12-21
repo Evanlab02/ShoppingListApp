@@ -13,7 +13,7 @@
         </div>
         {% if error %}
         <div class="form-middle">
-            <p class="error-message">{{ error }}</p>
+            <p id="form-error" class="error-message">{{ error }}</p>
         </div>
         {% endif %}
         <form class="form-bottom" method="post">
@@ -29,9 +29,9 @@
                 <div class="form-row">
                     <label for="store-type-input">Store Type:</label>
                     <select class="text-input" name="store-type-input" id="store-type-input">
-                        <option value="1">Online</option>
-                        <option value="2">In-Store</option>
-                        <option value="3">Both</option>
+                        <option value="Online">Online</option>
+                        <option value="In-Store">In-Store</option>
+                        <option value="Both">Both</option>
                     </select>
                 </div>
                 <div class="form-row">
@@ -42,7 +42,7 @@
                     <input id="submit-create-store" class="submit-input" type="submit" value="Create Store">
                 </div>
                 <div class="form-row submit-row">
-                    <input class="cancel-input" type="button" value="Cancel"
+                    <input id="cancel-create-store" class="cancel-input" type="button" value="Cancel"
                         onclick="window.location.href='/items/stores/me'">
                 </div>
             </fieldset>
