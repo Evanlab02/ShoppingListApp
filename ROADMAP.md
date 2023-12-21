@@ -22,6 +22,7 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Store App Setup
 - [x] Store Create API
 - [x] Create Store Page
+- [ ] Store Type Mapping API
 - [ ] Store Aggregate API
 - [ ] View all stores API
 - [ ] View all stores page (Overview)

@@ -79,13 +79,5 @@ async def create(
 
     store_type_value = _get_store_type_value(store_type_label)
     store = await create_store(name, store_type_value, description, user)
-
-    store_type_label = _get_store_type_label(store.store_type)
-    store_schema = StoreSchema(
-        id=store.id,
-        name=store.name,
-        store_type=store_type_label,
-        description=store.description,
-    )
-
+    store_schema = StoreSchema.from_orm(store)
     return store_schema

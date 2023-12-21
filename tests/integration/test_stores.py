@@ -97,5 +97,7 @@ class TestStoreEndpoints(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()["name"], "StoreTester1")
         self.assertEqual(response.json()["description"], "StoreTester1")
-        self.assertEqual(response.json()["store_type"], "Both")
+        self.assertEqual(response.json()["store_type"], 3)
         self.assertIsInstance(response.json()["id"], int)
+        self.assertIsInstance(response.json()["created_at"], str)
+        self.assertIsInstance(response.json()["updated_at"], str)

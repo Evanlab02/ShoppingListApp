@@ -6,7 +6,7 @@ from django.test import Client, TestCase
 from stores.models import ShoppingStore as Store
 
 TEST_STORE = "Test Store"
-TEST_STORE_TYPE = "Online"
+TEST_STORE_TYPE = 1
 TEST_DESCRIPTION = "Test description"
 CREATE_ENDPOINT = "/api/v1/stores/create"
 CONTENT_TYPE = "application/json"
@@ -71,7 +71,7 @@ class TestStoreRouter(TestCase):
 
         response_json = response.json()
         self.assertEqual(response_json["name"], TEST_STORE)
-        self.assertEqual(response_json["store_type"], "In-Store")
+        self.assertEqual(response_json["store_type"], 2)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
         self.assertIsInstance(response_json["id"], int)
 
@@ -91,7 +91,7 @@ class TestStoreRouter(TestCase):
 
         response_json = response.json()
         self.assertEqual(response_json["name"], TEST_STORE)
-        self.assertEqual(response_json["store_type"], "Both")
+        self.assertEqual(response_json["store_type"], 3)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
         self.assertIsInstance(response_json["id"], int)
 
@@ -181,7 +181,7 @@ class TestStoreRouter(TestCase):
 
         response_json = response.json()
         self.assertEqual(response_json["name"], TEST_STORE)
-        self.assertEqual(response_json["store_type"], "In-Store")
+        self.assertEqual(response_json["store_type"], 2)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
         self.assertIsInstance(response_json["id"], int)
 
@@ -201,6 +201,6 @@ class TestStoreRouter(TestCase):
 
         response_json = response.json()
         self.assertEqual(response_json["name"], TEST_STORE)
-        self.assertEqual(response_json["store_type"], "Both")
+        self.assertEqual(response_json["store_type"], 3)
         self.assertEqual(response_json["description"], TEST_DESCRIPTION)
         self.assertIsInstance(response_json["id"], int)

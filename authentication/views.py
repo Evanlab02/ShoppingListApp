@@ -7,10 +7,10 @@ from django.views.decorators.http import require_http_methods
 
 from authentication.decorators import (
     async_login_required,
+    async_redirect_if_logged_in,
     login_required,
     redirect_if_logged_in,
 )
-from authentication.decorators.login import async_redirect_if_logged_in
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,

@@ -8,10 +8,15 @@ from stores.models import ShoppingStore as Store
 class StoreSchema(ModelSchema):
     """Store model schema for outgoing data."""
 
-    store_type: str
-
     class Meta:
         """Meta class for the StoreSchema."""
 
         model = Store
-        exclude = ["created_at", "updated_at", "user", "store_type"]
+        fields = [
+            "id",
+            "name",
+            "store_type",
+            "description",
+            "created_at",
+            "updated_at",
+        ]
