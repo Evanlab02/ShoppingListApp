@@ -30,9 +30,7 @@ class InvalidUserDetails(Exception):
 
     def __init__(self) -> None:
         """Exception raised when a payload is invalid."""
-        super().__init__(
-            "Please ensure username, email, first name and last name are provided."
-        )
+        super().__init__("Please ensure username, email, first name and last name are provided.")
 
 
 class NonMatchingCredentials(Exception):

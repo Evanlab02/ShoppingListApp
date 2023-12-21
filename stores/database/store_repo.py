@@ -123,9 +123,7 @@ async def create_store(
     return store
 
 
-async def get_stores(
-    page_number: int = 1, stores_per_page: int = 10
-) -> StorePagination:
+async def get_stores(page_number: int = 1, stores_per_page: int = 10) -> StorePagination:
     """
     Get all stores.
 
@@ -222,9 +220,7 @@ async def edit_store(
     return store
 
 
-async def delete_store(
-    store_id: int, user: User | AnonymousUser | AbstractBaseUser
-) -> None:
+async def delete_store(store_id: int, user: User | AnonymousUser | AbstractBaseUser) -> None:
     """
     Delete a store.
 
@@ -293,15 +289,9 @@ async def aggregate_stores(
     """
     pre_filtered_stores = await _pre_aggregate_filter(user=user)
     result = await pre_filtered_stores.aaggregate(
-        online_stores=Count(
-            Case(When(store_type=1, then=1), output_field=IntegerField())
-        ),
-        in_store_stores=Count(
-            Case(When(store_type=2, then=1), output_field=IntegerField())
-        ),
-        combined_stores=Count(
-            Case(When(store_type=3, then=1), output_field=IntegerField())
-        ),
+        online_stores=Count(Case(When(store_type=1, then=1), output_field=IntegerField())),
+        in_store_stores=Count(Case(When(store_type=2, then=1), output_field=IntegerField())),
+        combined_stores=Count(Case(When(store_type=3, then=1), output_field=IntegerField())),
         total_stores=Count(F("id")),
     )
 

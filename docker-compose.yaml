@@ -28,7 +28,8 @@ services:
       DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
       DEV_DB_HOST: ${DEV_DB_HOST}
       DEV_DB_PORT: ${DEV_DB_PORT}
-    command: python manage.py runserver 0.0.0.0:7001
+      SERVICE_PORT: ${SERVICE_PORT}
+    command: shoppingapp
     expose:
       - "7001"
     ports:

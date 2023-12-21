@@ -12,16 +12,12 @@ import os
 import uvicorn
 from django.core.asgi import get_asgi_application
 
-SERVICE_PORT = os.getenv("SERVICE_PORT", 8000)
-
 
 def main() -> None:
     """Contains the main entrypoint for the ASGI server."""
-    DEFAULT_SETTINGS = "shoppingapp.settings.settings"
-    SETTINGS_MODULE = os.getenv("DEFAULT_SETTINGS_MODULE", DEFAULT_SETTINGS)
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoppingapp.settings.local_settings")
     application = get_asgi_application()
-    uvicorn.run(application, host="0.0.0.0", port=int(SERVICE_PORT), reload=False)
+    uvicorn.run(application, host="0.0.0.0", port=7001, reload=True)
 
 
 if __name__ == "__main__":

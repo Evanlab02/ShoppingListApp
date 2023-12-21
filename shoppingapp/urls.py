@@ -89,17 +89,13 @@ def username_already_exists_handler(
 
 
 @api.exception_handler(UserNotLoggedIn)
-def user_not_logged_in_handler(
-    request: HttpRequest, exception: UserNotLoggedIn
-) -> HttpResponse:
+def user_not_logged_in_handler(request: HttpRequest, exception: UserNotLoggedIn) -> HttpResponse:
     """Handle UserNotLoggedIn exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
 @api.exception_handler(InvalidStoreType)
-def invalid_store_type_handler(
-    request: HttpRequest, exception: InvalidStoreType
-) -> HttpResponse:
+def invalid_store_type_handler(request: HttpRequest, exception: InvalidStoreType) -> HttpResponse:
     """Handle InvalidStoreType exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
 

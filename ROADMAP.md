@@ -67,12 +67,13 @@ Find below the roadmap for the project. It is subject to change.
 
 #### New run method (High Priority)
 
-- [ ] Add setup tools to project
-- [ ] Add pyproject.toml to project
-- [ ] Add new app configs to project
-- [ ] Add build to makefile rules
-- [ ] Update dockerfile to utilize new run method
-- [ ] Update docker-compose to utilize new run method
+- [x] Add setup tools to project
+- [x] Add pyproject.toml to project
+- [x] Add new app configs to project
+- [x] Add build to makefile rules
+- [x] Update dockerfile to utilize new run method
+- [x] Update docker-compose to utilize new run method
+- [ ] Update release-please worklows to upload new artifacts
 
 #### Dependencies (Repos) (High Priority)
 

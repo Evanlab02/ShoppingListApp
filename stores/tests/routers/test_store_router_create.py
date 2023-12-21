@@ -126,9 +126,7 @@ class TestStoreRouter(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json()["detail"], f"Store '{TEST_STORE}' already exists."
-        )
+        self.assertEqual(response.json()["detail"], f"Store '{TEST_STORE}' already exists.")
 
     def test_create_store_invalid_store_type(self) -> None:
         """Test creating a store with an invalid store type."""

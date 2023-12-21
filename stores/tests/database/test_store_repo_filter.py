@@ -109,9 +109,7 @@ class TestStoreRepoCreate(TestCase):
 
     async def test_filter_stores_by_created_on_date(self) -> None:
         """Test filter_stores by created_on_date."""
-        self.store.created_at = datetime(
-            2021, 1, 1, tzinfo=self.store.created_at.tzinfo
-        )
+        self.store.created_at = datetime(2021, 1, 1, tzinfo=self.store.created_at.tzinfo)
         await self.store.asave()
 
         paginated_data = await filter_stores(created_on=self.store.created_at.date())
@@ -119,9 +117,7 @@ class TestStoreRepoCreate(TestCase):
 
     async def test_filter_stores_by_created_before_date(self) -> None:
         """Test filter_stores by created_before_date."""
-        self.store.created_at = datetime(
-            2021, 1, 1, tzinfo=self.store.created_at.tzinfo
-        )
+        self.store.created_at = datetime(2021, 1, 1, tzinfo=self.store.created_at.tzinfo)
         await self.store.asave()
 
         paginated_data = await filter_stores(
@@ -131,14 +127,10 @@ class TestStoreRepoCreate(TestCase):
 
     async def test_filter_stores_by_created_after_date(self) -> None:
         """Test filter_stores by created_after_date."""
-        self.store.created_at = datetime(
-            2021, 10, 1, tzinfo=self.store.created_at.tzinfo
-        )
+        self.store.created_at = datetime(2021, 10, 1, tzinfo=self.store.created_at.tzinfo)
         await self.store.asave()
 
-        self.base_store.created_at = datetime(
-            2021, 1, 1, tzinfo=self.base_store.created_at.tzinfo
-        )
+        self.base_store.created_at = datetime(2021, 1, 1, tzinfo=self.base_store.created_at.tzinfo)
         await self.base_store.asave()
 
         paginated_data = await filter_stores(

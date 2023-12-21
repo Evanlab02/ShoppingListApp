@@ -61,9 +61,7 @@ class TestStoreRepoCreate(TestCase):
 
     async def test_edit_store_description(self) -> None:
         """Test edit_store."""
-        result = await edit_store(
-            self.store.id, self.user, store_description="New Description"
-        )
+        result = await edit_store(self.store.id, self.user, store_description="New Description")
         self.assertEqual(result.name, TEST_STORE)
         self.assertEqual(result.store_type, 3)
         self.assertEqual(result.description, "New Description")

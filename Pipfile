@@ -24,6 +24,7 @@ requests = "==2.31.0"
 types-requests = "==2.31.0.10"
 selenium = "==4.16.0"
 webdriver-manager = "==4.0.1"
+setuptools = "==69.0.2"
 
 [requires]
 python_version = "3.11"

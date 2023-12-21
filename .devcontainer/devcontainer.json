@@ -25,5 +25,5 @@
     "forwardPorts": [
         7001
     ],
-    "postCreateCommand": "pipenv install --dev && pipenv run python3 manage.py makemigrations --settings=shoppingapp.settings.dev_settings && pipenv run python3 manage.py migrate --settings=shoppingapp.settings.dev_settings"
+    "postCreateCommand": "python3 manage.py makemigrations --settings=shoppingapp.settings.dev_settings && pipenv run python3 manage.py migrate --settings=shoppingapp.settings.dev_settings"
 }

@@ -16,9 +16,7 @@ DASHBOARD_URL = "http://localhost:7001/shopping/dashboard/"
 # Element IDs
 USERNAME_INPUT = INPUT_MAPPING.get("username-input", "username-input")
 PASSWORD_INPUT = INPUT_MAPPING.get("password-input", "password-input")
-CONFIRM_PASSWORD_INPUT = INPUT_MAPPING.get(
-    "password-confirm-input", "password-confirm-input"
-)
+CONFIRM_PASSWORD_INPUT = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
 EMAIL_INPUT = INPUT_MAPPING.get("email-input", "email-input")
 FIRST_NAME_INPUT = INPUT_MAPPING.get("first-name-input", "first-name-input")
 LAST_NAME_INPUT = INPUT_MAPPING.get("last-name-input", "last-name-input")
@@ -74,18 +72,14 @@ class TestRegisterPage(TestCase):
         self.driver.get(REGISTER_URL)
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 3")
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
-        self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(
-            "MismatchedPassword"
-        )
+        self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys("MismatchedPassword")
         self.driver.find_element(value=EMAIL_INPUT).send_keys("test3@register.com")
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
         element_text = self.driver.find_element(value=ERROR_TEXT).text
-        self.assertEqual(
-            element_text, "Password and password confirmation do not match."
-        )
+        self.assertEqual(element_text, "Password and password confirmation do not match.")
 
     def test_register_with_existing_username(self) -> None:
         """Test that a user cannot register with an existing username."""
@@ -118,9 +112,7 @@ class TestRegisterPage(TestCase):
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 5")
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
-        self.driver.find_element(value=EMAIL_INPUT).send_keys(
-            "registeruser5@register.com"
-        )
+        self.driver.find_element(value=EMAIL_INPUT).send_keys("registeruser5@register.com")
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
@@ -129,9 +121,7 @@ class TestRegisterPage(TestCase):
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 6")
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
         self.driver.find_element(value=CONFIRM_PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
-        self.driver.find_element(value=EMAIL_INPUT).send_keys(
-            "registeruser5@register.com"
-        )
+        self.driver.find_element(value=EMAIL_INPUT).send_keys("registeruser5@register.com")
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()

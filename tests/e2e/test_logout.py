@@ -17,9 +17,7 @@ DASHBOARD_URL = "http://localhost:7001/shopping/dashboard/"
 # Element IDs
 USERNAME_INPUT = INPUT_MAPPING.get("username-input", "username-input")
 PASSWORD_INPUT = INPUT_MAPPING.get("password-input", "password-input")
-CONFIRM_PASSWORD_INPUT = INPUT_MAPPING.get(
-    "password-confirm-input", "password-confirm-input"
-)
+CONFIRM_PASSWORD_INPUT = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
 EMAIL_INPUT = INPUT_MAPPING.get("email-input", "email-input")
 FIRST_NAME_INPUT = INPUT_MAPPING.get("first-name-input", "first-name-input")
 LAST_NAME_INPUT = INPUT_MAPPING.get("last-name-input", "last-name-input")

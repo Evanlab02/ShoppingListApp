@@ -17,9 +17,7 @@ PASSWORD_INPUT = INPUT_MAPPING.get("password-input", "password-input")
 EMAIL_INPUT = INPUT_MAPPING.get("email-input", "email-input")
 FIRST_NAME_INPUT = INPUT_MAPPING.get("first-name-input", "first-name-input")
 LAST_NAME_INPUT = INPUT_MAPPING.get("last-name-input", "last-name-input")
-PASSWORD_CONFIRM_INPUT = INPUT_MAPPING.get(
-    "password-confirm-input", "password-confirm-input"
-)
+PASSWORD_CONFIRM_INPUT = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
 
 
 class TestRegisterActionView(TestCase):
@@ -56,9 +54,7 @@ class TestRegisterActionView(TestCase):
                 PASSWORD_CONFIRM_INPUT: "testpassword",
             },
         )
-        self.assertRedirects(
-            response, f"/{LOGIN_ROUTE}", 302, 200, fetch_redirect_response=False
-        )
+        self.assertRedirects(response, f"/{LOGIN_ROUTE}", 302, 200, fetch_redirect_response=False)
 
     def test_register_action_endpoint_when_already_logged_in(self) -> None:
         """Test the register action endpoint redirects when the user is already logged in."""

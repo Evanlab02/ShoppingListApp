@@ -16,9 +16,7 @@ def login_required(function: Any) -> Any:
         user = request.user
         is_authenticated = is_user_authenticated(user)
         if not is_authenticated:
-            return HttpResponseRedirect(
-                "/?error=You must be logged in to access that page."
-            )
+            return HttpResponseRedirect("/?error=You must be logged in to access that page.")
         else:
             return function(request, *args, **kw)
 
@@ -33,9 +31,7 @@ def async_login_required(function: Any) -> Any:
         user = request.user
         is_authenticated = await sync_to_async(is_user_authenticated)(user)
         if not is_authenticated:
-            return HttpResponseRedirect(
-                "/?error=You must be logged in to access that page."
-            )
+            return HttpResponseRedirect("/?error=You must be logged in to access that page.")
         else:
             return await function(request, *args, **kw)
 

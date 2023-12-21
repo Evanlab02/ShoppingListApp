@@ -19,9 +19,7 @@ DASHBOARD_URL = "http://localhost:7001/shopping/dashboard/"
 # Element IDs
 USERNAME_INPUT = INPUT_MAPPING.get("username-input", "username-input")
 PASSWORD_INPUT = INPUT_MAPPING.get("password-input", "password-input")
-CONFIRM_PASSWORD_INPUT = INPUT_MAPPING.get(
-    "password-confirm-input", "password-confirm-input"
-)
+CONFIRM_PASSWORD_INPUT = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
 EMAIL_INPUT = INPUT_MAPPING.get("email-input", "email-input")
 FIRST_NAME_INPUT = INPUT_MAPPING.get("first-name-input", "first-name-input")
 LAST_NAME_INPUT = INPUT_MAPPING.get("last-name-input", "last-name-input")
@@ -115,9 +113,7 @@ class TestStorePages(TestCase):
     def test_05_get_create_page_with_error(self) -> None:
         """Test that a user can access the create store page with an error."""
         self.driver.get(f"{STORE_CREATE_URL}?error=This+is+an+error")
-        self.assertEqual(
-            self.driver.current_url, f"{STORE_CREATE_URL}?error=This+is+an+error"
-        )
+        self.assertEqual(self.driver.current_url, f"{STORE_CREATE_URL}?error=This+is+an+error")
 
         error_text = self.driver.find_element(value="form-error").text
         self.assertEqual(error_text, "This is an error")
@@ -128,9 +124,7 @@ class TestStorePages(TestCase):
 
         self.driver.find_element(value="store-input").send_keys("Test Store")
         self.driver.find_element(value="store-type-input").send_keys("Both")
-        self.driver.find_element(value="description-input").send_keys(
-            "Test Description"
-        )
+        self.driver.find_element(value="description-input").send_keys("Test Description")
         self.driver.find_element(value="submit-create-store").click()
 
         current_url = self.driver.current_url
