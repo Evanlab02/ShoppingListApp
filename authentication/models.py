@@ -47,9 +47,7 @@ class ApiClient(Model):
         return client_secret
 
     @classmethod
-    async def disable_client(
-        cls, user: User | AbstractBaseUser | AnonymousUser
-    ) -> None:
+    async def disable_client(cls, user: User | AbstractBaseUser | AnonymousUser) -> None:
         """
         Disable a client.
 

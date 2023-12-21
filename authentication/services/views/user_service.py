@@ -69,9 +69,7 @@ def get_logout_view_context(request: HttpRequest) -> LogoutContext:
     submit_logout = INPUT_MAPPING.get("submit-logout", "submit-logout")
     submit_cancel = INPUT_MAPPING.get("submit-cancel", "submit-cancel")
 
-    return LogoutContext(
-        error=error, submit_logout=submit_logout, submit_cancel=submit_cancel
-    )
+    return LogoutContext(error=error, submit_logout=submit_logout, submit_cancel=submit_cancel)
 
 
 def get_register_page_context(request: HttpRequest) -> RegisterContext:
@@ -93,9 +91,7 @@ def get_register_page_context(request: HttpRequest) -> RegisterContext:
     first_name_input = INPUT_MAPPING.get("first-name-input", "first-name-input")
     last_name_input = INPUT_MAPPING.get("last-name-input", "last-name-input")
     password_input = INPUT_MAPPING.get("password-input", "password-input")
-    password_confirm_input = INPUT_MAPPING.get(
-        "password-confirm-input", "password-confirm-input"
-    )
+    password_confirm_input = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
     submit_register = INPUT_MAPPING.get("submit-register", "submit-register")
 
     return RegisterContext(
@@ -162,9 +158,7 @@ async def register_user(request: HttpRequest) -> None:
     first_name_input = INPUT_MAPPING.get("first-name-input", "first-name-input")
     last_name_input = INPUT_MAPPING.get("last-name-input", "last-name-input")
     password_input = INPUT_MAPPING.get("password-input", "password-input")
-    password_confirm_input = INPUT_MAPPING.get(
-        "password-confirm-input", "password-confirm-input"
-    )
+    password_confirm_input = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
 
     username = request.POST.get(username_input, None)
     email = request.POST.get(email_input)

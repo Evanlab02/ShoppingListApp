@@ -32,8 +32,6 @@ class TestStoreModel(TestCase):
 
     def test_str_method(self) -> None:
         """Test the __str__ method of the ShoppingStore model."""
-        store = ShoppingStore.objects.create(
-            name="Test Store", store_type=1, user=self.user
-        )
+        store = ShoppingStore.objects.create(name="Test Store", store_type=1, user=self.user)
         store.save()
         self.assertEqual(str(store), "Test Store")

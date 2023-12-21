@@ -48,9 +48,7 @@ def _get_store_type_value(store_type_label: str) -> int:
     raise InvalidStoreType(store_type_label)
 
 
-async def create(
-    new_store: NewStore, user: User | AbstractBaseUser | AnonymousUser
-) -> StoreSchema:
+async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousUser) -> StoreSchema:
     """
     Create a new store.
 

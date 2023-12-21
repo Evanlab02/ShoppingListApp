@@ -34,9 +34,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
 
     def test_register_with_already_logged_in_user(self) -> None:
         """Test the register endpoint with an already logged in user."""
@@ -86,9 +84,7 @@ class TestAuthentication(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
-            {
-                "detail": "Please ensure username, email, first name and last name are provided."
-            },
+            {"detail": "Please ensure username, email, first name and last name are provided."},
         )
 
     def test_register_user_with_existing_username(self) -> None:
@@ -186,9 +182,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
 
         response = client.post(
             LOGIN_ENDPOINT,
@@ -197,9 +191,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""})
 
     def test_login_retry(self) -> None:
         """Test the login endpoint."""
@@ -219,9 +211,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
 
         response = client.post(
             LOGIN_ENDPOINT,
@@ -230,9 +220,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""})
 
         response = client.post(
             LOGIN_ENDPOINT,
@@ -261,9 +249,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
 
         response = client.post(
             LOGIN_ENDPOINT,
@@ -292,9 +278,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
 
         response = client.post(
             LOGIN_ENDPOINT,
@@ -303,9 +287,7 @@ class TestAuthentication(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""}
-        )
+        self.assertEqual(response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""})
 
         response = client.post(LOGOUT_ENDPOINT)
 

@@ -66,5 +66,5 @@ sync-windows:
 	rm -rf windows/Pipfile
 	cp Pipfile windows/
 
-build:
-	python setup.py sdist bdist_wheel
+build: clean
+	python -m build .
