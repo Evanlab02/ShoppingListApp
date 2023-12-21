@@ -43,7 +43,6 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    context = {}
     user = request.user
     store_name = request.POST.get("store-input")
     description = request.POST.get("description-input")
@@ -62,8 +61,7 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
 
     try:
         store = await create(new_store, user)
-        context = store.model_dump()
+        store_id = store.id  # type: ignore
+        return HttpResponseRedirect(f"/stores/detail/{store_id}")
     except (StoreAlreadyExists, InvalidStoreType) as error:
         return HttpResponseRedirect(f"/stores/{CREATE_PAGE}?error={str(error)}")
-
-    return render(request, "stores/detail.html", context=context)
