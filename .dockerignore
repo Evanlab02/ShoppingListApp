@@ -4,7 +4,6 @@ Makefile
 README.md
 Pipfile
 Pipfile.lock
-version.txt
 .gitignore
 dev-requirements.txt
 .pytest_cache
@@ -21,3 +20,4 @@ shoppingapp/settings/*
 !shoppingapp/settings/settings.py
 !shoppingapp/settings/dev_settings.py
 .env
+windows/*

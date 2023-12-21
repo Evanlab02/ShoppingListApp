@@ -1,0 +1,18 @@
+{% extends "stores/base.html" %}
+
+{% block navbar %}
+<header class="navbar">
+    <div class="navbar-item">
+        <h2>Create Store</h2>
+        <div class="menu-list-button">
+            <sl-icon-button name="speedometer" onclick="window.location.href='/shopping/dashboard/'" />
+        </div>
+        <div class="menu-list-button">
+            <sl-icon-button name="bag" onclick="window.location.href='/items/me'" />
+        </div>
+        <div class="menu-list-button">
+            <sl-icon-button name="shop-window" onclick="window.location.href='/stores/me'" />
+        </div>
+    </div>
+</header>
+{% endblock %}

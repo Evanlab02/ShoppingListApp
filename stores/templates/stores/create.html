@@ -1,0 +1,52 @@
+{% extends 'stores/default_navbar.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'stores/form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="form-wrapper">
+        <div class="form-top create-top">
+            <h2 id="form-heading">Create Store</h2>
+        </div>
+        {% if error %}
+        <div class="form-middle">
+            <p id="form-error" class="error-message">{{ error }}</p>
+        </div>
+        {% endif %}
+        <form class="form-bottom" method="post" action="{% url 'store_create_action' %}">
+            {% csrf_token %}
+            <fieldset>
+                <div class="form-row">
+                    <legend>Store Details</legend>
+                </div>
+                <div class="form-row">
+                    <label for="store-input">Store:</label>
+                    <input class="text-input" type="text" name="store-input" id="store-input">
+                </div>
+                <div class="form-row">
+                    <label for="store-type-input">Store Type:</label>
+                    <select class="text-input" name="store-type-input" id="store-type-input">
+                        <option value="Online">Online</option>
+                        <option value="In-Store">In-Store</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="description-input">Description:</label>
+                    <input class="text-input" type="text" name="description-input" id="description-input">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="submit-create-store" class="submit-input" type="submit" value="Create Store">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="cancel-create-store" class="cancel-input" type="button" value="Cancel"
+                        onclick="window.location.href='/items/stores/me'">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-"""Contains integration tests for the create store endpoint."""
+"""Contains integration tests for the stores endpoints."""
 
 from unittest import TestCase
 
@@ -19,8 +19,8 @@ SUBMIT_LOGIN = INPUT_MAPPING.get("submit-login", "submit-login")
 TOKEN_ID = "api-token"
 
 
-class TestAuthEndpoints(TestCase):
-    """Contains tests for the create store endpoint."""
+class TestStoreEndpoints(TestCase):
+    """Contains tests for the store endpoints."""
 
     driver: webdriver.Chrome
     delay: int
@@ -47,9 +47,9 @@ class TestAuthEndpoints(TestCase):
         """Test that a user can register."""
         url = "http://localhost:7001/api/v1/auth/register"
         data = {
-            "username": "CreateStoreTester1",
-            "password": "CreateStoreTester1",
-            "password_confirmation": "CreateStoreTester1",
+            "username": "StoreTester1",
+            "password": "StoreTester1",
+            "password_confirmation": "StoreTester1",
             "email": "CreateStoreTester1@gmail.com",
             "first_name": "Create",
             "last_name": "Tester",
@@ -63,8 +63,8 @@ class TestAuthEndpoints(TestCase):
         """Test that a user can login."""
         url = "http://localhost:7001/api/v1/auth/login"
         data = {
-            "username": "CreateStoreTester1",
-            "password": "CreateStoreTester1",
+            "username": "StoreTester1",
+            "password": "StoreTester1",
         }
         response = self.session.post(url, json=data)
         self.assertEqual(response.status_code, 200)
@@ -74,8 +74,8 @@ class TestAuthEndpoints(TestCase):
     def test_3_login_with_browser(self) -> None:
         self.driver.get(LOGIN_URL)
 
-        self.driver.find_element(value=USERNAME_INPUT).send_keys("CreateStoreTester1")
-        self.driver.find_element(value=PASSWORD_INPUT).send_keys("CreateStoreTester1")
+        self.driver.find_element(value=USERNAME_INPUT).send_keys("StoreTester1")
+        self.driver.find_element(value=PASSWORD_INPUT).send_keys("StoreTester1")
         self.driver.find_element(value=SUBMIT_LOGIN).click()
 
         self.assertEqual(self.driver.current_url, DASHBOARD_URL)
@@ -88,13 +88,16 @@ class TestAuthEndpoints(TestCase):
         self.assertNotEqual(api_token, "")
 
         payload = {
-            "name": "CreateStoreTester1",
-            "description": "CreateStoreTester1",
+            "name": "StoreTester1",
+            "description": "StoreTester1",
             "store_type": 3,
         }
         headers = {"X-API-Key": api_token}
         response = self.session.post(CREATE_URL, json=payload, headers=headers)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()["name"], "CreateStoreTester1")
-        self.assertEqual(response.json()["description"], "CreateStoreTester1")
-        self.assertEqual(response.json()["store_type"], "Both")
+        self.assertEqual(response.json()["name"], "StoreTester1")
+        self.assertEqual(response.json()["description"], "StoreTester1")
+        self.assertEqual(response.json()["store_type"], 3)
+        self.assertIsInstance(response.json()["id"], int)
+        self.assertIsInstance(response.json()["created_at"], str)
+        self.assertIsInstance(response.json()["updated_at"], str)

@@ -17,10 +17,55 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Setup Auth Routes
 - [x] Setup Auth Views
 
-### Store App
+#### Store App
 
-- [x] Setup Store App
-- [ ] Setup Store Repository
-- [ ] Setup Store Service(s)
-- [ ] Setup Store Routes
-- [ ] Setup Store Views
+- [x] Store App Setup
+- [x] Store Create API
+- [x] Create Store Page
+- [ ] Store Type Mapping API
+- [ ] Store Aggregate API
+- [ ] View all stores API
+- [ ] View all stores page (Overview)
+- [ ] View personal stores API
+- [ ] View personal stores page (Overview)
+- [ ] Store Detail API
+- [ ] View store page (Detail)
+- [ ] Update store API
+- [ ] Update store page
+- [ ] Delete store API
+- [ ] Delete store page
+
+#### E2E Tests Rewrite
+
+- [ ] Add custom command that pre-populates the database with test data
+- [ ] Add custom command that clears the database
+- [ ] Rewrite E2E Tests to utilize the custom commands
+
+#### Item App
+
+- [ ] Item App Setup
+- [ ] Item Create API
+- [ ] Item Create Page
+- [ ] Item Aggregate API
+- [ ] View all items API
+- [ ] View all items page (Overview)
+- [ ] View personal items API
+- [ ] View personal items page (Overview)
+- [ ] Item Detail API
+- [ ] View item page (Detail)
+- [ ] Update item API
+- [ ] Update item page
+- [ ] Delete item API
+- [ ] Delete item page
+
+#### Dashboard App
+
+- [ ] Dashboard App Setup
+- [ ] Dashboard Overview API
+- [ ] Dashboard Overview recent items API
+- [ ] Dashboard Overview history API
+
+#### Dependencies (Repos)
+
+- [ ] Update FE Repo to adhere to new refactor
+- [ ] Update Base repo to adhere to new refactor
