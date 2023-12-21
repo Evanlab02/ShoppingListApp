@@ -1,5 +1,5 @@
 """
-Contains end-to-end tests for the store create page.
+Contains end-to-end tests for the store pages.
 """
 
 from unittest import TestCase
@@ -31,14 +31,14 @@ SUBMIT_REGISTRATION = INPUT_MAPPING.get("submit-register", "submit-register")
 ERROR_TEXT = "error-text"
 
 # Mock data
-MOCK_USERNAME = "StoreCreateTestUser"
-MOCK_PASSWORD = "TestStoreCreate"
+MOCK_USERNAME = "StoreTestUser"
+MOCK_PASSWORD = "TestStore"
 MOCK_FIRST_NAME = "Selenium"
-MOCK_LAST_NAME = "Create"
-MOCK_EMAIL = "testcreate@selenium.com"
+MOCK_LAST_NAME = "Stores"
+MOCK_EMAIL = "teststores@selenium.com"
 
 
-class TestStoreCreatePage(TestCase):
+class TestStorePages(TestCase):
     """Contains end-to-end tests for the store create page."""
 
     driver: webdriver.Chrome
@@ -62,7 +62,10 @@ class TestStoreCreatePage(TestCase):
     def test_01_get_create_page_without_being_logged_in(self) -> None:
         """Test that a user cannot access the create store page without being logged in."""
         self.driver.get(STORE_CREATE_URL)
-        self.assertEqual(self.driver.current_url, f"{LOGIN_URL}?next=/stores/create")
+        self.assertEqual(
+            self.driver.current_url,
+            f"{LOGIN_URL}?error=You%20must%20be%20logged%20in%20to%20access%20that%20page.",
+        )
 
     def test_02_register(self) -> None:
         """Test that a user can register."""
