@@ -121,3 +121,17 @@ class TestStorePages(TestCase):
 
         error_text = self.driver.find_element(value="form-error").text
         self.assertEqual(error_text, "This is an error")
+
+    def test_06_create_store(self) -> None:
+        """Test that a user can create a store."""
+        self.driver.get(STORE_CREATE_URL)
+
+        self.driver.find_element(value="store-input").send_keys("Test Store")
+        self.driver.find_element(value="store-type-input").send_keys("Both")
+        self.driver.find_element(value="description-input").send_keys(
+            "Test Description"
+        )
+        self.driver.find_element(value="submit-create-store").click()
+
+        current_url = self.driver.current_url
+        self.assertTrue(current_url.startswith("http://localhost:7001/stores/detail/"))

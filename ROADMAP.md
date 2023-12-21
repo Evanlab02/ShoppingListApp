@@ -63,3 +63,8 @@ Find below the roadmap for the project. It is subject to change.
 - [ ] Dashboard Overview API
 - [ ] Dashboard Overview recent items API
 - [ ] Dashboard Overview history API
+
+#### Dependencies (Repos)
+
+- [ ] Update FE Repo to adhere to new refactor
+- [ ] Update Base repo to adhere to new refactor
