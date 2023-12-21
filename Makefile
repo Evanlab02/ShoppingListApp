@@ -1,4 +1,4 @@
-.PHONY: clean requirements format lint up down dev migrations refresh e2e integration test
+.PHONY: clean requirements format lint up down dev migrations refresh e2e integration test sync-windows
 
 clean:
 	@rm -rf .mypy_cache \

@@ -17,7 +17,7 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Setup Auth Routes
 - [x] Setup Auth Views
 
-#### Store App
+#### Store App (Medium Priority)
 
 - [x] Store App Setup
 - [x] Store Create API
@@ -35,13 +35,13 @@ Find below the roadmap for the project. It is subject to change.
 - [ ] Delete store API
 - [ ] Delete store page
 
-#### E2E Tests Rewrite
+#### E2E Tests Rewrite (High Priority)
 
 - [ ] Add custom command that pre-populates the database with test data
 - [ ] Add custom command that clears the database
 - [ ] Rewrite E2E Tests to utilize the custom commands
 
-#### Item App
+#### Item App (Medium Priority)
 
 - [ ] Item App Setup
 - [ ] Item Create API
@@ -58,14 +58,23 @@ Find below the roadmap for the project. It is subject to change.
 - [ ] Delete item API
 - [ ] Delete item page
 
-#### Dashboard App
+#### Dashboard App (Low Priority)
 
 - [ ] Dashboard App Setup
-- [ ] Dashboard Overview API
-- [ ] Dashboard Overview recent items API
-- [ ] Dashboard Overview history API
+- [ ] Dashboard Overview API (Mock data)
+- [ ] Dashboard Overview recent items API (Mock data)
+- [ ] Dashboard Overview history API (Mock data)
 
-#### Dependencies (Repos)
+#### New run method (High Priority)
+
+- [ ] Add setup tools to project
+- [ ] Add pyproject.toml to project
+- [ ] Add new app configs to project
+- [ ] Add build to makefile rules
+- [ ] Update dockerfile to utilize new run method
+- [ ] Update docker-compose to utilize new run method
+
+#### Dependencies (Repos) (High Priority)
 
 - [ ] Update FE Repo to adhere to new refactor
 - [ ] Update Base repo to adhere to new refactor
