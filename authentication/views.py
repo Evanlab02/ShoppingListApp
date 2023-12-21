@@ -5,13 +5,17 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from authentication.decorators import async_login_required, login_required
+from authentication.decorators import (
+    async_login_required,
+    login_required,
+    redirect_if_logged_in,
+)
+from authentication.decorators.login import async_redirect_if_logged_in
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
     InvalidUserDetails,
     NonMatchingCredentials,
-    UserAlreadyLoggedIn,
     UsernameAlreadyExists,
 )
 from authentication.services.views.client_service import disable_client, enable_client
@@ -37,6 +41,7 @@ DISABLE_CLIENT_ROUTE = "token/disable"
 
 
 @require_http_methods(["POST"])
+@redirect_if_logged_in
 def login_action(request: HttpRequest) -> HttpResponse:
     """
     Handle the login action.
@@ -50,13 +55,12 @@ def login_action(request: HttpRequest) -> HttpResponse:
     try:
         login(request)
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
-    except UserAlreadyLoggedIn:
-        return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
     except InvalidCredentials as error:
         return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
 
 
 @require_http_methods(["GET"])
+@redirect_if_logged_in
 def login_view(request: HttpRequest) -> HttpResponse:
     """
     Handle the login view.
@@ -67,11 +71,8 @@ def login_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    try:
-        context = get_login_view_context(request)
-        return render(request, "auth/index.html", context.model_dump())
-    except UserAlreadyLoggedIn:
-        return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
+    context = get_login_view_context(request)
+    return render(request, "auth/index.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
@@ -107,6 +108,7 @@ def logout_view(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["POST"])
+@async_redirect_if_logged_in
 async def register_action(request: HttpRequest) -> HttpResponse:
     """
     Handle the register action.
@@ -120,8 +122,6 @@ async def register_action(request: HttpRequest) -> HttpResponse:
     try:
         await register_user(request)
         return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
-    except UserAlreadyLoggedIn:
-        return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
     except (
         InvalidUserDetails,
         NonMatchingCredentials,
@@ -132,6 +132,7 @@ async def register_action(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
+@redirect_if_logged_in
 def register_view(request: HttpRequest) -> HttpResponse:
     """
     Handle the register view.
@@ -142,11 +143,8 @@ def register_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    try:
-        context = get_register_page_context(request)
-        return render(request, "auth/register.html", context.model_dump())
-    except UserAlreadyLoggedIn:
-        return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
+    context = get_register_page_context(request)
+    return render(request, "auth/register.html", context.model_dump())
 
 
 @require_http_methods(["GET"])

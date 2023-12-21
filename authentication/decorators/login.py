@@ -40,3 +40,33 @@ def async_login_required(function: Any) -> Any:
             return await function(request, *args, **kw)
 
     return wrapper
+
+
+def redirect_if_logged_in(function: Any) -> Any:
+    """Redirects user to dashboard page if logged in."""
+
+    def wrapper(request: HttpRequest, *args: Any, **kw: Any) -> Any:
+        """Wrap around child function."""
+        user = request.user
+        is_authenticated = is_user_authenticated(user)
+        if is_authenticated:
+            return HttpResponseRedirect("/shopping/dashboard/")
+        else:
+            return function(request, *args, **kw)
+
+    return wrapper
+
+
+def async_redirect_if_logged_in(function: Any) -> Any:
+    """Redirects user to dashboard page if logged in."""
+
+    async def wrapper(request: HttpRequest, *args: Any, **kw: Any) -> Any:
+        """Wrap around child function."""
+        user = request.user
+        is_authenticated = await sync_to_async(is_user_authenticated)(user)
+        if is_authenticated:
+            return HttpResponseRedirect("/shopping/dashboard/")
+        else:
+            return await function(request, *args, **kw)
+
+    return wrapper
