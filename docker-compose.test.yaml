@@ -14,7 +14,7 @@ services:
       DEV_DB_PORT: ${DEV_DB_PORT}
       SERVICE_PORT: ${SERVICE_PORT}
       TESTS_ENVIRONMENT: "True"
-    command: shoppingapp
+    command: python manage.py runserver
     expose:
       - "7001"
     ports:
@@ -26,4 +26,3 @@ services:
 networks:
   dev-shopping-app-network:
     driver: bridge
-
