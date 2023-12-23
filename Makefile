@@ -46,16 +46,16 @@ refresh: down
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
 e2e: refresh
-	docker compose -f docker-compose.test.yaml up -d --build 
 	python manage.py makemigrations
 	python manage.py migrate
+	docker compose -f docker-compose.test.yaml up -d --build
 	pytest -v tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
 integration: refresh
-	docker compose -f docker-compose.test.yaml up -d --build 
 	python manage.py makemigrations
 	python manage.py migrate
+	docker compose -f docker-compose.test.yaml up -d --build 
 	pytest -v tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 

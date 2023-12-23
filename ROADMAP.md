@@ -75,6 +75,11 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Update docker-compose to utilize new run method
 - [x] Update release-please worklows to upload new artifacts (REQUIRES TESTING)
 
+#### MISC
+
+- [x] Add SQLite settings/config
+- [x] Update tests to use SQLite settings (REQUIRES TESTING FOR E2E Tests)
+
 #### Dependencies (Repos) (High Priority)
 
 - [ ] Update FE Repo to adhere to new refactor
