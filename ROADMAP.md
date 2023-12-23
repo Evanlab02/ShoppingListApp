@@ -73,7 +73,7 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Add build to makefile rules
 - [x] Update dockerfile to utilize new run method
 - [x] Update docker-compose to utilize new run method
-- [ ] Update release-please worklows to upload new artifacts
+- [x] Update release-please worklows to upload new artifacts (REQUIRES TESTING)
 
 #### Dependencies (Repos) (High Priority)
 
