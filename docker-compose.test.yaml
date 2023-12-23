@@ -1,20 +1,15 @@
 version: "3"
 
 services:
-  dev-shopping-app-be:
+  lite-shopping-app-be:
     build: .
     environment:
       DEFAULT_SETTINGS_MODULE: shoppingapp.settings.lite_settings
-      DEV_DATABASE_USER: ${DEV_DATABASE_USER}
-      DEV_DATABASE_PASSWORD: ${DEV_DATABASE_PASSWORD}
-      DEV_DATABASE_NAME: ${DEV_DATABASE_NAME}
-      DEV_DJANGO_KEY: ${DEV_DJANGO_KEY}
-      DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
-      DEV_DB_HOST: ${DEV_DB_HOST}
-      DEV_DB_PORT: ${DEV_DB_PORT}
+      LOCAL_DJANGO_KEY: ${LOCAL_DJANGO_KEY}
+      LOCAL_DJANGO_HOST: ${LOCAL_DJANGO_HOST}
       SERVICE_PORT: ${SERVICE_PORT}
       TESTS_ENVIRONMENT: "True"
-    command: python manage.py runserver
+    command: python manage.py runserver 0.0.0.0:7001
     expose:
       - "7001"
     ports:

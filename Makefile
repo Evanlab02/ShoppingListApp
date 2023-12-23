@@ -44,6 +44,7 @@ migrations:
 
 refresh: down
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
+	rm -rf shoppingapp/db.sqlite3
 
 e2e: refresh
 	python manage.py makemigrations
