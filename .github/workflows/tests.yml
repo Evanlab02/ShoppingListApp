@@ -47,9 +47,6 @@ jobs:
       - name: Start Develop DB
         run: |
           docker compose -f docker-compose.test.yaml up -d --build
-      - name: Get Logs
-        run: |
-          docker logs shoppinglistapp-be-dev-shopping-app-be-1
       - name: Run Tests
         run: |
           pytest -v tests/
