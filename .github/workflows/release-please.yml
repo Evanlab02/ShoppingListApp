@@ -38,10 +38,41 @@ jobs:
       - name: Zip App
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          zip -r backend.zip authentication shoppingapp items stores lists .dockerignore Dockerfile Pipfile Pipfile.lock manage.py env.template requirements.txt requirements-dev.txt CHANGELOG.md README.md docker-compose.yml
-      - name: Upload Artifact
+          zip -r backend.zip \
+          authentication \
+          shoppingapp \
+          stores \
+          windows \
+          .env.template \
+          Dockerfile \
+          docker-compose.yaml \
+          LICENSE \
+          manage.py \
+          Pipfile \
+          Pipfile.lock \
+          pyproject.toml \
+          README.md \
+          requirements.txt \
+          ROADMAP.md \
+          setup.py \
+          version.txt
+      - name: Upload zip
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           gh release upload ${{ steps.release.outputs.tag_name }} backend.zip
+      - name: Install dependencies
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          pip install -r requirements-dev.txt
+          pip install build
+      - name: Build App
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          python -m build .
+      - name: Upload build artifacts
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          gh release upload ${{ steps.release.outputs.tag_name }} dist/*.whl
+          gh release upload ${{ steps.release.outputs.tag_name }} dist/*.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

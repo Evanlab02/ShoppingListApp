@@ -35,9 +35,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Start Develop DB
-        run: |
-          docker compose -f docker-compose.test.yaml up -d --build
       - name: Setup
         run: |
           pip install -r requirements-dev.txt
@@ -47,9 +44,9 @@ jobs:
       - name: Run Migrations
         run: |
           python manage.py migrate
-      - name: Get Logs
+      - name: Start Develop DB
         run: |
-          docker logs shoppinglistapp-be-dev-shopping-app-be-1
+          docker compose -f docker-compose.test.yaml up -d --build
       - name: Run Tests
         run: |
           pytest -v tests/

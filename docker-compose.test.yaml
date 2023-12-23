@@ -1,41 +1,15 @@
 version: "3"
 
 services:
-  dev-shopping-app-db:
-    image: postgres:alpine3.18
-    expose:
-      - "5432"
-    ports:
-      - "5435:5432"
-    environment:
-      POSTGRES_USER: ${DEV_DATABASE_USER}
-      POSTGRES_PASSWORD: ${DEV_DATABASE_PASSWORD}
-      POSTGRES_DB: ${DEV_DATABASE_NAME}
-    volumes:
-      - e2e-shopping-app-db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${DEV_DATABASE_USER}" ]
-      interval: 5s
-      timeout: 30s
-      retries: 3
-      start_period: 5s
-    networks:
-      - dev-shopping-app-network
-    restart: always
-
-  dev-shopping-app-be:
+  lite-shopping-app-be:
     build: .
     environment:
-      DEFAULT_SETTINGS_MODULE: shoppingapp.settings.dev_settings
-      DEV_DATABASE_USER: ${DEV_DATABASE_USER}
-      DEV_DATABASE_PASSWORD: ${DEV_DATABASE_PASSWORD}
-      DEV_DATABASE_NAME: ${DEV_DATABASE_NAME}
-      DEV_DJANGO_KEY: ${DEV_DJANGO_KEY}
-      DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
-      DEV_DB_HOST: ${DEV_DB_HOST}
-      DEV_DB_PORT: ${DEV_DB_PORT}
+      DEFAULT_SETTINGS_MODULE: shoppingapp.settings.lite_settings
+      LOCAL_DJANGO_KEY: ${LOCAL_DJANGO_KEY}
+      LOCAL_DJANGO_HOST: ${LOCAL_DJANGO_HOST}
       SERVICE_PORT: ${SERVICE_PORT}
-    command: shoppingapp
+      TESTS_ENVIRONMENT: "True"
+    command: python manage.py runserver 0.0.0.0:7001
     expose:
       - "7001"
     ports:
@@ -43,14 +17,7 @@ services:
     networks:
       - dev-shopping-app-network
     restart: always
-    depends_on:
-      dev-shopping-app-db:
-        condition: service_healthy
 
 networks:
   dev-shopping-app-network:
     driver: bridge
-
-volumes:
-  e2e-shopping-app-db-data:
-    external: false

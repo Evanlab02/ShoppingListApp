@@ -22,7 +22,7 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Store App Setup
 - [x] Store Create API
 - [x] Create Store Page
-- [ ] Store Type Mapping API
+- [x] Store Type Mapping API
 - [ ] Store Aggregate API
 - [ ] View all stores API
 - [ ] View all stores page (Overview)
@@ -73,7 +73,12 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Add build to makefile rules
 - [x] Update dockerfile to utilize new run method
 - [x] Update docker-compose to utilize new run method
-- [ ] Update release-please worklows to upload new artifacts
+- [x] Update release-please worklows to upload new artifacts
+
+#### MISC
+
+- [x] Add SQLite settings/config
+- [x] Update tests to use SQLite settings
 
 #### Dependencies (Repos) (High Priority)
 
