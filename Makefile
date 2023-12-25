@@ -1,4 +1,4 @@
-.PHONY: clean requirements format lint up down dev migrations refresh e2e integration test sync-windows
+.PHONY: clean requirements format lint up down dev migrations refresh e2e integration test sync-windows build
 
 clean:
 	@rm -rf .mypy_cache \
@@ -59,9 +59,6 @@ integration: refresh
 	docker compose -f docker-compose.test.yaml up -d --build 
 	pytest -v tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
-
-test-stores: migrations
-	pytest stores/
 
 sync-windows:
 	rm -rf windows/Pipfile
