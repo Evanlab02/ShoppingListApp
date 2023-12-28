@@ -44,6 +44,9 @@ jobs:
       - name: Run Migrations
         run: |
           python manage.py migrate
+      - name: Populate DB
+        run: |
+          python manage.py populate
       - name: Start Develop DB
         run: |
           docker compose -f docker-compose.test.yaml up -d --build

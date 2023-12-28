@@ -41,7 +41,7 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Add custom command that pre-populates the database with test data
 - [x] Add custom command that clears the database (Not necessary as the container gets destroyed)
 - [x] Rewrite E2E Tests to utilize the custom commands
-- [ ] Adjust E2E/Integration test workflow to utilize the custom commands
+- [x] Adjust E2E/Integration test workflow to utilize the custom commands
 
 #### Item App (Medium Priority)
 
