@@ -24,6 +24,7 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Create Store Page
 - [x] Store Type Mapping API
 - [ ] Store Aggregate API
+- [ ] Personal Store Aggregate API
 - [ ] View all stores API
 - [ ] View all stores page (Overview)
 - [ ] View personal stores API
@@ -37,9 +38,10 @@ Find below the roadmap for the project. It is subject to change.
 
 #### E2E Tests Rewrite (High Priority)
 
-- [ ] Add custom command that pre-populates the database with test data
-- [ ] Add custom command that clears the database
-- [ ] Rewrite E2E Tests to utilize the custom commands
+- [x] Add custom command that pre-populates the database with test data
+- [x] Add custom command that clears the database (Not necessary as the container gets destroyed)
+- [x] Rewrite E2E Tests to utilize the custom commands
+- [x] Adjust E2E/Integration test workflow to utilize the custom commands
 
 #### Item App (Medium Priority)
 
