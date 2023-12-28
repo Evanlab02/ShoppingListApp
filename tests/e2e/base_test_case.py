@@ -1,6 +1,4 @@
-"""
-Contains the BaseTestCase class for end-to-end tests.
-"""
+"""Contains the BaseTestCase class for end-to-end tests."""
 
 from unittest import TestCase
 

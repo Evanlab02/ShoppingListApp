@@ -1,6 +1,4 @@
-"""
-Contains the BaseTestCase class for integration tests.
-"""
+"""Contains the BaseTestCase class for integration tests."""
 
 from unittest import TestCase
 
