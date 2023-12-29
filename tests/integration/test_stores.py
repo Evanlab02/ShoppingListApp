@@ -65,4 +65,4 @@ class TestStoreEndpoints(BaseTestCase):
         """Test that a user can get the store detail."""
         response = self.session.get(f"{DETAIL_URL}/4000")
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["detail"], "Store with id '100' does not exist.")
+        self.assertEqual(response.json()["detail"], "Store with id '4000' does not exist.")
