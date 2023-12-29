@@ -117,7 +117,7 @@ def store_does_not_exist_handler(
     request: HttpRequest, exception: StoreDoesNotExist
 ) -> HttpResponse:
     """Handle StoreDoesNotExist exception."""
-    return api.create_response(request, {"detail": str(exception)}, status=400)
+    return api.create_response(request, {"detail": str(exception)}, status=404)
 
 
 urlpatterns = [

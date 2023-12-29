@@ -2,7 +2,9 @@
 branch = False
 omit = 
     ./tests/*
-    ./shoppingapp/*
+    ./shoppingapp/config/*
+    ./shoppingapp/schemas/*
+    ./shoppingapp/settings/*
     ./manage.py
     ./**/tests/*
     ./setup.py

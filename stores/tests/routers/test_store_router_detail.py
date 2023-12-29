@@ -58,3 +58,13 @@ class TestStoreRouter(TestCase):
         self.assertIsInstance(response_json["id"], int)
         self.assertIsNotNone(response_json.get("created_at"))
         self.assertIsNotNone(response_json.get("updated_at"))
+
+    def test_get_store_detail_invalid_id(self) -> None:
+        """Test getting a store detail with an invalid id."""
+        response = self.client.get(
+            f"{DETAIL_ENDPOINT}/100",
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["detail"], "Store with id '100' does not exist.")
