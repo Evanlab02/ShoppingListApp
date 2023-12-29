@@ -5,6 +5,7 @@ import requests
 from tests.integration.base_test_case import BaseTestCase
 
 CREATE_URL = "http://localhost:7001/api/v1/stores/create"
+DETAIL_URL = "http://localhost:7001/api/v1/stores/detail"
 MAPPING_URL = "http://localhost:7001/api/v1/stores/types/mapping"
 
 
@@ -48,3 +49,14 @@ class TestStoreEndpoints(BaseTestCase):
         self.assertEqual(response.json()["1"], "Online")
         self.assertEqual(response.json()["2"], "In-Store")
         self.assertEqual(response.json()["3"], "Both")
+
+    def test_3_get_store_detail(self) -> None:
+        """Test that a user can get the store detail."""
+        response = self.session.get(f"{DETAIL_URL}/1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["name"], "Base Test Store")
+        self.assertEqual(response.json()["description"], "This is a test store.")
+        self.assertEqual(response.json()["store_type"], 3)
+        self.assertEqual(response.json()["id"], 1)
+        self.assertIsInstance(response.json()["created_at"], str)
+        self.assertIsInstance(response.json()["updated_at"], str)

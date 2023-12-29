@@ -7,7 +7,7 @@ from authentication.auth.api_key import ApiKey
 from stores.constants import STORE_TYPE_MAPPING
 from stores.schemas.input import NewStore
 from stores.schemas.output import StoreSchema
-from stores.services.store_service import create
+from stores.services import store_service
 
 store_router = Router(tags=["Stores"], auth=ApiKey())
 
@@ -25,7 +25,7 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema
         StoreSchema: The created store.
     """
     user = request.user
-    store = await create(new_store, user)
+    store = await store_service.create(new_store, user)
     return store
 
 
@@ -41,3 +41,19 @@ async def get_mapping(request: HttpRequest) -> dict[int, str]:
         dict[int, str]: The mapping.
     """
     return STORE_TYPE_MAPPING
+
+
+@store_router.get("/detail/{store_id}", response={200: StoreSchema})
+async def get_store_detail(request: HttpRequest, store_id: int) -> StoreSchema:
+    """
+    Get the store details.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        store_id (int): The store ID.
+
+    Returns:
+        StoreSchema: The store details.
+    """
+    store = await store_service.get_store_detail(store_id)
+    return store
