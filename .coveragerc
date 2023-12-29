@@ -5,3 +5,6 @@ omit =
     ./shoppingapp/*
     ./manage.py
     ./**/tests/*
+    ./setup.py
+    ./conftest.py
+    ./**/migrations/*.py

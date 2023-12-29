@@ -3,8 +3,13 @@
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.constants import STORE_TYPE_MAPPING
-from stores.database.store_repo import create_store, does_name_exist
-from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
+from stores.database.store_repo import create_store, does_name_exist, get_store
+from stores.errors.api_exceptions import (
+    InvalidStoreType,
+    StoreAlreadyExists,
+    StoreDoesNotExist,
+)
+from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
 from stores.schemas.output import StoreSchema
 
@@ -79,3 +84,24 @@ async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousU
     store = await create_store(name, store_type_value, description, user)
     store_schema = StoreSchema.from_orm(store)
     return store_schema
+
+
+async def get_store_detail(store_id: int) -> StoreSchema:
+    """
+    Get the store detail.
+
+    Args:
+        store_id (int): The id of the store.
+
+    Returns:
+        StoreSchema: The store detail.
+
+    Raises:
+        StoreDoesNotExist: If the store does not exist.
+    """
+    try:
+        store = await get_store(store_id)
+        store_schema = StoreSchema.from_orm(store)
+        return store_schema
+    except Store.DoesNotExist:
+        raise StoreDoesNotExist(store_id)
