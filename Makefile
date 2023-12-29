@@ -24,7 +24,7 @@ e2e: pre-test migrations
 	python manage.py populate
 	docker compose -f docker-compose.test.yaml up -d --build
 	@clear
-	pytest -v tests/
+	pytest tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
 format:
@@ -35,7 +35,7 @@ integration: pre-test migrations
 	python manage.py populate
 	docker compose -f docker-compose.test.yaml up -d --build
 	@clear
-	pytest -v tests/
+	pytest tests/
 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
 
 lint: clean
@@ -63,7 +63,7 @@ sync-windows:
 	cp Pipfile windows/
 
 test: migrations
-	pytest -v --ignore=tests/
+	pytest --ignore=tests/
 
 up:
 	docker compose up -d --build

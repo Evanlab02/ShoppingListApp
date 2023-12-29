@@ -31,7 +31,11 @@ from authentication.errors.api_exceptions import (
     UserNotLoggedIn,
 )
 from authentication.routers.auth_router import auth_router
-from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
+from stores.errors.api_exceptions import (
+    InvalidStoreType,
+    StoreAlreadyExists,
+    StoreDoesNotExist,
+)
 from stores.routers.store_router import store_router
 
 version = open("version.txt").read().strip()
@@ -106,6 +110,14 @@ def store_already_exists_handler(
 ) -> HttpResponse:
     """Handle StoreAlreadyExists exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(StoreDoesNotExist)
+def store_does_not_exist_handler(
+    request: HttpRequest, exception: StoreDoesNotExist
+) -> HttpResponse:
+    """Handle StoreDoesNotExist exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=404)
 
 
 urlpatterns = [

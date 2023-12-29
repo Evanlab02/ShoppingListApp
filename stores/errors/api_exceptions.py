@@ -23,3 +23,12 @@ class StoreAlreadyExists(Exception):
         """Initialize the exception."""
         self.store_name = store_name
         super().__init__(f"Store '{store_name}' already exists.")
+
+
+class StoreDoesNotExist(Exception):
+    """Raised when the store does not exist."""
+
+    def __init__(self, store_id: int) -> None:
+        """Initialize the exception."""
+        self.store_id = store_id
+        super().__init__(f"Store with id '{store_id}' does not exist.")
