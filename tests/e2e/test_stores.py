@@ -2,6 +2,8 @@
 Contains end-to-end tests for the store pages.
 """
 
+from selenium.webdriver.common.by import By
+
 from tests.e2e.base_test_case import BaseTestCase
 
 # Urls
@@ -67,3 +69,17 @@ class TestStorePages(BaseTestCase):
 
         current_url = self.driver.current_url
         self.assertTrue(current_url.startswith("http://localhost:7001/stores/detail/"))
+
+    def test_05_store_detail_page(self) -> None:
+        """Test the store detail page."""
+        self.assertEqual(self.driver.find_element(value="store-name-sub-value").text, "Test Store")
+        self.assertEqual(
+            self.driver.find_element(value="store-type-sub-value").text, "Online & In-Store"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="number-of-items-sub-value").text, "COMING SOON"
+        )
+        self.assertEqual(self.driver.find_element(value="user-sub-value").text, "basetestuser1")
+
+        row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
+        self.assertEqual(len(row_elements), 0)

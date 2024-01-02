@@ -3,6 +3,8 @@ FROM python:3.11.6-slim AS wheel-builder
 WORKDIR /build
 
 COPY requirements.txt /build/requirements.txt
+RUN pip install -r requirements.txt
+
 COPY version.txt /build/version.txt
 COPY shoppingapp /build/shoppingapp
 COPY authentication /build/authentication
@@ -14,7 +16,6 @@ COPY MANIFEST.in /build/MANIFEST.in
 COPY version.txt /build/version.txt
 
 RUN pip install build
-RUN pip install -r requirements.txt
 RUN python -m build
 
 

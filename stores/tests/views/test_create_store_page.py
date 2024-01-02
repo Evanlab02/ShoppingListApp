@@ -69,7 +69,7 @@ class TestStoreCreateView(TestCase):
         store = Store.objects.get(name="test")
         store_id = store.id
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f"/stores/detail/{store_id}", 302, 404)
+        self.assertRedirects(response, f"/stores/detail/{store_id}", 302, 200)
 
     def test_post_create_page_existing_name(self) -> None:
         """Test the create page action with an existing name."""
@@ -84,7 +84,7 @@ class TestStoreCreateView(TestCase):
         store = Store.objects.get(name="test")
         store_id = store.id
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f"/stores/detail/{store_id}", 302, 404)
+        self.assertRedirects(response, f"/stores/detail/{store_id}", 302, 200)
 
         response = self.client.post(
             f"/stores/{CREATE_ACTION}",
