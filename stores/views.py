@@ -7,6 +7,7 @@ from pydantic import ValidationError
 
 from authentication.decorators import async_login_required
 from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
+from stores.schemas.contexts import BaseContext
 from stores.schemas.input import NewStore
 from stores.services.store_service import create
 
@@ -27,8 +28,11 @@ async def create_page(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     error = request.GET.get("error")
-    context = {"error": error}
-    return render(request, "stores/create.html", context)
+    context = BaseContext(
+        page_title="Create Store",
+        error=error,
+    )
+    return render(request, "stores/create.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
