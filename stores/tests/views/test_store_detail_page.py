@@ -5,6 +5,8 @@ from django.test import Client, TestCase
 
 from stores.models import ShoppingStore as Store
 
+TEMPLATE = "stores/detail.html"
+
 
 class TestStoreDetailView(TestCase):
     """Test the store detail view."""
@@ -42,11 +44,18 @@ class TestStoreDetailView(TestCase):
         """Test the GET method for the detail page."""
         response = self.client.get(f"/stores/detail/{self.store.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "stores/detail.html")
+        self.assertTemplateUsed(response, TEMPLATE)
 
     def test_get_detail_page_unauthorized(self) -> None:
         """Test the GET method for the detail page."""
         self.client.logout()
         response = self.client.get(f"/stores/detail/{self.store.id}")
         self.assertEqual(response.status_code, 302)
-        self.assertTemplateNotUsed(response, "stores/detail.html")
+        self.assertTemplateNotUsed(response, TEMPLATE)
+
+    def test_get_detail_page_invalid_id(self) -> None:
+        """Test the GET method for the detail page."""
+        response = self.client.get("/stores/detail/4000")
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateNotUsed(response, TEMPLATE)
+        self.assertEqual(response.content, b"This store does not exist.")

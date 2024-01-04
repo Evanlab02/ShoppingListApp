@@ -104,4 +104,4 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
         )
         return render(request, "stores/detail.html", context.model_dump())
     except StoreDoesNotExist:
-        return HttpResponse("This store does not exist.")
+        return HttpResponse("This store does not exist.", status=404)
