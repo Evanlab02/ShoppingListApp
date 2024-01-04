@@ -12,7 +12,8 @@ clean:
 	.pytest_cache \
 	build/ \
 	dist/ \
-	*.egg-info
+	*.egg-info \
+	shoppingapp/db.sqlite3
 
 dev:
 	python manage.py runserver 0.0.0.0:7001

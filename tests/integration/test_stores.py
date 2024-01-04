@@ -60,6 +60,7 @@ class TestStoreEndpoints(BaseTestCase):
         self.assertEqual(response.json()["id"], 1)
         self.assertIsInstance(response.json()["created_at"], str)
         self.assertIsInstance(response.json()["updated_at"], str)
+        self.assertEqual(response.json()["user"]["username"], "basetestuser1")
 
     def test_4_get_store_detail_invalid_id(self) -> None:
         """Test that a user can get the store detail."""

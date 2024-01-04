@@ -29,7 +29,7 @@ services:
       DEV_DB_HOST: ${DEV_DB_HOST}
       DEV_DB_PORT: ${DEV_DB_PORT}
       SERVICE_PORT: ${SERVICE_PORT}
-    command: shoppingapp
+    command: python manage.py runserver 0.0.0.0:7001
     expose:
       - "7001"
     ports:

@@ -17,8 +17,37 @@
 </head>
 
 <body class="body-block">
-    {% block navbar %}
-    {% endblock %}
+    <header class="navbar">
+        <div class="navbar-item">
+            <h2>{{ page_title }}</h2>
+            <div class="menu-list-button">
+                <sl-icon-button name="speedometer" onclick="window.location.href='/shopping/dashboard/'" />
+            </div>
+            <div class="menu-list-button">
+                <sl-icon-button name="bag" onclick="window.location.href='/items/me'" />
+            </div>
+            {% if not is_overview %}
+            <div class="menu-list-button">
+                <sl-icon-button name="shop-window" onclick="window.location.href='/stores/me'" />
+            </div>
+            {% endif %}
+            {% if is_personal and show_advanced_navigation and is_overview %}
+            <div class="menu-list-button">
+                <sl-icon-button name="person" onclick="window.location.href='/stores/me'" />
+            </div>
+            {% endif %}
+            {% if not is_personal and show_advanced_navigation and is_overview %}
+            <div class="menu-list-button">
+                <sl-icon-button name="people" onclick="window.location.href='/stores'" />
+            </div>
+            {% endif %}
+            {% if show_advanced_navigation %}
+            <div class="menu-list-button">
+                <sl-icon-button name="plus-circle" onclick="window.location.href='/stores/create'" />
+            </div>
+            {% endif %}
+        </div>
+    </header>
     {% block content %}
     {% endblock %}
 </body>
