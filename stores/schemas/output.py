@@ -1,7 +1,7 @@
 """Contains outgoing data schemas for the stores app."""
 
 from django.contrib.auth.models import User
-from ninja import ModelSchema
+from ninja import ModelSchema, Schema
 
 from stores.models import ShoppingStore as Store
 
@@ -33,3 +33,14 @@ class StoreSchema(ModelSchema):
             "created_at",
             "updated_at",
         ]
+
+
+class StoreAggregationSchema(Schema):
+    """Store aggregation schema for outgoing data."""
+
+    total_stores: int = 0
+    online_stores: int = 0
+    in_store_stores: int = 0
+    combined_stores: int = 0
+    combined_online_stores: int = 0
+    combined_in_store_stores: int = 0
