@@ -72,3 +72,19 @@ async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     """
     result = await store_service.aggregate()
     return result
+
+
+@store_router.get("/aggregate/me", response={200: StoreAggregationSchema})
+async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregationSchema:
+    """
+    Get the store aggregation by user.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        StoreAggregationSchema: The store aggregation by user.
+    """
+    user = request.user
+    result = await store_service.aggregate(user=user)
+    return result

@@ -62,3 +62,17 @@ class TestAggregation(TestCase):
         self.assertEqual(result_json["combined_stores"], 1)
         self.assertEqual(result_json["combined_online_stores"], 2)
         self.assertEqual(result_json["combined_in_store_stores"], 1)
+
+    def test_aggregation_by_user(self) -> None:
+        """Test the aggregation endpoint by user."""
+        self.client.force_login(self.user)
+        result = self.client.get("/api/v1/stores/aggregate/me")
+        self.assertEqual(result.status_code, 200)
+
+        result_json = result.json()
+        self.assertEqual(result_json["total_stores"], 1)
+        self.assertEqual(result_json["online_stores"], 1)
+        self.assertEqual(result_json["in_store_stores"], 0)
+        self.assertEqual(result_json["combined_stores"], 0)
+        self.assertEqual(result_json["combined_online_stores"], 1)
+        self.assertEqual(result_json["combined_in_store_stores"], 0)
