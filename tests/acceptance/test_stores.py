@@ -2,11 +2,12 @@
 
 import requests
 
-from tests.integration.base_test_case import BaseTestCase
+from tests.acceptance.base_test_case import BaseTestCase
 
 CREATE_URL = "http://localhost:7001/api/v1/stores/create"
 DETAIL_URL = "http://localhost:7001/api/v1/stores/detail"
 MAPPING_URL = "http://localhost:7001/api/v1/stores/types/mapping"
+AGGREGATION_URL = "http://localhost:7001/api/v1/stores/aggregate"
 
 
 class TestStoreEndpoints(BaseTestCase):
@@ -67,3 +68,14 @@ class TestStoreEndpoints(BaseTestCase):
         response = self.session.get(f"{DETAIL_URL}/4000")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["detail"], "Store with id '4000' does not exist.")
+
+    def test_5_get_store_aggregation(self) -> None:
+        """Test that a user can get the store aggregation."""
+        response = self.session.get(AGGREGATION_URL)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json()["total_stores"], int)
+        self.assertIsInstance(response.json()["online_stores"], int)
+        self.assertIsInstance(response.json()["in_store_stores"], int)
+        self.assertIsInstance(response.json()["combined_stores"], int)
+        self.assertIsInstance(response.json()["combined_online_stores"], int)
+        self.assertIsInstance(response.json()["combined_in_store_stores"], int)
