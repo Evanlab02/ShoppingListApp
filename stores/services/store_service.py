@@ -12,7 +12,7 @@ from stores.errors.api_exceptions import (
 )
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
-from stores.schemas.output import StoreSchema, UserSchema
+from stores.schemas.output import StoreAggregationSchema, StoreSchema, UserSchema
 
 
 def _get_store_type_label(store_type_value: int) -> str:
@@ -109,3 +109,14 @@ async def get_store_detail(store_id: int) -> StoreSchema:
         return store_schema
     except Store.DoesNotExist:
         raise StoreDoesNotExist(store_id)
+
+
+async def aggregate() -> StoreAggregationSchema:
+    """
+    TODO: Add docstring.
+    """
+    aggregation = await store_repo.aggregate_stores()
+    result = StoreAggregationSchema.model_validate(aggregation)
+    result.combined_online_stores = result.online_stores + result.combined_stores
+    result.combined_in_store_stores = result.in_store_stores + result.combined_stores
+    return result
