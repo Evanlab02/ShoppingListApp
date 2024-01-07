@@ -111,14 +111,16 @@ async def get_store_detail(store_id: int) -> StoreSchema:
         raise StoreDoesNotExist(store_id)
 
 
-async def aggregate() -> StoreAggregationSchema:
+async def aggregate(
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+) -> StoreAggregationSchema:
     """
     Aggregate the stores.
 
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
-    aggregation = await store_repo.aggregate_stores()
+    aggregation = await store_repo.aggregate_stores(user)
     result = StoreAggregationSchema.model_validate(aggregation)
     result.combined_online_stores = result.online_stores + result.combined_stores
     result.combined_in_store_stores = result.in_store_stores + result.combined_stores

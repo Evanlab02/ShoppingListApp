@@ -79,3 +79,14 @@ class TestStoreEndpoints(BaseTestCase):
         self.assertIsInstance(response.json()["combined_stores"], int)
         self.assertIsInstance(response.json()["combined_online_stores"], int)
         self.assertIsInstance(response.json()["combined_in_store_stores"], int)
+
+    def test_6_get_store_aggregation_personal(self) -> None:
+        """Test that a user can get the store aggregation."""
+        response = self.session.get(f"{AGGREGATION_URL}/me")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json()["total_stores"], int)
+        self.assertIsInstance(response.json()["online_stores"], int)
+        self.assertIsInstance(response.json()["in_store_stores"], int)
+        self.assertIsInstance(response.json()["combined_stores"], int)
+        self.assertIsInstance(response.json()["combined_online_stores"], int)
+        self.assertIsInstance(response.json()["combined_in_store_stores"], int)

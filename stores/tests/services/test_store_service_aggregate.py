@@ -62,3 +62,15 @@ class TestAggregate(TestCase):
         self.assertEqual(result_json.get("combined_stores"), 1)
         self.assertEqual(result_json.get("combined_online_stores"), 2)
         self.assertEqual(result_json.get("combined_in_store_stores"), 1)
+
+    async def test_store_aggregation_by_user(self) -> None:
+        """Test the store aggregation function by user."""
+        result = await store_service.aggregate(user=self.user)
+        result_json = result.model_dump()
+
+        self.assertEqual(result_json.get("total_stores"), 1)
+        self.assertEqual(result_json.get("online_stores"), 1)
+        self.assertEqual(result_json.get("in_store_stores"), 0)
+        self.assertEqual(result_json.get("combined_stores"), 0)
+        self.assertEqual(result_json.get("combined_online_stores"), 1)
+        self.assertEqual(result_json.get("combined_in_store_stores"), 0)
