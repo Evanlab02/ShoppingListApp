@@ -113,7 +113,10 @@ async def get_store_detail(store_id: int) -> StoreSchema:
 
 async def aggregate() -> StoreAggregationSchema:
     """
-    TODO: Add docstring.
+    Aggregate the stores.
+
+    Returns:
+        StoreAggregationSchema: The store aggregation.
     """
     aggregation = await store_repo.aggregate_stores()
     result = StoreAggregationSchema.model_validate(aggregation)

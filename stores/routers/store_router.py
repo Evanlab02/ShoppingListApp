@@ -70,5 +70,5 @@ async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
-    result = StoreAggregationSchema()
+    result = await store_service.aggregate()
     return result
