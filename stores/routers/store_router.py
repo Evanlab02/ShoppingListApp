@@ -6,7 +6,7 @@ from ninja import Router
 from authentication.auth.api_key import ApiKey
 from stores.constants import STORE_TYPE_MAPPING
 from stores.schemas.input import NewStore
-from stores.schemas.output import StoreSchema
+from stores.schemas.output import StoreAggregationSchema, StoreSchema
 from stores.services import store_service
 
 store_router = Router(tags=["Stores"], auth=ApiKey())
@@ -57,3 +57,18 @@ async def get_store_detail(request: HttpRequest, store_id: int) -> StoreSchema:
     """
     store = await store_service.get_store_detail(store_id)
     return store
+
+
+@store_router.get("/aggregate", response={200: StoreAggregationSchema})
+async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
+    """
+    Get the store aggregation.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        StoreAggregationSchema: The store aggregation.
+    """
+    result = await store_service.aggregate()
+    return result

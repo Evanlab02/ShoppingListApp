@@ -1,4 +1,4 @@
-.PHONY: build clean dev down e2e format integration lint migrations pre-test requirements sync-windows test up
+.PHONY: build clean dev down e2e format acceptance lint migrations pre-test requirements sync-windows test up
 
 build: clean
 	python -m build .
@@ -32,7 +32,7 @@ format:
 	black .
 	isort . --profile black
 
-integration: pre-test migrations
+acceptance: pre-test migrations
 	python manage.py populate
 	docker compose -f docker-compose.test.yaml up -d --build
 	@clear
