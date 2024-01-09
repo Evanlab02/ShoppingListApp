@@ -8,13 +8,14 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from stores.database.store_repo import filter_stores
-from stores.models import ShoppingStore, ShoppingStorePagination
+from stores.models import ShoppingStore
+from stores.schemas.output import StorePaginationSchema, StoreSchema
 
 TEST_STORE = "Test User Store"
 TEST_DESCRIPTION = "This is a test store."
 
 
-class TestStoreRepoCreate(TestCase):
+class TestStoreRepoFilter(TestCase):
     """Store repository tests."""
 
     @pytest.mark.django_db(transaction=True)
@@ -65,16 +66,16 @@ class TestStoreRepoCreate(TestCase):
         ShoppingStore.objects.all().delete()
         return super().tearDown()
 
-    async def base_check(self, paginated_data: ShoppingStorePagination) -> None:
+    async def base_check(self, paginated_data: StorePaginationSchema) -> None:
         """Check the base case."""
-        self.assertIsInstance(paginated_data, ShoppingStorePagination)
+        self.assertIsInstance(paginated_data, StorePaginationSchema)
 
         stores = paginated_data.stores
         self.assertIsInstance(stores, list)
         self.assertEqual(len(stores), 1)
 
         store = stores[0]
-        self.assertIsInstance(store, ShoppingStore)
+        self.assertIsInstance(store, StoreSchema)
         self.assertEqual(store.name, self.store.name)
         self.assertEqual(store.store_type, self.store.store_type)
         self.assertEqual(store.description, self.store.description)
@@ -82,7 +83,7 @@ class TestStoreRepoCreate(TestCase):
     async def test_filter_stores(self) -> None:
         """Test filter_stores."""
         paginated_data = await filter_stores()
-        self.assertIsInstance(paginated_data, ShoppingStorePagination)
+        self.assertIsInstance(paginated_data, StorePaginationSchema)
 
         stores = paginated_data.stores
         self.assertIsInstance(stores, list)
