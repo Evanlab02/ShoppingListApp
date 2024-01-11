@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.db.models import Case, Count, F, IntegerField, When
 
 from stores.models import ShoppingStore as Store
-from stores.models import ShoppingStorePagination as StorePagination
+from stores.schemas.output import StorePaginationSchema, StoreSchema
 
 
 @sync_to_async
@@ -25,7 +25,7 @@ def _filter(
     updated_before: date | None = None,
     updated_after: date | None = None,
     user: User | AnonymousUser | AbstractBaseUser | None = None,
-) -> StorePagination:
+) -> StorePaginationSchema:
     """
     Filter stores.
 
@@ -43,7 +43,7 @@ def _filter(
         user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
 
     Returns:
-        ShoppingStorePagination: Store pagination object.
+        StorePaginationSchema: Store pagination object.
     """
     stores = Store.objects.all()
 
@@ -72,7 +72,7 @@ def _filter(
     paginated_page = paginator.get_page(page_number)
 
     paginated_stores = paginated_page.object_list
-    results = [store for store in paginated_stores]
+    results = [StoreSchema.from_orm(store) for store in paginated_stores]
     total = paginator.count
     page = paginated_page.number
     total_pages = paginator.num_pages
@@ -81,7 +81,7 @@ def _filter(
     has_next = paginated_page.has_next()
     next_page = paginated_page.next_page_number() if has_next else None
 
-    result = StorePagination(
+    result = StorePaginationSchema(
         stores=results,
         total=total,
         page_number=page,
@@ -123,7 +123,7 @@ async def create_store(
     return store
 
 
-async def get_stores(page_number: int = 1, stores_per_page: int = 10) -> StorePagination:
+async def get_stores(page_number: int = 1, stores_per_page: int = 10) -> StorePaginationSchema:
     """
     Get all stores.
 
@@ -132,7 +132,7 @@ async def get_stores(page_number: int = 1, stores_per_page: int = 10) -> StorePa
         stores_per_page (int): The number of stores per page.
 
     Returns:
-        ShoppingStorePagination: Store pagination object.
+        StorePaginationSchema: Store pagination object.
     """
     return await _filter(page_number, stores_per_page)
 
@@ -149,7 +149,7 @@ async def filter_stores(
     updated_before: date | None = None,
     updated_after: date | None = None,
     user: User | AnonymousUser | AbstractBaseUser | None = None,
-) -> StorePagination:
+) -> StorePaginationSchema:
     """
     Filter stores.
 
@@ -167,7 +167,7 @@ async def filter_stores(
         user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
 
     Returns:
-        ShoppingStorePagination: Store pagination object.
+        StorePaginationSchema: Store pagination object.
     """
     return await _filter(
         page_number,

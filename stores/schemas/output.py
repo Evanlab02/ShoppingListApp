@@ -44,3 +44,16 @@ class StoreAggregationSchema(Schema):
     combined_stores: int = 0
     combined_online_stores: int = 0
     combined_in_store_stores: int = 0
+
+
+class StorePaginationSchema(Schema):
+    """Pagination schema for outgoing data."""
+
+    total: int = 0
+    page_number: int = 1
+    total_pages: int = 1
+    has_previous: bool = False
+    previous_page: int | None = None
+    has_next: bool = False
+    next_page: int | None = None
+    stores: list[StoreSchema] = []

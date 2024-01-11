@@ -1,18 +1,18 @@
 """Contains tests for the store repository functions."""
 
-
 import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from stores.database.store_repo import get_store, get_stores
-from stores.models import ShoppingStore, ShoppingStorePagination
+from stores.models import ShoppingStore
+from stores.schemas.output import StorePaginationSchema, StoreSchema
 
 TEST_STORE = "Test User Store"
 TEST_DESCRIPTION = "This is a test store."
 
 
-class TestStoreRepoCreate(TestCase):
+class TestStoreRepoGet(TestCase):
     """Store repository tests."""
 
     @pytest.mark.django_db(transaction=True)
@@ -48,14 +48,14 @@ class TestStoreRepoCreate(TestCase):
         """Test get_stores."""
         paginated_data = await get_stores()
 
-        self.assertIsInstance(paginated_data, ShoppingStorePagination)
+        self.assertIsInstance(paginated_data, StorePaginationSchema)
 
         stores = paginated_data.stores
         self.assertIsInstance(stores, list)
         self.assertEqual(len(stores), 1)
 
         store = stores[0]
-        self.assertIsInstance(store, ShoppingStore)
+        self.assertIsInstance(store, StoreSchema)
         self.assertEqual(store.name, self.store.name)
         self.assertEqual(store.store_type, self.store.store_type)
         self.assertEqual(store.description, self.store.description)
@@ -74,7 +74,7 @@ class TestStoreRepoCreate(TestCase):
         await store.asave()
 
         paginated_data = await get_stores(page_number=1)
-        self.assertIsInstance(paginated_data, ShoppingStorePagination)
+        self.assertIsInstance(paginated_data, StorePaginationSchema)
 
         stores = paginated_data.stores
         self.assertIsInstance(stores, list)
@@ -103,7 +103,7 @@ class TestStoreRepoCreate(TestCase):
         await store.asave()
 
         paginated_data = await get_stores(page_number=1, stores_per_page=1)
-        self.assertIsInstance(paginated_data, ShoppingStorePagination)
+        self.assertIsInstance(paginated_data, StorePaginationSchema)
 
         stores = paginated_data.stores
         self.assertIsInstance(stores, list)

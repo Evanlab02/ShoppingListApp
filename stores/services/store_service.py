@@ -12,7 +12,12 @@ from stores.errors.api_exceptions import (
 )
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
-from stores.schemas.output import StoreAggregationSchema, StoreSchema, UserSchema
+from stores.schemas.output import (
+    StoreAggregationSchema,
+    StorePaginationSchema,
+    StoreSchema,
+    UserSchema,
+)
 
 
 def _get_store_type_label(store_type_value: int) -> str:
@@ -125,3 +130,19 @@ async def aggregate(
     result.combined_online_stores = result.online_stores + result.combined_stores
     result.combined_in_store_stores = result.in_store_stores + result.combined_stores
     return result
+
+
+async def get_stores(limit: int = 10, offset: int = 0) -> StorePaginationSchema:
+    """
+    Get the stores.
+
+    Args:
+        limit (int): The limit of stores per page.
+        offset (int): The offset from the first store.
+
+    Returns:
+        list[StoreSchema]: The stores.
+    """
+    page_number = offset // limit + 1
+    paginated_stores = await store_repo.get_stores(page_number, limit)
+    return paginated_stores
