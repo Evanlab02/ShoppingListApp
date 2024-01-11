@@ -6,7 +6,11 @@ from ninja import Router
 from authentication.auth.api_key import ApiKey
 from stores.constants import STORE_TYPE_MAPPING
 from stores.schemas.input import NewStore
-from stores.schemas.output import StoreAggregationSchema, StoreSchema
+from stores.schemas.output import (
+    StoreAggregationSchema,
+    StorePaginationSchema,
+    StoreSchema,
+)
 from stores.services import store_service
 
 store_router = Router(tags=["Stores"], auth=ApiKey())
@@ -87,4 +91,23 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
     """
     user = request.user
     result = await store_service.aggregate(user=user)
+    return result
+
+
+@store_router.get("", response={200: StorePaginationSchema})
+async def get_stores(
+    request: HttpRequest, limit: int = 10, offset: int = 0
+) -> StorePaginationSchema:
+    """
+    Get the stores.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        limit (int): The limit of stores to get per page.
+        offset (int): The offset to start from, number of positions from the first store.
+
+    Returns:
+        StorePaginationSchema: The stores.
+    """
+    result = await store_service.get_stores(limit, offset)
     return result
