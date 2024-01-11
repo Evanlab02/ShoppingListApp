@@ -13,6 +13,8 @@ TEST_DESCRIPTION = "Test Description"
 
 
 class TestAggregate(TestCase):
+    """Test the store aggregation function."""
+
     @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
