@@ -18,6 +18,7 @@ from stores.services import store_service
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
 DETAIL_PAGE = "detail/<int:store_id>"
+OVERVIEW_PAGE = ""
 
 
 @require_http_methods(["GET"])
@@ -105,3 +106,22 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
         return render(request, "stores/detail.html", context.model_dump())
     except StoreDoesNotExist:
         return HttpResponse("This store does not exist.", status=404)
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def overview_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the overview page.
+
+    The overview page is used to display basic information about all the stores.
+    There will be some information about all the stores in the table in info cards.
+    You will be able access each stores detail page from this page.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    return HttpResponse("This page is not implemented yet.")
