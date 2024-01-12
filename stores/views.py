@@ -124,4 +124,11 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    return HttpResponse("This page is not implemented yet.")
+    context = BaseContext(
+        page_title="All Stores", is_overview=True, is_personal=False, show_advanced_navigation=True
+    )
+    return render(
+        request,
+        "stores/overview.html",
+        context.model_dump(),
+    )

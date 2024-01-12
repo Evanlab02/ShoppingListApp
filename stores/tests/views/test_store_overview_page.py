@@ -40,12 +40,13 @@ class TestStoreOverviewPage(TestCase):
         """Test the GET method for the overview page."""
         response = self.client.get("/stores/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b"This page is not implemented yet.")
+        self.assertTemplateUsed(response, "stores/overview.html")
 
     def test_get_overview_page_not_logged_in(self) -> None:
         """Test the GET method for the overview page when not logged in."""
         self.client.logout()
         response = self.client.get("/stores/")
+        self.assertTemplateNotUsed(response, "stores/overview.html")
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response, "/?error=You must be logged in to access that page.", 302, 200

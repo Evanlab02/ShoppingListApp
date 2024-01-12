@@ -31,12 +31,12 @@
                 <sl-icon-button name="shop-window" onclick="window.location.href='/stores/me'" />
             </div>
             {% endif %}
-            {% if is_personal and show_advanced_navigation and is_overview %}
+            {% if not is_personal and show_advanced_navigation and is_overview %}
             <div class="menu-list-button">
                 <sl-icon-button name="person" onclick="window.location.href='/stores/me'" />
             </div>
             {% endif %}
-            {% if not is_personal and show_advanced_navigation and is_overview %}
+            {% if is_personal and show_advanced_navigation and is_overview %}
             <div class="menu-list-button">
                 <sl-icon-button name="people" onclick="window.location.href='/stores'" />
             </div>

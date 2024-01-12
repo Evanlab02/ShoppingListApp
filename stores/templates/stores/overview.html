@@ -1,0 +1,76 @@
+{% extends 'stores/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'stores/overview.css' %}">
+<link rel="stylesheet" href="{% static 'stores/cards.css' %}">
+<link rel="stylesheet" href="{% static 'stores/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="card-wrapper">
+        <div class="mini-card total-card">
+            <div class="mini-card-icon total-card-icon">
+                <sl-icon name="shop-window" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total stores</p>
+                <p id="total-items-sub-value" class="sub-value">COMING SOON</p>
+            </div>
+        </div>
+        <div class="mini-card total-in-stores-card">
+            <div class="mini-card-icon total-in-stores-icon">
+                <sl-icon name="cart4" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total in-store stores</p>
+                <p id="total-in-stores-sub-value" class="sub-value">COMING SOON</p>
+            </div>
+        </div>
+        <div class="mini-card total-online-stores-card">
+            <div class="mini-card-icon total-online-stores-icon">
+                <sl-icon name="browser-chrome" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total online stores</p>
+                <p id="total-online-stores-sub-value" class="sub-value">COMING SOON</p>
+            </div>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="overview-table">
+            <caption>COMING SOON</caption>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Store Type</th>
+                    <th>Description</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>COMING SOON</td>
+                    <td>COMING SOON</td>
+                    <td>COMING SOON</td>
+                    <td>COMING SOON</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            <a href="?page=1">&laquo; First</a>
+            <a>Previous</a>
+
+            <span class="current">
+                Page unknown of unknown.
+            </span>
+
+            <a>next</a>
+            <a>last &raquo;</a>
+        </span>
+    </div>
+</div>
+{% endblock %}
