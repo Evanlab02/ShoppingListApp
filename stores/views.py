@@ -11,7 +11,11 @@ from stores.errors.api_exceptions import (
     StoreAlreadyExists,
     StoreDoesNotExist,
 )
-from stores.schemas.contexts import BaseContext, StoreDetailContext, StorePaginationContext
+from stores.schemas.contexts import (
+    BaseContext,
+    StoreDetailContext,
+    StorePaginationContext,
+)
 from stores.schemas.input import NewStore
 from stores.services import store_service
 
@@ -130,7 +134,7 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
         page_title="All Stores",
         is_overview=True,
         is_personal=False,
-        show_advanced_navigation=True
+        show_advanced_navigation=True,
     )
     return render(
         request,
