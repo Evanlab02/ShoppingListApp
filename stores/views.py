@@ -129,8 +129,10 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     pagination = store_service.get_stores(limit=10, page_number=1)
+    aggregation = store_service.aggregate()
     context = StorePaginationContext(
         pagination=pagination,
+        aggregation=aggregation,
         page_title="All Stores",
         is_overview=True,
         is_personal=False,
