@@ -1,0 +1,11 @@
+{
+	"nodes":[
+		{"id":"43098b7539e19ccd","type":"file","file":"BE/Shopping List App - BE.md","x":-180,"y":-380,"width":400,"height":400},
+		{"id":"7b43d484ffe3d49b","type":"file","file":"BE/Getting Started.md","x":-880,"y":-380,"width":400,"height":400},
+		{"id":"710490014c869b9a","x":480,"y":-380,"width":400,"height":400,"type":"file","file":"BE/File by file exploration of the Shopping List App Backend.md"}
+	],
+	"edges":[
+		{"id":"31e952fbba9674a9","fromNode":"43098b7539e19ccd","fromSide":"left","toNode":"7b43d484ffe3d49b","toSide":"right"},
+		{"id":"df859cb3ea9626f0","fromNode":"43098b7539e19ccd","fromSide":"right","toNode":"710490014c869b9a","toSide":"left"}
+	]
+}

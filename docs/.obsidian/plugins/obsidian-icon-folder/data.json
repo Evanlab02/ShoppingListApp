@@ -1,0 +1,42 @@
+{
+  "settings": {
+    "migrated": 4,
+    "iconPacksPath": ".obsidian/icons",
+    "fontSize": 16,
+    "emojiStyle": "none",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "FasServer",
+      "IbPencil",
+      "SiGithub",
+      "CoFiles",
+      "RiSettings5Line"
+    ],
+    "recentlyUsedIconsSize": 5,
+    "rules": [],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    },
+    "iconInTabsEnabled": true,
+    "iconInTitleEnabled": true,
+    "iconInFrontmatterEnabled": false,
+    "iconsBackgroundCheckEnabled": false,
+    "iconsInNotesEnabled": true,
+    "iconIdentifier": ":"
+  },
+  "Shopping List App.md": "SiCaddy",
+  "FE/Shopping List App - FE.md": "SiReact",
+  "BE/Shopping List App - BE.md": "SiDjango",
+  "Canvases/Shopping List App Overview.canvas": "IbPencil",
+  "Base/Installation Guide.md": "RiInstallFill",
+  "Base/Shopping List App - Configuration Explained.md": "RiSettings5Line",
+  "Base/File by file exploration of the Shopping List App.md": "CoFiles",
+  "Base/Related Repos.md": "SiGithub",
+  "BE/Getting Started.md": "RiInstallFill",
+  "Canvases/Shopping List App - Doc Explorer.canvas": "IbPencil",
+  "Canvases/Shopping List App BE - Overview.canvas": "IbPencil",
+  "BE/File by file exploration of the Shopping List App Backend.md": "FasServer"
+}

@@ -1,0 +1,15 @@
+{
+	"nodes":[
+		{"id":"5631b001c62029aa","x":-220,"y":260,"width":400,"height":400,"type":"file","file":"Base/Installation Guide.md"},
+		{"id":"790a103dce32a48f","x":520,"y":-380,"width":400,"height":400,"type":"file","file":"Base/Shopping List App - Configuration Explained.md"},
+		{"id":"66d37aa0e77163d0","x":-220,"y":-1040,"width":400,"height":400,"type":"file","file":"Base/File by file exploration of the Shopping List App.md"},
+		{"id":"f980b672389d8dc4","x":-980,"y":-380,"width":400,"height":400,"type":"file","file":"Base/Related Repos.md"},
+		{"id":"ba9f8feed97b0ca2","x":-220,"y":-380,"width":400,"height":400,"type":"file","file":"Shopping List App.md"}
+	],
+	"edges":[
+		{"id":"f01497b3ffd19755","fromNode":"ba9f8feed97b0ca2","fromSide":"bottom","toNode":"5631b001c62029aa","toSide":"top"},
+		{"id":"281e35b5207748aa","fromNode":"ba9f8feed97b0ca2","fromSide":"right","toNode":"790a103dce32a48f","toSide":"left"},
+		{"id":"83560f45ce11b3e8","fromNode":"ba9f8feed97b0ca2","fromSide":"top","toNode":"66d37aa0e77163d0","toSide":"bottom"},
+		{"id":"0f2c11cb3c8c3ae7","fromNode":"ba9f8feed97b0ca2","fromSide":"left","toNode":"f980b672389d8dc4","toSide":"right"}
+	]
+}

@@ -1,0 +1,165 @@
+{
+  "main": {
+    "id": "9d443b94e7489949",
+    "type": "split",
+    "children": [
+      {
+        "id": "d50023dd9b5d1016",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b2ceaa6e85f00389",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "BE/File by file exploration of the Shopping List App Backend.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "68de2c9c4e19d141",
+    "type": "split",
+    "children": [
+      {
+        "id": "e449c2aeebc8415c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4a9af98c7b953f3e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "17b3f9de8b34d18b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "eeeaac084fd7fc94",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5f7d0426e3c04d2b",
+    "type": "split",
+    "children": [
+      {
+        "id": "31740b2d0fd3b50c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b4b10e581c0778cb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "BE/File by file exploration of the Shopping List App Backend.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "91b5268ee5d64a63",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "BE/File by file exploration of the Shopping List App Backend.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "3b2c2038f011e35b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "ef5146d48709dc4a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "BE/File by file exploration of the Shopping List App Backend.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false
+    }
+  },
+  "active": "4a9af98c7b953f3e",
+  "lastOpenFiles": [
+    "Canvases/Shopping List App BE - Overview.canvas",
+    "BE/File by file exploration of the Shopping List App Backend.md",
+    "BE/Getting Started.md",
+    "BE/Shopping List App - BE.md",
+    "Base/Related Repos.md",
+    "Base/Shopping List App - Configuration Explained.md",
+    "Base/Installation Guide.md",
+    "Shopping List App.md",
+    "Setup your obsidian.md",
+    "Canvases/Shopping List App - Doc Explorer.canvas",
+    "Base/File by file exploration of the Shopping List App.md",
+    "Canvases/Shopping List App Overview.canvas"
+  ]
+}

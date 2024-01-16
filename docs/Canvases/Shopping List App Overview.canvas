@@ -1,0 +1,27 @@
+{
+	"nodes":[
+		{"id":"17643522eee15ef5","type":"file","file":"Shopping List App.md","x":200,"y":-740,"width":400,"height":400,"color":"2"},
+		{"id":"7b4bbcc64f2d536d","type":"text","text":"# Tooltip","x":745,"y":-570,"width":200,"height":60},
+		{"id":"cba5909670fe6512","type":"text","text":"# Docker Compose Relationships","x":1298,"y":-480,"width":622,"height":60,"color":"#3859ff"},
+		{"id":"1fdef353c6ff06e7","type":"text","text":"# Dataflow","x":1298,"y":-570,"width":622,"height":60,"color":"4"},
+		{"id":"91378a3164237eff","type":"text","text":"# Main Repo","x":1298,"y":-660,"width":622,"height":60,"color":"2"},
+		{"id":"7544a46395389a3c","x":1298,"y":-380,"width":622,"height":60,"color":"5","type":"text","text":"# Containers/Images (Docker Compose)"},
+		{"id":"eb0c871f02073d47","type":"file","file":"FE/Shopping List App - FE.md","x":945,"y":-100,"width":400,"height":400,"color":"5"},
+		{"id":"103db42c75f223fa","type":"file","file":"BE/Shopping List App - BE.md","x":-545,"y":-100,"width":400,"height":400,"color":"5"},
+		{"id":"0a1dd919738ec98e","type":"text","text":"# POSTGRES DB","x":-487,"y":-1070,"width":285,"height":60,"color":"5"},
+		{"id":"d0ef86240ee6bb54","type":"text","text":"# PGADMIN","x":1020,"y":-1070,"width":250,"height":60,"color":"5"}
+	],
+	"edges":[
+		{"id":"d271b38399bbc19d","fromNode":"17643522eee15ef5","fromSide":"bottom","toNode":"103db42c75f223fa","toSide":"top","color":"#3859ff","label":"Backend (Templates/Base Pages/API)"},
+		{"id":"f5aa37dac401ed83","fromNode":"17643522eee15ef5","fromSide":"bottom","toNode":"eb0c871f02073d47","toSide":"top","color":"#3859ff","label":"Frontend (Dashboard Page)"},
+		{"id":"365e5a210cd82e0a","fromNode":"17643522eee15ef5","fromSide":"top","toNode":"0a1dd919738ec98e","toSide":"bottom","color":"#3859ff","label":"Postgres Database"},
+		{"id":"d5a0b6e2eb31f562","fromNode":"0a1dd919738ec98e","fromSide":"left","toNode":"103db42c75f223fa","toSide":"left","color":"4"},
+		{"id":"78affeb01190ff7d","fromNode":"17643522eee15ef5","fromSide":"top","toNode":"d0ef86240ee6bb54","toSide":"bottom","color":"#3859ff","label":"Postgres Administration"},
+		{"id":"ad5db7db0e7e2797","fromNode":"0a1dd919738ec98e","fromSide":"right","toNode":"d0ef86240ee6bb54","toSide":"left","color":"4"},
+		{"id":"d466ceaab853976f","fromNode":"103db42c75f223fa","fromSide":"right","toNode":"eb0c871f02073d47","toSide":"left","color":"4"},
+		{"id":"bc0ddeeed47ff2e3","fromNode":"7b4bbcc64f2d536d","fromSide":"right","toNode":"1fdef353c6ff06e7","toSide":"left"},
+		{"id":"924e9f3a5a90e052","fromNode":"7b4bbcc64f2d536d","fromSide":"right","toNode":"91378a3164237eff","toSide":"left"},
+		{"id":"96bcd2cca2be841a","fromNode":"7b4bbcc64f2d536d","fromSide":"right","toNode":"cba5909670fe6512","toSide":"left"},
+		{"id":"8d32f7be8e914b4f","fromNode":"7b4bbcc64f2d536d","fromSide":"right","toNode":"7544a46395389a3c","toSide":"left"}
+	]
+}
