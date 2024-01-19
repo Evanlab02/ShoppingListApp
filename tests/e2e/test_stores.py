@@ -91,3 +91,6 @@ class TestStorePages(BaseTestCase):
 
         total_stores = self.driver.find_element(value="total-items-sub-value").text
         self.assertEqual(total_stores, "3")
+
+        total_in_store_stores = self.driver.find_element(value="total-in-stores-sub-value").text
+        self.assertEqual(total_in_store_stores, "0 (3)")
