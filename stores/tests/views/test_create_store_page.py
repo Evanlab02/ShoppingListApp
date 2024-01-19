@@ -1,5 +1,5 @@
 """Contains tests for the store create view."""
-import pytest
+
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -10,7 +10,6 @@ from stores.views import CREATE_ACTION, CREATE_PAGE
 class TestStoreCreateView(TestCase):
     """Test the store create view."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
@@ -24,7 +23,6 @@ class TestStoreCreateView(TestCase):
         self.user.save()
         self.client.force_login(self.user)
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the test environment."""
         self.client.logout()

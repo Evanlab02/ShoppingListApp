@@ -1,5 +1,5 @@
 """Contains tests for the register view."""
-import pytest
+
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -11,7 +11,6 @@ TEST_EMAIL = "user@test.com"
 class TestRegisterView(TestCase):
     """Test the register view."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()

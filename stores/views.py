@@ -11,13 +11,18 @@ from stores.errors.api_exceptions import (
     StoreAlreadyExists,
     StoreDoesNotExist,
 )
-from stores.schemas.contexts import BaseContext, StoreDetailContext
+from stores.schemas.contexts import (
+    BaseContext,
+    StoreDetailContext,
+    StorePaginationContext,
+)
 from stores.schemas.input import NewStore
 from stores.services import store_service
 
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
 DETAIL_PAGE = "detail/<int:store_id>"
+OVERVIEW_PAGE = ""
 
 
 @require_http_methods(["GET"])
@@ -105,3 +110,51 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
         return render(request, "stores/detail.html", context.model_dump())
     except StoreDoesNotExist:
         return HttpResponse("This store does not exist.", status=404)
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def overview_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the overview page.
+
+    The overview page is used to display basic information about all the stores.
+    There will be some information about all the stores in the table in info cards.
+    You will be able access each stores detail page from this page.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    page = request.GET.get("page", 1)
+    limit = request.GET.get("limit", 10)
+
+    try:
+        if isinstance(page, str):
+            page = int(page)
+    except ValueError:
+        page = 1
+
+    try:
+        if isinstance(limit, str):
+            limit = int(limit)
+    except ValueError:
+        limit = 10
+
+    pagination = await store_service.get_stores(limit=limit, page_number=page)
+    aggregation = await store_service.aggregate()
+    context = StorePaginationContext(
+        pagination=pagination,
+        aggregation=aggregation,
+        page_title="All Stores",
+        is_overview=True,
+        is_personal=False,
+        show_advanced_navigation=True,
+    )
+    return render(
+        request,
+        "stores/overview.html",
+        context.model_dump(),
+    )

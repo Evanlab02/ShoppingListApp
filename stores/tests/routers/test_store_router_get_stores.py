@@ -69,7 +69,7 @@ class TestGetStores(TestCase):
 
     def test_get_stores_paginated(self) -> None:
         """Test the get stores endpoint with pagination."""
-        result = self.client.get("/api/v1/stores?limit=1&offset=0")
+        result = self.client.get("/api/v1/stores?limit=1&page=1")
         self.assertEqual(result.status_code, 200)
 
         result_json = result.json()
@@ -80,7 +80,7 @@ class TestGetStores(TestCase):
         self.assertEqual(result_json["stores"][0]["description"], self.alt_store.description)
         self.assertEqual(result_json["stores"][0]["user"]["username"], self.alt_user.username)
 
-        result = self.client.get("/api/v1/stores?limit=1&offset=1")
+        result = self.client.get("/api/v1/stores?limit=1&page=2")
         self.assertEqual(result.status_code, 200)
 
         result_json = result.json()

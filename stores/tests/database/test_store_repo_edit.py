@@ -1,7 +1,5 @@
 """Contains tests for the store repository functions."""
 
-
-import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -16,7 +14,6 @@ NEW_STORE_NAME = "New Edited Store"
 class TestStoreRepoCreate(TestCase):
     """Store repository tests."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create(
@@ -38,7 +35,6 @@ class TestStoreRepoCreate(TestCase):
 
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         User.objects.all().delete()

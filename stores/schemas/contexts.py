@@ -2,7 +2,11 @@
 
 from ninja import Schema
 
-from stores.schemas.output import StoreSchema
+from stores.schemas.output import (
+    StoreAggregationSchema,
+    StorePaginationSchema,
+    StoreSchema,
+)
 
 
 class BaseContext(Schema):
@@ -19,3 +23,10 @@ class StoreDetailContext(BaseContext):
     """Store detail context for detail view."""
 
     store: StoreSchema
+
+
+class StorePaginationContext(BaseContext):
+    """Store pagination context for the overview views."""
+
+    pagination: StorePaginationSchema
+    aggregation: StoreAggregationSchema | None

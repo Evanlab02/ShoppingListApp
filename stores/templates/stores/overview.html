@@ -1,0 +1,99 @@
+{% extends 'stores/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'stores/overview.css' %}">
+<link rel="stylesheet" href="{% static 'stores/cards.css' %}">
+<link rel="stylesheet" href="{% static 'stores/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="card-wrapper">
+        <div class="mini-card total-card">
+            <div class="mini-card-icon total-card-icon">
+                <sl-icon name="shop-window" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total stores</p>
+                <p id="total-items-sub-value" class="sub-value">{{ aggregation.total_stores }}</p>
+            </div>
+        </div>
+        <div class="mini-card total-in-stores-card">
+            <div class="mini-card-icon total-in-stores-icon">
+                <sl-icon name="cart4" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total in-store stores</p>
+                <p id="total-in-stores-sub-value" class="sub-value">
+                    {{ aggregation.in_store_stores }} ({{aggregation.combined_in_store_stores }})
+                </p>
+            </div>
+        </div>
+        <div class="mini-card total-online-stores-card">
+            <div class="mini-card-icon total-online-stores-icon">
+                <sl-icon name="browser-chrome" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total online stores</p>
+                <p id="total-online-stores-sub-value" class="sub-value">
+                    {{ aggregation.online_stores }} ({{aggregation.combined_online_stores }})
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="overview-table">
+            <caption>All Shopping Stores</caption>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Store Type</th>
+                    <th>Description</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for store in pagination.stores %}
+                <tr class="store-table-row">
+                    <td><a href="/stores/detail/{{ store.id }}">{{ store.name }}</a></td>
+
+                    {% if store.store_type == 1 %}
+                    <td>Online</td>
+                    {% elif store.store_type == 2 %}
+                    <td>In-Store</td>
+                    {% else %}
+                    <td>Online & In-Store</td>
+                    {% endif %}
+
+                    {% if store.description %}
+                    <td>{{ store.description }}</td>
+                    {% else %}
+                    <td>No description</td>
+                    {% endif %}
+
+                    <td>{{ store.user.username }}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if pagination.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ pagination.previous_page }}">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
+            </span>
+
+            {% if pagination.has_next %}
+            <a href="?page={{ pagination.next_page }}">next</a>
+            <a href="?page={{ pagination.total_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

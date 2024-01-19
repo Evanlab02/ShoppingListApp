@@ -69,7 +69,7 @@ class TestStoreServiceGetStores(TestCase):
 
     async def test_get_stores_with_pagination(self) -> None:
         """Test the get stores function with pagination."""
-        result = await store_service.get_stores(limit=1, offset=0)
+        result = await store_service.get_stores(limit=1, page_number=1)
         self.assertEqual(len(result.stores), 1)
         self.assertEqual(result.total, 2)
         self.assertEqual(result.page_number, 1)
@@ -79,7 +79,7 @@ class TestStoreServiceGetStores(TestCase):
         self.assertEqual(result.has_next, True)
         self.assertEqual(result.next_page, 2)
 
-        result = await store_service.get_stores(limit=1, offset=1)
+        result = await store_service.get_stores(limit=1, page_number=2)
         self.assertEqual(len(result.stores), 1)
         self.assertEqual(result.total, 2)
         self.assertEqual(result.page_number, 2)

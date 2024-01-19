@@ -95,19 +95,17 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
 
 
 @store_router.get("", response={200: StorePaginationSchema})
-async def get_stores(
-    request: HttpRequest, limit: int = 10, offset: int = 0
-) -> StorePaginationSchema:
+async def get_stores(request: HttpRequest, limit: int = 10, page: int = 1) -> StorePaginationSchema:
     """
     Get the stores.
 
     Args:
         request (HttpRequest): The HTTP request.
         limit (int): The limit of stores to get per page.
-        offset (int): The offset to start from, number of positions from the first store.
+        page (int): The page number.
 
     Returns:
         StorePaginationSchema: The stores.
     """
-    result = await store_service.get_stores(limit, offset)
+    result = await store_service.get_stores(limit, page)
     return result

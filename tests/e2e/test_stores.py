@@ -8,6 +8,7 @@ from tests.e2e.base_test_case import BaseTestCase
 
 # Urls
 STORE_CREATE_URL = "http://localhost:7001/stores/create"
+STORE_OVERVIEW_URL = "http://localhost:7001/stores/"
 LOGIN_URL = "http://localhost:7001/"
 DASHBOARD_URL = "http://localhost:7001/shopping/dashboard/"
 
@@ -83,3 +84,19 @@ class TestStorePages(BaseTestCase):
 
         row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
         self.assertEqual(len(row_elements), 0)
+
+    def test_06_store_overview_page(self) -> None:
+        """Test the store overview page."""
+        self.driver.get(STORE_OVERVIEW_URL)
+
+        total_stores = self.driver.find_element(value="total-items-sub-value").text
+        self.assertEqual(total_stores, "3")
+
+        total_in_store_stores = self.driver.find_element(value="total-in-stores-sub-value").text
+        self.assertEqual(total_in_store_stores, "0 (3)")
+
+        total_online_stores = self.driver.find_element(value="total-online-stores-sub-value").text
+        self.assertEqual(total_online_stores, "0 (3)")
+
+        rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
+        self.assertEqual(len(rows), 3)

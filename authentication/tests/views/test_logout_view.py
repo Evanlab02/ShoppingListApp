@@ -1,6 +1,5 @@
 """Contains tests for the logout view."""
 
-import pytest
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -12,7 +11,6 @@ TEST_EMAIL = "test_logout@gmail.com"
 class TestLogoutView(TestCase):
     """Test the logout view."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()

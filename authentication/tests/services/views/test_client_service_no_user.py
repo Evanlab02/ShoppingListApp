@@ -1,6 +1,5 @@
 """Contains tests for the database module."""
 
-import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import Client, TestCase
 
@@ -11,13 +10,11 @@ from authentication.services.views.client_service import disable_client, enable_
 class TestClientRepository(TestCase):
     """Test the ClientRepository class."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.client = Client()
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         return super().tearDown()
