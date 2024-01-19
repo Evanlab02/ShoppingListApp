@@ -40,7 +40,7 @@
     </div>
     <div class="table-wrapper">
         <table class="overview-table">
-            <caption>COMING SOON</caption>
+            <caption>All Shopping Stores</caption>
             <thead>
                 <tr>
                     <th>Name</th>
@@ -50,12 +50,27 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>COMING SOON</td>
-                    <td>COMING SOON</td>
-                    <td>COMING SOON</td>
-                    <td>COMING SOON</td>
+              {% for store in pagination.stores %}
+                <tr class="store-table-row">
+                    <td>{{ store.name }}</td>
+                    
+                    {% if store.store_type == 1 %}
+                    <td>Online</td>
+                    {% elif store.store_type == 2 %}
+                    <td>In-Store</td>
+                    {% else %}
+                    <td>Online & In-Store</td>
+                    {% endif %}
+                    
+                    {% if store.description %}
+                    <td>{{ store.description }}</td>
+                    {% else %}
+                    <td>No description</td>
+                    {% endif %}
+
+                    <td>{{ store.user.username }}
                 </tr>
+              {% endfor %}
             </tbody>
         </table>
     </div>
