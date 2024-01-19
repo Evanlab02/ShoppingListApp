@@ -128,7 +128,22 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    pagination = await store_service.get_stores(limit=10, page_number=1)
+    page = request.GET.get("page", 1)
+    limit = request.GET.get("limit", 10)
+
+    try:
+        if isinstance(page, str):
+            page = int(page)
+    except ValueError:
+        page = 1
+
+    try:
+        if isinstance(limit, str):
+            limit = int(limit)
+    except ValueError:
+        limit = 10
+
+    pagination = await store_service.get_stores(limit=limit, page_number=page)
     aggregation = await store_service.aggregate()
     context = StorePaginationContext(
         pagination=pagination,

@@ -76,15 +76,19 @@
     </div>
     <div class="pagination">
         <span class="step-links">
+            {% if pagination.has_previous %}
             <a href="?page=1">&laquo; First</a>
-            <a>Previous</a>
+            <a href="?page={{ pagination.previous_page }}">Previous</a>
+            {% endif %}
 
             <span class="current">
-                Page unknown of unknown.
+              Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
             </span>
 
-            <a>next</a>
-            <a>last &raquo;</a>
+            {% if pagination.has_next %}
+            <a href="?page={{ pagination.next_page }}">next</a>
+            <a href="?page={{ pagination.total_pages }}">last &raquo;</a>
+            {% endif %}
         </span>
     </div>
 </div>
