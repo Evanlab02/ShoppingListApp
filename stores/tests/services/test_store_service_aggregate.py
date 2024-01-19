@@ -1,6 +1,5 @@
 """Contains tests for api store service."""
 
-import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -15,7 +14,6 @@ TEST_DESCRIPTION = "Test Description"
 class TestAggregate(TestCase):
     """Test the store aggregation function."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(
@@ -46,7 +44,6 @@ class TestAggregate(TestCase):
         self.alt_store.save()
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         User.objects.all().delete()

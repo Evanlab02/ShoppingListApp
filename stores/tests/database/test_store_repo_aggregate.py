@@ -1,6 +1,5 @@
 """Test the aggregate function of the store repository."""
 
-import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -11,7 +10,6 @@ from stores.models import ShoppingStore as Store
 class TestStoreRepoAggregate(TestCase):
     """Test the aggregate function of the store repository."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(

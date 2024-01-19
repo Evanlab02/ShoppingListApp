@@ -1,6 +1,5 @@
 """Contains the tests for the populate command."""
 
-import pytest
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.test import TestCase
@@ -11,7 +10,6 @@ from stores.models import ShoppingStore as Store
 class PopulateTestCase(TestCase):
     """Test the populate command."""
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the test case."""
         User.objects.all().delete()

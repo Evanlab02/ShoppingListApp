@@ -1,6 +1,5 @@
 """Contains tests for the database module."""
 
-import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import Client, TestCase
 
@@ -17,7 +16,6 @@ from ..helpers import create_test_user
 class TestUserRepository(TestCase):
     """Test the UserRepository class."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = create_test_user()

@@ -1,6 +1,6 @@
 """Contains the tests for the api user service of the authentication app."""
 
-import pytest
+
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import Client, TestCase
 
@@ -18,7 +18,6 @@ from authentication.services.api.user_service import register_user
 class TestApiUserService(TestCase):
     """Test the api user service."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.client = Client()

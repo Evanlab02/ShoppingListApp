@@ -14,7 +14,8 @@ TEST_DESCRIPTION = "Test Description"
 
 
 class TestStoreService(TestCase):
-    @pytest.mark.django_db(transaction=True)
+    """Test the store service."""
+
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(
@@ -32,7 +33,6 @@ class TestStoreService(TestCase):
         self.store.save()
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         User.objects.all().delete()

@@ -1,6 +1,5 @@
 """Contains tests for database store repo."""
 
-import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -11,7 +10,6 @@ from stores.models import ShoppingStore as Store
 class TestStoreRepo(TestCase):
     """Contains tests for database store repo."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(
@@ -30,7 +28,6 @@ class TestStoreRepo(TestCase):
         self.store.save()
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         User.objects.all().delete()

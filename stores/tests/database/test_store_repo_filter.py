@@ -3,7 +3,6 @@
 
 from datetime import datetime, timedelta
 
-import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -18,7 +17,6 @@ TEST_DESCRIPTION = "This is a test store."
 class TestStoreRepoFilter(TestCase):
     """Store repository tests."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.base_user = User.objects.create(
@@ -59,7 +57,6 @@ class TestStoreRepoFilter(TestCase):
         self.store.save()
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         User.objects.all().delete()
@@ -76,9 +73,10 @@ class TestStoreRepoFilter(TestCase):
 
         store = stores[0]
         self.assertIsInstance(store, StoreSchema)
-        self.assertEqual(store.name, self.store.name)
-        self.assertEqual(store.store_type, self.store.store_type)
-        self.assertEqual(store.description, self.store.description)
+        store_json = store.model_dump()
+        self.assertEqual(store_json.get("name"), self.store.name)
+        self.assertEqual(store_json.get("store_type"), self.store.store_type)
+        self.assertEqual(store_json.get("description"), self.store.description)
 
     async def test_filter_stores(self) -> None:
         """Test filter_stores."""

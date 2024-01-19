@@ -1,5 +1,5 @@
 """Contains tests for the login view."""
-import pytest
+
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -15,7 +15,6 @@ TEST_EMAIL = "user@test.com"
 class TestTokenView(TestCase):
     """Test the login view."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()

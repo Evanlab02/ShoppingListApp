@@ -25,7 +25,8 @@
             </div>
             <div class="mini-card-content">
                 <p class="value">Total in-store stores</p>
-                <p id="total-in-stores-sub-value" class="sub-value">{{ aggregation.in_store_stores }} ({{ aggregation.combined_in_store_stores }})</p>
+                <p id="total-in-stores-sub-value" class="sub-value">{{ aggregation.in_store_stores }} ({{
+                    aggregation.combined_in_store_stores }})</p>
             </div>
         </div>
         <div class="mini-card total-online-stores-card">
@@ -34,7 +35,8 @@
             </div>
             <div class="mini-card-content">
                 <p class="value">Total online stores</p>
-                <p id="total-online-stores-sub-value" class="sub-value">{{ aggregation.online_stores }} ({{ aggregation.combined_online_stores }})</p>
+                <p id="total-online-stores-sub-value" class="sub-value">{{ aggregation.online_stores }} ({{
+                    aggregation.combined_online_stores }})</p>
             </div>
         </div>
     </div>
@@ -50,10 +52,10 @@
                 </tr>
             </thead>
             <tbody>
-              {% for store in pagination.stores %}
+                {% for store in pagination.stores %}
                 <tr class="store-table-row">
-                    <td>{{ store.name }}</td>
-                    
+                    <td><a href="/stores/detail/{{ store.id }}">{{ store.name }}</a></td>
+
                     {% if store.store_type == 1 %}
                     <td>Online</td>
                     {% elif store.store_type == 2 %}
@@ -61,7 +63,7 @@
                     {% else %}
                     <td>Online & In-Store</td>
                     {% endif %}
-                    
+
                     {% if store.description %}
                     <td>{{ store.description }}</td>
                     {% else %}
@@ -70,7 +72,7 @@
 
                     <td>{{ store.user.username }}
                 </tr>
-              {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -82,7 +84,7 @@
             {% endif %}
 
             <span class="current">
-              Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
+                Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
             </span>
 
             {% if pagination.has_next %}

@@ -1,5 +1,5 @@
 """Contains tests for the register action view."""
-import pytest
+
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -23,7 +23,6 @@ PASSWORD_CONFIRM_INPUT = INPUT_MAPPING.get("password-confirm-input", "password-c
 class TestRegisterActionView(TestCase):
     """Test the login view."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()

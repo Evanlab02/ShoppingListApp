@@ -1,6 +1,5 @@
 """Contains tests for the database module."""
 
-import pytest
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
@@ -12,7 +11,6 @@ from authentication.tests.helpers import create_test_user
 class TestClientRepository(TestCase):
     """Test the ClientRepository class."""
 
-    @pytest.mark.django_db(transaction=True)
     def setUp(self) -> None:
         """Set up the tests."""
         self.user = create_test_user()
@@ -20,7 +18,6 @@ class TestClientRepository(TestCase):
         self.client.force_login(self.user)
         return super().setUp()
 
-    @pytest.mark.django_db(transaction=True)
     def tearDown(self) -> None:
         """Tear down the tests."""
         User.objects.all().delete()
