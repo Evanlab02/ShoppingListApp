@@ -122,5 +122,6 @@ async def get_personal_stores(request: HttpRequest) -> StorePaginationSchema:
     Returns:
         StorePaginationSchema: The stores.
     """
-    result = await store_service.get_stores()
+    user = request.user
+    result = await store_service.get_stores(user=user)
     return result
