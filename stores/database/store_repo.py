@@ -123,18 +123,23 @@ async def create_store(
     return store
 
 
-async def get_stores(page_number: int = 1, stores_per_page: int = 10) -> StorePaginationSchema:
+async def get_stores(
+    page_number: int = 1,
+    stores_per_page: int = 10,
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+) -> StorePaginationSchema:
     """
     Get all stores.
 
     Args:
         page (int): The page number.
         stores_per_page (int): The number of stores per page.
+        user (User): User who owns the stores.
 
     Returns:
         StorePaginationSchema: Store pagination object.
     """
-    return await _filter(page_number, stores_per_page)
+    return await _filter(page_number, stores_per_page, user=user)
 
 
 async def filter_stores(

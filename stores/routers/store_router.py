@@ -109,3 +109,21 @@ async def get_stores(request: HttpRequest, limit: int = 10, page: int = 1) -> St
     """
     result = await store_service.get_stores(limit, page)
     return result
+
+
+@store_router.get("/me", response={200: StorePaginationSchema})
+async def get_personal_stores(
+    request: HttpRequest, limit: int = 10, page: int = 1
+) -> StorePaginationSchema:
+    """
+    Get the stores you have created.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        StorePaginationSchema: The stores.
+    """
+    user = request.user
+    result = await store_service.get_stores(limit, page, user)
+    return result

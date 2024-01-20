@@ -132,16 +132,21 @@ async def aggregate(
     return result
 
 
-async def get_stores(limit: int = 10, page_number: int = 1) -> StorePaginationSchema:
+async def get_stores(
+    limit: int = 10,
+    page_number: int = 1,
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+) -> StorePaginationSchema:
     """
     Get the stores.
 
     Args:
         limit (int): The limit of stores per page.
         page_number (int): The page number.
+        user (User): User who created the stores.
 
     Returns:
         StorePaginationSchema: The stores in a paginated format.
     """
-    paginated_stores = await store_repo.get_stores(page_number, limit)
+    paginated_stores = await store_repo.get_stores(page_number, limit, user)
     return paginated_stores

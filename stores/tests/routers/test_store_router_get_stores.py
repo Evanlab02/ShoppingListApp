@@ -90,3 +90,17 @@ class TestGetStores(TestCase):
         self.assertEqual(result_json["stores"][0]["store_type"], TEST_STORE_TYPE)
         self.assertEqual(result_json["stores"][0]["description"], TEST_DESCRIPTION)
         self.assertEqual(result_json["stores"][0]["user"]["username"], self.user.username)
+
+    def test_get_personal_stores(self) -> None:
+        """Test the personal stores endpoint."""
+        self.client.force_login(self.user)
+        result = self.client.get("/api/v1/stores/me")
+        self.assertEqual(result.status_code, 200)
+
+        result_json = result.json()
+        self.assertEqual(result_json["total"], 1)
+        self.assertEqual(len(result_json["stores"]), 1)
+        self.assertEqual(result_json["stores"][0]["name"], TEST_STORE)
+        self.assertEqual(result_json["stores"][0]["store_type"], TEST_STORE_TYPE)
+        self.assertEqual(result_json["stores"][0]["description"], TEST_DESCRIPTION)
+        self.assertEqual(result_json["stores"][0]["user"]["username"], self.user.username)

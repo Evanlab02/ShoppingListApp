@@ -128,6 +128,24 @@ class TestStoreRepoGet(TestCase):
         self.assertIsInstance(stores, list)
         self.assertEqual(len(stores), 1)
 
+    async def test_get_stores_for_user_that_does_not_exist(self) -> None:
+        """Test get_stores with user that does not exist."""
+        alt_user = await User.objects.acreate(
+            username="testuser2",
+            email="testuser2@gmail.com",
+            password="testpass2",
+            first_name="Test2",
+            last_name="User2",
+        )
+        await alt_user.asave()
+
+        paginated_data = await get_stores(user=alt_user)
+        stores = paginated_data.stores
+        page_number = paginated_data.page_number
+        self.assertEqual(page_number, 1)
+        self.assertIsInstance(stores, list)
+        self.assertEqual(len(stores), 0)
+
     async def test_get_store(self) -> None:
         """Test get_store."""
         store = await get_store(self.store.id)
