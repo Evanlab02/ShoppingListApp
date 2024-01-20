@@ -134,6 +134,7 @@ async def get_stores(
     Args:
         page (int): The page number.
         stores_per_page (int): The number of stores per page.
+        user (User): User who owns the stores.
 
     Returns:
         StorePaginationSchema: Store pagination object.

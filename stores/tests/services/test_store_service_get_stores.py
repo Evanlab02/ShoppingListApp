@@ -88,3 +88,13 @@ class TestStoreServiceGetStores(TestCase):
         self.assertEqual(result.previous_page, 1)
         self.assertEqual(result.has_next, False)
         self.assertEqual(result.next_page, None)
+
+    async def test_get_stores_for_user(self) -> None:
+        result = await store_service.get_stores(user=self.user)
+        self.assertEqual(len(result.stores), 1)
+
+        store_one_json = result.stores[0].model_dump()
+        self.assertEqual(store_one_json["name"], TEST_STORE)
+        self.assertEqual(store_one_json["store_type"], TEST_STORE_TYPE)
+        self.assertEqual(store_one_json["description"], TEST_DESCRIPTION)
+        self.assertEqual(store_one_json["user"]["username"], "testuser")
