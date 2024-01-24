@@ -25,8 +25,8 @@ class StoreDetailContext(BaseContext):
     store: StoreSchema
 
 
-class StorePaginationContext(BaseContext):
-    """Store pagination context for the overview views."""
+class StoreOverviewContext(BaseContext):
+    """Store overview context for the overview views."""
 
     pagination: StorePaginationSchema
     aggregation: StoreAggregationSchema | None

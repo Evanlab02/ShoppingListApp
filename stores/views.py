@@ -14,7 +14,7 @@ from stores.errors.api_exceptions import (
 from stores.schemas.contexts import (
     BaseContext,
     StoreDetailContext,
-    StorePaginationContext,
+    StoreOverviewContext,
 )
 from stores.schemas.input import NewStore
 from stores.services import store_service
@@ -112,21 +112,20 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
         return HttpResponse("This store does not exist.", status=404)
 
 
-@require_http_methods(["GET"])
-@async_login_required
-async def overview_page(request: HttpRequest) -> HttpResponse:
+async def _get_overview_params(request: HttpRequest) -> dict[str, int]:
     """
-    Render the overview page.
+    Get overview page params from request object.
 
-    The overview page is used to display basic information about all the stores.
-    There will be some information about all the stores in the table in info cards.
-    You will be able access each stores detail page from this page.
+    The overview page params includes the following values:
+    - Page: The page number for pagination.
+    - Limit: The number of table rows to show per page.
 
     Args:
         request (HttpRequest): The request object.
 
     Returns:
-        HttpResponse: The response object.
+        dict[str, int]: Dictionary containing the page and limit values grabbed from the
+        request object.
     """
     page = request.GET.get("page", 1)
     limit = request.GET.get("limit", 10)
@@ -143,9 +142,27 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
     except ValueError:
         limit = 10
 
+    return {"page": page, "limit": limit}
+
+
+async def _get_overview_context(
+    request: HttpRequest, params: dict[str, int]
+) -> StoreOverviewContext:
+    """
+    Get overview context using request object and params.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        StoreOverviewContext: The store overview context.
+    """
+    page = params.get("page", 1)
+    limit = params.get("limit", 10)
+
     pagination = await store_service.get_stores(limit=limit, page_number=page)
     aggregation = await store_service.aggregate()
-    context = StorePaginationContext(
+    context = StoreOverviewContext(
         pagination=pagination,
         aggregation=aggregation,
         page_title="All Stores",
@@ -153,6 +170,27 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
         is_personal=False,
         show_advanced_navigation=True,
     )
+    return context
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def overview_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the overview page.
+
+    The overview page is used to display basic information about all the stores.
+    There will be some information about all the stores in the table in info cards.
+    You will be able access each stores detail page from this page.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    params = await _get_overview_params(request)
+    context = await _get_overview_context(request, params)
     return render(
         request,
         "stores/overview.html",
