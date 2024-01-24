@@ -61,6 +61,22 @@ class TestStoreOverviewPage(TestCase):
             response, "/?error=You must be logged in to access that page.", 302, 200
         )
 
+    def test_get_personal_overview_page(self) -> None:
+        """Test the GET method for the personal overview page."""
+        response = self.client.get("/stores/me")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, STORE_OVERVIEW_TEMPLATE)
+
+    def test_personal_overview_page_not_accessible_when_logged_out(self) -> None:
+        """Test the GET method for the personal overview page when not logged in."""
+        self.client.logout()
+        response = self.client.get("/stores/me")
+        self.assertTemplateNotUsed(response, STORE_OVERVIEW_TEMPLATE)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, "/?error=You must be logged in to access that page.", 302, 200
+        )
+
     def test_get_overview_page_with_custom_page_number(self) -> None:
         """Test the GET method for the overview page with a custom page number."""
         response = self.client.get("/stores/?page=2&limit=1")

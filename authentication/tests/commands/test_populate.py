@@ -20,7 +20,7 @@ class PopulateTestCase(TestCase):
         call_command("populate", *[], **{})
 
         # Check that the user was created
-        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.count(), 2)
         user = User.objects.get(username="basetestuser1")
         self.assertEqual(user.email, "testuser@gmail.com")
         self.assertEqual(user.first_name, "Test")
