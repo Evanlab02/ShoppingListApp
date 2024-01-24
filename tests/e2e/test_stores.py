@@ -9,11 +9,10 @@ from tests.e2e.base_test_case import BaseTestCase
 # Urls
 STORE_CREATE_URL = "http://localhost:7001/stores/create"
 STORE_OVERVIEW_URL = "http://localhost:7001/stores/"
+PERSONAL_STORE_OVERVIEW_URL = "http://localhost:7001/stores/me"
 LOGIN_URL = "http://localhost:7001/"
-DASHBOARD_URL = "http://localhost:7001/shopping/dashboard/"
 
-# Element IDs
-ERROR_TEXT = "error-text"
+INFO_CARD_TEXT = "0 (3)"
 
 
 class TestStorePages(BaseTestCase):
@@ -93,10 +92,26 @@ class TestStorePages(BaseTestCase):
         self.assertEqual(total_stores, "3")
 
         total_in_store_stores = self.driver.find_element(value="total-in-stores-sub-value").text
-        self.assertEqual(total_in_store_stores, "0 (3)")
+        self.assertEqual(total_in_store_stores, INFO_CARD_TEXT)
 
         total_online_stores = self.driver.find_element(value="total-online-stores-sub-value").text
-        self.assertEqual(total_online_stores, "0 (3)")
+        self.assertEqual(total_online_stores, INFO_CARD_TEXT)
+
+        rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
+        self.assertEqual(len(rows), 3)
+
+    def test_07_personal_store_overview_page(self) -> None:
+        """Test the store overview page."""
+        self.driver.get(PERSONAL_STORE_OVERVIEW_URL)
+
+        total_stores = self.driver.find_element(value="total-items-sub-value").text
+        self.assertEqual(total_stores, "3")
+
+        total_in_store_stores = self.driver.find_element(value="total-in-stores-sub-value").text
+        self.assertEqual(total_in_store_stores, INFO_CARD_TEXT)
+
+        total_online_stores = self.driver.find_element(value="total-online-stores-sub-value").text
+        self.assertEqual(total_online_stores, INFO_CARD_TEXT)
 
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
         self.assertEqual(len(rows), 3)

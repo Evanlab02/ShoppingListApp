@@ -26,6 +26,15 @@ class Command(BaseCommand):
         )
         user.save()
 
+        other_user = User.objects.create_user(
+            username="basetestuser2",
+            email="testuser2@gmail.com",
+            password="testuser2",
+            first_name="Tester",
+            last_name="User",
+        )
+        other_user.save()
+
         # Create a store
         store = Store.objects.create(
             name="Base Test Store",
