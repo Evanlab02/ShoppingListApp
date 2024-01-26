@@ -150,3 +150,51 @@ async def get_stores(
     """
     paginated_stores = await store_repo.get_stores(page_number, limit, user)
     return paginated_stores
+
+
+async def update_store(
+    store_id: int,
+    user: User | AnonymousUser | AbstractBaseUser,
+    store_name: str | None = None,
+    store_type: int | str | None = None,
+    store_description: str | None = None,
+) -> StoreSchema:
+    """
+    Update a store with given values.
+
+    Args:
+        store_id (int): The store id to update.
+        user (User | AnonymousUser | AbstractBaseUser): The user who owns the store.
+        store_name (str | None): The new store name, if there is one.
+        store_type (str | int | None): The new store type, if there is one.
+        store_description (str | None): The new description, if there is one.
+
+    Returns:
+        StoreSchema: The store that was edited returned as a schema.
+
+    Raises:
+        StoreAlreadyExists: When a store with that name already exists.
+        InvalidStoreType: When a invalid store type is given to update to.
+    """
+    store_type_label = ""
+    store_type_value = None
+
+    if store_name and await store_repo.does_name_exist(store_name):
+        raise StoreAlreadyExists(store_name)
+    elif isinstance(store_type, int):
+        store_type_label = _get_store_type_label(store_type)
+    elif isinstance(store_type, str):
+        store_type_label = store_type
+
+    if store_type and store_type_label:
+        store_type_value = _get_store_type_value(store_type_label)
+
+    store = await store_repo.edit_store(
+        store_id=store_id,
+        user=user,
+        store_name=store_name,
+        store_type=store_type_value,
+        store_description=store_description,
+    )
+    store_schema = await sync_to_async(StoreSchema.from_orm)(store)
+    return store_schema
