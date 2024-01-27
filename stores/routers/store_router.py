@@ -138,7 +138,17 @@ async def update_store(
     store_type: str | None = None,
 ) -> StoreSchema:
     """
-    TODO: Add docstring.
+    Update the store.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        store_id (int): The store id, the one you want to update.
+        description (StoreDescription | None): Payload containing updated description.
+        name (str | None): The new name of the store.
+        store_type (str | None): The new store type.
+
+    Returns:
+        StoreSchema: The schema for the updated store.
     """
     formatted_type: int | str | None = None
     new_description = description.description if description else None
