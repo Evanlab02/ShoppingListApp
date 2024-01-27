@@ -8,6 +8,8 @@ CREATE_URL = "http://localhost:7001/api/v1/stores/create"
 DETAIL_URL = "http://localhost:7001/api/v1/stores/detail"
 MAPPING_URL = "http://localhost:7001/api/v1/stores/types/mapping"
 AGGREGATION_URL = "http://localhost:7001/api/v1/stores/aggregate"
+PERSONAL_STORES_URL = "http://localhost:7001/api/v1/stores/me"
+UPDATE_STORE_URL = "http://localhost:7001/api/v1/stores/update"
 
 
 class TestStoreEndpoints(BaseTestCase):
@@ -90,3 +92,26 @@ class TestStoreEndpoints(BaseTestCase):
         self.assertIsInstance(response.json()["combined_stores"], int)
         self.assertIsInstance(response.json()["combined_online_stores"], int)
         self.assertIsInstance(response.json()["combined_in_store_stores"], int)
+
+    def test_7_update_store(self) -> None:
+        """Test that a user can update the store."""
+        store_response = self.session.get(PERSONAL_STORES_URL)
+        store_response_json = store_response.json()
+
+        store_to_update = store_response_json.get("stores")[0]
+
+        for store in store_response_json.get("stores"):
+            if store.get("name") == "StoreTester1":
+                store_to_update = store
+                break
+
+        store_update_response = self.session.put(
+            f"{UPDATE_STORE_URL}/{store_to_update.get('id')}?store_type=1"
+        )
+        self.assertEqual(store_update_response.status_code, 200)
+
+        response_json = store_update_response.json()
+        self.assertEqual(response_json.get("id"), store_to_update.get("id"))
+        self.assertEqual(response_json.get("name"), store_to_update.get("name"))
+        self.assertEqual(response_json.get("store_type"), 1)
+        self.assertEqual(response_json.get("description"), store_to_update.get("description"))

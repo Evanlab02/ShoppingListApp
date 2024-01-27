@@ -5,7 +5,7 @@ from ninja import Router
 
 from authentication.auth.api_key import ApiKey
 from stores.constants import STORE_TYPE_MAPPING
-from stores.schemas.input import NewStore
+from stores.schemas.input import NewStore, StoreDescription
 from stores.schemas.output import (
     StoreAggregationSchema,
     StorePaginationSchema,
@@ -126,4 +126,28 @@ async def get_personal_stores(
     """
     user = request.user
     result = await store_service.get_stores(limit, page, user)
+    return result
+
+
+@store_router.put("/update/{store_id}", response={200: StoreSchema})
+async def update_store(
+    request: HttpRequest,
+    store_id: int,
+    description: StoreDescription | None = None,
+    name: str | None = None,
+    store_type: str | None = None,
+) -> StoreSchema:
+    """
+    TODO: Add docstring.
+    """
+    formatted_type: int | str | None = None
+    new_description = description.description if description else None
+
+    try:
+        formatted_type = int(store_type) if store_type else None
+    except ValueError:
+        formatted_type = store_type
+
+    user = request.user
+    result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
     return result
