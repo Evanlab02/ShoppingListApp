@@ -189,12 +189,15 @@ async def update_store(
     if store_type and store_type_label:
         store_type_value = _get_store_type_value(store_type_label)
 
-    store = await store_repo.edit_store(
-        store_id=store_id,
-        user=user,
-        store_name=store_name,
-        store_type=store_type_value,
-        store_description=store_description,
-    )
-    store_schema = await sync_to_async(StoreSchema.from_orm)(store)
-    return store_schema
+    try:
+        store = await store_repo.edit_store(
+            store_id=store_id,
+            user=user,
+            store_name=store_name,
+            store_type=store_type_value,
+            store_description=store_description,
+        )
+        store_schema = await sync_to_async(StoreSchema.from_orm)(store)
+        return store_schema
+    except Store.DoesNotExist:
+        raise StoreDoesNotExist(store_id)

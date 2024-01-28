@@ -127,3 +127,16 @@ class TestStoreRouterUpdate(TestCase):
         self.assertIsInstance(response_json["id"], int)
         self.assertIsNotNone(response_json.get("created_at"))
         self.assertIsNotNone(response_json.get("updated_at"))
+
+    def test_store_update_with_invalid_id(self) -> None:
+        """Test store update with description."""
+        response = self.client.put(
+            f"{UPDATE_ENDPOINT}/9999",
+            {"description": "New Test Description"},
+            content_type=CONTENT_TYPE,
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+        response_json = response.json()
+        self.assertEqual(response_json["detail"], "Store with id '9999' does not exist.")

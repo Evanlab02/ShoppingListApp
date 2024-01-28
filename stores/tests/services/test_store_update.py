@@ -6,7 +6,7 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists
+from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists, StoreDoesNotExist
 from stores.models import ShoppingStore as Store
 from stores.services import store_service
 
@@ -94,3 +94,7 @@ class TestUpdatesStore(TestCase):
         """Test update store with store type string."""
         with pytest.raises(InvalidStoreType):
             await store_service.update_store(self.store.id, self.user, store_type="Mac")
+
+    async def test_update_store_with_invalid_id(self) -> None:
+        with pytest.raises(StoreDoesNotExist):
+            await store_service.update_store(9999, self.user, store_type=3)
