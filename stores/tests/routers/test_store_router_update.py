@@ -132,7 +132,7 @@ class TestStoreRouterUpdate(TestCase):
         """Test store update with description."""
         response = self.client.put(
             f"{UPDATE_ENDPOINT}/9999",
-            {"description": "New Test Description"},
+            {"description": "Invalid Test ID..."},
             content_type=CONTENT_TYPE,
         )
 
