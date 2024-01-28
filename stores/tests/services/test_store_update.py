@@ -6,7 +6,11 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from stores.errors.api_exceptions import InvalidStoreType, StoreAlreadyExists, StoreDoesNotExist
+from stores.errors.api_exceptions import (
+    InvalidStoreType,
+    StoreAlreadyExists,
+    StoreDoesNotExist,
+)
 from stores.models import ShoppingStore as Store
 from stores.services import store_service
 
