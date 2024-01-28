@@ -12,7 +12,8 @@ STORE_OVERVIEW_URL = "http://localhost:7001/stores/"
 PERSONAL_STORE_OVERVIEW_URL = "http://localhost:7001/stores/me"
 LOGIN_URL = "http://localhost:7001/"
 
-INFO_CARD_TEXT = "0 (3)"
+IN_STORE_INFO_CARD_TEXT = "0 (2)"
+ONLINE_INFO_CARD_TEXT = "1 (3)"
 
 
 class TestStorePages(BaseTestCase):
@@ -92,10 +93,10 @@ class TestStorePages(BaseTestCase):
         self.assertEqual(total_stores, "3")
 
         total_in_store_stores = self.driver.find_element(value="total-in-stores-sub-value").text
-        self.assertEqual(total_in_store_stores, INFO_CARD_TEXT)
+        self.assertEqual(total_in_store_stores, IN_STORE_INFO_CARD_TEXT)
 
         total_online_stores = self.driver.find_element(value="total-online-stores-sub-value").text
-        self.assertEqual(total_online_stores, INFO_CARD_TEXT)
+        self.assertEqual(total_online_stores, ONLINE_INFO_CARD_TEXT)
 
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
         self.assertEqual(len(rows), 3)
@@ -108,10 +109,10 @@ class TestStorePages(BaseTestCase):
         self.assertEqual(total_stores, "3")
 
         total_in_store_stores = self.driver.find_element(value="total-in-stores-sub-value").text
-        self.assertEqual(total_in_store_stores, INFO_CARD_TEXT)
+        self.assertEqual(total_in_store_stores, IN_STORE_INFO_CARD_TEXT)
 
         total_online_stores = self.driver.find_element(value="total-online-stores-sub-value").text
-        self.assertEqual(total_online_stores, INFO_CARD_TEXT)
+        self.assertEqual(total_online_stores, ONLINE_INFO_CARD_TEXT)
 
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
         self.assertEqual(len(rows), 3)

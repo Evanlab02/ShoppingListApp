@@ -9,3 +9,9 @@ class NewStore(Schema):
     name: str
     store_type: str | int
     description: str
+
+
+class StoreDescription(Schema):
+    """Store description schema used in the update endpoint."""
+
+    description: str | None = None
