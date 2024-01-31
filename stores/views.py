@@ -24,6 +24,7 @@ CREATE_ACTION = "create/action"
 DETAIL_PAGE = "detail/<int:store_id>"
 OVERVIEW_PAGE = ""
 PERSONAL_OVERVIEW_PAGE = "me"
+UPDATE_PAGE = "update/<int:store_id>"
 
 
 @require_http_methods(["GET"])
@@ -216,3 +217,12 @@ async def personal_overview_page(request: HttpRequest) -> HttpResponse:
     params = await _get_overview_params(request)
     context = await _get_overview_context(request, params, True)
     return render(request, "stores/overview.html", context.model_dump())
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
+    """
+    TODO: Add docstring.
+    """
+    return HttpResponse(f"WIP: Attempted to retrieve page to update store ID: {store_id}.")
