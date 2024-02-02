@@ -25,6 +25,7 @@ DETAIL_PAGE = "detail/<int:store_id>"
 OVERVIEW_PAGE = ""
 PERSONAL_OVERVIEW_PAGE = "me"
 UPDATE_PAGE = "update/<int:store_id>"
+UPDATE_ACTION = "update/action/<int:store_id>"
 
 
 @require_http_methods(["GET"])
@@ -226,3 +227,45 @@ async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
     TODO: Add docstring.
     """
     return HttpResponse(f"WIP: Attempted to retrieve page to update store ID: {store_id}.")
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
+    """
+    Update a store with the given id.
+
+    Args:
+        request (HttpRequest): The request.
+        store_id (int): The store id of the store to update.
+
+    Returns:
+        HttpResponse: The response from the API.
+    """
+    formatted_store_type: str | int | None = None
+    user = request.user
+    store_name = request.POST.get("store-input")
+    store_type = request.POST.get("store-type-input")
+    store_description = request.POST.get("description-input")
+
+    try:
+        formatted_store_type = int(store_type) if (store_type) else None
+    except ValueError:
+        formatted_store_type = store_type
+
+    try:
+        await store_service.update_store(
+            store_id=store_id,
+            user=user,
+            store_name=store_name,
+            store_type=formatted_store_type,
+            store_description=store_description,
+        )
+    except StoreAlreadyExists as error:
+        return HttpResponse(error, status=409)
+    except InvalidStoreType as error:
+        return HttpResponse(error, status=400)
+    except StoreDoesNotExist as error:
+        return HttpResponse(error, status=404)
+
+    return HttpResponseRedirect(f"/stores/detail/{store_id}")

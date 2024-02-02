@@ -10,6 +10,7 @@ urlpatterns = [
     path(views.DETAIL_PAGE, views.detail_page, name="store_detail_page"),
     path(views.OVERVIEW_PAGE, views.overview_page, name="store_overview_page"),
     path(views.UPDATE_PAGE, views.update_page, name="store_update_page"),
+    path(views.UPDATE_ACTION, views.update_action, name="store_update_action"),
     path(
         views.PERSONAL_OVERVIEW_PAGE,
         views.personal_overview_page,
