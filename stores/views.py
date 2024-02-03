@@ -24,6 +24,8 @@ CREATE_ACTION = "create/action"
 DETAIL_PAGE = "detail/<int:store_id>"
 OVERVIEW_PAGE = ""
 PERSONAL_OVERVIEW_PAGE = "me"
+UPDATE_PAGE = "update/<int:store_id>"
+UPDATE_ACTION = "update/action/<int:store_id>"
 
 
 @require_http_methods(["GET"])
@@ -216,3 +218,69 @@ async def personal_overview_page(request: HttpRequest) -> HttpResponse:
     params = await _get_overview_params(request)
     context = await _get_overview_context(request, params, True)
     return render(request, "stores/overview.html", context.model_dump())
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
+    """
+    Render the update page.
+
+    Args:
+        request (HttpRequest): The http request.
+        store_id (int): The store to update.
+
+    Returns:
+        HttpResponse: The response (page).
+    """
+    try:
+        error = request.GET.get("error")
+        store = await store_service.get_store_detail(store_id=store_id)
+        context = StoreDetailContext(
+            error=error,
+            page_title="Update Store",
+            store=store,
+        )
+        return render(request, "stores/update.html", context.model_dump())
+    except StoreDoesNotExist:
+        return HttpResponse("Store does not exist.", status=404)
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
+    """
+    Update a store with the given id.
+
+    Args:
+        request (HttpRequest): The request.
+        store_id (int): The store id of the store to update.
+
+    Returns:
+        HttpResponse: The response from the API.
+    """
+    formatted_store_type: str | int | None = None
+    user = request.user
+    store_name = request.POST.get("store-input")
+    store_type = request.POST.get("store-type-input")
+    store_description = request.POST.get("description-input")
+
+    try:
+        formatted_store_type = int(store_type) if (store_type) else None
+    except ValueError:
+        formatted_store_type = store_type
+
+    try:
+        await store_service.update_store(
+            store_id=store_id,
+            user=user,
+            store_name=store_name,
+            store_type=formatted_store_type,
+            store_description=store_description,
+        )
+    except (StoreAlreadyExists, InvalidStoreType) as error:
+        return HttpResponseRedirect(f"/stores/update/{store_id}?error={error}")
+    except StoreDoesNotExist:
+        return HttpResponse("Store does not exist or does not belong to you.", status=404)
+
+    return HttpResponseRedirect(f"/stores/detail/{store_id}")

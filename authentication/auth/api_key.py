@@ -1,6 +1,5 @@
 """Contains the API key authentication class."""
 
-
 from os import getenv
 
 from asgiref.sync import sync_to_async

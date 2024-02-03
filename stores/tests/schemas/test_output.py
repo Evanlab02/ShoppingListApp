@@ -1,6 +1,5 @@
 """Contains tests for the output schemas of the stores app."""
 
-
 from stores.schemas.output import StoreAggregationSchema, StorePaginationSchema
 
 

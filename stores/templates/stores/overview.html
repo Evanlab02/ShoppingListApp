@@ -47,6 +47,9 @@
             <caption>{{ page_title }}</caption>
             <thead>
                 <tr>
+                    {% if is_personal %}
+                    <th class="options-header">Options</th>
+                    {% endif %}
                     <th>Name</th>
                     <th>Store Type</th>
                     <th>Description</th>
@@ -58,6 +61,20 @@
             <tbody>
                 {% for store in pagination.stores %}
                 <tr class="store-table-row">
+
+                    {% if is_personal %}
+                    <td class="alt-menu-wrapper">
+                        <div class="menu-list-button alt-menu-button">
+                            <sl-icon-button name="pencil"
+                                onclick="window.location.href='/stores/update/{{ store.id }}'" />
+                        </div>
+                        <div class="menu-list-button alt-menu-button">
+                            <sl-icon-button name="trash"
+                                onclick="window.location.href='/stores/delete/{{ store.id }}'" />
+                        </div>
+                    </td>
+                    {% endif %}
+
                     <td><a href="/stores/detail/{{ store.id }}">{{ store.name }}</a></td>
 
                     {% if store.store_type == 1 %}
@@ -73,9 +90,9 @@
                     {% else %}
                     <td>No description</td>
                     {% endif %}
-                    
+
                     {% if not is_personal %}
-                    <td>{{ store.user.username }}
+                    <td>{{ store.user.username }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}

@@ -11,9 +11,12 @@ STORE_CREATE_URL = "http://localhost:7001/stores/create"
 STORE_OVERVIEW_URL = "http://localhost:7001/stores/"
 PERSONAL_STORE_OVERVIEW_URL = "http://localhost:7001/stores/me"
 LOGIN_URL = "http://localhost:7001/"
+DETAIL_URL = "http://localhost:7001/stores/detail/"
 
 IN_STORE_INFO_CARD_TEXT = "0 (2)"
 ONLINE_INFO_CARD_TEXT = "1 (3)"
+
+COMING_SOON_PLACEHOLDER = "COMING SOON"
 
 
 class TestStorePages(BaseTestCase):
@@ -69,7 +72,7 @@ class TestStorePages(BaseTestCase):
         self.driver.find_element(value="submit-create-store").click()
 
         current_url = self.driver.current_url
-        self.assertTrue(current_url.startswith("http://localhost:7001/stores/detail/"))
+        self.assertTrue(current_url.startswith(DETAIL_URL))
 
     def test_05_store_detail_page(self) -> None:
         """Test the store detail page."""
@@ -78,7 +81,8 @@ class TestStorePages(BaseTestCase):
             self.driver.find_element(value="store-type-sub-value").text, "Online & In-Store"
         )
         self.assertEqual(
-            self.driver.find_element(value="number-of-items-sub-value").text, "COMING SOON"
+            self.driver.find_element(value="number-of-items-sub-value").text,
+            COMING_SOON_PLACEHOLDER,
         )
         self.assertEqual(self.driver.find_element(value="user-sub-value").text, "basetestuser1")
 
@@ -116,3 +120,51 @@ class TestStorePages(BaseTestCase):
 
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
         self.assertEqual(len(rows), 3)
+
+    def test_08_update_store(self) -> None:
+        self.driver.get(STORE_CREATE_URL)
+
+        self.driver.find_element(value="store-input").send_keys("Store For Update")
+        self.driver.find_element(value="store-type-input").send_keys("Both")
+        self.driver.find_element(value="description-input").send_keys("Test Description")
+        self.driver.find_element(value="submit-create-store").click()
+
+        current_url = self.driver.current_url
+        self.assertTrue(current_url.startswith(DETAIL_URL))
+
+        store_id = current_url.replace(DETAIL_URL, "")
+
+        self.assertEqual(
+            self.driver.find_element(value="store-name-sub-value").text, "Store For Update"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="store-type-sub-value").text, "Online & In-Store"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="number-of-items-sub-value").text,
+            COMING_SOON_PLACEHOLDER,
+        )
+        self.assertEqual(self.driver.find_element(value="user-sub-value").text, "basetestuser1")
+
+        row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
+        self.assertEqual(len(row_elements), 0)
+
+        self.driver.get(f"http://localhost:7001/stores/update/{store_id}")
+
+        self.driver.find_element(value="store-input").send_keys("Store Has Been Updated")
+        self.driver.find_element(value="store-type-input").send_keys("Online")
+        self.driver.find_element(value="description-input").send_keys("Test Description Updated")
+        self.driver.find_element(value="submit-update-store").click()
+
+        self.assertEqual(
+            self.driver.find_element(value="store-name-sub-value").text, "Store Has Been Updated"
+        )
+        self.assertEqual(self.driver.find_element(value="store-type-sub-value").text, "Online")
+        self.assertEqual(
+            self.driver.find_element(value="number-of-items-sub-value").text,
+            COMING_SOON_PLACEHOLDER,
+        )
+        self.assertEqual(self.driver.find_element(value="user-sub-value").text, "basetestuser1")
+
+        row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
+        self.assertEqual(len(row_elements), 0)
