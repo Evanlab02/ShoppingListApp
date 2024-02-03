@@ -42,9 +42,15 @@ class TestStoreUpdateView(TestCase):
         """Test the update page."""
         response = self.client.get(f"/stores/update/{self.store.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.content,
-            b"WIP: Attempted to retrieve page to update store ID: 1.",
+        self.assertTemplateUsed(response, "stores/update.html")
+
+    def test_update_page_when_logged_out(self) -> None:
+        """Test the update page."""
+        self.client.logout()
+        response = self.client.get(f"/stores/update/{self.store.id}")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, "/?error=You must be logged in to access that page.", 302, 200
         )
 
     def test_update_action(self) -> None:

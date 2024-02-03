@@ -1,0 +1,54 @@
+{% extends 'stores/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'stores/form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="form-wrapper">
+        <div class="form-top update-top">
+            <h2 id="form-heading">Update Store</h2>
+        </div>
+        {% if error %}
+        <div class="form-middle">
+            <p id="form-error" class="error-message">{{ error }}</p>
+        </div>
+        {% endif %}
+        <form class="form-bottom" method="post" action="/stores/update/action/{{ store.id }}">
+            {% csrf_token %}
+            <fieldset>
+                <div class="form-row">
+                    <legend>Store Details</legend>
+                </div>
+                <div class="form-row">
+                    <label for="store-input">Store:</label>
+                    <input class="text-input" type="text" name="store-input" id="store-input"
+                        placeholder="{{ store.name }}">
+                </div>
+                <div class="form-row">
+                    <label for="store-type-input">Store Type:</label>
+                    <select class="text-input" name="store-type-input" id="store-type-input">
+                        <option value="Online">Online</option>
+                        <option value="In-Store">In-Store</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="description-input">Description:</label>
+                    <input class="text-input" type="text" name="description-input" id="description-input"
+                        placeholder="{{ store.description }}">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="submit-update-store" class="submit-input" type="submit" value="Update Store">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="cancel-update-store" class="cancel-input" type="button" value="Cancel"
+                        onclick="window.location.href='/items/stores/me'">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

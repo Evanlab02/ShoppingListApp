@@ -224,9 +224,22 @@ async def personal_overview_page(request: HttpRequest) -> HttpResponse:
 @async_login_required
 async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
     """
-    TODO: Add docstring.
+    Render the update page.
+
+    Args:
+        request (HttpRequest): The http request.
+        store_id (int): The store to update.
+
+    Returns:
+        HttpResponse: The response (page).
     """
-    return HttpResponse(f"WIP: Attempted to retrieve page to update store ID: {store_id}.")
+    store = await store_service.get_store_detail(store_id=store_id)
+    context = StoreDetailContext(
+        error="",
+        page_title="Update Store",
+        store=store,
+    )
+    return render(request, "stores/update.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
