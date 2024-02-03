@@ -23,15 +23,15 @@ Find below the roadmap for the project. It is subject to change.
 - [x] Store Create API
 - [x] Create Store Page
 - [x] Store Type Mapping API
-- [ ] Store Aggregate API
-- [ ] Personal Store Aggregate API
-- [ ] View all stores API
-- [ ] View all stores page (Overview)
-- [ ] View personal stores API
-- [ ] View personal stores page (Overview)
-- [ ] Store Detail API
-- [ ] View store page (Detail)
-- [ ] Update store API
+- [x] Store Aggregate API
+- [x] Personal Store Aggregate API
+- [x] View all stores API
+- [x] View all stores page (Overview)
+- [x] View personal stores API
+- [x] View personal stores page (Overview)
+- [x] Store Detail API
+- [x] View store page (Detail)
+- [x] Update store API
 - [ ] Update store page
 - [ ] Delete store API
 - [ ] Delete store page
