@@ -1,6 +1,5 @@
 """Contains the tests for the api user service of the authentication app."""
 
-
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import Client, TestCase
 

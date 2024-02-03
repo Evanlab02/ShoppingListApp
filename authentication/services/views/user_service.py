@@ -1,6 +1,5 @@
 """Contains view user service functions."""
 
-
 from asgiref.sync import sync_to_async
 from django.contrib.auth import authenticate
 from django.http import HttpRequest
