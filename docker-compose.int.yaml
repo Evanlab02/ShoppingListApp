@@ -1,0 +1,99 @@
+version: "3"
+
+services:
+  int-shopping-app-pgadmin:
+    container_name: shopping-pgadmin
+    image: dpage/pgadmin4:7.8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${INT_PGADMIN_DEFAULT}
+      PGADMIN_DEFAULT_PASSWORD: /run/secrets/pgadminpass
+    ports:
+      - "5050:80"
+    networks:
+      - int-postgres-django-network
+    restart: always
+    secrets:
+      - pgadminpass
+
+  int-shopping-app-db:
+    container_name: shopping-db
+    image: postgres:alpine3.18
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${INT_DATABASE_USER}
+      POSTGRES_PASSWORD: /run/secrets/dbpass
+      POSTGRES_DB: ${INT_DATABASE_NAME}
+    volumes:
+      - int-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${INT_DATABASE_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - int-postgres-django-network
+    restart: always
+    secrets:
+      - dbpass
+
+  int-shopping-django-app:
+    container_name: shopping-django-app
+    build: .
+    environment:
+      DEFAULT_SETTINGS_MODULE: shoppingapp.settings.int_settings
+      INT_DATABASE_USER: ${INT_DATABASE_USER}
+      INT_DATABASE_PASSWORD: /run/secrets/dbpass
+      INT_DATABASE_NAME: ${INT_DATABASE_NAME}
+      INT_DJANGO_KEY: /run/secrets/djkey
+      INT_DJANGO_HOST: ${INT_DJANGO_HOST}
+      INT_DB_PORT: ${INT_DB_PORT}
+      INT_DB_HOST: ${INT_DB_HOST}
+    command: shoppingapp-int
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      int-shopping-app-db:
+        condition: service_healthy
+    networks:
+      - int-postgres-django-network
+    restart: always
+    secrets:
+      - dbpass
+      - djkey
+
+  int-shopping-django-site:
+    container_name: shopping-app
+    image: ghcr.io/evanlab02/shoppingappfe:${INT_FRONTEND_VERSION}
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    depends_on:
+      int-shopping-app-db:
+        condition: service_healthy
+    networks:
+      - int-postgres-django-network
+    restart: always
+    secrets:
+      - djkey
+
+networks:
+  int-postgres-django-network:
+    driver: bridge
+
+volumes:
+  int-postgres-data:
+    external: false
+
+secrets:
+  dbpass:
+    file: ./secrets/dbpass.txt
+  pgadminpass:
+    file: ./secrets/pgadmin.txt
+  djkey:
+    file: ./secrets/djkey.txt

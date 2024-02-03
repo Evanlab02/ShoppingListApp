@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = getenv("LOCAL_DJANGO_KEY")
+SECRET_KEY = getenv("INT_DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [getenv("LOCAL_DJANGO_HOST", "localhost")]
+ALLOWED_HOSTS = [getenv("INT_DJANGO_HOST", "localhost")]
 
 
 # Application definition
@@ -78,8 +78,12 @@ WSGI_APPLICATION = "shoppingapp.config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": getenv("INT_DATABASE_NAME"),
+        "USER": getenv("INT_DATABASE_USER"),
+        "PASSWORD": getenv("INT_DATABASE_PASSWORD"),
+        "HOST": getenv("INT_DB_HOST"),
+        "PORT": getenv("INT_DB_PORT", "5432"),
     }
 }
 
