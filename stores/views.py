@@ -233,13 +233,17 @@ async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response (page).
     """
-    store = await store_service.get_store_detail(store_id=store_id)
-    context = StoreDetailContext(
-        error="",
-        page_title="Update Store",
-        store=store,
-    )
-    return render(request, "stores/update.html", context.model_dump())
+    try:
+        error = request.GET.get("error")
+        store = await store_service.get_store_detail(store_id=store_id)
+        context = StoreDetailContext(
+            error=error,
+            page_title="Update Store",
+            store=store,
+        )
+        return render(request, "stores/update.html", context.model_dump())
+    except StoreDoesNotExist:
+        return HttpResponse("Store does not exist.", status=404)
 
 
 @require_http_methods(["POST"])
@@ -274,11 +278,9 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
             store_type=formatted_store_type,
             store_description=store_description,
         )
-    except StoreAlreadyExists as error:
-        return HttpResponse(error, status=409)
-    except InvalidStoreType as error:
-        return HttpResponse(error, status=400)
-    except StoreDoesNotExist as error:
-        return HttpResponse(error, status=404)
+    except (StoreAlreadyExists, InvalidStoreType) as error:
+        return HttpResponseRedirect(f"/stores/update/{store_id}?error={error}")
+    except StoreDoesNotExist:
+        return HttpResponse("Store does not exist or does not belong to you.", status=404)
 
     return HttpResponseRedirect(f"/stores/detail/{store_id}")

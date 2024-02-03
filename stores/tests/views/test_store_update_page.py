@@ -53,6 +53,12 @@ class TestStoreUpdateView(TestCase):
             response, "/?error=You must be logged in to access that page.", 302, 200
         )
 
+    def test_update_page_invalid_id(self) -> None:
+        """Test the update page with invalid id."""
+        response = self.client.get("/stores/update/9999")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.content, b"Store does not exist.")
+
     def test_update_action(self) -> None:
         """Test the update action route."""
         response = self.client.post(f"/stores/update/action/{self.store.id}")
@@ -75,18 +81,18 @@ class TestStoreUpdateView(TestCase):
         response = self.client.post(
             f"/stores/update/action/{self.store.id}", {"store-input": TEST_STORE_NAME}
         )
-        self.assertEqual(response.status_code, 409)
-        self.assertEqual(response.content, b"Store 'Test Store' already exists.")
+        self.assertRedirects(
+            response, f"/stores/update/{self.store.id}?error=Store 'Test Store' already exists."
+        )
 
     def test_update_action_with_invalid_type_integer(self) -> None:
         """Test the update action route with invalid type integer."""
         response = self.client.post(
             f"/stores/update/action/{self.store.id}", {"store-type-input": 4}
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.content,
-            b"Internal Conversion Error: Store Type Could Not Be Converted To String.",
+        self.assertRedirects(
+            response,
+            f"/stores/update/{self.store.id}?error=Internal Conversion Error: Store Type Could Not Be Converted To String.",  # noqa: E501
         )
 
     def test_update_action_with_invalid_type_string(self) -> None:
@@ -94,11 +100,13 @@ class TestStoreUpdateView(TestCase):
         response = self.client.post(
             f"/stores/update/action/{self.store.id}", {"store-type-input": "Unknown"}
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, b"Store type 'Unknown' is invalid.")
+        self.assertRedirects(
+            response,
+            f"/stores/update/{self.store.id}?error=Store type 'Unknown' is invalid.",  # noqa: E501
+        )
 
     def test_update_action_with_invaid_id(self) -> None:
         """Test the update action route with invalid store id"""
         response = self.client.post("/stores/update/action/9999")
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.content, b"Store with id '9999' does not exist.")
+        self.assertEqual(response.content, b"Store does not exist or does not belong to you.")
