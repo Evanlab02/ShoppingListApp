@@ -160,3 +160,5 @@ cython_debug/
 
 !**/migrations/__init__.py
 **/migrations/*.py
+
+secrets/*

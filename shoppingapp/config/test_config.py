@@ -15,7 +15,7 @@ from django.core.asgi import get_asgi_application
 
 def main() -> None:
     """Contains the main entrypoint for the ASGI server."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoppingapp.settings.dev_settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoppingapp.settings.test_settings")
     application = get_asgi_application()
     uvicorn.run(application, host="0.0.0.0", port=7001)
 

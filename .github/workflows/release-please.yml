@@ -42,7 +42,6 @@ jobs:
           authentication \
           shoppingapp \
           stores \
-          windows \
           .env.template \
           Dockerfile \
           docker-compose.yaml \

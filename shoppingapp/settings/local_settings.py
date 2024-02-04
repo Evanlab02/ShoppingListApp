@@ -78,12 +78,9 @@ WSGI_APPLICATION = "shoppingapp.config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": getenv("DEV_DATABASE_NAME"),
-        "USER": getenv("DEV_DATABASE_USER"),
-        "PASSWORD": getenv("DEV_DATABASE_PASSWORD"),
-        "HOST": getenv("LOCAL_DB_HOST"),
-        "PORT": getenv("LOCAL_DB_PORT", "5435"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        "CONN_MAX_AGE": 15,
     }
 }
 
@@ -128,3 +125,18 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"rich": {"datefmt": "[%X]"}},
+    "handlers": {
+        "console": {
+            "class": "rich.logging.RichHandler",
+            "formatter": "rich",
+            "level": "DEBUG",
+        },
+    },
+    "loggers": {"django": {"handlers": ["console"]}},
+}

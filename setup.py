@@ -43,6 +43,7 @@ setup(
     entry_points={
         "console_scripts": [
             "shoppingapp = shoppingapp.config.asgi:main",
+            "shoppingapp-int = shoppingapp.config.int_config:main",
         ]
     },
     include_package_data=True,
