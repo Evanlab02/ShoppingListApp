@@ -38,18 +38,12 @@ jobs:
       - name: Setup
         run: |
           pip install -r requirements-dev.txt
-      - name: Create Migrations
-        run: |
-          python manage.py makemigrations
-      - name: Run Migrations
-        run: |
-          python manage.py migrate
-      - name: Populate DB
-        run: |
-          python manage.py populate
-      - name: Start Develop DB
+      - name: Setup Environment
         run: |
           docker compose -f docker-compose.test.yaml up -d --build
+          docker exec test-shopping-app-be python manage.py makemigrations
+          docker exec test-shopping-app-be python manage.py migrate
+          docker exec test-shopping-app-be python manage.py populate
       - name: Run Tests
         run: |
           pytest -v tests/
