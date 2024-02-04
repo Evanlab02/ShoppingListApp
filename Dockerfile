@@ -19,12 +19,6 @@ RUN python -m build
 
 FROM python:3.11.6-slim AS app
 
-RUN apt-get update \
-    && apt-get install make -y \
-    && apt-get clean
-
-RUN pip install pipenv
-
 COPY --from=wheel-builder /build/ /app/
 
 WORKDIR /app

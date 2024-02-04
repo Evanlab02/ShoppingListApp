@@ -1,4 +1,4 @@
-.PHONY: local-dev local acceptance e2e up up-build up-debug down
+.PHONY: local-dev local acceptance e2e up up-build up-debug down int int-build int-debug int-down int-setup dev clean build format lint migrations requirements
 
 local-dev:
 	@python manage.py makemigrations
@@ -36,7 +36,7 @@ up:
 	docker compose up -d
 
 up-build:
-	docker compose up -d --build
+	docker compose build
 
 up-debug:
 	docker compose up
@@ -48,7 +48,7 @@ int:
 	docker compose -f docker-compose.int.yaml up -d
 
 int-build:
-	docker compose -f docker-compose.int.yaml up -d --build
+	docker compose -f docker-compose.int.yaml build
 
 int-debug:
 	docker compose -f docker-compose.int.yaml up
@@ -68,73 +68,47 @@ int-setup:
 	docker restart shopping-django-app
 	docker restart shopping-app
 
-# .PHONY: build clean dev down e2e format acceptance lint migrations pre-test requirements sync-windows test up
+dev:
+	python manage.py runserver 0.0.0.0:7001
 
-# build: clean
-# 	python -m build .
+clean:
+	@rm -rf .mypy_cache \
+	**/__pycache__ \
+	**/**/__pycache__ \
+	**/migrations/0*.py \
+	.coverage \
+	.pytest_cache \
+	build/ \
+	dist/ \
+	*.egg-info \
+	shoppingapp/db.sqlite3 \
+	coverage.xml \
+	htmlcov
 
-# clean:
-# 	@rm -rf .mypy_cache \
-# 	**/__pycache__ \
-# 	**/**/__pycache__ \
-# 	**/migrations/0*.py \
-# 	.coverage \
-# 	.pytest_cache \
-# 	build/ \
-# 	dist/ \
-# 	*.egg-info \
-# 	shoppingapp/db.sqlite3
+build: clean
+	python -m build .
 
-# dev:
-# 	python manage.py runserver 0.0.0.0:7001
+format:
+	black .
+	isort . --profile black
 
-# down:
-# 	docker compose down
+lint: clean
+	black --check .
+	isort . --check-only --profile black
+	flake8 . --max-line-length=100
+	pydocstyle .
+	mypy . --strict
 
-# e2e: pre-test migrations
-# 	python manage.py populate
-# 	docker compose -f docker-compose.test.yaml up -d --build
-# 	@clear
-# 	pytest tests/ -v
-# 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
+migrations:
+	python manage.py makemigrations
+	python manage.py migrate
 
-# format:
-# 	black .
-# 	isort . --profile black
+requirements:
+	pipenv requirements > requirements.txt
+	pipenv requirements --dev > requirements-dev.txt
 
-# acceptance: pre-test migrations
-# 	python manage.py populate
-# 	docker compose -f docker-compose.test.yaml up -d --build
-# 	@clear
-# 	pytest tests/ -v
-# 	docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
+test: migrations
+	pytest --ignore=tests/
+	coverage xml
+	coverage html
 
-# lint: clean
-# 	black --check .
-# 	isort . --check-only --profile black
-# 	flake8 . --max-line-length=100
-# 	pydocstyle .
-# 	mypy . --strict
-
-# migrations:
-# 	python manage.py makemigrations
-# 	python manage.py migrate
-
-# pre-test:
-# 	@rm -rf shoppingapp/db.sqlite3
-# 	@docker compose down
-# 	@docker compose -f docker-compose.test.yaml down --remove-orphans --volumes
-
-# requirements:
-# 	pipenv requirements > requirements.txt
-# 	pipenv requirements --dev > requirements-dev.txt
-
-# sync-windows:
-# 	rm -rf windows/Pipfile
-# 	cp Pipfile windows/
-
-# test: migrations
-# 	pytest --ignore=tests/
-
-# up:
-# 	docker compose up -d --build
