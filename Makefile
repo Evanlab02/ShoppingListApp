@@ -68,6 +68,14 @@ int-setup:
 	docker restart shopping-django-app
 	docker restart shopping-app
 
+int-refresh:
+	docker exec shopping-django-app python manage.py collectstatic --noinput
+	docker exec shopping-django-app rm -rf manage.py
+	docker cp shopping-django-app:/app/static/ ./static/
+	docker cp ./static/ shopping-app:/var/www/html/static/
+	rm -rf ./static/
+	docker restart shopping-app
+
 dev:
 	python manage.py runserver 0.0.0.0:7001
 

@@ -84,6 +84,7 @@ DATABASES = {
         "PASSWORD": getenv("TESTING_DATABASE_PASSWORD"),
         "HOST": getenv("TESTING_DB_HOST"),
         "PORT": getenv("TESTING_DB_PORT", "5432"),
+        "CONN_MAX_AGE": 15,
     }
 }
 
