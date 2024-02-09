@@ -10,6 +10,7 @@ MAPPING_URL = "http://localhost:7001/api/v1/stores/types/mapping"
 AGGREGATION_URL = "http://localhost:7001/api/v1/stores/aggregate"
 PERSONAL_STORES_URL = "http://localhost:7001/api/v1/stores/me"
 UPDATE_STORE_URL = "http://localhost:7001/api/v1/stores/update"
+DELETE_STORE_URL = "http://localhost:7001/api/v1/stores/delete"
 
 
 class TestStoreEndpoints(BaseTestCase):
@@ -115,3 +116,26 @@ class TestStoreEndpoints(BaseTestCase):
         self.assertEqual(response_json.get("name"), store_to_update.get("name"))
         self.assertEqual(response_json.get("store_type"), 1)
         self.assertEqual(response_json.get("description"), store_to_update.get("description"))
+
+    def test_8_delete_store(self) -> None:
+        """Test that a use can delete the store."""
+        store_response = self.session.get(PERSONAL_STORES_URL)
+        store_response_json = store_response.json()
+
+        store_to_delete = store_response_json.get("stores")[0]
+
+        for store in store_response_json.get("stores"):
+            if store.get("name") == "StoreTester1":
+                store_to_delete = store
+                break
+
+        store_delete_response = self.session.delete(
+            f"{DELETE_STORE_URL}/{store_to_delete.get('id')}"
+        )
+        self.assertEqual(store_delete_response.status_code, 200)
+
+        response_json = store_delete_response.json()
+        self.assertEqual(response_json.get("message"), "Deleted Store.")
+        self.assertEqual(
+            response_json.get("detail"), f"Store with ID #{store_to_delete.get('id')} was deleted."
+        )

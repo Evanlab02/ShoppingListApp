@@ -18,6 +18,7 @@ class TestStorePages(AlternativeBaseTestCase):
         self._login()
         self.driver.get(STORE_OVERVIEW_URL)
 
+        self.driver.get_screenshot_as_file("./screenshots/stores/empty_overview.png")
         total_stores = self.driver.find_element(value="total-items-sub-value").text
         self.assertEqual(total_stores, "0")
 

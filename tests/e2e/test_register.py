@@ -37,9 +37,12 @@ class TestRegisterPage(TestCase):
         """Set up the test driver."""
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # type: ignore
+        options.add_argument("--start-maximized")  # type: ignore
         self.driver = webdriver.Chrome(
             service=ChromeService(ChromeDriverManager().install()), options=options
         )
+        self.driver.set_window_size(1920, 1080, self.driver.window_handles[0])
+
         self.delay = 3
         return super().setUp()
 
@@ -57,8 +60,9 @@ class TestRegisterPage(TestCase):
         self.driver.find_element(value=EMAIL_INPUT).send_keys("test1@register.com")
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
+        self.driver.get_screenshot_as_file("./screenshots/register/pre_submit.png")
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
-
+        self.driver.get_screenshot_as_file("./screenshots/register/post_submit.png")
         self.assertEqual(self.driver.current_url, LOGIN_URL)
 
         self.driver.find_element(value=USERNAME_INPUT).send_keys("Register Test User 1")
@@ -78,6 +82,7 @@ class TestRegisterPage(TestCase):
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
+        self.driver.get_screenshot_as_file("./screenshots/register/mismatched_passwords.png")
         element_text = self.driver.find_element(value=ERROR_TEXT).text
         self.assertEqual(element_text, "Password and password confirmation do not match.")
 
@@ -103,6 +108,7 @@ class TestRegisterPage(TestCase):
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
+        self.driver.get_screenshot_as_file("./screenshots/register/existing_username.png")
         element_text = self.driver.find_element(value=ERROR_TEXT).text
         self.assertEqual(element_text, "Username already exists.")
 
@@ -126,5 +132,6 @@ class TestRegisterPage(TestCase):
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
 
+        self.driver.get_screenshot_as_file("./screenshots/register/existing_email.png")
         element_text = self.driver.find_element(value=ERROR_TEXT).text
         self.assertEqual(element_text, "Email already exists.")

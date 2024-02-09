@@ -39,7 +39,7 @@ jobs:
           python manage.py migrate
       - name: Run Tests
         run: |
-          pytest -v --cov=. --cov-report term-missing --ignore=tests/
+          pytest --cov=. --cov-report term-missing --ignore=tests/ -n auto
       - name: Generate Coverage Report
         run: |
           coverage xml

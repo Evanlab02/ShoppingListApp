@@ -3,6 +3,7 @@
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
+from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.database import store_repo
 from stores.errors.api_exceptions import (
@@ -201,3 +202,25 @@ async def update_store(
         return store_schema
     except Store.DoesNotExist:
         raise StoreDoesNotExist(store_id)
+
+
+async def delete_store(
+    store_id: int, user: User | AbstractBaseUser | AnonymousUser
+) -> DeleteSchema:
+    """
+    Delete a store.
+
+    Args:
+        store_id (int): The id of the store you wish to delete.
+        user (User): The user that owns this store, to prevent users deleting other users stores.
+
+    Returns:
+        DeleteSchema: The schema result which contains the result message and details.
+    """
+    try:
+        await store_repo.delete_store(store_id=store_id, user=user)
+        return DeleteSchema(
+            message="Deleted Store.", detail=f"Store with ID #{store_id} was deleted."
+        )
+    except Store.DoesNotExist:
+        raise StoreDoesNotExist(store_id=store_id)
