@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from ninja import Router
 
 from authentication.auth.api_key import ApiKey
+from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.schemas.input import NewStore, StoreDescription
 from stores.schemas.output import (
@@ -160,4 +161,29 @@ async def update_store(
 
     user = request.user
     result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
+    return result
+
+
+@store_router.delete("/delete/{store_id}", response={200: DeleteSchema})
+async def delete_store(
+    request: HttpRequest,
+    store_id: int,
+) -> DeleteSchema:
+    """
+    Delete a store.
+
+    Delete the store that has the provided id.
+
+    Args:
+        request (HttpRequest): The request.
+        store_id (int): The store id provided, for deletion.
+
+    Returns:
+        DeleteSchema: The result schema.
+
+    Raises:
+        StoreDoesNotExist: If there store_id is invalid or you do not own the store.
+    """
+    user = request.user
+    result = await store_service.delete_store(store_id=store_id, user=user)
     return result
