@@ -116,7 +116,7 @@ requirements:
 	pipenv requirements --dev > requirements-dev.txt
 
 test: migrations
-	pytest --ignore=tests/
+	pytest --ignore=tests/ -n auto
 	coverage xml
 	coverage html
 
