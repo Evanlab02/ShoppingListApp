@@ -44,9 +44,12 @@ class TestLoginPage(TestCase):
         """Set up the test driver."""
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # type: ignore
+        options.add_argument("--start-maximized")  # type: ignore
         cls.driver = webdriver.Chrome(
             service=ChromeService(ChromeDriverManager().install()), options=options
         )
+        cls.driver.set_window_size(1920, 1080, cls.driver.window_handles[0])
+
         cls.delay = 3
 
     @classmethod
@@ -63,7 +66,12 @@ class TestLoginPage(TestCase):
         self.driver.find_element(value=EMAIL_INPUT).send_keys(MOCK_EMAIL)
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
+
+        self.driver.get_screenshot_as_file("./screenshots/login/register_pre_submit.png")
+
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
+
+        self.driver.get_screenshot_as_file("./screenshots/login/register_post_submit.png")
 
         self.assertEqual(self.driver.current_url, LOGIN_URL)
 
@@ -72,6 +80,11 @@ class TestLoginPage(TestCase):
 
         self.driver.find_element(value=USERNAME_INPUT).send_keys(MOCK_USERNAME)
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
+
+        self.driver.get_screenshot_as_file("./screenshots/login/login_pre_submit.png")
+
         self.driver.find_element(value=SUBMIT_LOGIN).click()
+
+        self.driver.get_screenshot_as_file("./screenshots/login/login_post_submit.png")
 
         self.assertEqual(self.driver.current_url, DASHBOARD_URL)

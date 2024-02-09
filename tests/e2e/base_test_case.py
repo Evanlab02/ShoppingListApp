@@ -35,9 +35,12 @@ class BaseTestCase(TestCase):
         """Set up the test driver."""
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # type: ignore
+        options.add_argument("--start-maximized")  # type: ignore
         cls.driver = webdriver.Chrome(
             service=ChromeService(ChromeDriverManager().install()), options=options
         )
+        cls.driver.set_window_size(1920, 1080, cls.driver.window_handles[0])
+
         cls.delay = 3
         cls.mock_username = MOCK_USERNAME
         cls.mock_password = MOCK_PASSWORD

@@ -37,7 +37,7 @@ services:
       TESTING_DB_PORT: ${TESTING_DB_PORT}
       SERVICE_PORT: ${SERVICE_PORT}
       TESTS_ENVIRONMENT: "True"
-    command: python -m shoppingapp.config.test_config
+    command: python manage.py runserver 0.0.0.0:7001
     expose:
       - "7001"
     ports:

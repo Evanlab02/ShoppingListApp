@@ -47,9 +47,12 @@ class TestLogoutPage(TestCase):
         """Set up the test driver."""
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # type: ignore
+        options.add_argument("--start-maximized")  # type: ignore
         cls.driver = webdriver.Chrome(
             service=ChromeService(ChromeDriverManager().install()), options=options
         )
+        cls.driver.set_window_size(1920, 1080, cls.driver.window_handles[0])
+
         cls.delay = 3
 
     @classmethod
@@ -66,8 +69,9 @@ class TestLogoutPage(TestCase):
         self.driver.find_element(value=EMAIL_INPUT).send_keys(MOCK_EMAIL)
         self.driver.find_element(value=FIRST_NAME_INPUT).send_keys(MOCK_FIRST_NAME)
         self.driver.find_element(value=LAST_NAME_INPUT).send_keys(MOCK_LAST_NAME)
+        self.driver.get_screenshot_as_file("./screenshots/logout/register_pre_submit.png")
         self.driver.find_element(value=SUBMIT_REGISTRATION).click()
-
+        self.driver.get_screenshot_as_file("./screenshots/logout/register_post_submit.png")
         self.assertEqual(self.driver.current_url, LOGIN_URL)
 
     def test_2_login(self) -> None:
@@ -75,16 +79,21 @@ class TestLogoutPage(TestCase):
 
         self.driver.find_element(value=USERNAME_INPUT).send_keys(MOCK_USERNAME)
         self.driver.find_element(value=PASSWORD_INPUT).send_keys(MOCK_PASSWORD)
+        self.driver.get_screenshot_as_file("./screenshots/logout/login_pre_submit.png")
         self.driver.find_element(value=SUBMIT_LOGIN).click()
-
+        self.driver.get_screenshot_as_file("./screenshots/logout/login_post_submit.png")
         self.assertEqual(self.driver.current_url, DASHBOARD_URL)
 
     def test_3_logout_cancel(self) -> None:
         self.driver.get(LOGOUT_URL)
+        self.driver.get_screenshot_as_file("./screenshots/logout/logout_1.png")
         self.driver.find_element(value=SUBMIT_CANCEL_LOGOUT).click()
+        self.driver.get_screenshot_as_file("./screenshots/logout/logout_cancel.png")
         self.assertEqual(self.driver.current_url, DASHBOARD_URL)
 
     def test_4_logout(self) -> None:
         self.driver.get(LOGOUT_URL)
+        self.driver.get_screenshot_as_file("./screenshots/logout/logout_2.png")
         self.driver.find_element(value=SUBMIT_LOGOUT).click()
+        self.driver.get_screenshot_as_file("./screenshots/logout/logout_submit.png")
         self.assertEqual(self.driver.current_url, LOGIN_URL)
