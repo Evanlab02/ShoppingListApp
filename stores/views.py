@@ -26,6 +26,7 @@ OVERVIEW_PAGE = ""
 PERSONAL_OVERVIEW_PAGE = "me"
 UPDATE_PAGE = "update/<int:store_id>"
 UPDATE_ACTION = "update/action/<int:store_id>"
+DELETE_PAGE = "delete/<int:store_id>"
 
 
 @require_http_methods(["GET"])
@@ -284,3 +285,12 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
         return HttpResponse("Store does not exist or does not belong to you.", status=404)
 
     return HttpResponseRedirect(f"/stores/detail/{store_id}")
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
+    """
+    TODO: Add docstring.
+    """
+    return HttpResponse("Attempted to access delete page.")
