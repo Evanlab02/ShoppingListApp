@@ -6,6 +6,7 @@ from django.test import Client, TestCase
 from stores.models import ShoppingStore as Store
 
 TEST_STORE_NAME = "Test Store"
+DELETE_ACTION = "/stores/delete/action"
 
 
 class TestStoreDeleteView(TestCase):
@@ -46,3 +47,33 @@ class TestStoreDeleteView(TestCase):
 
         self.assertEqual(status_code, 200)
         self.assertEqual(content, b"Attempted to access delete page.")
+
+    def test_delete_action(self) -> None:
+        """Test the delete action."""
+        response = self.client.post(DELETE_ACTION, {"store_id": f"{self.store.id}"})
+        status_code = response.status_code
+
+        self.assertEqual(status_code, 302)
+        self.assertRedirects(response, "/stores/me", 302, 200)
+
+    def test_delete_action_no_store_id(self) -> None:
+        """Test the delete action with no store id."""
+        response = self.client.post(DELETE_ACTION)
+        status_code = response.status_code
+        content = response.content
+
+        self.assertEqual(status_code, 500)
+        self.assertEqual(
+            content, b"Unexpected Error: Request Failed due to store id not being provided."
+        )
+
+    def test_delete_action_invalid_store_id(self) -> None:
+        """Test the delete action with invalid store id."""
+        response = self.client.post(DELETE_ACTION, {"store_id": "abcd"})
+        status_code = response.status_code
+        content = response.content
+
+        self.assertEqual(status_code, 500)
+        self.assertEqual(
+            content, b"Unexpected Error: Request Failed due to store_id being invalid."
+        )

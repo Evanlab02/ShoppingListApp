@@ -27,6 +27,7 @@ PERSONAL_OVERVIEW_PAGE = "me"
 UPDATE_PAGE = "update/<int:store_id>"
 UPDATE_ACTION = "update/action/<int:store_id>"
 DELETE_PAGE = "delete/<int:store_id>"
+DELETE_ACTION = "delete/action"
 
 
 @require_http_methods(["GET"])
@@ -294,3 +295,29 @@ async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
     TODO: Add docstring.
     """
     return HttpResponse("Attempted to access delete page.")
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def delete_action(request: HttpRequest) -> HttpResponse:
+    """
+    TODO: Add docstring.
+    """
+    store_id = request.POST.get("store_id")
+    formatted_store_id = 0
+
+    if not store_id:
+        return HttpResponse(
+            "Unexpected Error: Request Failed due to store id not being provided.", status=500
+        )
+
+    try:
+        formatted_store_id = int(store_id)
+    except ValueError:
+        return HttpResponse(
+            "Unexpected Error: Request Failed due to store_id being invalid.", status=500
+        )
+
+    user = request.user
+    await store_service.delete_store(store_id=formatted_store_id, user=user)
+    return HttpResponseRedirect("/stores/me")
