@@ -26,6 +26,8 @@ OVERVIEW_PAGE = ""
 PERSONAL_OVERVIEW_PAGE = "me"
 UPDATE_PAGE = "update/<int:store_id>"
 UPDATE_ACTION = "update/action/<int:store_id>"
+DELETE_PAGE = "delete/<int:store_id>"
+DELETE_ACTION = "delete/action"
 
 
 @require_http_methods(["GET"])
@@ -284,3 +286,61 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
         return HttpResponse("Store does not exist or does not belong to you.", status=404)
 
     return HttpResponseRedirect(f"/stores/detail/{store_id}")
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
+    """
+    Retrieve/render the delete page.
+
+    Args:
+        request(HttpRequest): The HTTP Request.
+        store_id (int): The store id of the store to delete.
+
+    Response:
+        HttpResponse: The HTTP Response.
+    """
+    try:
+        error = request.GET.get("error")
+        store = await store_service.get_store_detail(store_id=store_id)
+        context = StoreDetailContext(
+            error=error,
+            page_title="Delete Store",
+            store=store,
+        )
+        return render(request, "stores/delete.html", context.model_dump())
+    except StoreDoesNotExist:
+        return HttpResponse("Store does not exist.", status=404)
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def delete_action(request: HttpRequest) -> HttpResponse:
+    """
+    Delete a store.
+
+    Args:
+        request (HttpRequest): The HTTP Request.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
+    store_id = request.POST.get("store_id")
+    formatted_store_id = 0
+
+    if not store_id:
+        return HttpResponse(
+            "Unexpected Error: Request Failed due to store id not being provided.", status=500
+        )
+
+    try:
+        formatted_store_id = int(store_id)
+    except ValueError:
+        return HttpResponse(
+            "Unexpected Error: Request Failed due to store_id being invalid.", status=500
+        )
+
+    user = request.user
+    await store_service.delete_store(store_id=formatted_store_id, user=user)
+    return HttpResponseRedirect("/stores/me")

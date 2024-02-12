@@ -17,6 +17,8 @@ IN_STORE_INFO_CARD_TEXT = "0 (2)"
 ONLINE_INFO_CARD_TEXT = "0 (2)"
 
 COMING_SOON_PLACEHOLDER = "COMING SOON"
+TEST_DESCRIPTION = "Test Description"
+TEST_STORE_TYPE = "Online & In-Store"
 
 
 class TestStorePages(BaseTestCase):
@@ -71,7 +73,7 @@ class TestStorePages(BaseTestCase):
 
         self.driver.find_element(value="store-input").send_keys("Test Store")
         self.driver.find_element(value="store-type-input").send_keys("Both")
-        self.driver.find_element(value="description-input").send_keys("Test Description")
+        self.driver.find_element(value="description-input").send_keys(TEST_DESCRIPTION)
         self.driver.find_element(value="submit-create-store").click()
 
         current_url = self.driver.current_url
@@ -82,7 +84,7 @@ class TestStorePages(BaseTestCase):
         self.driver.get_screenshot_as_file("./screenshots/stores/detail_page.png")
         self.assertEqual(self.driver.find_element(value="store-name-sub-value").text, "Test Store")
         self.assertEqual(
-            self.driver.find_element(value="store-type-sub-value").text, "Online & In-Store"
+            self.driver.find_element(value="store-type-sub-value").text, TEST_STORE_TYPE
         )
         self.assertEqual(
             self.driver.find_element(value="number-of-items-sub-value").text,
@@ -128,11 +130,12 @@ class TestStorePages(BaseTestCase):
         self.assertEqual(len(rows), 2)
 
     def test_08_update_store(self) -> None:
+        """Test the store update page."""
         self.driver.get(STORE_CREATE_URL)
 
         self.driver.find_element(value="store-input").send_keys("Store For Update")
         self.driver.find_element(value="store-type-input").send_keys("Both")
-        self.driver.find_element(value="description-input").send_keys("Test Description")
+        self.driver.find_element(value="description-input").send_keys(TEST_DESCRIPTION)
         self.driver.find_element(value="submit-create-store").click()
 
         current_url = self.driver.current_url
@@ -144,7 +147,7 @@ class TestStorePages(BaseTestCase):
             self.driver.find_element(value="store-name-sub-value").text, "Store For Update"
         )
         self.assertEqual(
-            self.driver.find_element(value="store-type-sub-value").text, "Online & In-Store"
+            self.driver.find_element(value="store-type-sub-value").text, TEST_STORE_TYPE
         )
         self.assertEqual(
             self.driver.find_element(value="number-of-items-sub-value").text,
@@ -175,3 +178,45 @@ class TestStorePages(BaseTestCase):
 
         row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
         self.assertEqual(len(row_elements), 0)
+
+    def test_09_delete_store(self) -> None:
+        """Test the store delete page."""
+        self.driver.get(STORE_CREATE_URL)
+
+        self.driver.find_element(value="store-input").send_keys("Store For Delete")
+        self.driver.find_element(value="store-type-input").send_keys("Both")
+        self.driver.find_element(value="description-input").send_keys(TEST_DESCRIPTION)
+        self.driver.find_element(value="submit-create-store").click()
+
+        current_url = self.driver.current_url
+        self.assertTrue(current_url.startswith(DETAIL_URL))
+
+        store_id = current_url.replace(DETAIL_URL, "")
+        self.driver.get_screenshot_as_file("./screenshots/stores/pre_delete_page_1.png")
+
+        self.assertEqual(
+            self.driver.find_element(value="store-name-sub-value").text, "Store For Delete"
+        )
+        self.assertEqual(
+            self.driver.find_element(value="store-type-sub-value").text, TEST_STORE_TYPE
+        )
+        self.assertEqual(
+            self.driver.find_element(value="number-of-items-sub-value").text,
+            COMING_SOON_PLACEHOLDER,
+        )
+        self.assertEqual(self.driver.find_element(value="user-sub-value").text, "basetestuser1")
+
+        row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
+        self.assertEqual(len(row_elements), 0)
+
+        self.driver.get(PERSONAL_STORE_OVERVIEW_URL)
+        self.driver.get_screenshot_as_file("./screenshots/stores/pre_delete_page_2.png")
+
+        self.driver.get(f"http://localhost:7001/stores/delete/{store_id}")
+
+        self.driver.get_screenshot_as_file("./screenshots/stores/delete_page.png")
+        self.driver.find_element(value="submit-delete-store").click()
+
+        current_url = self.driver.current_url
+        self.driver.get_screenshot_as_file("./screenshots/stores/post_delete_page.png")
+        self.assertEqual(current_url, PERSONAL_STORE_OVERVIEW_URL)

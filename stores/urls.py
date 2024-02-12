@@ -11,6 +11,8 @@ urlpatterns = [
     path(views.OVERVIEW_PAGE, views.overview_page, name="store_overview_page"),
     path(views.UPDATE_PAGE, views.update_page, name="store_update_page"),
     path(views.UPDATE_ACTION, views.update_action, name="store_update_action"),
+    path(views.DELETE_PAGE, views.delete_page, name="store_delete_page"),
+    path(views.DELETE_ACTION, views.delete_action, name="store_delete_action"),
     path(
         views.PERSONAL_OVERVIEW_PAGE,
         views.personal_overview_page,
