@@ -292,16 +292,39 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
 @async_login_required
 async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
     """
-    TODO: Add docstring.
+    Retrieve/render the delete page.
+
+    Args:
+        request(HttpRequest): The HTTP Request.
+        store_id (int): The store id of the store to delete.
+
+    Response:
+        HttpResponse: The HTTP Response.
     """
-    return HttpResponse("Attempted to access delete page.")
+    try:
+        error = request.GET.get("error")
+        store = await store_service.get_store_detail(store_id=store_id)
+        context = StoreDetailContext(
+            error=error,
+            page_title="Delete Store",
+            store=store,
+        )
+        return render(request, "stores/delete.html", context.model_dump())
+    except StoreDoesNotExist:
+        return HttpResponse("Store does not exist.", status=404)
 
 
 @require_http_methods(["POST"])
 @async_login_required
 async def delete_action(request: HttpRequest) -> HttpResponse:
     """
-    TODO: Add docstring.
+    Delete a store.
+
+    Args:
+        request (HttpRequest): The HTTP Request.
+
+    Returns:
+        HttpResponse: The HTTP response.
     """
     store_id = request.POST.get("store_id")
     formatted_store_id = 0

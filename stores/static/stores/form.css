@@ -30,6 +30,11 @@
     background-color: #d43be2;
 }
 
+.delete-top {
+    color: #fff;
+    background-color: #FFC107;
+}
+
 .form-middle {
     font-weight: bold;
     color: #fff;
@@ -100,4 +105,8 @@ legend {
 
 #submit-update-store {
     background-color: #d43be2 !important;
+}
+
+#submit-delete-store {
+    background-color: #FFC107 !important;
 }

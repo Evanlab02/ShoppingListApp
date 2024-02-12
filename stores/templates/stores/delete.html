@@ -1,0 +1,37 @@
+{% extends 'stores/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'stores/form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="form-wrapper">
+        <div class="form-top delete-top">
+            <h2 id="form-heading">Delete Store</h2>
+        </div>
+        {% if error %}
+        <div class="form-middle">
+            <p id="form-error" class="error-message">{{ error }}</p>
+        </div>
+        {% endif %}
+        <form class="form-bottom" method="post" action="{% url 'store_delete_action' %}">
+            {% csrf_token %}
+            <fieldset>
+                <div class="form-row">
+                    <legend>Delete store with ID: {{ store.id }}</legend>
+                </div>
+                <input hidden id="store_id" name="store_id" type="text" value="{{ store.id }}"/>
+                <div class="form-row submit-row">
+                    <input id="submit-delete-store" class="submit-input" type="submit" value="Delete Store">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="cancel-delete-store" class="cancel-input" type="button" value="Cancel"
+                        onclick="window.location.href='/stores/me'">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

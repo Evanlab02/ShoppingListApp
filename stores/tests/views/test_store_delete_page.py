@@ -43,10 +43,9 @@ class TestStoreDeleteView(TestCase):
         """Test get delete page."""
         response = self.client.get(f"/stores/delete/{self.store.id}")
         status_code = response.status_code
-        content = response.content
 
         self.assertEqual(status_code, 200)
-        self.assertEqual(content, b"Attempted to access delete page.")
+        self.assertTemplateUsed(response=response, template_name="stores/delete.html")
 
     def test_delete_action(self) -> None:
         """Test the delete action."""
@@ -77,3 +76,33 @@ class TestStoreDeleteView(TestCase):
         self.assertEqual(
             content, b"Unexpected Error: Request Failed due to store_id being invalid."
         )
+
+    def test_delete_page_invalid_store_id(self) -> None:
+        """Test the delete page with the invalid store id."""
+        response = self.client.get("/stores/delete/99999")
+        status_code = response.status_code
+        content = response.content
+
+        self.assertEqual(status_code, 404)
+        self.assertEqual(content, b"Store does not exist.")
+
+    def test_delete_page_when_not_logged_in(self) -> None:
+        """Test the delete page when not logged in."""
+        self.client.logout()
+        response = self.client.get(f"/stores/delete/{self.store.id}")
+        status_code = response.status_code
+
+        self.assertEqual(status_code, 302)
+        self.assertRedirects(
+            response=response,
+            expected_url="/?error=You must be logged in to access that page.",
+            status_code=302,
+            target_status_code=200,
+        )
+
+    def test_delete_page_invalid_method(self) -> None:
+        """Test the delete page with a invalid HTTP method."""
+        response = self.client.post(f"/stores/delete/{self.store.id}")
+        status_code = response.status_code
+
+        self.assertEqual(status_code, 405)
