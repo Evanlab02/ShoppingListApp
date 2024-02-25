@@ -8,10 +8,12 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 """
 
 import os
+from typing import no_type_check
 
 from django.core.asgi import get_asgi_application
 
 
+@no_type_check
 def main() -> None:
     """Contains the main entrypoint for the ASGI server."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoppingapp.settings.test_settings")
