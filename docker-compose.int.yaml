@@ -47,11 +47,11 @@ services:
       INT_DJANGO_HOST: ${INT_DJANGO_HOST}
       INT_DB_PORT: ${INT_DB_PORT}
       INT_DB_HOST: ${INT_DB_HOST}
-    command: shoppingapp-int
+    command: "gunicorn -b 0.0.0.0:80 -w 8 --worker-class uvicorn.workers.UvicornWorker 'shoppingapp.config.asgi:main()'"
     expose:
-      - "8000"
+      - "80"
     ports:
-      - "8000:8000"
+      - "8000:80"
     depends_on:
       int-shopping-app-db:
         condition: service_healthy

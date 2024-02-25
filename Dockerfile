@@ -1,31 +1,18 @@
-FROM python:3.11.6-slim AS wheel-builder
-
-WORKDIR /build
-
-COPY requirements.txt /build/requirements.txt
-RUN pip install -r requirements.txt
-RUN pip install build
-
-COPY manage.py /build/manage.py
-COPY setup.py /build/setup.py
-COPY pyproject.toml /build/pyproject.toml
-COPY MANIFEST.in /build/MANIFEST.in
-COPY version.txt /build/version.txt
-COPY authentication /build/authentication
-COPY stores /build/stores
-COPY shoppingapp /build/shoppingapp
-
-RUN python -m build
-
-FROM python:3.11.6-slim AS app
-
-COPY --from=wheel-builder /build/ /app/
+FROM python:3.11.6-slim
 
 WORKDIR /app
 
-RUN pip install dist/*.whl
-RUN rm -rf dist
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
 
-EXPOSE 8000
+COPY manage.py /app/manage.py
+COPY pyproject.toml /app/pyproject.toml
+COPY version.txt /app/version.txt
+COPY authentication /app/authentication
+COPY stores /app/stores
+COPY items /app/items
+COPY shoppingapp /app/shoppingapp
 
-CMD ["shoppingapp"]
+EXPOSE 80
+
+CMD ["gunicorn","-b" ,"0.0.0.0:80", "-w" ,"8" ,"--worker-class" ,"uvicorn.workers.UvicornWorker", "'shoppingapp.config.asgi:main()'"]

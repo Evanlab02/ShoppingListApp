@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [getenv("TESTING_DJANGO_HOST", "localhost")]
 
 INSTALLED_APPS = [
     "authentication.apps.AuthenticationConfig",
+    "items.apps.ItemsConfig",
     "stores.apps.StoresConfig",
     "django.contrib.admin",
     "django.contrib.auth",

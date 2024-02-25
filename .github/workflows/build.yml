@@ -36,7 +36,3 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t shoppingapp .
-      - name: Build Python Whl
-        run: |
-          pip install build
-          python -m build .
