@@ -9,6 +9,7 @@ psycopg = {extras = ["binary"], version = "==3.1.17"}
 django-ninja = "==1.1.0"
 uvicorn = "==0.26.0"
 rich = "==13.7.0"
+gunicorn = "*"
 
 [dev-packages]
 black = "==24.1.1"
