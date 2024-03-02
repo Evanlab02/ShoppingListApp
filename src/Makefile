@@ -22,7 +22,6 @@ clean:
 	@rm -rf .mypy_cache \
 	**/__pycache__ \
 	**/**/__pycache__ \
-	**/migrations/0*.py \
 	.coverage \
 	.pytest_cache \
 	build/ \
