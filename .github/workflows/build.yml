@@ -29,10 +29,13 @@ jobs:
           python-version: "3.11"
       - name: Setup
         run: |
-          pip install -r requirements-dev.txt
+          pip install -r requirements.txt
       - name: Create/Build Static Files
+        working-directory: ./src/
         run: |
           python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
-      - name: Build Docker Image
+      - name: Build Docker Images
         run: |
-          docker build -t shoppingapp .
+          docker build -f docker/admin/Dockerfile -t shopping-app .
+          docker build -f docker/server/Dockerfile -t shopping-app-admin .
+          docker build -f docker/site/Dockerfile -t shopping-app-site .

@@ -1,0 +1,107 @@
+version: "3"
+
+services:
+  dev-shopping-app-pgadmin:
+    container_name: shopping-pgadmin
+    image: dpage/pgadmin4:7.8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${DEV_PGADMIN_DEFAULT}
+      PGADMIN_DEFAULT_PASSWORD: ${DEV_PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    networks:
+      - dev-postgres-django-network
+    restart: always
+
+  dev-shopping-app-db:
+    container_name: shopping-db
+    image: postgres:alpine3.18
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DEV_DATABASE_USER}
+      POSTGRES_PASSWORD: ${DEV_DATABASE_PASSWORD}
+      POSTGRES_DB: ${DEV_DATABASE_NAME}
+    volumes:
+      - dev-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DEV_DATABASE_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dev-postgres-django-network
+    restart: always
+
+  dev-shopping-django-administration:
+    container_name: shopping-django-admin
+    build: 
+      context: ../
+      dockerfile: docker/admin/Dockerfile
+    environment:
+      DEFAULT_SETTINGS_MODULE: shoppingapp.settings.dev_settings
+      DEV_DATABASE_USER: ${DEV_DATABASE_USER}
+      DEV_DATABASE_PASSWORD: ${DEV_DATABASE_PASSWORD}
+      DEV_DATABASE_NAME: ${DEV_DATABASE_NAME}
+      DEV_DJANGO_KEY: ${DEV_DJANGO_KEY}
+      DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
+      DEV_DB_PORT: ${DEV_DB_PORT}
+      DEV_DB_HOST: ${DEV_DB_HOST}
+    command: "python manage.py runserver"
+    depends_on:
+      dev-shopping-app-db:
+        condition: service_healthy
+    networks:
+      - dev-postgres-django-network
+
+  dev-shopping-django-app:
+    container_name: shopping-django-app
+    build: 
+      context: ../
+      dockerfile: docker/server/Dockerfile
+    environment:
+      DEFAULT_SETTINGS_MODULE: shoppingapp.settings.dev_settings
+      DEV_DATABASE_USER: ${DEV_DATABASE_USER}
+      DEV_DATABASE_PASSWORD: ${DEV_DATABASE_PASSWORD}
+      DEV_DATABASE_NAME: ${DEV_DATABASE_NAME}
+      DEV_DJANGO_KEY: ${DEV_DJANGO_KEY}
+      DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
+      DEV_DB_PORT: ${DEV_DB_PORT}
+      DEV_DB_HOST: ${DEV_DB_HOST}
+    command: "gunicorn -b 0.0.0.0:80 -w 4 --worker-class uvicorn.workers.UvicornWorker 'shoppingapp.config.asgi:main()'"
+    expose:
+      - "80"
+    ports:
+      - "8000:80"
+    depends_on:
+      dev-shopping-app-db:
+        condition: service_healthy
+    networks:
+      - dev-postgres-django-network
+    restart: always
+
+  dev-shopping-django-site:
+    container_name: shopping-django-site
+    build: 
+      context: ../
+      dockerfile: docker/site/Dockerfile
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    depends_on:
+      dev-shopping-app-db:
+        condition: service_healthy
+    networks:
+      - dev-postgres-django-network
+    restart: always
+
+networks:
+  dev-postgres-django-network:
+    driver: bridge
+
+volumes:
+  dev-postgres-data:
+    external: false

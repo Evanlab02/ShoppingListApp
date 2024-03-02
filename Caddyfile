@@ -1,0 +1,10 @@
+:80 {
+  handle_path /* {
+    reverse_proxy dev-shopping-django-app:80
+  }
+
+  handle_path /static/* {
+    root * /var/www/html/static/
+    file_server
+  }
+}

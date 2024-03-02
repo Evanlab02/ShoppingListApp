@@ -32,19 +32,25 @@ jobs:
         run: |
           pip install -r requirements-dev.txt
       - name: Create Migrations
+        working-directory: ./src/
         run: |
           python manage.py makemigrations
       - name: Run Migrations
+        working-directory: ./src/
         run: |
           python manage.py migrate
       - name: Run Tests
+        working-directory: ./src/
         run: |
           pytest --cov=. --cov-report term-missing --ignore=tests/ -n auto
       - name: Generate Coverage Report
+        working-directory: ./src/
         run: |
           coverage xml
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ./src/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

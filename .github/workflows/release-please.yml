@@ -23,8 +23,10 @@ jobs:
       - name: Build Docker Image
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          docker build -t shoppinglistapp-backend:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
-          docker build -t shoppinglistapp-backend:latest .
+          docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
+          docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:latest .
+          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
+          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:latest .
       - name: Log in to registry
         if: ${{ steps.release.outputs.releases_created }}
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
@@ -35,3 +37,7 @@ jobs:
           docker push ghcr.io/evanlab02/shoppingappbe:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
           docker tag shoppinglistapp-backend:latest ghcr.io/evanlab02/shoppingappbe:latest
           docker push ghcr.io/evanlab02/shoppingappbe:latest
+          docker tag shoppinglistapp-admin:${{steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} ghcr.io/evanlab02/shoppingappadmin:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+          docker push ghcr.io/evanlab02/shoppingappadmin:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+          docker tag shoppinglistapp-admin:latest ghcr.io/evanlab02/shoppingappadmin:latest
+          docker push ghcr.io/evanlab02/shoppingappadmin:latest
