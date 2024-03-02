@@ -29,6 +29,7 @@ class TestItemsApp(TestCase):
 
         item = await ShoppingItem.objects.acreate(
             name="My Test Item",
+            price=100,
             description="",
             user=user,
             store=store,

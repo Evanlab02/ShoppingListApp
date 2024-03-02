@@ -12,6 +12,8 @@ services:
     networks:
       - dev-postgres-django-network
     restart: always
+    volumes:
+      - dev-pgadmin-data:/var/lib/pgadmin
 
   dev-shopping-app-db:
     container_name: shopping-db
@@ -104,4 +106,6 @@ networks:
 
 volumes:
   dev-postgres-data:
+    external: false
+  dev-pgadmin-data:
     external: false

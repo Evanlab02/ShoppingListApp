@@ -1,7 +1,7 @@
 .PHONY: debug build up down requirements clean
 
 debug:
-	@docker compose -f docker/docker-compose.yaml up --build
+	@docker compose -f docker/docker-compose.yaml up
 
 build:
 	@docker compose -f docker/docker-compose.yaml build

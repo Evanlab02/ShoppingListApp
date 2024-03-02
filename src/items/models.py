@@ -5,6 +5,7 @@ from django.db.models import (
     CASCADE,
     CharField,
     DateTimeField,
+    DecimalField,
     ForeignKey,
     Model,
     TextField,
@@ -18,6 +19,7 @@ class ShoppingItem(Model):
 
     name = CharField(max_length=100)
     description = TextField(blank=True)
+    price = DecimalField(max_digits=10, decimal_places=2)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
     store = ForeignKey(Store, on_delete=CASCADE)
