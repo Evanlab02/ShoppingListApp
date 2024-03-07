@@ -1,4 +1,4 @@
-.PHONY: run format lint test clean
+.PHONY: run format lint test clean static
 
 run:
 	@python manage.py runserver 0.0.0.0:7001 --settings shoppingapp.settings.local_settings
@@ -17,6 +17,9 @@ test:
 	@pytest --ignore=tests/ -n auto
 	@coverage xml
 	@coverage html
+
+static:
+	@python manage.py collectstatic --no-input
 
 clean:
 	@rm -rf .mypy_cache \
