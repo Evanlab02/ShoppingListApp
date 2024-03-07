@@ -25,7 +25,6 @@ class BaseEndToEndTestCase(StaticLiveServerTestCase):
             service=ChromeService(ChromeDriverManager().install()), options=options
         )
         cls.driver.set_window_size(1920, 1080, cls.driver.window_handles[0])
-        cls.driver.implicitly_wait(10)
         cls.delay = 3
 
     @classmethod
