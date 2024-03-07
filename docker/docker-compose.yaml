@@ -7,19 +7,16 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${DEV_PGADMIN_DEFAULT}
       PGADMIN_DEFAULT_PASSWORD: ${DEV_PGADMIN_PASSWORD}
-    ports:
-      - "5050:80"
+      SCRIPT_NAME: /pgadmin
     networks:
       - dev-postgres-django-network
     restart: always
+    volumes:
+      - dev-pgadmin-data:/var/lib/pgadmin
 
   dev-shopping-app-db:
     container_name: shopping-db
     image: postgres:alpine3.18
-    expose:
-      - "5432"
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: ${DEV_DATABASE_USER}
       POSTGRES_PASSWORD: ${DEV_DATABASE_PASSWORD}
@@ -71,10 +68,6 @@ services:
       DEV_DB_PORT: ${DEV_DB_PORT}
       DEV_DB_HOST: ${DEV_DB_HOST}
     command: "gunicorn -b 0.0.0.0:80 -w 4 --worker-class uvicorn.workers.UvicornWorker 'shoppingapp.config.asgi:main()'"
-    expose:
-      - "80"
-    ports:
-      - "8000:80"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
@@ -90,7 +83,7 @@ services:
     expose:
       - "80"
     ports:
-      - "80:80"
+      - "8000:80"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
@@ -104,4 +97,6 @@ networks:
 
 volumes:
   dev-postgres-data:
+    external: false
+  dev-pgadmin-data:
     external: false

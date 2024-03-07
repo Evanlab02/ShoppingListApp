@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = getenv("DEV_DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [getenv("DEV_DJANGO_HOST", "localhost")]
 
@@ -85,7 +85,7 @@ DATABASES = {
         "PASSWORD": getenv("DEV_DATABASE_PASSWORD"),
         "HOST": getenv("DEV_DB_HOST"),
         "PORT": getenv("DEV_DB_PORT", "5432"),
-        "CONN_MAX_AGE": 15,
+        "CONN_MAX_AGE": 0,
     }
 }
 
