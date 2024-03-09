@@ -32,7 +32,6 @@ class BaseEndToEndTestCase(StaticLiveServerTestCase):
             service=ChromeService(ChromeDriverManager().install()), options=options
         )
         cls.driver.set_window_size(1920, 1080, cls.driver.window_handles[0])
-        cls.delay = 3
 
     @classmethod
     def tearDownClass(cls) -> None:

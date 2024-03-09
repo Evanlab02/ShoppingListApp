@@ -1,5 +1,7 @@
 """Test the store create page."""
 
+import time
+
 from selenium.webdriver.support.select import Select
 
 from stores.models import ShoppingStore as Store
@@ -15,6 +17,7 @@ class TestStoreCreateView(BaseEndToEndTestCase):
 
         self._login_self()
         self.driver.get(f"{url}/stores/create")
+        time.sleep(1)
 
         self.driver.get_screenshot_as_file("./screenshots/stores/create_page.png")
         heading = self.driver.find_element(value="form-heading").text

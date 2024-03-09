@@ -1,5 +1,7 @@
 """Test the store delete page."""
 
+import time
+
 from stores.models import ShoppingStore as Store
 from stores.tests.E2E.base_test_case import BaseEndToEndTestCase
 
@@ -23,6 +25,7 @@ class TestStoreDeleteView(BaseEndToEndTestCase):
     def test_delete_page(self) -> None:
         """Test the delete page."""
         self.driver.get(self.url)
+        time.sleep(1)
 
         self.driver.get_screenshot_as_file("./screenshots/stores/delete_page.png")
         self.driver.find_element(value="submit-delete-store").click()

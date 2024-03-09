@@ -1,5 +1,7 @@
 """Test the store detail page."""
 
+import time
+
 from selenium.webdriver.common.by import By
 
 from stores.models import ShoppingStore as Store
@@ -25,6 +27,7 @@ class TestStoreDetailView(BaseEndToEndTestCase):
     def test_detail_page(self) -> None:
         """Test the detail page."""
         self.driver.get(self.url)
+        time.sleep(1)
         self.driver.get_screenshot_as_file("./screenshots/stores/detail_page.png")
         self.assertEqual(self.driver.find_element(value="store-name-sub-value").text, "Test Store")
         self.assertEqual(self.driver.find_element(value="store-type-sub-value").text, "Online")
