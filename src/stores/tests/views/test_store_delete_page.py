@@ -63,7 +63,8 @@ class TestStoreDeleteView(TestCase):
 
         self.assertEqual(status_code, 500)
         self.assertEqual(
-            content, b"Unexpected Error: Request Failed due to store id not being provided."
+            content,
+            b"Unexpected Error: Request Failed due to store id not being provided.",
         )
 
     def test_delete_action_invalid_store_id(self) -> None:

@@ -29,7 +29,8 @@ class TestStoreDetailView(BaseEndToEndTestCase):
         self.assertEqual(self.driver.find_element(value="store-name-sub-value").text, "Test Store")
         self.assertEqual(self.driver.find_element(value="store-type-sub-value").text, "Online")
         self.assertEqual(
-            self.driver.find_element(value="number-of-items-sub-value").text, "COMING SOON"
+            self.driver.find_element(value="number-of-items-sub-value").text,
+            "COMING SOON",
         )
         self.assertEqual(self.driver.find_element(value="user-sub-value").text, "test")
 
