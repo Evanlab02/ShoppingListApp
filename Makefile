@@ -1,4 +1,4 @@
-.PHONY: debug build up down requirements clean run format
+.PHONY: install debug build up down requirements clean run format lint static test
 
 debug:
 	@docker compose -f docker/docker-compose.yaml up

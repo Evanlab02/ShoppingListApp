@@ -1,6 +1,6 @@
 [run]
 branch = False
-omit = 
+omit =
     ./tests/*
     ./shoppingapp/config/*
     ./shoppingapp/schemas/*

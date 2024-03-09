@@ -34,7 +34,7 @@ services:
 
   dev-shopping-django-administration:
     container_name: shopping-django-admin
-    build: 
+    build:
       context: ../
       dockerfile: docker/admin/Dockerfile
     environment:
@@ -55,7 +55,7 @@ services:
 
   dev-shopping-django-app:
     container_name: shopping-django-app
-    build: 
+    build:
       context: ../
       dockerfile: docker/server/Dockerfile
     environment:
@@ -77,7 +77,7 @@ services:
 
   dev-shopping-django-site:
     container_name: shopping-django-site
-    build: 
+    build:
       context: ../
       dockerfile: docker/site/Dockerfile
     expose:

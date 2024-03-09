@@ -3,7 +3,7 @@
     rewrite * /pgadmin{uri}
     reverse_proxy dev-shopping-app-pgadmin:80
   }
-  
+
   handle_path /* {
     reverse_proxy dev-shopping-django-app:80
   }
