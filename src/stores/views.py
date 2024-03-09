@@ -331,14 +331,16 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
 
     if not store_id:
         return HttpResponse(
-            "Unexpected Error: Request Failed due to store id not being provided.", status=500
+            "Unexpected Error: Request Failed due to store id not being provided.",
+            status=500,
         )
 
     try:
         formatted_store_id = int(store_id)
     except ValueError:
         return HttpResponse(
-            "Unexpected Error: Request Failed due to store_id being invalid.", status=500
+            "Unexpected Error: Request Failed due to store_id being invalid.",
+            status=500,
         )
 
     user = request.user

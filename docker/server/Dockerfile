@@ -1,8 +1,9 @@
 FROM python:3.11.6-slim
 
-COPY version.txt version.txt
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+COPY version.txt src/version.txt
 
 WORKDIR /src
 

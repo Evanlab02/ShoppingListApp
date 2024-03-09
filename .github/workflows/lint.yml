@@ -23,8 +23,7 @@ jobs:
         run: |
           pip install -r requirements-dev.txt
       - name: Lint and Docs Styling
-        working-directory: ./src/
         run: |
-          black . --check
-          isort . --check-only --profile black
-          flake8 . --max-line-length=100
+          black src/ --check
+          isort src/ --check-only --profile black
+          flake8 src/ --max-line-length=100

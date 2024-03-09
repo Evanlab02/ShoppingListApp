@@ -82,7 +82,8 @@ class TestStoreUpdateView(TestCase):
             f"/stores/update/action/{self.store.id}", {"store-input": TEST_STORE_NAME}
         )
         self.assertRedirects(
-            response, f"/stores/update/{self.store.id}?error=Store 'Test Store' already exists."
+            response,
+            f"/stores/update/{self.store.id}?error=Store 'Test Store' already exists.",
         )
 
     def test_update_action_with_invalid_type_integer(self) -> None:
