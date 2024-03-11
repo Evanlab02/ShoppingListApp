@@ -1,13 +1,17 @@
 """Contains item repository functions."""
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from items.models import ShoppingItem as Item
 from stores.models import ShoppingStore as Store
 
 
 async def create_item(
-    user: User, store: Store, name: str, price: float, description: str = ""
+    user: User | AbstractBaseUser | AnonymousUser,
+    store: Store,
+    name: str,
+    price: float,
+    description: str = "",
 ) -> Item:
     """
     Create a shopping item.
