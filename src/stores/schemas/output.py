@@ -1,19 +1,9 @@
 """Contains outgoing data schemas for the stores app."""
 
-from django.contrib.auth.models import User
 from ninja import ModelSchema, Schema
 
+from shoppingapp.schemas.shared import UserSchema
 from stores.models import ShoppingStore as Store
-
-
-class UserSchema(ModelSchema):
-    """User model schema for outgoing data."""
-
-    class Meta:
-        """Meta class for the UserSchema."""
-
-        model = User
-        fields = ["username"]
 
 
 class StoreSchema(ModelSchema):

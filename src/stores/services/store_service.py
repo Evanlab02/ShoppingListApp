@@ -3,7 +3,7 @@
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
-from shoppingapp.schemas.shared import DeleteSchema
+from shoppingapp.schemas.shared import DeleteSchema, UserSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.database import store_repo
 from stores.errors.api_exceptions import (
@@ -17,7 +17,6 @@ from stores.schemas.output import (
     StoreAggregationSchema,
     StorePaginationSchema,
     StoreSchema,
-    UserSchema,
 )
 
 
