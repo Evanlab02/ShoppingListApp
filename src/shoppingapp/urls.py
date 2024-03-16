@@ -32,6 +32,8 @@ from authentication.errors.api_exceptions import (
     UserNotLoggedIn,
 )
 from authentication.routers.auth_router import auth_router
+from items.errors.exceptions import ItemAlreadyExists
+from items.routers.item_router import item_router
 from stores.errors.api_exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
@@ -43,6 +45,7 @@ version = open("version.txt").read().strip()
 api = NinjaAPI(title="Shopping App API", version=version)
 api.add_router("/auth", auth_router)
 api.add_router("/stores", store_router)
+api.add_router("/items", item_router)
 
 
 @api.exception_handler(EmailAlreadyExists)
@@ -119,6 +122,12 @@ def store_does_not_exist_handler(
 ) -> HttpResponse:
     """Handle StoreDoesNotExist exception."""
     return api.create_response(request, {"detail": str(exception)}, status=404)
+
+
+@api.exception_handler(ItemAlreadyExists)
+def item_already_exists_handler(request: HttpRequest, exception: ItemAlreadyExists) -> HttpResponse:
+    """Handle ItemAlreadyExists exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=400)
 
 
 urlpatterns = [
