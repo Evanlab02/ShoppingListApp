@@ -6,6 +6,23 @@ from shoppingapp.schemas.shared import UserSchema
 from stores.models import ShoppingStore as Store
 
 
+class StoreSchemaNoUser(ModelSchema):
+    """Store model schema for outgoing data."""
+
+    class Meta:
+        """Meta class for the StoreSchema."""
+
+        model = Store
+        fields = [
+            "id",
+            "name",
+            "store_type",
+            "description",
+            "created_at",
+            "updated_at",
+        ]
+
+
 class StoreSchema(ModelSchema):
     """Store model schema for outgoing data."""
 

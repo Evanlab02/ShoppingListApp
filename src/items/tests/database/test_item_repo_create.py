@@ -41,6 +41,7 @@ class TestItemRepositoryCreate(TestCase):
         """Tear down the tests."""
         User.objects.all().delete()
         Store.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()
 
     async def test_create_type(self) -> None:

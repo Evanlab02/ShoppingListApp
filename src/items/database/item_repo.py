@@ -6,6 +6,21 @@ from items.models import ShoppingItem as Item
 from stores.models import ShoppingStore as Store
 
 
+async def does_item_exist(name: str, store: Store) -> bool:
+    """
+    Check if a item exists with the provided details.
+
+    Args:
+        name (str): The name of the item.
+        store (Store): The store we are checking against.
+
+    Returns:
+        bool: True if the item exists, false otherwise.
+    """
+    item_exists = await Item.objects.filter(name=name, store=store).aexists()
+    return item_exists
+
+
 async def create_item(
     user: User | AbstractBaseUser | AnonymousUser,
     store: Store,

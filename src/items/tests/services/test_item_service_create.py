@@ -1,11 +1,18 @@
 """Contains tests for the item service create function."""
 
+import pytest
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 
+from items.errors.exceptions import ItemAlreadyExists
+from items.models import ShoppingItem as Item
 from items.schemas.output import ItemSchema
 from items.services import item_service
+from stores.errors.api_exceptions import StoreDoesNotExist
 from stores.models import ShoppingStore as Store
+
+MOCK_NAME = "Logitech MX Keys Mini"
+MOCK_DESRIPTION = "A mini keyboard created by logitech."
 
 
 class TestStoreServiceCreate(TestCase):
@@ -36,29 +43,28 @@ class TestStoreServiceCreate(TestCase):
         """Tear down the tests."""
         User.objects.all().delete()
         Store.objects.all().delete()
+        Item.objects.all().delete()
         return super().tearDown()
 
     async def test_create_item_type(self) -> None:
         """Test that the create item function returns the correct type."""
         item = await item_service.create_item(
             user=self.user,
-            store=self.store,
+            store_id=self.store.id,
+            name=MOCK_NAME,
+            price=2500,
+            description=MOCK_DESRIPTION,
         )
         self.assertIsInstance(item, ItemSchema)
 
     async def test_create_item(self) -> None:
         """Test the create item function."""
-        # item = await item_service.create_item(
-        #     user=self.user,
-        #     store=self.store,
-        #     name="Logitech MX Keys Mini",
-        #     price=2500,
-        #     description="A mini keyboard created by logitech.",
-        # )
-
         item = await item_service.create_item(
             user=self.user,
-            store=self.store,
+            store_id=self.store.id,
+            name=MOCK_NAME,
+            price=2500,
+            description=MOCK_DESRIPTION,
         )
 
         item_dict = item.model_dump()
@@ -80,8 +86,36 @@ class TestStoreServiceCreate(TestCase):
         self.assertEqual(store_type, 3)
         self.assertEqual(store_description, "")
 
-        self.assertEqual(
-            item_description, "Gaming headphones created for gamers designed by gamers."
-        )
-        self.assertEqual(item_name, "Logitech G Pro X")
+        self.assertEqual(item_description, MOCK_DESRIPTION)
+        self.assertEqual(item_name, MOCK_NAME)
         self.assertEqual(item_price, 2500)
+
+    async def test_create_item_raises_error_with_invalid_store_id(self) -> None:
+        """Test the create item function with invalid store id."""
+        with pytest.raises(StoreDoesNotExist):
+            await item_service.create_item(
+                user=self.user,
+                store_id=99999,
+                name=MOCK_NAME,
+                price=2500,
+                description=MOCK_DESRIPTION,
+            )
+
+    async def test_create_item_raises_error_when_duplicating(self) -> None:
+        """Test the create item function with duplicated entry."""
+        await item_service.create_item(
+            user=self.user,
+            store_id=self.store.id,
+            name=MOCK_NAME,
+            price=2500,
+            description=MOCK_DESRIPTION,
+        )
+
+        with pytest.raises(ItemAlreadyExists):
+            await item_service.create_item(
+                user=self.user,
+                store_id=self.store.id,
+                name=MOCK_NAME,
+                price=2500,
+                description=MOCK_DESRIPTION,
+            )
