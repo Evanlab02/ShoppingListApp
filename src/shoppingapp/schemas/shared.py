@@ -31,3 +31,13 @@ class DeleteSchema(Schema):
 
     message: str
     detail: str
+
+
+class BaseContext(Schema):
+    """Base context schema for views."""
+
+    page_title: str
+    is_personal: bool = False
+    is_overview: bool = False
+    show_advanced_navigation: bool = False
+    error: str | None = None

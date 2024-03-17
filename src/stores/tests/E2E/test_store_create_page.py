@@ -69,6 +69,7 @@ class TestStoreCreateView(BaseEndToEndTestCase):
         self.driver.get(f"{url}/stores/create?error=This+is+an+error")
         self.assertEqual(self.driver.current_url, f"{url}/stores/create?error=This+is+an+error")
 
+        time.sleep(1)
         self.driver.get_screenshot_as_file("./screenshots/stores/create_page_with_error.png")
         error_text = self.driver.find_element(value="form-error").text
         self.assertEqual(error_text, "This is an error")

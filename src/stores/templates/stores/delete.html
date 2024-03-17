@@ -2,7 +2,7 @@
 
 {% block static %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'stores/form.css' %}">
+<link rel="stylesheet" href="{% static 'base/form.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@
                 <div class="form-row">
                     <legend>Delete store with ID: {{ store.id }}</legend>
                 </div>
-                <input hidden id="store_id" name="store_id" type="text" value="{{ store.id }}"/>
+                <input hidden id="store_id" name="store_id" type="text" value="{{ store.id }}" />
                 <div class="form-row submit-row">
                     <input id="submit-delete-store" class="submit-input" type="submit" value="Delete Store">
                 </div>
