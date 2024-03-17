@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 from pydantic import ValidationError
 
 from authentication.decorators import async_login_required
-from authentication.schemas.contexts import BaseContext
+from shoppingapp.schemas.shared import BaseContext
 from stores.errors.api_exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
