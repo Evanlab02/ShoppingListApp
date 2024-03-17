@@ -110,3 +110,11 @@ legend {
 #submit-delete-store {
     background-color: #FFC107 !important;
 }
+
+#submit-update-item {
+    background-color: #d43be2 !important;
+}
+
+#submit-delete-item {
+    background-color: #FFC107 !important;
+}

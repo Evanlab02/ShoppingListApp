@@ -31,5 +31,6 @@ class TestStoreDeleteView(BaseEndToEndTestCase):
         self.driver.find_element(value="submit-delete-store").click()
 
         current_url = self.driver.current_url
+        time.sleep(1)
         self.driver.get_screenshot_as_file("./screenshots/stores/post_delete_page.png")
         self.assertEqual(current_url, f"{self.live_server_url}/stores/me")
