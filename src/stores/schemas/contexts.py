@@ -1,22 +1,11 @@
 """Contains the schemas for the stores app."""
 
-from ninja import Schema
-
+from shoppingapp.schemas.shared import BaseContext
 from stores.schemas.output import (
     StoreAggregationSchema,
     StorePaginationSchema,
     StoreSchema,
 )
-
-
-class BaseContext(Schema):
-    """Base context schema for views."""
-
-    page_title: str
-    is_personal: bool = False
-    is_overview: bool = False
-    show_advanced_navigation: bool = False
-    error: str | None = None
 
 
 class StoreDetailContext(BaseContext):

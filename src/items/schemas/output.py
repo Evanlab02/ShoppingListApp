@@ -18,6 +18,7 @@ class ItemSchema(ModelSchema):
 
         model = Item
         fields = [
+            "id",
             "name",
             "description",
             "price",

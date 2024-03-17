@@ -135,4 +135,5 @@ urlpatterns = [
     path("api/v1/", api.urls),
     path("", include("authentication.urls")),
     path("stores/", include("stores.urls")),
+    path("items/", include("items.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
