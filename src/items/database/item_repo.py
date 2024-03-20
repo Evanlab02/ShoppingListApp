@@ -25,7 +25,24 @@ async def _filter(
     user: User | AbstractBaseUser | AnonymousUser | None = None,
 ) -> QuerySet[Item]:
     """
-    Filter items.
+    Filter items and order them by the updated date.
+
+    Returns a QuerySet of items that match the provided filters.
+
+    Args:
+        name (str | None): The name of the item.
+        description (str | None): The description of the item.
+        price_is (float | None): The price of the item.
+        price_is_gt (float | None): The price of the item is greater than.
+        price_is_lt (float | None): The price of the item is less than.
+        created_on (date | None): The date the item was created.
+        created_after (date | None): The date the item was created after.
+        created_before (date | None): The date the item was created before.
+        updated_on (date | None): The date the item was updated.
+        updated_after (date | None): The date the item was updated after.
+        updated_before (date | None): The date the item was updated before.
+        store (Store | None): The store where the item is stocked.
+        user (User | AbstractBaseUser | AnonymousUser | None): The user who created the item.
 
     Returns:
         list[Item]: The filtered items.
@@ -58,6 +75,8 @@ async def _filter(
         items = items.filter(store=store)
     if user:
         items = items.filter(user=user)
+
+    items = items.order_by("-updated_at")
 
     return items
 
