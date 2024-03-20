@@ -94,7 +94,7 @@ async def create_action(request: HttpRequest) -> HttpResponse:
         logging.info(f"Redirecting {user.id} to {redirect_url}")
         return HttpResponseRedirect(redirect_url)
     except ValueError as err:
-        logging.warn(err)
+        logging.warning(err)
         return await _handle_validation_error(
             name=item_name,
             store_id=store_input,
@@ -102,5 +102,5 @@ async def create_action(request: HttpRequest) -> HttpResponse:
             price=price_input,
         )
     except ItemAlreadyExists as err:
-        logging.warn(err)
+        logging.warning(err)
         return HttpResponseRedirect("/items/create?error=Item Already Exists.")

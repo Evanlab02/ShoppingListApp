@@ -10,8 +10,8 @@ from stores.models import ShoppingStore as Store
 MOCK_ITEM_NAME = "Crumbed Chicken"
 
 
-class TestStoreCreateView(TestCase):
-    """Test the store create view."""
+class TestItemCreateView(TestCase):
+    """Test the item create view."""
 
     def setUp(self) -> None:
         """Set up the test environment."""

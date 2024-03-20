@@ -1,9 +1,65 @@
 """Contains item repository functions."""
 
+from datetime import date
+
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+from django.db.models import QuerySet
 
 from items.models import ShoppingItem as Item
 from stores.models import ShoppingStore as Store
+
+
+async def _filter(
+    name: str | None = None,
+    description: str | None = None,
+    price_is: float | None = None,
+    price_is_gt: float | None = None,
+    price_is_lt: float | None = None,
+    created_on: date | None = None,
+    created_after: date | None = None,
+    created_before: date | None = None,
+    updated_on: date | None = None,
+    updated_after: date | None = None,
+    updated_before: date | None = None,
+    store: Store | None = None,
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+) -> QuerySet[Item]:
+    """
+    Filter items.
+
+    Returns:
+        list[Item]: The filtered items.
+    """
+    items = Item.objects.all()
+
+    if name:
+        items = items.filter(name__icontains=name)
+    if description:
+        items = items.filter(description__icontains=description)
+    if price_is:
+        items = items.filter(price=price_is)
+    if price_is_gt:
+        items = items.filter(price__gt=price_is_gt)
+    if price_is_lt:
+        items = items.filter(price__lt=price_is_lt)
+    if created_on:
+        items = items.filter(created_at__date=created_on)
+    if created_after:
+        items = items.filter(created_at__date__gt=created_after)
+    if created_before:
+        items = items.filter(created_at__date__lt=created_before)
+    if updated_on:
+        items = items.filter(updated_at__date=updated_on)
+    if updated_after:
+        items = items.filter(updated_at__date__gt=updated_after)
+    if updated_before:
+        items = items.filter(updated_at__date__lt=updated_before)
+    if store:
+        items = items.filter(store=store)
+    if user:
+        items = items.filter(user=user)
+
+    return items
 
 
 async def does_item_exist(name: str, store: Store) -> bool:
