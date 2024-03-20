@@ -1,4 +1,4 @@
-"""Contains tests for the )filter function of the item repository."""
+"""Contains tests for the _filter function of the item repository."""
 
 from datetime import date, timedelta
 

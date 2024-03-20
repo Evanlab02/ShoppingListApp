@@ -17,13 +17,13 @@ class UserSchema(ModelSchema):
 class PaginationSchema(Schema):
     """Pagination schema."""
 
-    total: int
-    page: int
-    total_pages: int
-    has_previous: bool
-    previous_page: int | None
-    has_next: bool
-    next_page: int | None
+    total: int = 0
+    page_number: int = 1
+    total_pages: int = 1
+    has_previous: bool = False
+    previous_page: int | None = None
+    has_next: bool = False
+    next_page: int | None = None
 
 
 class DeleteSchema(Schema):
