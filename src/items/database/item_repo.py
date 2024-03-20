@@ -105,7 +105,7 @@ def _paginate(page_number: int = 1, items_per_page: int = 10) -> ItemPaginationS
     paginated_page = paginator.get_page(page_number)
     paginated_items = paginated_page.object_list
 
-    items = [ItemSchema.from_orm(record) for record in paginated_items]  # type: ignore
+    items = [ItemSchema.from_orm(record) for record in paginated_items]
     total = paginator.count
     page = paginated_page.number
     total_pages = paginator.num_pages
