@@ -1,4 +1,4 @@
-"""Contains tests for the item service create function."""
+"""Contains tests for the item service get_items function."""
 
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
@@ -7,12 +7,9 @@ from items.models import ShoppingItem as Item
 from items.services import item_service
 from stores.models import ShoppingStore as Store
 
-MOCK_NAME = "Logitech MX Keys Mini"
-MOCK_DESRIPTION = "A mini keyboard created by logitech."
-
 
 class TestItemServiceGetItems(TestCase):
-    """Test the store service create."""
+    """Test the store service get items."""
 
     def setUp(self) -> None:
         """Set up the tests."""
