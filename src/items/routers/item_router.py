@@ -5,7 +5,7 @@ from ninja import Router
 
 from authentication.auth.api_key import ApiKey
 from items.schemas.input import NewItem
-from items.schemas.output import ItemSchema
+from items.schemas.output import ItemPaginationSchema, ItemSchema
 from items.services import item_service
 
 item_router = Router(tags=["Items"], auth=ApiKey())
@@ -36,3 +36,22 @@ async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
         description=item_description,
     )
     return item
+
+
+@item_router.get("", response={200: ItemPaginationSchema})
+async def get_items(
+    request: HttpRequest, page: int = 1, per_page: int = 10
+) -> ItemPaginationSchema:
+    """
+    Get all items.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        page (int): The page number.
+        per_page (int): The number of items per page.
+
+    Returns:
+        ItemPaginationSchema: The paginated list of items.
+    """
+    items = await item_service.get_items(page=page, items_per_page=per_page)
+    return items

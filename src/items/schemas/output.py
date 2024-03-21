@@ -3,7 +3,7 @@
 from ninja import ModelSchema
 
 from items.models import ShoppingItem as Item
-from shoppingapp.schemas.shared import UserSchema
+from shoppingapp.schemas.shared import PaginationSchema, UserSchema
 from stores.schemas.output import StoreSchemaNoUser
 
 
@@ -25,3 +25,9 @@ class ItemSchema(ModelSchema):
             "created_at",
             "updated_at",
         ]
+
+
+class ItemPaginationSchema(PaginationSchema):
+    """Pagination schema for outgoing data."""
+
+    items: list[ItemSchema] = []

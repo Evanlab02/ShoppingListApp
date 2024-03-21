@@ -15,8 +15,8 @@ MOCK_NAME = "Logitech MX Keys Mini"
 MOCK_DESRIPTION = "A mini keyboard created by logitech."
 
 
-class TestStoreServiceCreate(TestCase):
-    """Test the store service create."""
+class TestItemServiceCreate(TestCase):
+    """Test the item service create."""
 
     def setUp(self) -> None:
         """Set up the tests."""
