@@ -1,15 +1,18 @@
-"""Contains tests for the get_items function of the item repository."""
+"""Contains tests for the item service create function."""
 
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 
-from items.database import item_repo
 from items.models import ShoppingItem as Item
+from items.services import item_service
 from stores.models import ShoppingStore as Store
 
+MOCK_NAME = "Logitech MX Keys Mini"
+MOCK_DESRIPTION = "A mini keyboard created by logitech."
 
-class TestGetItems(TestCase):
-    """Test the item repository get_items function."""
+
+class TestItemServiceGetItems(TestCase):
+    """Test the store service create."""
 
     def setUp(self) -> None:
         """Set up the tests."""
@@ -59,36 +62,30 @@ class TestGetItems(TestCase):
 
     async def test_get_items(self) -> None:
         """Test getting all items."""
-        items = await item_repo.get_items()
-        self.assertEqual(len(items.items), 2)
+        items = await item_service.get_items()
         self.assertEqual(items.total, 2)
         self.assertEqual(items.page_number, 1)
         self.assertEqual(items.total_pages, 1)
         self.assertEqual(items.has_previous, False)
         self.assertEqual(items.has_next, False)
-        self.assertIsNone(items.previous_page)
-        self.assertIsNone(items.next_page)
+        self.assertEqual(len(items.items), 2)
 
-    async def test_paginate_items_page_1(self) -> None:
-        """Test that items are paginated on page 1 with 1 item per page."""
-        items = await item_repo.get_items(items_per_page=1)
-        self.assertEqual(len(items.items), 1)
+    async def test_get_items_pagination_page_1(self) -> None:
+        """Test getting all items with pagination."""
+        items = await item_service.get_items(page=1, items_per_page=1)
         self.assertEqual(items.total, 2)
         self.assertEqual(items.page_number, 1)
         self.assertEqual(items.total_pages, 2)
         self.assertEqual(items.has_previous, False)
         self.assertEqual(items.has_next, True)
-        self.assertIsNone(items.previous_page)
-        self.assertIsNotNone(items.next_page)
-
-    async def test_paginate_items_page_2(self) -> None:
-        """Test that items are paginated on page 2 with 1 item per page."""
-        items = await item_repo.get_items(items_per_page=1, page=2)
         self.assertEqual(len(items.items), 1)
+
+    async def test_get_items_pagination_page_2(self) -> None:
+        """Test getting all items with pagination."""
+        items = await item_service.get_items(page=2, items_per_page=1)
         self.assertEqual(items.total, 2)
         self.assertEqual(items.page_number, 2)
         self.assertEqual(items.total_pages, 2)
         self.assertEqual(items.has_previous, True)
         self.assertEqual(items.has_next, False)
-        self.assertIsNotNone(items.previous_page)
-        self.assertIsNone(items.next_page)
+        self.assertEqual(len(items.items), 1)

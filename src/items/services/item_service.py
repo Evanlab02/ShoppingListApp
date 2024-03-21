@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from items.database import item_repo
 from items.errors.exceptions import ItemAlreadyExists
-from items.schemas.output import ItemSchema
+from items.schemas.output import ItemPaginationSchema, ItemSchema
 from stores.database import store_repo
 from stores.errors.api_exceptions import StoreDoesNotExist
 from stores.models import ShoppingStore as Store
@@ -51,3 +51,14 @@ async def create_item(
         return item_schema
     except Store.DoesNotExist:
         raise StoreDoesNotExist(store_id=store_id)
+
+
+async def get_items(page: int = 1, items_per_page: int = 10) -> ItemPaginationSchema:
+    """
+    Get all items.
+
+    Returns:
+        ItemPaginationSchema: A paginated list of items.
+    """
+    items = await item_repo.get_items(page=page, items_per_page=items_per_page)
+    return items

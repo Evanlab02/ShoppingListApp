@@ -172,16 +172,16 @@ async def create_item(
     return item
 
 
-async def get_stores(page: int = 1, items_per_page: int = 10) -> ItemPaginationSchema:
+async def get_items(page: int = 1, items_per_page: int = 10) -> ItemPaginationSchema:
     """
-    Get all the stores.
+    Get all the items.
 
     Args:
         page (int): The page number.
         items_per_page (int): The number of items per page.
 
     Returns:
-        ItemPaginationSchema: The stores.
+        ItemPaginationSchema: The paginated items.
     """
     stores = await _paginate(page_number=page, items_per_page=items_per_page)
     return stores
