@@ -47,6 +47,8 @@ async def get_items(
 
     Args:
         request (HttpRequest): The HTTP request.
+        page (int): The page number.
+        per_page (int): The number of items per page.
 
     Returns:
         ItemPaginationSchema: The paginated list of items.
