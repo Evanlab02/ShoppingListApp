@@ -32,7 +32,7 @@ jobs:
           pip install -r requirements.txt
       - name: Create/Build Static Files
         run: |
-          python src/manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
+          python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
       - name: Build Docker Images
         run: |
           docker build -f docker/admin/Dockerfile -t shopping-app .

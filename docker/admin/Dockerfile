@@ -7,10 +7,10 @@ COPY version.txt src/version.txt
 
 WORKDIR /src
 
-COPY /src/authentication /src/authentication
-COPY /src/stores /src/stores
-COPY /src/items /src/items
-COPY /src/shoppingapp /src/shoppingapp
-COPY /src/manage.py /src/manage.py
+COPY authentication /src/authentication
+COPY stores /src/stores
+COPY items /src/items
+COPY shoppingapp /src/shoppingapp
+COPY manage.py /src/manage.py
 
 CMD ["python","manage.py", "runserver"]

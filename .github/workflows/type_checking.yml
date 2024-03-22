@@ -34,4 +34,4 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Run Type Checks
         run: |
-          mypy src/ --strict
+          mypy . --strict

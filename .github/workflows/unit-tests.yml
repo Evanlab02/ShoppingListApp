@@ -33,13 +33,13 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Create Migrations
         run: |
-          python src/manage.py makemigrations
+          python manage.py makemigrations
       - name: Run Migrations
         run: |
-          python src/manage.py migrate
+          python manage.py migrate
       - name: Run Tests
         run: |
-          pytest src/ --cov=. --cov-report term-missing --ignore=tests/ -n auto
+          pytest . --cov=. --cov-report term-missing -n auto
       - name: Generate Coverage Report
         run: |
           coverage xml

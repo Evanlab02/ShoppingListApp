@@ -17,35 +17,34 @@ requirements:
 	@pipenv requirements --dev > requirements-dev.txt
 
 run:
-	@python src/manage.py runserver 0.0.0.0:7001 --settings shoppingapp.settings.local_settings
+	@python manage.py runserver 0.0.0.0:7001 --settings shoppingapp.settings.local_settings
 
 format:
-	@black src/
-	@isort src/ --profile black
+	@black .
+	@isort . --profile black
 
 lint:
-	@black --check src/
-	@isort src/ --check-only --profile black
-	@flake8 src/ --max-line-length=100
-	@mypy src/ --strict
+	@black --check .
+	@isort . --check-only --profile black
+	@flake8 . --max-line-length=100
+	@mypy . --strict
 
 test:
-	@pytest src/ --ignore=src/tests/ -n auto
+	@pytest . -n auto
 	@coverage xml
 	@coverage html
 
 static:
-	@python src/manage.py collectstatic --no-input
+	@python manage.py collectstatic --no-input
 
 clean:
-	@rm -rf src/.mypy_cache \
-	src/**/__pycache__ \
-	src/**/**/__pycache__ \
-	src/.coverage \
-	src/.pytest_cache \
-	src/build/ \
-	src/dist/ \
-	src/*.egg-info \
+	@rm -rf .mypy_cache \
+	**/__pycache__ \
+	**/**/__pycache__ \
+	.coverage \
+	.pytest_cache \
+	build/ \
+	dist/ \
+	*.egg-info \
 	coverage.xml \
 	htmlcov \
-	src/static
