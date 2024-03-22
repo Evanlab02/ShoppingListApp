@@ -53,12 +53,16 @@ async def create_item(
         raise StoreDoesNotExist(store_id=store_id)
 
 
-async def get_items(page: int = 1, items_per_page: int = 10) -> ItemPaginationSchema:
+async def get_items(
+    page: int = 1,
+    items_per_page: int = 10,
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+) -> ItemPaginationSchema:
     """
     Get all items.
 
     Returns:
         ItemPaginationSchema: A paginated list of items.
     """
-    items = await item_repo.get_items(page=page, items_per_page=items_per_page)
+    items = await item_repo.get_items(page=page, items_per_page=items_per_page, user=user)
     return items

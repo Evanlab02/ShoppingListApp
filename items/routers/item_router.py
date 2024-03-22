@@ -55,3 +55,23 @@ async def get_items(
     """
     items = await item_service.get_items(page=page, items_per_page=per_page)
     return items
+
+
+@item_router.get("/me", response={200: ItemPaginationSchema})
+async def get_my_items(
+    request: HttpRequest, page: int = 1, per_page: int = 10
+) -> ItemPaginationSchema:
+    """
+    Get all items.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        page (int): The page number.
+        per_page (int): The number of items per page.
+
+    Returns:
+        ItemPaginationSchema: The paginated list of items.
+    """
+    user = request.user
+    items = await item_service.get_items(page=page, items_per_page=per_page, user=user)
+    return items

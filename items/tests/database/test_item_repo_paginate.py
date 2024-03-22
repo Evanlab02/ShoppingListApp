@@ -92,3 +92,36 @@ class TestPaginateItems(TestCase):
         self.assertEqual(items.has_next, False)
         self.assertIsNotNone(items.previous_page)
         self.assertIsNone(items.next_page)
+
+    async def test_paginate_items_with_user(self) -> None:
+        """Test that items are paginated with a user."""
+        items = await item_repo._paginate(user=self.user)
+        self.assertEqual(len(items.items), 2)
+        self.assertEqual(items.total, 2)
+        self.assertEqual(items.page_number, 1)
+        self.assertEqual(items.total_pages, 1)
+        self.assertEqual(items.has_previous, False)
+        self.assertEqual(items.has_next, False)
+        self.assertIsNone(items.previous_page)
+        self.assertIsNone(items.next_page)
+
+    async def test_paginate_items_no_items_user(self) -> None:
+        """Test that items are paginated with a user that has no items."""
+        new_user = await User.objects.acreate(
+            username="newuser",
+            email="newuser@gmail.com",
+            password="newpass",
+            first_name="New",
+            last_name="User",
+        )
+        await new_user.asave()
+
+        items = await item_repo._paginate(user=new_user)
+        self.assertEqual(len(items.items), 0)
+        self.assertEqual(items.total, 0)
+        self.assertEqual(items.page_number, 1)
+        self.assertEqual(items.total_pages, 1)
+        self.assertEqual(items.has_previous, False)
+        self.assertEqual(items.has_next, False)
+        self.assertIsNone(items.previous_page)
+        self.assertIsNone(items.next_page)
