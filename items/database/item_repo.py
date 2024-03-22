@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
@@ -12,7 +12,7 @@ from items.schemas.output import ItemPaginationSchema, ItemSchema
 from stores.models import ShoppingStore as Store
 
 
-async def _filter(
+def _filter(
     name: str | None = None,
     description: str | None = None,
     price_is: float | None = None,
@@ -85,7 +85,11 @@ async def _filter(
 
 
 @sync_to_async
-def _paginate(page_number: int = 1, items_per_page: int = 10) -> ItemPaginationSchema:
+def _paginate(
+    page_number: int = 1,
+    items_per_page: int = 10,
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+) -> ItemPaginationSchema:
     """
     Paginate the items.
 
@@ -98,8 +102,7 @@ def _paginate(page_number: int = 1, items_per_page: int = 10) -> ItemPaginationS
     Returns:
         ItemPaginationSchema: The paginated items.
     """
-    __filter_items = async_to_sync(_filter)
-    records = __filter_items()
+    records = _filter(user=user)
 
     paginator = Paginator(records, items_per_page)
     paginated_page = paginator.get_page(page_number)
@@ -172,7 +175,11 @@ async def create_item(
     return item
 
 
-async def get_items(page: int = 1, items_per_page: int = 10) -> ItemPaginationSchema:
+async def get_items(
+    page: int = 1,
+    items_per_page: int = 10,
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+) -> ItemPaginationSchema:
     """
     Get all the items.
 
@@ -183,5 +190,5 @@ async def get_items(page: int = 1, items_per_page: int = 10) -> ItemPaginationSc
     Returns:
         ItemPaginationSchema: The paginated items.
     """
-    stores = await _paginate(page_number=page, items_per_page=items_per_page)
-    return stores
+    items = await _paginate(page_number=page, items_per_page=items_per_page, user=user)
+    return items

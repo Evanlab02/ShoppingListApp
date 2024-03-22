@@ -125,3 +125,59 @@ class TestGetItemsEndpoint(TestCase):
         self.assertEqual(data.get("next_page"), None)
         items = data.get("items")
         self.assertEqual(len(items), 1)
+
+    def test_get_personal_items(self) -> None:
+        """Test getting personal items."""
+        self.client.force_login(self.user)
+        response = self.client.get("/api/v1/items/me")
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        self.assertEqual(data.get("total"), 2)
+        self.assertEqual(data.get("page_number"), 1)
+        self.assertEqual(data.get("total_pages"), 1)
+        self.assertEqual(data.get("has_previous"), False)
+        self.assertEqual(data.get("previous_page"), None)
+        self.assertEqual(data.get("has_next"), False)
+        self.assertEqual(data.get("next_page"), None)
+
+        items = data.get("items")
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[1].get("name"), "Test Item")
+        self.assertEqual(items[0].get("name"), "Alternate Item")
+        self.assertEqual(items[1].get("description"), "Test Description")
+        self.assertEqual(items[0].get("description"), "Alternate Description")
+        self.assertEqual(items[1].get("price"), "100.00")
+        self.assertEqual(items[0].get("price"), "200.00")
+        self.assertEqual(items[1].get("store").get("name"), "Base Test Store")
+        self.assertEqual(items[0].get("store").get("name"), "Base Test Store")
+        self.assertEqual(items[1].get("user").get("username"), "testuser")
+        self.assertEqual(items[0].get("user").get("username"), "testuser")
+
+    def test_get_personal_items_with_no_items(self) -> None:
+        """Test getting personal items with no items."""
+        new_user = User.objects.create(
+            username="newuser",
+            email="newuser@gmail.com",
+            password="newpass",
+            first_name="New",
+            last_name="User",
+        )
+        new_user.save()
+
+        self.client.force_login(new_user)
+
+        response = self.client.get("/api/v1/items/me")
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        self.assertEqual(data.get("total"), 0)
+        self.assertEqual(data.get("page_number"), 1)
+        self.assertEqual(data.get("total_pages"), 1)
+        self.assertEqual(data.get("has_previous"), False)
+        self.assertEqual(data.get("previous_page"), None)
+        self.assertEqual(data.get("has_next"), False)
+        self.assertEqual(data.get("next_page"), None)
+
+        items = data.get("items")
+        self.assertEqual(len(items), 0)
