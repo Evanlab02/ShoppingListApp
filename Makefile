@@ -16,8 +16,8 @@ requirements:
 	@pipenv requirements > requirements.txt
 	@pipenv requirements --dev > requirements-dev.txt
 
-run:
-	@python manage.py runserver 0.0.0.0:7001 --settings shoppingapp.settings.local_settings
+dev:
+	@docker compose -f docker/docker-compose.yaml watch
 
 format:
 	@black .

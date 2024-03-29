@@ -74,6 +74,22 @@ services:
     networks:
       - dev-postgres-django-network
     restart: always
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../authentication
+          target: /src/authentication
+        - action: sync+restart
+          path: ../stores
+          target: /src/stores
+        - action: sync+restart
+          path: ../items
+          target: /src/items
+        - action: sync+restart
+          path: ../shoppingapp
+          target: /src/shoppingapp
+        - action: rebuild
+          path: ../requirements.txt
 
   dev-shopping-django-site:
     container_name: shopping-django-site
@@ -90,6 +106,14 @@ services:
     networks:
       - dev-postgres-django-network
     restart: always
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../Caddyfile
+          target: /etc/caddy/Caddyfile
+        - action: sync+restart
+          path: ../static
+          target: /var/www/html/static/
 
 networks:
   dev-postgres-django-network:
