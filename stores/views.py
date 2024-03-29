@@ -7,6 +7,7 @@ from pydantic import ValidationError
 
 from authentication.decorators import async_login_required
 from shoppingapp.schemas.shared import BaseContext
+from shoppingapp.utilities.utils import get_overview_params
 from stores.errors.api_exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
@@ -114,39 +115,6 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
         return HttpResponse("This store does not exist.", status=404)
 
 
-async def _get_overview_params(request: HttpRequest) -> dict[str, int]:
-    """
-    Get overview page params from request object.
-
-    The overview page params includes the following values:
-    - Page: The page number for pagination.
-    - Limit: The number of table rows to show per page.
-
-    Args:
-        request (HttpRequest): The request object.
-
-    Returns:
-        dict[str, int]: Dictionary containing the page and limit values grabbed from the
-        request object.
-    """
-    page = request.GET.get("page", 1)
-    limit = request.GET.get("limit", 10)
-
-    try:
-        if isinstance(page, str):
-            page = int(page)
-    except ValueError:
-        page = 1
-
-    try:
-        if isinstance(limit, str):
-            limit = int(limit)
-    except ValueError:
-        limit = 10
-
-    return {"page": page, "limit": limit}
-
-
 async def _get_overview_context(
     request: HttpRequest, params: dict[str, int], is_personalized: bool = False
 ) -> StoreOverviewContext:
@@ -193,7 +161,7 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await _get_overview_params(request)
+    params = await get_overview_params(request)
     context = await _get_overview_context(request, params)
     return render(request, "stores/overview.html", context.model_dump())
 
@@ -214,7 +182,7 @@ async def personal_overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await _get_overview_params(request)
+    params = await get_overview_params(request)
     context = await _get_overview_context(request, params, True)
     return render(request, "stores/overview.html", context.model_dump())
 
