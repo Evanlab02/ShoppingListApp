@@ -74,3 +74,11 @@ class BaseEndToEndTestCase(StaticLiveServerTestCase):
         )
         store.save()
         return store
+
+    def _create_test_item(self, store: Store) -> Item:
+        """Create test item."""
+        item = Item.objects.create(
+            name="Test Item", description="", price=100, store=store, user=self.user
+        )
+        item.save()
+        return item

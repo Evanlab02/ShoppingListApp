@@ -8,12 +8,14 @@ from django.views.decorators.http import require_http_methods
 
 from authentication.decorators.login import async_login_required
 from items.errors.exceptions import ItemAlreadyExists
-from items.schemas.contexts import ItemCreateContext
+from items.schemas.contexts import ItemCreateContext, ItemOverviewContext
 from items.services import item_service
+from shoppingapp.utilities.utils import get_overview_params
 from stores.services import store_service
 
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
+OVERVIEW_PAGE = ""
 
 
 async def _handle_validation_error(
@@ -104,3 +106,48 @@ async def create_action(request: HttpRequest) -> HttpResponse:
     except ItemAlreadyExists as err:
         logging.warning(err)
         return HttpResponseRedirect("/items/create?error=Item Already Exists.")
+
+
+async def _get_overview_context(
+    request: HttpRequest, params: dict[str, int], is_personalized: bool = False
+) -> ItemOverviewContext:
+    """
+    Get overview context using request object and params.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        StoreOverviewContext: The store overview context.
+    """
+    page = params.get("page", 1)
+    limit = params.get("limit", 10)
+
+    user, page_title = (request.user, "Your Stores") if is_personalized else (None, "All Stores")
+
+    pagination = await item_service.get_items(page=page, items_per_page=limit, user=user)
+    context = ItemOverviewContext(
+        pagination=pagination,
+        page_title=page_title,
+        is_overview=True,
+        is_personal=is_personalized,
+        show_advanced_navigation=True,
+    )
+    return context
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def get_overview_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the overview page.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    params = await get_overview_params(request=request)
+    context = await _get_overview_context(request=request, params=params)
+    return render(request, "items/overview.html", context.model_dump())
