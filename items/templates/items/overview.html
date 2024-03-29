@@ -1,0 +1,86 @@
+{% extends 'items/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'base/overview.css' %}">
+<link rel="stylesheet" href="{% static 'base/cards.css' %}">
+<link rel="stylesheet" href="{% static 'base/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="card-wrapper">
+        <div class="mini-card total-card">
+            <div class="mini-card-icon total-card-icon">
+                <sl-icon name="bag" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total items</p>
+                <p id="total-items-sub-value" class="sub-value">COMING SOON</p>
+            </div>
+        </div>
+        <div class="mini-card total-price-card">
+            <div class="mini-card-icon total-price-icon">
+                <sl-icon name="wallet2" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Total price of items</p>
+                <p id="total-price-sub-value" class="sub-value">COMING SOON</p>
+            </div>
+        </div>
+        <div class="mini-card average-price-card">
+            <div class="mini-card-icon average-price-card-icon">
+                <sl-icon name="cash-stack" />
+            </div>
+            <div class="mini-card-content">
+                <p class="value">Average price of items</p>
+                <p id="average-price-sub-value" class="sub-value">COMING SOON</p>
+            </div>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="overview-table">
+            <caption>{{ table_caption }}</caption>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Store</th>
+                    <th>Price</th>
+                    {% if not is_personal %}
+                    <th>Owner</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in pagination.items %}
+                <tr class="item-table-row">
+                    <td><a href="/items/detail/{{ item.id }}">{{ item.name }}</a></td>
+                    <td><a href="/stores/detail/{{ item.store.id }}">{{ item.store.name }}</a></td>
+                    <td>{{ item.price }}</td>
+                    {% if not is_personal %}
+                    <td>{{ item.user.username }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if pagination.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ pagination.previous_page }}">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
+            </span>
+
+            {% if pagination.has_next %}
+            <a href="?page={{ pagination.next_page }}">next</a>
+            <a href="?page={{ pagination.total_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

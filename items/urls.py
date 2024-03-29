@@ -7,4 +7,5 @@ from . import views
 urlpatterns = [
     path(views.CREATE_PAGE, views.create_page, name="item_create_page"),
     path(views.CREATE_ACTION, views.create_action, name="item_create_action"),
+    path(views.OVERVIEW_PAGE, views.get_overview_page, name="item_overview_page"),
 ]
