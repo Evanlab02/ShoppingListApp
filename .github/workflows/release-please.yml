@@ -51,10 +51,30 @@ jobs:
           gh release upload ${{ steps.release.outputs.tag_name }} static.zip
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
-      - name: Run tests
-        if: ${{ steps.release.outputs.releases_created }}
+      - name: Load .env file
+        uses: aarcangeli/load-dotenv@v1.0.0
+        with:
+          path: ""
+          filenames: |
+            .env.template
+          quiet: false
+          if-file-not-found: error
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Setup
         run: |
-          pytest . -n auto
+          pip install -r requirements-dev.txt
+      - name: Create Migrations
+        run: |
+          python manage.py makemigrations
+      - name: Run Migrations
+        run: |
+          python manage.py migrate
+      - name: Run Tests
+        run: |
+          pytest . --cov=. --cov-report term-missing -n auto
       - name: Generate coverage report
         if: ${{ steps.release.outputs.releases_created }}
         run: |
