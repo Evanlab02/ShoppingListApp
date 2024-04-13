@@ -196,7 +196,7 @@ async def get_items(
 
 
 @no_type_check
-async def aggregate() -> dict[str, Any]:
+async def aggregate(user: User | AbstractBaseUser | AnonymousUser | None = None) -> dict[str, Any]:
     """
     Aggregate the items.
 
@@ -204,7 +204,7 @@ async def aggregate() -> dict[str, Any]:
         dict[str, Any]: The aggregation of the items.
     """
     filter_items = sync_to_async(_filter)
-    items = await filter_items()
+    items = await filter_items(user=user)
 
     aggregation = await items.aaggregate(
         total_items=Count("id"),
@@ -215,3 +215,17 @@ async def aggregate() -> dict[str, Any]:
     )
 
     return aggregation
+
+
+async def get_item(item_id: int) -> Item:
+    """
+    Get an item by its ID.
+
+    Args:
+        item_id (int): The ID of the item.
+
+    Returns:
+        Item: The item.
+    """
+    item = await Item.objects.aget(id=item_id)
+    return item

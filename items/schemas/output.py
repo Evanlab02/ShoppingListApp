@@ -36,8 +36,8 @@ class ItemPaginationSchema(PaginationSchema):
 class ItemAggregationSchema(Schema):
     """Aggregation schema for outgoing data."""
 
-    total_items: int
-    total_price: float
-    average_price: float
-    max_price: float
-    min_price: float
+    total_items: int | None = None
+    total_price: float | None = None
+    average_price: float | None = None
+    max_price: float | None = None
+    min_price: float | None = None

@@ -41,3 +41,31 @@ jobs:
           docker push ghcr.io/evanlab02/shoppingappadmin:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
           docker tag shoppinglistapp-admin:latest ghcr.io/evanlab02/shoppingappadmin:latest
           docker push ghcr.io/evanlab02/shoppingappadmin:latest
+      - name: Zip static
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          zip -r static.zip static
+      - name: Upload static
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          gh release upload ${{ steps.release.outputs.tag }} static.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+      - name: Run tests
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          pytest . -n auto
+      - name: Generate coverage report
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          coverage html
+      - name: Zip coverage report
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          zip -r coverage.zip htmlcov
+      - name: Upload coverage report
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          gh release upload ${{ steps.release.outputs.tag }} coverage.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
