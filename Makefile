@@ -35,6 +35,7 @@ test:
 	@coverage html
 
 static:
+	@rm -rf static/
 	@python manage.py collectstatic --no-input
 
 clean:
@@ -48,3 +49,6 @@ clean:
 	*.egg-info \
 	coverage.xml \
 	htmlcov \
+
+coverage:
+	@python -m http.server --directory htmlcov
