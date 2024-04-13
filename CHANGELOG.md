@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.0...v0.14.1) (2024-04-13)
+
+
+### Bug Fixes
+
+* **Workflows:** Updated release-please workflow to correctly reference tag name ([82739f9](https://github.com/Evanlab02/ShoppingListApp-BE/commit/82739f920adcde5d43a4819e9b9d018203e960b6))
+
 ## 0.14.0 (2024-04-13)
 
 
