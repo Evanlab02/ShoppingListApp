@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from items.database import item_repo
 from items.errors.exceptions import ItemAlreadyExists
-from items.schemas.output import ItemPaginationSchema, ItemSchema
+from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from stores.database import store_repo
 from stores.errors.api_exceptions import StoreDoesNotExist
 from stores.models import ShoppingStore as Store
@@ -66,3 +66,15 @@ async def get_items(
     """
     items = await item_repo.get_items(page=page, items_per_page=items_per_page, user=user)
     return items
+
+
+async def aggregate() -> ItemAggregationSchema:
+    """
+    Aggregate the items.
+
+    Returns:
+        ItemAggregationSchema: The aggregation of the items.
+    """
+    aggregation = await item_repo.aggregate()
+    result = ItemAggregationSchema.model_validate(aggregation)
+    return result

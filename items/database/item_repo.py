@@ -1,11 +1,12 @@
 """Contains item repository functions."""
 
 from datetime import date
+from typing import Any, no_type_check
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.core.paginator import Paginator
-from django.db.models import QuerySet
+from django.db.models import Avg, Count, Max, Min, QuerySet, Sum
 
 from items.models import ShoppingItem as Item
 from items.schemas.output import ItemPaginationSchema, ItemSchema
@@ -192,3 +193,25 @@ async def get_items(
     """
     items = await _paginate(page_number=page, items_per_page=items_per_page, user=user)
     return items
+
+
+@no_type_check
+async def aggregate() -> dict[str, Any]:
+    """
+    Aggregate the items.
+
+    Returns:
+        dict[str, Any]: The aggregation of the items.
+    """
+    filter_items = sync_to_async(_filter)
+    items = await filter_items()
+
+    aggregation = await items.aaggregate(
+        total_items=Count("id"),
+        total_price=Sum("price"),
+        average_price=Avg("price"),
+        max_price=Max("price"),
+        min_price=Min("price"),
+    )
+
+    return aggregation

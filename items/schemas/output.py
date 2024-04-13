@@ -1,6 +1,6 @@
 """Contains schemas that are outgoing to the user."""
 
-from ninja import ModelSchema
+from ninja import ModelSchema, Schema
 
 from items.models import ShoppingItem as Item
 from shoppingapp.schemas.shared import PaginationSchema, UserSchema
@@ -31,3 +31,13 @@ class ItemPaginationSchema(PaginationSchema):
     """Pagination schema for outgoing data."""
 
     items: list[ItemSchema] = []
+
+
+class ItemAggregationSchema(Schema):
+    """Aggregation schema for outgoing data."""
+
+    total_items: int
+    total_price: float
+    average_price: float
+    max_price: float
+    min_price: float
