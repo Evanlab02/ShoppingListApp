@@ -53,6 +53,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.TOKEN }}
       - name: Load .env file
         uses: aarcangeli/load-dotenv@v1.0.0
+        if: ${{ steps.release.outputs.releases_created }}
         with:
           path: ""
           filenames: |
@@ -61,18 +62,23 @@ jobs:
           if-file-not-found: error
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
+        if: ${{ steps.release.outputs.releases_created }}
         with:
           python-version: "3.11"
       - name: Setup
+        if: ${{ steps.release.outputs.releases_created }}
         run: |
           pip install -r requirements-dev.txt
       - name: Create Migrations
+        if: ${{ steps.release.outputs.releases_created }}
         run: |
           python manage.py makemigrations
       - name: Run Migrations
+        if: ${{ steps.release.outputs.releases_created }}
         run: |
           python manage.py migrate
       - name: Run Tests
+        if: ${{ steps.release.outputs.releases_created }}
         run: |
           pytest . --cov=. --cov-report term-missing -n auto
       - name: Generate coverage report
