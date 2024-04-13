@@ -5,7 +5,7 @@ from ninja import Router
 
 from authentication.auth.api_key import ApiKey
 from items.schemas.input import NewItem
-from items.schemas.output import ItemPaginationSchema, ItemSchema
+from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services import item_service
 
 item_router = Router(tags=["Items"], auth=ApiKey())
@@ -75,3 +75,18 @@ async def get_my_items(
     user = request.user
     items = await item_service.get_items(page=page, items_per_page=per_page, user=user)
     return items
+
+
+@item_router.get("/aggregate", response={200: ItemAggregationSchema})
+async def aggregate(request: HttpRequest) -> ItemAggregationSchema:
+    """
+    Get the aggregation of all items.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        ItemAggregationSchema: The aggregation of all items.
+    """
+    aggregation = await item_service.aggregate()
+    return aggregation

@@ -197,7 +197,12 @@ async def get_items(
 
 @no_type_check
 async def aggregate() -> dict[str, Any]:
-    """TODO: Implement aggregation."""
+    """
+    Aggregate the items.
+
+    Returns:
+        dict[str, Any]: The aggregation of the items.
+    """
     filter_items = sync_to_async(_filter)
     items = await filter_items()
 
