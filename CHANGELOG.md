@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.1...v0.14.2) (2024-04-13)
+
+
+### Bug Fixes
+
+* **Workflows:** Will now install dependencies before attempting to upload cov report to release ([f938cf1](https://github.com/Evanlab02/ShoppingListApp-BE/commit/f938cf1a54b78c6032db7547b94db57c3f5cf3c0))
+
 ## [0.14.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.0...v0.14.1) (2024-04-13)
 
 
