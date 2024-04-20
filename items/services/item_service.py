@@ -68,13 +68,15 @@ async def get_items(
     return items
 
 
-async def aggregate() -> ItemAggregationSchema:
+async def aggregate(
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+) -> ItemAggregationSchema:
     """
     Aggregate the items.
 
     Returns:
         ItemAggregationSchema: The aggregation of the items.
     """
-    aggregation = await item_repo.aggregate()
+    aggregation = await item_repo.aggregate(user=user)
     result = ItemAggregationSchema.model_validate(aggregation)
     return result
