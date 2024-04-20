@@ -90,3 +90,19 @@ async def aggregate(request: HttpRequest) -> ItemAggregationSchema:
     """
     aggregation = await item_service.aggregate()
     return aggregation
+
+
+@item_router.get("/aggregate/me", response={200: ItemAggregationSchema})
+async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
+    """
+    Get the aggregation of personal items.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        ItemAggregationSchema: The aggregation of personal items.
+    """
+    user = request.user
+    aggregation = await item_service.aggregate(user=user)
+    return aggregation
