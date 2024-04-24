@@ -126,8 +126,10 @@ async def _get_overview_context(
     user, page_title = (request.user, "Your Stores") if is_personalized else (None, "All Stores")
 
     pagination = await item_service.get_items(page=page, items_per_page=limit, user=user)
+    aggregation = await item_service.aggregate(user=user)
     context = ItemOverviewContext(
         pagination=pagination,
+        aggregation=aggregation,
         page_title=page_title,
         is_overview=True,
         is_personal=is_personalized,

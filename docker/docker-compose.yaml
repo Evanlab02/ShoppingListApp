@@ -1,9 +1,7 @@
-version: "3"
-
 services:
   dev-shopping-app-pgadmin:
     container_name: shopping-pgadmin
-    image: dpage/pgadmin4:7.8
+    image: dpage/pgadmin4:8.5
     environment:
       PGADMIN_DEFAULT_EMAIL: ${DEV_PGADMIN_DEFAULT}
       PGADMIN_DEFAULT_PASSWORD: ${DEV_PGADMIN_PASSWORD}
@@ -16,7 +14,7 @@ services:
 
   dev-shopping-app-db:
     container_name: shopping-db
-    image: postgres:alpine3.18
+    image: postgres:16.2-alpine3.18
     environment:
       POSTGRES_USER: ${DEV_DATABASE_USER}
       POSTGRES_PASSWORD: ${DEV_DATABASE_PASSWORD}
