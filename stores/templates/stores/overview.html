@@ -66,11 +66,15 @@
                     <td class="alt-menu-wrapper">
                         <div class="menu-list-button alt-menu-button">
                             <sl-icon-button name="pencil"
-                                onclick="window.location.href='/stores/update/{{ store.id }}'" />
+                                onclick="window.location.href='/stores/update/{{ store.id }}'" 
+                                onkeypress="window.location.href='/stores/update/{{ store.id }}'"
+                            />
                         </div>
                         <div class="menu-list-button alt-menu-button">
                             <sl-icon-button name="trash"
-                                onclick="window.location.href='/stores/delete/{{ store.id }}'" />
+                                onclick="window.location.href='/stores/delete/{{ store.id }}'" 
+                                onkeypress="window.location.href='/stores/delete/{{ store.id }}'"  
+                            />
                         </div>
                     </td>
                     {% endif %}
