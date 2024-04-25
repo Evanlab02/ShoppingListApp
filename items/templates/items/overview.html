@@ -16,7 +16,7 @@
             </div>
             <div class="mini-card-content">
                 <p class="value">Total items</p>
-                <p id="total-items-sub-value" class="sub-value">COMING SOON</p>
+                <p id="total-items-sub-value" class="sub-value">{{ aggregation.total_items }}</p>
             </div>
         </div>
         <div class="mini-card total-price-card">
@@ -25,7 +25,7 @@
             </div>
             <div class="mini-card-content">
                 <p class="value">Total price of items</p>
-                <p id="total-price-sub-value" class="sub-value">COMING SOON</p>
+                <p id="total-price-sub-value" class="sub-value">{{ aggregation.total_price}}</p>
             </div>
         </div>
         <div class="mini-card average-price-card">
@@ -34,7 +34,7 @@
             </div>
             <div class="mini-card-content">
                 <p class="value">Average price of items</p>
-                <p id="average-price-sub-value" class="sub-value">COMING SOON</p>
+                <p id="average-price-sub-value" class="sub-value">{{ aggregation.average_price }}</p>
             </div>
         </div>
     </div>
@@ -43,6 +43,9 @@
             <caption>{{ table_caption }}</caption>
             <thead>
                 <tr>
+                    {% if is_personal %}
+                    <th class="options-header">Options</th>
+                    {% endif %}
                     <th>Name</th>
                     <th>Store</th>
                     <th>Price</th>
@@ -54,6 +57,24 @@
             <tbody>
                 {% for item in pagination.items %}
                 <tr class="item-table-row">
+
+                    {% if is_personal %}
+                    <td class="alt-menu-wrapper">
+                        <div class="menu-list-button alt-menu-button">
+                            <sl-icon-button name="pencil"
+                                onclick="window.location.href='/items/update/{{ item.id }}'"
+                                onkeypress="window.location.href='/items/update/{{ item.id }}'"
+                            />
+                        </div>
+                        <div class="menu-list-button alt-menu-button">
+                            <sl-icon-button name="trash"
+                                onclick="window.location.href='/items/delete/{{ item.id }}'"
+                                onkeypress="window.location.href='/items/delete/{{ item.id }}'"   
+                            />
+                        </div>
+                    </td>
+                    {% endif %}
+
                     <td><a href="/items/detail/{{ item.id }}">{{ item.name }}</a></td>
                     <td><a href="/stores/detail/{{ item.store.id }}">{{ item.store.name }}</a></td>
                     <td>{{ item.price }}</td>

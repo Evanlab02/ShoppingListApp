@@ -1,4 +1,4 @@
-.PHONY: install debug build up down requirements clean run format lint static test
+.PHONY: install debug build up down requirements clean run format lint static test setup
 
 debug:
 	@docker compose -f docker/docker-compose.yaml up
@@ -52,3 +52,8 @@ clean:
 
 coverage:
 	@python -m http.server --directory htmlcov
+
+setup:
+	docker exec -it shopping-django-admin python manage.py makemigrations
+	docker exec -it shopping-django-admin python manage.py migrate
+	docker exec -it shopping-django-admin python manage.py createsuperuser

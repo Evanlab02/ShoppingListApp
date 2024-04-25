@@ -36,13 +36,31 @@ class TestItemOverviewView(BaseEndToEndTestCase):
         self.driver.get_screenshot_as_file("./screenshots/items/overview_page.png")
 
         total_items = self.driver.find_element(value="total-items-sub-value").text
-        self.assertEqual(total_items, "COMING SOON")
+        self.assertEqual(total_items, "1")
 
         total_in_store_stores = self.driver.find_element(value="total-price-sub-value").text
-        self.assertEqual(total_in_store_stores, "COMING SOON")
+        self.assertEqual(total_in_store_stores, "100.0")
 
         total_online_stores = self.driver.find_element(value="average-price-sub-value").text
-        self.assertEqual(total_online_stores, "COMING SOON")
+        self.assertEqual(total_online_stores, "100.0")
+
+        rows = self.driver.find_elements(by=By.CLASS_NAME, value="item-table-row")
+        self.assertEqual(len(rows), 1)
+
+    def test_personal_overview_page(self) -> None:
+        """Test the personal overview page."""
+        self.driver.get(f"{self.url}me")
+        time.sleep(1)
+        self.driver.get_screenshot_as_file("./screenshots/items/personal_overview_page.png")
+
+        total_items = self.driver.find_element(value="total-items-sub-value").text
+        self.assertEqual(total_items, "1")
+
+        total_in_store_stores = self.driver.find_element(value="total-price-sub-value").text
+        self.assertEqual(total_in_store_stores, "100.0")
+
+        total_online_stores = self.driver.find_element(value="average-price-sub-value").text
+        self.assertEqual(total_online_stores, "100.0")
 
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="item-table-row")
         self.assertEqual(len(rows), 1)
