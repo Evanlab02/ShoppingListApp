@@ -32,7 +32,7 @@ from authentication.errors.api_exceptions import (
     UserNotLoggedIn,
 )
 from authentication.routers.auth_router import auth_router
-from items.errors.exceptions import ItemAlreadyExists
+from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.routers.item_router import item_router
 from stores.errors.api_exceptions import (
     InvalidStoreType,
@@ -128,6 +128,12 @@ def store_does_not_exist_handler(
 def item_already_exists_handler(request: HttpRequest, exception: ItemAlreadyExists) -> HttpResponse:
     """Handle ItemAlreadyExists exception."""
     return api.create_response(request, {"detail": str(exception)}, status=400)
+
+
+@api.exception_handler(ItemDoesNotExist)
+def item_does_not_exist_handler(request: HttpRequest, exception: ItemDoesNotExist) -> HttpResponse:
+    """Handle ItemDoesNotExist exception."""
+    return api.create_response(request, {"detail": str(exception)}, status=404)
 
 
 urlpatterns = [
