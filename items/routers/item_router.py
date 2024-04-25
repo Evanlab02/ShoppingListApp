@@ -106,3 +106,19 @@ async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
     user = request.user
     aggregation = await item_service.aggregate(user=user)
     return aggregation
+
+
+@item_router.get("/detail/{item_id}", response={200: ItemSchema})
+async def get_item_detail(request: HttpRequest, item_id: int) -> ItemSchema:
+    """
+    Get an item detail.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        item_id (int): The item id.
+
+    Returns:
+        ItemSchema: The item detail.
+    """
+    item = await item_service.get_item_detail(item_id=item_id)
+    return item

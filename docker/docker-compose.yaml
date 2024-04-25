@@ -112,6 +112,9 @@ services:
         - action: sync+restart
           path: ../static
           target: /var/www/html/static/
+        - action: sync+restart
+          path: ../htmlcov
+          target: /var/www/html/htmlcov/
 
 networks:
   dev-postgres-django-network:
