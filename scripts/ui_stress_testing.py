@@ -1,14 +1,31 @@
 """Stress testing the Django application."""
 
+import os
 from threading import Thread
 
 import requests
 
+COUNTER = 1000
+AUTH_HEADER = {"X-API-Key": os.getenv("API_KEY", "")}
+HEADER = AUTH_HEADER
+
+
+def create_session_auth() -> requests.Session:
+    """Create a session with authentication."""
+    session = requests.Session()
+    session.headers.update(HEADER)
+    session.post(
+        "http://192.168.0.2:8000/api/v1/auth/login",
+        json={"username": os.getenv("USERNAME", ""), "password": os.getenv("PASSWORD", "")},
+    )
+    return session
+
 
 def stress_test_items_page() -> None:
     """Stress test the items page."""
-    for _ in range(1000):
-        response = requests.get("http://192.168.0.2:8000/items/")
+    session = create_session_auth()
+    for _ in range(COUNTER):
+        response = session.get("http://192.168.0.2:8000/items/")
         if response.status_code != 200:
             print("X", end="")
         else:
@@ -19,8 +36,9 @@ def stress_test_items_page() -> None:
 
 def stress_test_stores_page() -> None:
     """Stress test the stores page."""
-    for _ in range(1000):
-        response = requests.get("http://192.168.0.2:8000/stores/")
+    session = create_session_auth()
+    for _ in range(COUNTER):
+        response = session.get("http://192.168.0.2:8000/stores/")
         if response.status_code != 200:
             print("X", end="")
         else:

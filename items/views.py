@@ -16,6 +16,7 @@ from stores.services import store_service
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
 OVERVIEW_PAGE = ""
+PERSONALIZED_OVERVIEW_PAGE = "me"
 
 
 async def _handle_validation_error(
@@ -123,7 +124,7 @@ async def _get_overview_context(
     page = params.get("page", 1)
     limit = params.get("limit", 10)
 
-    user, page_title = (request.user, "Your Stores") if is_personalized else (None, "All Stores")
+    user, page_title = (request.user, "Your Items") if is_personalized else (None, "All Items")
 
     pagination = await item_service.get_items(page=page, items_per_page=limit, user=user)
     aggregation = await item_service.aggregate(user=user)
@@ -152,4 +153,21 @@ async def get_overview_page(request: HttpRequest) -> HttpResponse:
     """
     params = await get_overview_params(request=request)
     context = await _get_overview_context(request=request, params=params)
+    return render(request, "items/overview.html", context.model_dump())
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def get_personalized_overview_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the personalized overview page.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    params = await get_overview_params(request=request)
+    context = await _get_overview_context(request=request, params=params, is_personalized=True)
     return render(request, "items/overview.html", context.model_dump())

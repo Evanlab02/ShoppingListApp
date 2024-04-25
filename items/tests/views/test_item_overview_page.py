@@ -73,6 +73,12 @@ class TestItemOverviewPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, ITEM_OVERVIEW_TEMPLATE)
 
+    def test_get_personalized_overview_page(self) -> None:
+        """Test the GET method for the personalized overview page."""
+        response = self.client.get("/items/me")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, ITEM_OVERVIEW_TEMPLATE)
+
     def test_get_overview_page_not_logged_in(self) -> None:
         """Test the GET method for the overview page when not logged in."""
         self.client.logout()
@@ -83,9 +89,29 @@ class TestItemOverviewPage(TestCase):
             response, "/?error=You must be logged in to access that page.", 302, 200
         )
 
+    def test_get_personalized_overview_page_not_logged_in(self) -> None:
+        """Test the GET method for the personalized overview page when not logged in."""
+        self.client.logout()
+        response = self.client.get("/items/me")
+        self.assertTemplateNotUsed(response, ITEM_OVERVIEW_TEMPLATE)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, "/?error=You must be logged in to access that page.", 302, 200
+        )
+
     def test_get_overview_page_with_custom_page_number(self) -> None:
         """Test the GET method for the overview page with a custom page number."""
         response = self.client.get("/items/?page=2&limit=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, ITEM_OVERVIEW_TEMPLATE)
+
+        pagination = response.context.get("pagination", {})
+        page_number = pagination.get("page_number")
+        self.assertEqual(page_number, 2)
+
+    def test_get_personalized_overview_page_with_custom_page_number(self) -> None:
+        """Test the GET method for the personalized overview page with a custom page number."""
+        response = self.client.get("/items/me?page=2&limit=1")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, ITEM_OVERVIEW_TEMPLATE)
 
