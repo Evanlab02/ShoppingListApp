@@ -96,8 +96,10 @@ services:
       dockerfile: docker/site/Dockerfile
     expose:
       - "80"
+      - "9999"
     ports:
       - "8000:80"
+      - "9999:9999"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy

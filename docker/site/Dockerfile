@@ -5,3 +5,4 @@ COPY static/ /var/www/html/static/
 COPY htmlco[v]/ /var/www/html/htmlcov/
 
 EXPOSE 80
+EXPOSE 9999

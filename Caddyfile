@@ -1,4 +1,4 @@
-:80 {
+:9999 {
   handle_path /* {
     reverse_proxy dev-shopping-django-app:80
   }
@@ -7,7 +7,9 @@
     root * /var/www/html/static/
     file_server
   }
+}
 
+:80 {
   handle_path /shopping/coverage/* {
     root * /var/www/html/htmlcov/
     file_server
@@ -16,5 +18,9 @@
   handle_path /pgadmin* {
     rewrite * /pgadmin{uri}
     reverse_proxy dev-shopping-app-pgadmin:80
+  }
+
+  handle_path /private/shopping/* {
+    reverse_proxy dev-shopping-django-app:80
   }
 }
