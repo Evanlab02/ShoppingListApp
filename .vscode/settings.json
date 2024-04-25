@@ -24,5 +24,9 @@
     "mypy-type-checker.args": [
         "--strict"
     ],
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "evanlab02",
+        "projectKey": "Evanlab02_ShoppingListApp-BE"
+    }
 }
