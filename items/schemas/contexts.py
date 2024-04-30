@@ -1,6 +1,6 @@
 """Contains contexts for the rendering in the items app."""
 
-from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema
+from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from shoppingapp.schemas.shared import BaseContext
 from stores.schemas.output import StoreSchema
 
@@ -16,3 +16,9 @@ class ItemOverviewContext(BaseContext):
 
     pagination: ItemPaginationSchema
     aggregation: ItemAggregationSchema
+
+
+class ItemDetailContext(BaseContext):
+    """Item detail context."""
+
+    item: ItemSchema

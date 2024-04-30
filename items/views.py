@@ -7,8 +7,12 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from authentication.decorators.login import async_login_required
-from items.errors.exceptions import ItemAlreadyExists
-from items.schemas.contexts import ItemCreateContext, ItemOverviewContext
+from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
+from items.schemas.contexts import (
+    ItemCreateContext,
+    ItemDetailContext,
+    ItemOverviewContext,
+)
 from items.services import item_service
 from shoppingapp.utilities.utils import get_overview_params
 from stores.services import store_service
@@ -17,6 +21,7 @@ CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
 OVERVIEW_PAGE = ""
 PERSONALIZED_OVERVIEW_PAGE = "me"
+DETAIL_PAGE = "detail/<int:item_id>"
 
 
 async def _handle_validation_error(
@@ -171,3 +176,28 @@ async def get_personalized_overview_page(request: HttpRequest) -> HttpResponse:
     params = await get_overview_params(request=request)
     context = await _get_overview_context(request=request, params=params, is_personalized=True)
     return render(request, "items/overview.html", context.model_dump())
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
+    """
+    Render the item detail page.
+
+    Args:
+        request(HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    try:
+        item = await item_service.get_item_detail(item_id=item_id)
+        context = ItemDetailContext(
+            item=item,
+            page_title=f"Item - {item.name}",  # type: ignore
+            is_personal=False,
+            show_advanced_navigation=True,
+        )
+        return render(request, "items/detail.html", context.model_dump())
+    except ItemDoesNotExist:
+        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
