@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.14.3](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.2...v0.14.3) (2024-04-30)
+
+
+### Features
+
+* **Items-App:** Can now access item detail API ([2484f22](https://github.com/Evanlab02/ShoppingListApp-BE/commit/2484f22264e51f545cc1964cb4855d6f764e0e1a))
+* **Items-App:** Can now access item detail page ([1b020c2](https://github.com/Evanlab02/ShoppingListApp-BE/commit/1b020c2b16b7db93f62e1df3238c9485010a13ba))
+* **Items-App:** Can now access personal overview page ([c393289](https://github.com/Evanlab02/ShoppingListApp-BE/commit/c393289355794e4f95d9640e2d7e41d20a663035))
+* **Items-App:** Can now personal items aggregation API ([bb4f44d](https://github.com/Evanlab02/ShoppingListApp-BE/commit/bb4f44d5c1ac4a62ba09865870c9744b2904a219))
+* **Items-App:** Can now view aggregation values on overview page ([80a0977](https://github.com/Evanlab02/ShoppingListApp-BE/commit/80a0977899290a719f25db5692a053e72fc0027b))
+* **VSCode:** Added sonarlint config ([6bdb877](https://github.com/Evanlab02/ShoppingListApp-BE/commit/6bdb877d1d3c7a6b55737502c0b6e188ac871202))
+
+
+### Bug Fixes
+
+* Items overview pages now have correct header on navbar ([06a0b13](https://github.com/Evanlab02/ShoppingListApp-BE/commit/06a0b131d5f9ab5c7faed221d05320e5fd33a03e))
+* Updated gunicorn and sqlparse ([2e38b76](https://github.com/Evanlab02/ShoppingListApp-BE/commit/2e38b766af1485ad729f0cbcf4f501c0be5d4158))
+
+
+### Miscellaneous Chores
+
+* release 0.14.3 ([30f7684](https://github.com/Evanlab02/ShoppingListApp-BE/commit/30f7684d16a9b43ba45650c89357d3fa47a63400))
+
 ## [0.14.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.1...v0.14.2) (2024-04-13)
 
 
