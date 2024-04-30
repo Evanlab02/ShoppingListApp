@@ -89,7 +89,7 @@ class TestItemCreateView(TestCase):
         item = Item.objects.get(name="Sony Headphones")
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f"/items/detail/{item.id}", 302, 404)
+        self.assertRedirects(response, f"/items/detail/{item.id}", 302, 200)
 
     def test_post_create_page_existing_name(self) -> None:
         """Test the create page action with an existing name."""
