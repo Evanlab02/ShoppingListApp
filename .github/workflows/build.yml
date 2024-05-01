@@ -40,6 +40,6 @@ jobs:
       - name: Build Docker Images
         working-directory: .
         run: |
-          docker build -f docker/admin/Dockerfile -t shopping-app src/
-          docker build -f docker/server/Dockerfile -t shopping-app-admin src/
-          docker build -f docker/site/Dockerfile -t shopping-app-site src/
+          docker build -f docker/admin/Dockerfile -t shopping-app .
+          docker build -f docker/server/Dockerfile -t shopping-app-admin .
+          docker build -f docker/site/Dockerfile -t shopping-app-site .
