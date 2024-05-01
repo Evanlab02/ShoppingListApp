@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.6](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.5...v0.14.6) (2024-05-01)
+
+
+### Bug Fixes
+
+* **Workflows:** Changed working directory to 'src' for coverage build and release steps ([05396a2](https://github.com/Evanlab02/ShoppingListApp-BE/commit/05396a2c9dce5ad7254038c35eedf3330fe11840))
+
 ## [0.14.5](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.4...v0.14.5) (2024-05-01)
 
 
