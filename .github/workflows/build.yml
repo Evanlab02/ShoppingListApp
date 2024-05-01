@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    working-directory: src
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,6 +38,7 @@ jobs:
         run: |
           python manage.py collectstatic --noinput --settings=shoppingapp.settings.local_settings
       - name: Build Docker Images
+        working-directory: .
         run: |
           docker build -f docker/admin/Dockerfile -t shopping-app .
           docker build -f docker/server/Dockerfile -t shopping-app-admin .

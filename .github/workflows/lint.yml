@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    working-directory: src
+
 jobs:
   lint-and-docs-styling:
     runs-on: ubuntu-latest
