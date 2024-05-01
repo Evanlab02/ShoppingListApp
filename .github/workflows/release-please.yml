@@ -44,7 +44,7 @@ jobs:
       - name: Zip static
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          zip -r static.zip static
+          zip -r static.zip src/static
       - name: Upload static
         if: ${{ steps.release.outputs.releases_created }}
         run: |
@@ -67,29 +67,36 @@ jobs:
           python-version: "3.11"
       - name: Setup
         if: ${{ steps.release.outputs.releases_created }}
+        working-directory: src/
         run: |
           pip install -r requirements-dev.txt
       - name: Create Migrations
+        working-directory: src/
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           python manage.py makemigrations
       - name: Run Migrations
+        working-directory: src/
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           python manage.py migrate
       - name: Run Tests
+        working-directory: src/
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           pytest . --cov=. --cov-report term-missing -n auto
       - name: Generate coverage report
+        working-directory: src/
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           coverage html
       - name: Zip coverage report
+        working-directory: src/
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           zip -r coverage.zip htmlcov
       - name: Upload coverage report
+        working-directory: src/
         if: ${{ steps.release.outputs.releases_created }}
         run: |
           gh release upload ${{ steps.release.outputs.tag_name }} coverage.zip
