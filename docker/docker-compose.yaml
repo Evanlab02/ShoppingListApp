@@ -33,7 +33,7 @@ services:
   dev-shopping-django-administration:
     container_name: shopping-django-admin
     build:
-      context: ../
+      context: ../src/
       dockerfile: docker/admin/Dockerfile
     environment:
       DEFAULT_SETTINGS_MODULE: shoppingapp.settings.dev_settings
@@ -54,7 +54,7 @@ services:
   dev-shopping-django-app:
     container_name: shopping-django-app
     build:
-      context: ../
+      context: ../src/
       dockerfile: docker/server/Dockerfile
     environment:
       DEFAULT_SETTINGS_MODULE: shoppingapp.settings.dev_settings
@@ -92,7 +92,7 @@ services:
   dev-shopping-django-site:
     container_name: shopping-django-site
     build:
-      context: ../
+      context: ../src/
       dockerfile: docker/site/Dockerfile
     expose:
       - "80"
