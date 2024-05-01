@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.15.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.3...v0.15.0) (2024-05-01)
+
+
+### Features
+
+* **mkdocs:** Added initial docs ([50e3f9c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/50e3f9cd3d26b3e2bd16987f2ba41fbdc7d975f2))
+* **Restructure:** Restructured project ([5c4b079](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5c4b0791587c6dc43b6ec8c5085dca80e9c9d4ca))
+
+
+### Bug Fixes
+
+* **Sonarcloud:** Move sonarcloud config to src directory ([54b5a5c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/54b5a5c24babc4676b27fb7a300764cc2d68eadd))
+
 ## [0.14.3](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.2...v0.14.3) (2024-04-30)
 
 
