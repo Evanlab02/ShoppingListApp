@@ -2,7 +2,8 @@
     "packages": {
       "src/": {
         "release-type": "simple",
-        "draft": true
+        "draft": true,
+        "package-name": "ShoppingListApp-BE"
       }
     }
 }
