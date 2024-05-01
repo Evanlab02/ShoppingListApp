@@ -41,7 +41,7 @@ from stores.errors.api_exceptions import (
 )
 from stores.routers.store_router import store_router
 
-version = open("version.txt").read().strip()
+version = open("../version.txt").read().strip()
 api = NinjaAPI(title="Shopping App API", version=version)
 api.add_router("/auth", auth_router)
 api.add_router("/stores", store_router)

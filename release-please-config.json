@@ -1,9 +1,0 @@
-{
-    "packages": {
-      "src/": {
-        "release-type": "simple",
-        "draft": true,
-        "package-name": "ShoppingListApp-BE"
-      }
-    }
-}

@@ -14,10 +14,10 @@ jobs:
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
-          command: manifest
+          release-type: simple
+          package-name: ShoppingListApp-Backend
           token: ${{ secrets.GITHUB_TOKEN }}
           default-branch: trunk
-
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.releases_created }}
       - name: Build Docker Image

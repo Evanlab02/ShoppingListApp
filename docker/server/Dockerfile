@@ -3,7 +3,7 @@ FROM python:3.11.6-slim
 COPY src/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY src/version.txt src/version.txt
+COPY version.txt version.txt
 
 WORKDIR /src
 
