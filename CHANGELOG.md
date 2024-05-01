@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.5](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.4...v0.14.5) (2024-05-01)
+
+
+### Bug Fixes
+
+* **Workflows:** Changed 'src' to '.' in docker build step as part of release workflow ([5fd5cd1](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5fd5cd1df068b79331d5e471b910482c218a70f6))
+
 ## [0.14.4](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.3...v0.14.4) (2024-05-01)
 
 
