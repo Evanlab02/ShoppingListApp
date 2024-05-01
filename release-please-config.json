@@ -1,0 +1,8 @@
+{
+    "packages": {
+      "src/": {
+        "release-type": "simple",
+        "draft": true
+      }
+    }
+}
