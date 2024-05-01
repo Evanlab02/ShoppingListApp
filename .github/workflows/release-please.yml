@@ -23,10 +23,10 @@ jobs:
       - name: Build Docker Image
         if: ${{ steps.release.outputs.releases_created }}
         run: |
-          docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} src/
-          docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:latest src/
-          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} src/
-          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:latest src/
+          docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
+          docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:latest .
+          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} .
+          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:latest .
       - name: Log in to registry
         if: ${{ steps.release.outputs.releases_created }}
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
