@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.14.4](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.3...v0.14.4) (2024-05-01)
+
+
+### Features
+
+* **mkdocs:** Added initial docs ([50e3f9c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/50e3f9cd3d26b3e2bd16987f2ba41fbdc7d975f2))
+* Restructure ([e7a0855](https://github.com/Evanlab02/ShoppingListApp-BE/commit/e7a08552b940324e52b58ccc0d1fcfd623539da9))
+* **Restructure:** Restructured project ([5c4b079](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5c4b0791587c6dc43b6ec8c5085dca80e9c9d4ca))
+
+
+### Bug Fixes
+
+* **Release-Please:** Move to manifest release to accomodate new repo structure ([b06833b](https://github.com/Evanlab02/ShoppingListApp-BE/commit/b06833b01b27bd7882804c1dbaad38ed4c55da52))
+* **Sonarcloud:** Move sonarcloud config to src directory ([54b5a5c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/54b5a5c24babc4676b27fb7a300764cc2d68eadd))
+
+
+### Reverts
+
+* **Release-Please:** Changed back to old release mechanism ([e6797d4](https://github.com/Evanlab02/ShoppingListApp-BE/commit/e6797d48045dc0767b7e8d7dc3e2e36a4d413389))
+
+
+### Miscellaneous Chores
+
+* release 0.14.4 ([678dd22](https://github.com/Evanlab02/ShoppingListApp-BE/commit/678dd2240e5b6e5ece98e1120fe8798c2bcdb6c8))
+
 ## [0.14.3](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.2...v0.14.3) (2024-04-30)
 
 
