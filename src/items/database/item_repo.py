@@ -229,3 +229,17 @@ async def get_item(item_id: int) -> Item:
     """
     item = await Item.objects.aget(id=item_id)
     return item
+
+
+async def update_item(item_id: int) -> Item:
+    """
+    Update an item by its ID.
+
+    Args:
+        item_id (int): The ID of the item.
+
+    Returns:
+        Item: The item.
+    """
+    item = await Item.objects.aget(id=item_id)
+    return item

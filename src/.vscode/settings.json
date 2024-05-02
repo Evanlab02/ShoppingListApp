@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "evanlab02",
+        "projectKey": "Evanlab02_ShoppingListApp-BE"
+    }
+}
