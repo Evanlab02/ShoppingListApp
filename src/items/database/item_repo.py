@@ -1,6 +1,7 @@
 """Contains item repository functions."""
 
 from datetime import date
+import logging
 from typing import Any, no_type_check
 
 from asgiref.sync import sync_to_async
@@ -231,7 +232,13 @@ async def get_item(item_id: int) -> Item:
     return item
 
 
-async def update_item(item_id: int) -> Item:
+async def update_item(
+    item_id: int,
+    name: str | None = None,
+    price: float | None = None,
+    description: str | None = None,
+    store: Store | None = None,
+) -> Item:
     """
     Update an item by its ID.
 
@@ -241,5 +248,18 @@ async def update_item(item_id: int) -> Item:
     Returns:
         Item: The item.
     """
-    item = await Item.objects.aget(id=item_id)
+    logging.info(f"Retrieving item with ID: {item_id} for update.")
+    item = await Item.objects.select_related("store", "user").aget(id=item_id)
+
+    if name:
+        item.name = name
+    if price:
+        item.price = price
+    if description:
+        item.description = description
+    if store:
+        item.store = store
+
+    logging.info(f"Updating item with ID: {item_id}.")
+    await item.asave()
     return item

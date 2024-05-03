@@ -55,3 +55,26 @@ class BaseTestCase(TestCase):
         Item.objects.all().delete()
         Store.objects.all().delete()
         return super().tearDown()
+
+    async def create_temporary_store(self) -> Store:
+        """Create a temporary store for testing."""
+        store = await Store.objects.acreate(
+            name="Temporary Store",
+            store_type=3,
+            description="",
+            user=self.user,
+        )
+        await store.asave()
+        return store
+
+    async def create_temporary_user(self) -> User:
+        """Create a temporary user for testing."""
+        user = await User.objects.acreate(
+            username="temporaryuser",
+            email="user@test.com",
+            password="temporarypass",
+            first_name="Temporary",
+            last_name="User",
+        )
+        await user.asave()
+        return user
