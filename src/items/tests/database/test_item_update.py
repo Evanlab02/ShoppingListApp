@@ -86,3 +86,8 @@ class TestUpdateItem(BaseTestCase):
         self.assertEqual(item.id, self.item.id)
         self.assertEqual(item.store, temp_store)
         self.assertNotEqual(item.updated_at.isoformat(), self.item.updated_at.isoformat())
+
+    async def test_update_item_with_invalid_id(self) -> None:
+        """Test updating an item with an invalid ID."""
+        with self.assertRaises(Item.DoesNotExist):
+            await item_repo.update_item(item_id=99999)
