@@ -111,3 +111,24 @@ async def get_item_detail(item_id: int) -> ItemSchema:
         return item_schema
     except Item.DoesNotExist:
         raise ItemDoesNotExist(item_id=item_id)
+
+
+async def update_item(item_id: int) -> ItemSchema:
+    """
+    Update an item using the item id.
+
+    Args:
+        item_id (int): The item id.
+
+    Returns:
+        ItemSchema: The item details.
+
+    Raises:
+        ItemDoesNotExist: If the item id provided does not exist.
+    """
+    try:
+        item = await item_repo.update_item(item_id=item_id)
+        item_schema = ItemSchema.from_orm(item)
+        return item_schema
+    except Item.DoesNotExist:
+        raise ItemDoesNotExist(item_id=item_id)
