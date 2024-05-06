@@ -113,12 +113,22 @@ async def get_item_detail(item_id: int) -> ItemSchema:
         raise ItemDoesNotExist(item_id=item_id)
 
 
-async def update_item(item_id: int) -> ItemSchema:
+async def update_item(
+    item_id: int,
+    name: str | None = None,
+    price: float | None = None,
+    description: str | None = None,
+    store_id: int | None = None,
+) -> ItemSchema:
     """
     Update an item using the item id.
 
     Args:
         item_id (int): The item id.
+        name (str): The new item name.
+        price (float): The price of the item.
+        description (str): The description of the item.
+        store_id (int): The store id that the item belongs to.
 
     Returns:
         ItemSchema: The item details.
@@ -126,8 +136,18 @@ async def update_item(item_id: int) -> ItemSchema:
     Raises:
         ItemDoesNotExist: If the item id provided does not exist.
     """
+    store = None
+
+    if store_id:
+        try:
+            store = await store_repo.get_store(store_id=store_id)
+        except Store.DoesNotExist:
+            raise StoreDoesNotExist(store_id=store_id)
+
     try:
-        item = await item_repo.update_item(item_id=item_id)
+        item = await item_repo.update_item(
+            item_id=item_id, name=name, price=price, description=description, store=store
+        )
         item_schema = ItemSchema.from_orm(item)
         return item_schema
     except Item.DoesNotExist:

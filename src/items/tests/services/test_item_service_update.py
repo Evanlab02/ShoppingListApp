@@ -4,6 +4,7 @@ from items.errors.exceptions import ItemDoesNotExist
 from items.models import ShoppingItem as Item
 from items.services import item_service
 from items.tests.base.base_test_case import BaseTestCase
+from stores.errors.api_exceptions import StoreDoesNotExist
 
 
 class TestUpdateItemService(BaseTestCase):
@@ -26,3 +27,32 @@ class TestUpdateItemService(BaseTestCase):
         """Test updating an item with a non-existing id."""
         with self.assertRaises(ItemDoesNotExist):
             await item_service.update_item(item_id=999)
+
+    async def test_update_item(self) -> None:
+        """Test updating an item."""
+        new_store = await self.create_temporary_store()
+        new_name = "New Name"
+        new_price = 100.0
+        new_description = "New Description"
+        new_store_id = new_store.id
+
+        item_before_update = await Item.objects.aget(id=self.item.id)
+        item = await item_service.update_item(
+            item_id=self.item.id,
+            name=new_name,
+            price=new_price,
+            description=new_description,
+            store_id=new_store_id,
+        )
+        item_dict = item.model_dump()
+
+        self.assertEqual(item_before_update.id, item_dict.get("id"))  # ID remains the same
+        self.assertEqual(new_name, item_dict.get("name"))
+        self.assertEqual(new_price, item_dict.get("price"))
+        self.assertEqual(new_description, item_dict.get("description"))
+        self.assertEqual(new_store_id, item_dict.get("store", {"id": 0}).get("id"))
+
+    async def test_update_item_with_invalid_store_id(self) -> None:
+        """Test updating an item with an invalid store id."""
+        with self.assertRaises(StoreDoesNotExist):
+            await item_service.update_item(item_id=self.item.id, store_id=999)
