@@ -44,7 +44,7 @@ class TestStoreRouterUpdate(TestCase):
 
     def test_store_update_no_params(self) -> None:
         """Test store update with no params."""
-        response = self.client.put(
+        response = self.client.patch(
             f"{UPDATE_ENDPOINT}/{self.store.id}",
             content_type=CONTENT_TYPE,
         )
@@ -61,7 +61,7 @@ class TestStoreRouterUpdate(TestCase):
 
     def test_store_update_name_param(self) -> None:
         """Test store update with name param."""
-        response = self.client.put(
+        response = self.client.patch(
             f"{UPDATE_ENDPOINT}/{self.store.id}?name=Tester",
             content_type=CONTENT_TYPE,
         )
@@ -78,7 +78,7 @@ class TestStoreRouterUpdate(TestCase):
 
     def test_store_update_type_param(self) -> None:
         """Test store update with store type param."""
-        response = self.client.put(
+        response = self.client.patch(
             f"{UPDATE_ENDPOINT}/{self.store.id}?store_type=3",
             content_type=CONTENT_TYPE,
         )
@@ -95,7 +95,7 @@ class TestStoreRouterUpdate(TestCase):
 
     def test_store_update_type_param_string_version(self) -> None:
         """Test store update with store type param."""
-        response = self.client.put(
+        response = self.client.patch(
             f"{UPDATE_ENDPOINT}/{self.store.id}?store_type=Both",
             content_type=CONTENT_TYPE,
         )
@@ -112,7 +112,7 @@ class TestStoreRouterUpdate(TestCase):
 
     def test_store_update_description(self) -> None:
         """Test store update with description."""
-        response = self.client.put(
+        response = self.client.patch(
             f"{UPDATE_ENDPOINT}/{self.store.id}",
             {"description": "New Test Description"},
             content_type=CONTENT_TYPE,
@@ -130,7 +130,7 @@ class TestStoreRouterUpdate(TestCase):
 
     def test_store_update_with_invalid_id(self) -> None:
         """Test store update with description."""
-        response = self.client.put(
+        response = self.client.patch(
             f"{UPDATE_ENDPOINT}/9999",
             {"description": "Invalid Test ID..."},
             content_type=CONTENT_TYPE,
