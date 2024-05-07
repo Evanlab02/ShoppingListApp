@@ -13,7 +13,7 @@ class TestUpdateItemService(BaseTestCase):
     async def test_update_item_with_no_changes(self) -> None:
         """Test updating an item with no changes."""
         item_before_update = await Item.objects.aget(id=self.item.id)
-        item = await item_service.update_item(item_id=self.item.id)
+        item = await item_service.update_item(item_id=self.item.id, user=self.user)
         item_dict = item.model_dump()
 
         self.assertEqual(item_before_update.id, item_dict.get("id"))  # ID remains the same
@@ -26,7 +26,7 @@ class TestUpdateItemService(BaseTestCase):
     async def test_update_item_with_non_existing_id(self) -> None:
         """Test updating an item with a non-existing id."""
         with self.assertRaises(ItemDoesNotExist):
-            await item_service.update_item(item_id=999)
+            await item_service.update_item(item_id=999, user=self.user)
 
     async def test_update_item(self) -> None:
         """Test updating an item."""
@@ -39,6 +39,7 @@ class TestUpdateItemService(BaseTestCase):
         item_before_update = await Item.objects.aget(id=self.item.id)
         item = await item_service.update_item(
             item_id=self.item.id,
+            user=self.user,
             name=new_name,
             price=new_price,
             description=new_description,
@@ -55,4 +56,4 @@ class TestUpdateItemService(BaseTestCase):
     async def test_update_item_with_invalid_store_id(self) -> None:
         """Test updating an item with an invalid store id."""
         with self.assertRaises(StoreDoesNotExist):
-            await item_service.update_item(item_id=self.item.id, store_id=999)
+            await item_service.update_item(item_id=self.item.id, user=self.user, store_id=999)

@@ -16,7 +16,7 @@ class TestUpdateItem(BaseTestCase):
         )
 
         # Update the item
-        item = await item_repo.update_item(item_id=self.item.id)
+        item = await item_repo.update_item(item_id=self.item.id, user=self.user)
 
         # Item ID remains the same
         self.assertEqual(item.id, item_before_update.id)
@@ -41,7 +41,7 @@ class TestUpdateItem(BaseTestCase):
         new_name = "New Name"
 
         # Update the item
-        item = await item_repo.update_item(item_id=self.item.id, name=new_name)
+        item = await item_repo.update_item(item_id=self.item.id, user=self.user, name=new_name)
 
         self.assertEqual(item.id, self.item.id)  # Item ID remains the same
         self.assertEqual(item.name, new_name)  # Check that the name is updated
@@ -54,7 +54,7 @@ class TestUpdateItem(BaseTestCase):
         new_price = 100.0
 
         # Update the item
-        item = await item_repo.update_item(item_id=self.item.id, price=new_price)
+        item = await item_repo.update_item(item_id=self.item.id, user=self.user, price=new_price)
 
         self.assertEqual(item.id, self.item.id)  # Item ID remains the same
         self.assertEqual(item.price, new_price)  # Check that the price is updated
@@ -67,7 +67,9 @@ class TestUpdateItem(BaseTestCase):
         new_description = "ABCD"
 
         # Update the item
-        item = await item_repo.update_item(item_id=self.item.id, description=new_description)
+        item = await item_repo.update_item(
+            item_id=self.item.id, user=self.user, description=new_description
+        )
 
         self.assertEqual(item.id, self.item.id)  # Item ID remains the same
         self.assertEqual(item.description, new_description)  # Check that the description is updated
@@ -81,7 +83,7 @@ class TestUpdateItem(BaseTestCase):
         temp_store = await self.create_temporary_store()
 
         # Update the item
-        item = await item_repo.update_item(item_id=self.item.id, store=temp_store)
+        item = await item_repo.update_item(item_id=self.item.id, user=self.user, store=temp_store)
 
         self.assertEqual(item.id, self.item.id)
         self.assertEqual(item.store, temp_store)
@@ -90,4 +92,12 @@ class TestUpdateItem(BaseTestCase):
     async def test_update_item_with_invalid_id(self) -> None:
         """Test updating an item with an invalid ID."""
         with self.assertRaises(Item.DoesNotExist):
-            await item_repo.update_item(item_id=99999)
+            await item_repo.update_item(item_id=99999, user=self.user)
+
+    async def test_update_with_invalid_user(self) -> None:
+        """Test updating an item with an invalid user."""
+        # Create a temporary user
+        temp_user = await self.create_temporary_user()
+
+        with self.assertRaises(Item.DoesNotExist):
+            await item_repo.update_item(item_id=self.item.id, user=temp_user)

@@ -115,6 +115,7 @@ async def get_item_detail(item_id: int) -> ItemSchema:
 
 async def update_item(
     item_id: int,
+    user: User | AbstractBaseUser | AnonymousUser,
     name: str | None = None,
     price: float | None = None,
     description: str | None = None,
@@ -146,7 +147,12 @@ async def update_item(
 
     try:
         item = await item_repo.update_item(
-            item_id=item_id, name=name, price=price, description=description, store=store
+            item_id=item_id,
+            user=user,
+            name=name,
+            price=price,
+            description=description,
+            store=store,
         )
         item_schema = ItemSchema.from_orm(item)
         return item_schema

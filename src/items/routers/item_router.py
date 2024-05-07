@@ -137,12 +137,18 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
     Returns:
         ItemSchema: The updated item.
     """
+    user = request.user
     store_id = item_schema.store_id
     name = item_schema.name
     price = item_schema.price
     description = item_schema.description
 
     item = await item_service.update_item(
-        item_id=item_id, store_id=store_id, name=name, price=price, description=description
+        item_id=item_id,
+        user=user,
+        store_id=store_id,
+        name=name,
+        price=price,
+        description=description,
     )
     return item
