@@ -1,5 +1,7 @@
 """Contains item router functions."""
 
+import logging
+
 from django.http import HttpRequest
 from ninja import Router
 
@@ -137,6 +139,7 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
     Returns:
         ItemSchema: The updated item.
     """
+    logging.info(f"Requested to update item with ID: {item_id}")
     user = request.user
     store_id = item_schema.store_id
     name = item_schema.name

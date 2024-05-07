@@ -15,6 +15,10 @@ class TestUpdateRouter(BaseTestCase):
         self.client = Client()
         self.client.force_login(self.user)
 
+    def tearDown(self) -> None:
+        """Tear down the tests."""
+        return super().tearDown()
+
     def test_update_item_no_changes(self) -> None:
         """Test that the item is updated with no changes."""
         response = self.client.patch(

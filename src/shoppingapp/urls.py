@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+import logging
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -121,12 +123,14 @@ def store_does_not_exist_handler(
     request: HttpRequest, exception: StoreDoesNotExist
 ) -> HttpResponse:
     """Handle StoreDoesNotExist exception."""
+    logging.error(f"StoreDoesNotExist: {exception}")
     return api.create_response(request, {"detail": str(exception)}, status=404)
 
 
 @api.exception_handler(ItemAlreadyExists)
 def item_already_exists_handler(request: HttpRequest, exception: ItemAlreadyExists) -> HttpResponse:
     """Handle ItemAlreadyExists exception."""
+    logging.error(f"ItemAlreadyExists: {exception}")
     return api.create_response(request, {"detail": str(exception)}, status=400)
 
 

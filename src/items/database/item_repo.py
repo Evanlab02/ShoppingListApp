@@ -228,13 +228,26 @@ async def get_item(item_id: int) -> Item:
     Returns:
         Item: The item.
     """
-    item = await Item.objects.aget(id=item_id)
+    item = await Item.objects.select_related("store", "user").aget(id=item_id)
+    return item
+
+
+async def get_item_for_user(item_id: int, user: User | AbstractBaseUser | AnonymousUser) -> Item:
+    """
+    Get an item by its ID.
+
+    Args:
+        item_id (int): The ID of the item.
+
+    Returns:
+        Item: The item.
+    """
+    item = await Item.objects.select_related("store", "user").aget(id=item_id, user=user)
     return item
 
 
 async def update_item(
-    item_id: int,
-    user: User | AbstractBaseUser | AnonymousUser,
+    item: Item,
     name: str | None = None,
     price: float | None = None,
     description: str | None = None,
@@ -249,9 +262,6 @@ async def update_item(
     Returns:
         Item: The item.
     """
-    logging.info(f"Retrieving item with ID: {item_id} for update.")
-    item = await Item.objects.select_related("store", "user").aget(id=item_id, user=user)
-
     if name:
         item.name = name
     if price:
@@ -261,6 +271,6 @@ async def update_item(
     if store:
         item.store = store
 
-    logging.info(f"Updating item with ID: {item_id}.")
+    logging.info(f"Updating item with ID: {item.id}.")
     await item.asave()
     return item

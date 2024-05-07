@@ -31,7 +31,7 @@ class TestUpdateItemService(BaseTestCase):
     async def test_update_item(self) -> None:
         """Test updating an item."""
         new_store = await self.create_temporary_store()
-        new_name = "New Name"
+        new_name = "Testing Update Name"
         new_price = 100.0
         new_description = "New Description"
         new_store_id = new_store.id
