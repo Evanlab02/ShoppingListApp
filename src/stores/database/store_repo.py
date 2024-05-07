@@ -1,7 +1,6 @@
 """Contains store repository functions."""
 
 import logging
-
 from datetime import date
 from typing import Any, no_type_check
 
