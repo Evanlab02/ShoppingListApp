@@ -1,6 +1,6 @@
 """Contains tests for the item service update function."""
 
-from items.errors.exceptions import ItemDoesNotExist, ItemAlreadyExists
+from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.models import ShoppingItem as Item
 from items.services import item_service
 from items.tests.base.base_test_case import BaseTestCase
