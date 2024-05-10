@@ -10,3 +10,12 @@ class NewItem(Schema):
     name: str
     price: float
     description: str = ""
+
+
+class UpdateItem(Schema):
+    """Update Item Schema."""
+
+    store_id: int | None = None
+    name: str | None = None
+    price: float | None = None
+    description: str | None = None

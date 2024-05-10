@@ -130,7 +130,7 @@ async def get_personal_stores(
     return result
 
 
-@store_router.put("/update/{store_id}", response={200: StoreSchema})
+@store_router.patch("/update/{store_id}", response={200: StoreSchema})
 async def update_store(
     request: HttpRequest,
     store_id: int,

@@ -1,10 +1,12 @@
 """Contains item router functions."""
 
+import logging
+
 from django.http import HttpRequest
 from ninja import Router
 
 from authentication.auth.api_key import ApiKey
-from items.schemas.input import NewItem
+from items.schemas.input import NewItem, UpdateItem
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services import item_service
 
@@ -121,4 +123,35 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> ItemSchema:
         ItemSchema: The item detail.
     """
     item = await item_service.get_item_detail(item_id=item_id)
+    return item
+
+
+@item_router.patch("/update/{item_id}", response={200: ItemSchema})
+async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateItem) -> ItemSchema:
+    """
+    Update an item.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        item_id (int): The item id.
+        item_schema (UpdateItem): The item data to update.
+
+    Returns:
+        ItemSchema: The updated item.
+    """
+    logging.info(f"Requested to update item with ID: {item_id}")
+    user = request.user
+    store_id = item_schema.store_id
+    name = item_schema.name
+    price = item_schema.price
+    description = item_schema.description
+
+    item = await item_service.update_item(
+        item_id=item_id,
+        user=user,
+        store_id=store_id,
+        name=name,
+        price=price,
+        description=description,
+    )
     return item
