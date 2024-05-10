@@ -196,15 +196,12 @@ async def update_item(
     )
 
     logging.info("Update checks passed.")
-    try:
-        item = await item_repo.update_item(
-            item=item,
-            name=name,
-            price=price,
-            description=description,
-            store=store,
-        )
-        item_schema = ItemSchema.from_orm(item)
-        return item_schema
-    except Item.DoesNotExist:
-        raise ItemDoesNotExist(item_id=item_id)
+    item = await item_repo.update_item(
+        item=item,
+        name=name,
+        price=price,
+        description=description,
+        store=store,
+    )
+    item_schema = ItemSchema.from_orm(item)
+    return item_schema

@@ -67,6 +67,18 @@ class BaseTestCase(TestCase):
         await store.asave()
         return store
 
+    async def create_temporary_item(self, store: Store) -> Item:
+        """Create a temporary item for testing."""
+        item = await Item.objects.acreate(
+            name="Temporary Item",
+            description="Temporary Description",
+            price=100,
+            store=store,
+            user=self.user,
+        )
+        await item.asave()
+        return item
+
     async def create_temporary_user(self) -> User:
         """Create a temporary user for testing."""
         user = await User.objects.acreate(

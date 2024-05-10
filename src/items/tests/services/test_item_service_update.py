@@ -1,6 +1,6 @@
 """Contains tests for the item service update function."""
 
-from items.errors.exceptions import ItemDoesNotExist
+from items.errors.exceptions import ItemDoesNotExist, ItemAlreadyExists
 from items.models import ShoppingItem as Item
 from items.services import item_service
 from items.tests.base.base_test_case import BaseTestCase
@@ -57,3 +57,25 @@ class TestUpdateItemService(BaseTestCase):
         """Test updating an item with an invalid store id."""
         with self.assertRaises(StoreDoesNotExist):
             await item_service.update_item(item_id=self.item.id, user=self.user, store_id=999)
+
+    async def test_update_item_with_duplicate_name_and_store(self) -> None:
+        """Test updating an item with a duplicate name and store."""
+        new_store = await self.create_temporary_store()
+        new_item = await self.create_temporary_item(store=new_store)
+
+        with self.assertRaises(ItemAlreadyExists):
+            await item_service.update_item(
+                item_id=self.item.id, user=self.user, name=new_item.name, store_id=new_store.id
+            )
+
+    async def test_update_item_with_duplicate_name_and_same_store(self) -> None:
+        """Test updating an item with a duplicate name and same store."""
+        new_store = await self.create_temporary_store()
+        new_item = await self.create_temporary_item(store=new_store)
+
+        with self.assertRaises(ItemAlreadyExists):
+            await item_service.update_item(
+                item_id=new_item.id,
+                user=self.user,
+                name=new_item.name,
+            )
