@@ -14,4 +14,5 @@ urlpatterns = [
         views.get_personalized_overview_page,
         name="item_personalized_overview_page",
     ),
+    path(views.UPDATE_ACTION, views.update_action, name="item_update_action"),
 ]

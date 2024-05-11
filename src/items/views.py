@@ -22,6 +22,7 @@ CREATE_ACTION = "create/action"
 OVERVIEW_PAGE = ""
 PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
+UPDATE_ACTION = "update/action"
 
 
 async def _handle_validation_error(
@@ -201,3 +202,57 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
         return render(request, "items/detail.html", context.model_dump())
     except ItemDoesNotExist:
         return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+
+
+async def update_action(request: HttpRequest) -> HttpResponse:
+    """
+    Update an item with the given id.
+
+    Args:
+        request (HttpRequest): The request.
+
+    Returns:
+        HttpResponse: The response from the API.
+    """
+    logging.info("Requested to update item via view, retrieving request info...")
+    user = request.user
+    item_id = request.POST.get("item-id")
+    item_name = request.POST.get("item-input")
+    store_id = request.POST.get("store-input")
+    price = request.POST.get("price-input")
+    description = request.POST.get("description-input")
+
+    logging.info("Formatting view input for update on item...")
+    try:
+        formatted_item_id = int(item_id) if item_id else None
+        formatted_store_id = int(store_id) if store_id else None
+        formatted_price = float(price) if price else None
+    except ValueError:
+        logging.error("Retrieved input that could not be formatted for item update.")
+        return HttpResponseRedirect("/items/update?error=Invalid input.")
+
+    if not item_id or not formatted_item_id:
+        logging.error("Item ID is required for an update on an item.")
+        return HttpResponseRedirect("/items/update?error=Item ID is required.")
+
+    logging.info(
+        f"Retrieved request details, attempting to update item with ID: {formatted_item_id}."
+    )
+    try:
+        item = await item_service.update_item(
+            user=user,
+            item_id=formatted_item_id,
+            name=item_name,
+            store_id=formatted_store_id,
+            price=formatted_price,
+            description=description,
+        )
+        item_dict = item.model_dump()
+        item_id = item_dict.get("id")
+        return HttpResponseRedirect(f"/items/detail/{item_id}")
+    except ItemDoesNotExist:
+        logging.error("Item does not exist for update.")
+        return HttpResponseRedirect("/items/update?error=Item does not exist.")
+    except ItemAlreadyExists:
+        logging.error("Item matching new details already exists, can not update.")
+        return HttpResponseRedirect("/items/update?error=Item already exists.")
