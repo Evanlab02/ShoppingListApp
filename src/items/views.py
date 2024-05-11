@@ -204,6 +204,8 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
         return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
 
 
+@require_http_methods(["POST"])
+@async_login_required
 async def update_action(request: HttpRequest) -> HttpResponse:
     """
     Update an item with the given id.
