@@ -12,6 +12,7 @@ from items.schemas.contexts import (
     ItemCreateContext,
     ItemDetailContext,
     ItemOverviewContext,
+    ItemUpdateContext,
 )
 from items.services import item_service
 from shoppingapp.utilities.utils import get_overview_params
@@ -22,6 +23,7 @@ CREATE_ACTION = "create/action"
 OVERVIEW_PAGE = ""
 PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
+UPDATE_PAGE = "update/<int:item_id>"
 UPDATE_ACTION = "update/action"
 
 
@@ -204,6 +206,35 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
         return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
 
 
+@require_http_methods(["GET"])
+@async_login_required
+async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
+    """
+    Render the update page.
+
+    Args:
+        request (HttpRequest): The request object.
+        item_id (int): The item id.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    logging.info(f"Requested update item view for item: {item_id}")
+    try:
+        item = await item_service.get_item_detail(item_id=item_id)
+        stores = await store_service.get_stores(limit=1000)
+        context = ItemUpdateContext(
+            page_title="Update Item",
+            item=item,
+            stores=stores.stores,
+            error=request.GET.get("error"),
+        )
+        return render(request, "items/update.html", context.model_dump())
+    except ItemDoesNotExist:
+        logging.error(f"Item with ID: {item_id} does not exist.")
+        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+
+
 @require_http_methods(["POST"])
 @async_login_required
 async def update_action(request: HttpRequest) -> HttpResponse:
@@ -231,11 +262,11 @@ async def update_action(request: HttpRequest) -> HttpResponse:
         formatted_price = float(price) if price else None
     except ValueError:
         logging.error("Retrieved input that could not be formatted for item update.")
-        return HttpResponseRedirect("/items/update?error=Invalid input.")
+        return HttpResponse("Could not format input for item update, please try again.")
 
     if not item_id or not formatted_item_id:
         logging.error("Item ID is required for an update on an item.")
-        return HttpResponseRedirect("/items/update?error=Item ID is required.")
+        return HttpResponse("Could not find ID for update, please try again.", status=404)
 
     logging.info(
         f"Retrieved request details, attempting to update item with ID: {formatted_item_id}."
@@ -254,7 +285,7 @@ async def update_action(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(f"/items/detail/{item_id}")
     except ItemDoesNotExist:
         logging.error("Item does not exist for update.")
-        return HttpResponseRedirect("/items/update?error=Item does not exist.")
+        return HttpResponse(f"Could not find item with ID: {formatted_item_id}.", status=404)
     except ItemAlreadyExists:
         logging.error("Item matching new details already exists, can not update.")
-        return HttpResponseRedirect("/items/update?error=Item already exists.")
+        return HttpResponseRedirect(f"/items/update/{item_id}?error=Item already exists.")

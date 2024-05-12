@@ -33,7 +33,10 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": "Some description",
             },
         )
-        self.assertRedirects(response, "/items/update?error=Invalid input.", 302, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content, b"Could not format input for item update, please try again."
+        )
 
     def test_update_action_view_with_badly_formatted_store_id(self) -> None:
         """Test the update action view with a badly formatted store id."""
@@ -47,7 +50,10 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": "Some description",
             },
         )
-        self.assertRedirects(response, "/items/update?error=Invalid input.", 302, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content, b"Could not format input for item update, please try again."
+        )
 
     def test_update_action_view_with_badly_formatted_price(self) -> None:
         """Test the update action view with a badly formatted price."""
@@ -61,7 +67,10 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": "Some description",
             },
         )
-        self.assertRedirects(response, "/items/update?error=Invalid input.", 302, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.content, b"Could not format input for item update, please try again."
+        )
 
     def test_update_action_view_with_no_item_id(self) -> None:
         """Test the update action view with no item id."""
@@ -74,7 +83,8 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": "Some description",
             },
         )
-        self.assertRedirects(response, "/items/update?error=Item ID is required.", 302, 404)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.content, b"Could not find ID for update, please try again.")
 
     def test_update_action_on_item_that_does_not_exist(self) -> None:
         """Test updating an item that does not exist."""
@@ -88,7 +98,8 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": "Some description",
             },
         )
-        self.assertRedirects(response, "/items/update?error=Item does not exist.", 302, 404)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.content, b"Could not find item with ID: 99999.")
 
     def test_update_action_duplicate_item(self) -> None:
         """Test updating an item that already exists."""
@@ -105,7 +116,9 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": item.description,
             },
         )
-        self.assertRedirects(response, "/items/update?error=Item already exists.", 302, 404)
+        self.assertRedirects(
+            response, f"/items/update/{item.id}?error=Item already exists.", 302, 200
+        )
 
     def test_update_action_view(self) -> None:
         """Test the update action view."""
@@ -168,4 +181,31 @@ class TestItemUpdateView(BaseTestCase):
                 "description-input": "Updated description",
             },
         )
-        self.assertRedirects(response, "/items/update?error=Item does not exist.", 302, 404)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.content, b"Could not find item with ID: 1.")
+
+    def test_update_page_view(self) -> None:
+        """Test the update page view."""
+        response = self.client.get(f"/items/update/{self.item.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "items/update.html")
+
+    def test_update_page_view_errors_on_post(self) -> None:
+        """Test the update page view errors on post."""
+        response = self.client.post(f"/items/update/{self.item.id}")
+        self.assertEqual(response.status_code, 405)
+
+    def test_update_page_does_not_display_to_unauthenticated_users(self) -> None:
+        """Test the update page view does not display to unauthenticated users."""
+        self.client.logout()
+
+        response = self.client.get(f"/items/update/{self.item.id}")
+        self.assertRedirects(
+            response, "/?error=You must be logged in to access that page.", 302, 200
+        )
+
+    def test_update_page_returns_404_on_invalid_id(self) -> None:
+        """Test the update page view returns 404 on an invalid id."""
+        response = self.client.get("/items/update/99999")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.content, b"Item with id '99999' does not exist.")

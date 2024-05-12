@@ -1,0 +1,59 @@
+{% extends 'items/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'base/form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="form-wrapper">
+        <div class="form-top update-top">
+            <h2 id="form-heading">Update Item</h2>
+        </div>
+        {% if error %}
+        <div class="form-middle">
+            <p id="form-error" class="error-message">{{ error }}</p>
+        </div>
+        {% endif %}
+        <form class="form-bottom" method="post" action="{% url 'item_update_action' %}">
+            {% csrf_token %}
+            <fieldset>
+                <div class="form-row">
+                    <legend>Item Details</legend>
+                </div>
+                <input type="hidden" name="item-id" value="{{ item.id }}">
+                <div class="form-row">
+                    <label for="item-input">Item:</label>
+                    <input class="text-input" type="text" name="item-input" id="item-input"
+                        placeholder="{{ item.name }}">
+                </div>
+                <div class="form-row">
+                    <label for="store-input">Store:</label>
+                    <select class="text-input" name="store-input" id="store-input">
+                        {% for store in stores %}
+                        <option value="{{store.id}}">{{store.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="price-input">Price:</label>
+                    <input class="text-input" type="number" name="price-input" id="price-input" placeholder="{{ item.price }}">
+                </div>
+                <div class="form-row">
+                    <label for="description-input">Description:</label>
+                    <input class="text-input" type="text" name="description-input" id="description-input"
+                        placeholder="{{ item.description }}">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="submit-update-store" class="submit-input" type="submit" value="Update Store">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="cancel-update-store" class="cancel-input" type="button" value="Cancel"
+                        onclick="window.location.href='/stores/me'">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

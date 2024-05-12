@@ -15,9 +15,7 @@ up:
 down:
 	@docker compose -f docker/docker-compose.yaml down
 
-setup:
-	docker exec -it shopping-django-admin python manage.py makemigrations
-	docker exec -it shopping-django-admin python manage.py migrate
+super-user:
 	docker exec -it shopping-django-admin python manage.py createsuperuser
 
 requirements:

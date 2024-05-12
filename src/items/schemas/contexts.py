@@ -22,3 +22,10 @@ class ItemDetailContext(BaseContext):
     """Item detail context."""
 
     item: ItemSchema
+
+
+class ItemUpdateContext(BaseContext):
+    """Item update context."""
+
+    item: ItemSchema
+    stores: list[StoreSchema]
