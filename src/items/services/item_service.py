@@ -2,18 +2,15 @@
 
 import logging
 
-from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from items.database import item_repo
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.models import ShoppingItem as Item
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
-from shoppingapp.schemas.shared import UserSchema
 from stores.database import store_repo
 from stores.errors.api_exceptions import StoreDoesNotExist
 from stores.models import ShoppingStore as Store
-from stores.schemas.output import StoreSchemaNoUser
 
 
 async def create_item(
@@ -100,18 +97,11 @@ async def get_item_detail(item_id: int) -> ItemSchema:
     """
     try:
         item = await item_repo.get_item(item_id=item_id)
-        user = await sync_to_async(lambda: item.user)()
-        store = await sync_to_async(lambda: item.store)()
-
-        user_schema = UserSchema.from_orm(user)
-        store_schema = StoreSchemaNoUser.from_orm(store)
+        logging.info("Item retrieved, converting to schema...")
         item_schema = ItemSchema.from_orm(item)
-
-        item_schema.store = store_schema
-        item_schema.user = user_schema
-
         return item_schema
     except Item.DoesNotExist:
+        logging.warn(f"Item with ID: {item_id} does not exist.")
         raise ItemDoesNotExist(item_id=item_id)
 
 

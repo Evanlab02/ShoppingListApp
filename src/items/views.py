@@ -229,9 +229,10 @@ async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
             stores=stores.stores,
             error=request.GET.get("error"),
         )
+        logging.info(f"Returning update view for item: {item_id}")
         return render(request, "items/update.html", context.model_dump())
     except ItemDoesNotExist:
-        logging.error(f"Item with ID: {item_id} does not exist.")
+        logging.warn("Could not find item for update.")
         return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
 
 
