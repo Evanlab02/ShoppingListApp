@@ -1,5 +1,7 @@
 """API Service for the stores app."""
 
+import logging
+
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
@@ -148,6 +150,7 @@ async def get_stores(
     Returns:
         StorePaginationSchema: The stores in a paginated format.
     """
+    logging.info(f"Retrieving stores for page {page_number} with limit {limit}.")
     paginated_stores = await store_repo.get_stores(page_number, limit, user)
     return paginated_stores
 

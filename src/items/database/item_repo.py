@@ -228,6 +228,7 @@ async def get_item(item_id: int) -> Item:
     Returns:
         Item: The item.
     """
+    logging.info(f"Getting item with ID: {item_id}.")
     item = await Item.objects.select_related("store", "user").aget(id=item_id)
     return item
 

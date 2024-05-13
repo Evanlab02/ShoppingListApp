@@ -44,7 +44,7 @@ services:
       DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
       DEV_DB_PORT: ${DEV_DB_PORT}
       DEV_DB_HOST: ${DEV_DB_HOST}
-    command: "python manage.py runserver"
+    command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
@@ -75,19 +75,19 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: ../authentication
+          path: ../src/authentication
           target: /src/authentication
         - action: sync+restart
-          path: ../stores
+          path: ../src/stores
           target: /src/stores
         - action: sync+restart
-          path: ../items
+          path: ../src/items
           target: /src/items
         - action: sync+restart
-          path: ../shoppingapp
+          path: ../src/shoppingapp
           target: /src/shoppingapp
         - action: rebuild
-          path: ../requirements.txt
+          path: ../src/requirements.txt
 
   dev-shopping-django-site:
     container_name: shopping-django-site
@@ -109,13 +109,13 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: ../Caddyfile
+          path: ../src/Caddyfile
           target: /etc/caddy/Caddyfile
         - action: sync+restart
-          path: ../static
+          path: ../src/static
           target: /var/www/html/static/
         - action: sync+restart
-          path: ../htmlcov
+          path: ../src/htmlcov
           target: /var/www/html/htmlcov/
 
 networks:

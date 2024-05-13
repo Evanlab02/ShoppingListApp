@@ -140,6 +140,7 @@ async def get_stores(
     Returns:
         StorePaginationSchema: Store pagination object.
     """
+    logging.info("Retrieving stores...")
     return await _filter(page_number, stores_per_page, user=user)
 
 
