@@ -275,3 +275,15 @@ async def update_item(
     logging.info(f"Updating item with ID: {item.id}.")
     await item.asave()
     return item
+
+
+async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUser) -> None:
+    """
+    Delete an item by its ID.
+
+    Args:
+        item_id (int): The ID of the item.
+        user (User | AnonymousUser | AbstractBaseUser): The user who created the item.
+    """
+    item = await Item.objects.aget(id=item_id, user=user)
+    await item.adelete()
