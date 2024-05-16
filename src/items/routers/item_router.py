@@ -9,6 +9,7 @@ from authentication.auth.api_key import ApiKey
 from items.schemas.input import NewItem, UpdateItem
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services import item_service
+from shoppingapp.schemas.shared import DeleteSchema
 
 item_router = Router(tags=["Items"], auth=ApiKey())
 
@@ -155,3 +156,21 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
         description=description,
     )
     return item
+
+
+@item_router.delete("/delete/{item_id}", response={200: DeleteSchema})
+async def delete_item(request: HttpRequest, item_id: int) -> DeleteSchema:
+    """
+    Delete an item.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        item_id (int): The item id.
+
+    Returns:
+        DeleteSchema: The delete schema.
+    """
+    logging.info(f"Requested to delete item with ID: {item_id}")
+    user = request.user
+    result = await item_service.delete_item(item_id=item_id, user=user)
+    return result
