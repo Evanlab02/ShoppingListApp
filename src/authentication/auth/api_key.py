@@ -36,7 +36,7 @@ class ApiKey(APIKeyHeader):
             return None
 
         try:
-            client = await ApiClient.objects.aget(user=request.user)
+            client = await ApiClient.objects.aget(user=request.user, is_active=True)
             if check_password(key, client.client_secret):
                 return client
             return None
