@@ -285,5 +285,7 @@ async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUse
         item_id (int): The ID of the item.
         user (User | AnonymousUser | AbstractBaseUser): The user who created the item.
     """
+    logging.info(f"Retrieving item with ID: '{item_id}' for deletion.")
     item = await Item.objects.aget(id=item_id, user=user)
+    logging.info(f"Deleting item with ID: '{item_id}'.")
     await item.adelete()
