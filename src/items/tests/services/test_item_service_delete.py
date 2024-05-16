@@ -2,8 +2,8 @@
 
 from items.errors.exceptions import ItemDoesNotExist
 from items.models import ShoppingItem as Item
-from items.tests.base.base_test_case import BaseTestCase
 from items.services import item_service
+from items.tests.base.base_test_case import BaseTestCase
 from shoppingapp.schemas.shared import DeleteSchema
 
 
