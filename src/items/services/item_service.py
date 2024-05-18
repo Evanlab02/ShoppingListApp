@@ -102,7 +102,7 @@ async def get_item_detail(item_id: int) -> ItemSchema:
         item_schema = ItemSchema.from_orm(item)
         return item_schema
     except Item.DoesNotExist:
-        logging.warn(f"Item with ID: {item_id} does not exist.")
+        logging.warning(f"Item with ID: {item_id} does not exist.")
         raise ItemDoesNotExist(item_id=item_id)
 
 
@@ -213,5 +213,5 @@ async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUse
         await item_repo.delete_item(item_id=item_id, user=user)
         return DeleteSchema(message="Deleted Item.", detail=f"Item with ID #{item_id} was deleted.")
     except Item.DoesNotExist:
-        logging.warn(f"Item with ID: {item_id} does not exist for user: {user}. (For deletion)")
+        logging.warning(f"Item with ID: {item_id} does not exist for user: {user}. (For deletion)")
         raise ItemDoesNotExist(item_id=item_id)
