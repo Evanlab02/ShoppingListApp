@@ -1,4 +1,4 @@
-.PHONY: static clean format lint test coverage
+.PHONY: static clean format lint test coverage unit-test api-test e2e-test
 
 static:
 	@rm -rf static/
@@ -27,9 +27,24 @@ lint:
 	@mypy . --strict
 
 test:
-	@pytest . -n auto
+	@pytest . -n auto --cov=. --no-cov-on-fail --cov-report term-missing
 	@coverage xml
 	@coverage html
 
 coverage:
 	@python -m http.server --directory htmlcov
+
+unit-test:
+	@pytest . -vv --cov=. --no-cov-on-fail --cov-report term-missing \
+	--ignore=authentication/tests/api/ \
+	--ignore=authentication/tests/E2E/ \
+	--ignore=items/tests/api/ \
+	--ignore=items/tests/E2E/ \
+	--ignore=stores/tests/api/ \
+	--ignore=stores/tests/E2E/ \
+
+api-test:
+	@pytest **/tests/api/ -vv
+
+e2e-test:
+	@pytest **/tests/E2E/ -n auto

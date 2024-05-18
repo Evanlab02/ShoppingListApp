@@ -8,6 +8,7 @@ from items.database import item_repo
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.models import ShoppingItem as Item
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
+from shoppingapp.schemas.shared import DeleteSchema
 from stores.database import store_repo
 from stores.errors.api_exceptions import StoreDoesNotExist
 from stores.models import ShoppingStore as Store
@@ -101,7 +102,7 @@ async def get_item_detail(item_id: int) -> ItemSchema:
         item_schema = ItemSchema.from_orm(item)
         return item_schema
     except Item.DoesNotExist:
-        logging.warn(f"Item with ID: {item_id} does not exist.")
+        logging.warning(f"Item with ID: {item_id} does not exist.")
         raise ItemDoesNotExist(item_id=item_id)
 
 
@@ -195,3 +196,22 @@ async def update_item(
     )
     item_schema = ItemSchema.from_orm(item)
     return item_schema
+
+
+async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUser) -> DeleteSchema:
+    """
+    Delete an item using the item id.
+
+    Args:
+        item_id (int): The item id.
+        user (User): The user that created the item.
+
+    Returns:
+        DeleteSchema: The deletion result.
+    """
+    try:
+        await item_repo.delete_item(item_id=item_id, user=user)
+        return DeleteSchema(message="Deleted Item.", detail=f"Item with ID #{item_id} was deleted.")
+    except Item.DoesNotExist:
+        logging.warning(f"Item with ID: {item_id} does not exist for user: {user}. (For deletion)")
+        raise ItemDoesNotExist(item_id=item_id)
