@@ -2,7 +2,6 @@
 
 import azure.functions as func
 
-from shoppingapp.config.asgi import main  # type: ignore
+from shoppingapp.config.wsgi import application
 
-django_app = main()
-app = func.AsgiFunctionApp(app=django_app, http_auth_level=func.AuthLevel.ANONYMOUS)
+app = func.WsgiFunctionApp(app=application, http_auth_level=func.AuthLevel.ANONYMOUS)
