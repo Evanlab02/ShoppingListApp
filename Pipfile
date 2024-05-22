@@ -10,7 +10,6 @@ django-ninja = "==1.1.0"
 uvicorn = "==0.29.0"
 rich = "==13.7.1"
 gunicorn = "==22.0.0"
-azure-functions = "==1.19.0"
 
 [dev-packages]
 black = "==24.4.0"
