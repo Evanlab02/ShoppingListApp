@@ -2,7 +2,7 @@
 
 import azure.functions as func
 
-from ..src.shoppingapp.config.asgi import main  # type: ignore
+from shoppingapp.config.asgi import main  # type: ignore
 
 django_app = main()
 app = func.AsgiFunctionApp(app=django_app, http_auth_level=func.AuthLevel.ANONYMOUS)
