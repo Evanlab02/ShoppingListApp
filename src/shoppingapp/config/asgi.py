@@ -8,15 +8,14 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 """
 
 import os
-from typing import no_type_check
 
 from django.core.asgi import get_asgi_application
+from django.core.handlers.asgi import ASGIHandler
 
 SERVICE_PORT = os.getenv("SERVICE_PORT", 8000)
 
 
-@no_type_check
-def main() -> None:
+def main() -> ASGIHandler:
     """Contains the main entrypoint for the ASGI server."""
     DEFAULT_SETTINGS = "shoppingapp.settings.settings"
     SETTINGS_MODULE = os.getenv("DEFAULT_SETTINGS_MODULE", DEFAULT_SETTINGS)
