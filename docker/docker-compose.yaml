@@ -65,7 +65,7 @@ services:
       DEV_DJANGO_HOST: ${DEV_DJANGO_HOST}
       DEV_DB_PORT: ${DEV_DB_PORT}
       DEV_DB_HOST: ${DEV_DB_HOST}
-    command: "gunicorn -b 0.0.0.0:80 -w 4 --worker-class uvicorn.workers.UvicornWorker 'shoppingapp.config.asgi:main()'"
+    command: "gunicorn -b 0.0.0.0:80 -w 4 --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:main()'"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy

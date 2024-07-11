@@ -14,4 +14,4 @@ COPY src/shoppingapp /src/shoppingapp
 
 EXPOSE 80
 
-CMD ["gunicorn","-b" ,"0.0.0.0:80", "-w" ,"4" ,"--worker-class" ,"uvicorn.workers.UvicornWorker", "'shoppingapp.config.asgi:main()'"]
+CMD ["gunicorn","-b" ,"0.0.0.0:80", "-w" ,"4" ,"--worker-class" ,"uvicorn_worker.UvicornWorker", "'shoppingapp.config.asgi:main()'"]
