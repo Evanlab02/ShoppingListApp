@@ -118,7 +118,7 @@ class TestStoreCreateView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
-            "/stores/create?error=Validation failed, please try again.",
+            "/stores/create?error=Store name and type are required.",
             302,
             200,
         )

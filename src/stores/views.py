@@ -3,7 +3,6 @@
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from pydantic import ValidationError
 
 from authentication.decorators import async_login_required
 from shoppingapp.schemas.shared import BaseContext
@@ -65,16 +64,19 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
     description = request.POST.get("description-input")
     store_type = request.POST.get("store-type-input")
 
-    try:
-        new_store = NewStore(
-            name=store_name,
-            description=description,
-            store_type=store_type,
-        )
-    except ValidationError:
+    if description is None:
+        description = ""
+
+    if not store_name or not store_type:
         return HttpResponseRedirect(
-            f"/stores/{CREATE_PAGE}?error=Validation failed, please try again."
+            f"/stores/{CREATE_PAGE}?error=Store name and type are required."
         )
+
+    new_store = NewStore(
+        name=store_name,
+        description=description,
+        store_type=store_type,
+    )
 
     try:
         store = await store_service.create(new_store, user)
