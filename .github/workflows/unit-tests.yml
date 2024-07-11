@@ -44,7 +44,7 @@ jobs:
           python manage.py migrate
       - name: Run Tests
         run: |
-          pytest . --cov=. --cov-report term-missing -n auto
+          pytest . --cov=. --cov-report term-missing -n auto -p no:sugar
       - name: Generate Coverage Report
         run: |
           coverage xml
