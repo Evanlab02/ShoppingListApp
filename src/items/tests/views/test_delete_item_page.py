@@ -2,7 +2,6 @@
 
 from django.test import Client
 
-from items.models import ShoppingItem as Item
 from items.tests.base.base_test_case import BaseTestCase
 
 

@@ -318,13 +318,13 @@ async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
         item = await item_service.get_item_detail(item_id=item_id)
         context = ItemDetailContext(
             error=error,
-            page_title=f"Delete Item",
+            page_title="Delete Item",
             item=item,
         )
         return render(request, "items/delete.html", context.model_dump())
     except ItemDoesNotExist:
         logging.error("Could not find item for deletion.")
-        return HttpResponse(f"Item does not exist.", status=404)
+        return HttpResponse("Item does not exist.", status=404)
 
 
 @require_http_methods(["POST"])
@@ -339,7 +339,6 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response from the API.
     """
-    # TODO: Replace relevant responses with redirects to the correct pages.
     logging.info("Requested to delete item via view, retrieving request info...")
     user = request.user
     item_id = request.POST.get("item-id")
