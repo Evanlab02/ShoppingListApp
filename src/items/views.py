@@ -25,6 +25,8 @@ PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
 UPDATE_PAGE = "update/<int:item_id>"
 UPDATE_ACTION = "update/action"
+DELETE_PAGE = "delete/<int:item_id>"
+DELETE_ACTION = "delete/action"
 
 
 async def _handle_validation_error(
@@ -290,3 +292,78 @@ async def update_action(request: HttpRequest) -> HttpResponse:
     except ItemAlreadyExists:
         logging.error("Item matching new details already exists, can not update.")
         return HttpResponseRedirect(f"/items/update/{item_id}?error=Item already exists.")
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
+    """
+    Render the delete page.
+
+    Args:
+        request (HttpRequest): The request object.
+        item_id (int): The item id.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    user = request.user
+    logging.info(f"User ({user}) requested delete page for item: {item_id}")
+
+    logging.info("Retrieving errors passed to this view...")
+    error = request.GET.get("error")
+
+    logging.info("Getting item details and serving page...")
+    try:
+        item = await item_service.get_item_detail(item_id=item_id)
+        context = ItemDetailContext(
+            error=error,
+            page_title=f"Delete Item",
+            item=item,
+        )
+        return render(request, "items/delete.html", context.model_dump())
+    except ItemDoesNotExist:
+        logging.error("Could not find item for deletion.")
+        return HttpResponse(f"Item does not exist.", status=404)
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def delete_action(request: HttpRequest) -> HttpResponse:
+    """
+    Delete an item with the given id.
+
+    Args:
+        request (HttpRequest): The request.
+
+    Returns:
+        HttpResponse: The response from the API.
+    """
+    # TODO: Replace relevant responses with redirects to the correct pages.
+    logging.info("Requested to delete item via view, retrieving request info...")
+    user = request.user
+    item_id = request.POST.get("item-id")
+
+    logging.info("Formatting view input for deletion on item...")
+    try:
+        formatted_item_id = int(item_id) if item_id else None
+    except ValueError:
+        logging.error("Retrieved input that could not be formatted for item deletion.")
+        return HttpResponse(
+            "Could not format input for item deletion, please try again.", status=400
+        )
+
+    if not item_id or not formatted_item_id:
+        logging.error("Item ID is required for deletion of an item.")
+        return HttpResponse("Could not find ID for deletion, please try again.", status=400)
+
+    logging.info(
+        f"Retrieved request details, attempting to delete item with ID: {formatted_item_id}."
+    )
+
+    try:
+        await item_service.delete_item(user=user, item_id=formatted_item_id)
+        return HttpResponseRedirect("/items/me")
+    except ItemDoesNotExist:
+        logging.error("Item does not exist for deletion.")
+        return HttpResponse(f"Could not find item with ID: {formatted_item_id}.", status=404)

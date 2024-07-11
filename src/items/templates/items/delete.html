@@ -1,0 +1,37 @@
+{% extends 'items/base.html' %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'base/form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="form-wrapper">
+        <div class="form-top delete-top">
+            <h2 id="form-heading">Delete Item</h2>
+        </div>
+        {% if error %}
+        <div class="form-middle">
+            <p id="form-error" class="error-message">{{ error }}</p>
+        </div>
+        {% endif %}
+        <form class="form-bottom" method="post" action="{% url 'item_delete_action' %}">
+            {% csrf_token %}
+            <fieldset>
+                <div class="form-row">
+                    <legend>Delete item with ID: {{ item.id }}</legend>
+                </div>
+                <input hidden id="item-id" name="item-id" type="text" value="{{ item.id }}" />
+                <div class="form-row submit-row">
+                    <input id="submit-delete-item" class="submit-input" type="submit" value="Delete Item">
+                </div>
+                <div class="form-row submit-row">
+                    <input id="cancel-delete-item" class="cancel-input" type="button" value="Cancel"
+                        onclick="window.location.href='/items/me'">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}
