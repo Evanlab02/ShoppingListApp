@@ -14,7 +14,7 @@ gunicorn = "==22.0.0"
 [dev-packages]
 black = "==24.4.2"
 mypy = "==1.10.1"
-flake8 = "==7.0.0"
+flake8 = "==7.1.0"
 pydocstyle = "==6.3.0"
 pytest = "==8.2.0"
 isort = "==5.13.2"
