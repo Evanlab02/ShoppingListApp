@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "==5.0.7"
 psycopg = {extras = ["binary"], version = "==3.2.1"}
-django-ninja = "==1.1.0"
+django-ninja = "==1.2.1"
 uvicorn = "==0.29.0"
 rich = "==13.7.1"
 gunicorn = "==22.0.0"
