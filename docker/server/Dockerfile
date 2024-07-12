@@ -11,6 +11,7 @@ COPY src/authentication /src/authentication
 COPY src/stores /src/stores
 COPY src/items /src/items
 COPY src/shoppingapp /src/shoppingapp
+COPY src/dashboard /src/dashboard
 
 EXPOSE 80
 
