@@ -5,10 +5,9 @@ from typing import Any, Optional
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.http import HttpRequest
+from ninja.security.apikey import APIKeyCookie
 
 from authentication.database.user_repository import is_user_authenticated
-
-from ninja.security.apikey import APIKeyCookie
 
 
 class SessionAuth(APIKeyCookie):

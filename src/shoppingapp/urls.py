@@ -34,7 +34,10 @@ from authentication.errors.api_exceptions import (
     UserNotLoggedIn,
 )
 from authentication.routers.auth_router import auth_router
-from dashboard.routers.dashboard_router import token_dashboard_router, session_dashboard_router
+from dashboard.routers.dashboard_router import (
+    session_dashboard_router,
+    token_dashboard_router,
+)
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.routers.item_router import item_router
 from stores.errors.api_exceptions import (

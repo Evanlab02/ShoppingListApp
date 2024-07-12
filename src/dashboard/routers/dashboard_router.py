@@ -5,7 +5,11 @@ from ninja import Router
 
 from authentication.auth.api_key import ApiKey
 from authentication.auth.session_auth import SessionAuth
-from dashboard.schemas.output import DashboardOverview, DashboardRecentItems, DashboardHistory
+from dashboard.schemas.output import (
+    DashboardHistory,
+    DashboardOverview,
+    DashboardRecentItems,
+)
 from dashboard.schemas.sub_output import BarChartDataset
 
 session_dashboard_router = Router(tags=["Session Dashboard"], auth=SessionAuth(csrf=True))
