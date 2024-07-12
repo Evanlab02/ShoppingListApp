@@ -11,6 +11,8 @@ COPY src/authentication /src/authentication
 COPY src/stores /src/stores
 COPY src/items /src/items
 COPY src/shoppingapp /src/shoppingapp
+COPY src/dashboard /src/dashboard
+
 COPY src/manage.py /src/manage.py
 
 CMD ["python","manage.py", "runserver"]
