@@ -5,7 +5,9 @@ import logging
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
-from shoppingapp.schemas.shared import DeleteSchema, UserSchema
+from items.database import item_repo
+from items.schemas.output import ItemPaginationSchema
+from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.database import store_repo
 from stores.errors.api_exceptions import (
@@ -20,6 +22,8 @@ from stores.schemas.output import (
     StorePaginationSchema,
     StoreSchema,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _get_store_type_label(store_type_value: int) -> str:
@@ -109,11 +113,34 @@ async def get_store_detail(store_id: int) -> StoreSchema:
     """
     try:
         store = await store_repo.get_store(store_id)
-        user = await sync_to_async(lambda: store.user)()
-        user_schema = UserSchema.from_orm(user)
         store_schema = StoreSchema.from_orm(store)
-        store_schema.user = user_schema
         return store_schema
+    except Store.DoesNotExist:
+        raise StoreDoesNotExist(store_id)
+
+
+async def get_store_detail_with_items(
+    store_id: int, page_number: int = 1, items_per_page: int = 10
+) -> tuple[StoreSchema, ItemPaginationSchema]:
+    """
+    Get the store detail.
+
+    Args:
+        store_id (int): The id of the store.
+
+    Returns:
+        StoreSchema: The store detail.
+
+    Raises:
+        StoreDoesNotExist: If the store does not exist.
+    """
+    try:
+        store = await store_repo.get_store(store_id)
+        store_schema = StoreSchema.from_orm(store)
+        related_items = await item_repo.get_items(
+            page=page_number, items_per_page=items_per_page, store=store
+        )
+        return store_schema, related_items
     except Store.DoesNotExist:
         raise StoreDoesNotExist(store_id)
 

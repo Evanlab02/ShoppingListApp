@@ -255,8 +255,7 @@ async def get_store(store_id: int) -> Store:
     Raises:
         Store.DoesNotExist: If the store does not exist.
     """
-    logging.info(f"Retrieving store with ID: {store_id}")
-    store = await Store.objects.aget(id=store_id)
+    store = await Store.objects.select_related("user").aget(id=store_id)
     return store
 
 

@@ -30,6 +30,14 @@ class TestGetItems(TestCase):
         )
         self.store.save()
 
+        self.alt_store = Store.objects.create(
+            name="Alternate Test Store",
+            store_type=3,
+            description="",
+            user=self.user,
+        )
+        self.alt_store.save()
+
         self.item = Item.objects.create(
             name="Test Item",
             description="Test Description",
@@ -117,6 +125,18 @@ class TestGetItems(TestCase):
         await new_user.asave()
 
         items = await item_repo.get_items(user=new_user)
+        self.assertEqual(len(items.items), 0)
+        self.assertEqual(items.total, 0)
+        self.assertEqual(items.page_number, 1)
+        self.assertEqual(items.total_pages, 1)
+        self.assertEqual(items.has_previous, False)
+        self.assertEqual(items.has_next, False)
+        self.assertIsNone(items.previous_page)
+        self.assertIsNone(items.next_page)
+
+    async def test_get_items_store(self) -> None:
+        """Test getting all items for a store."""
+        items = await item_repo.get_items(store=self.alt_store)
         self.assertEqual(len(items.items), 0)
         self.assertEqual(items.total, 0)
         self.assertEqual(items.page_number, 1)

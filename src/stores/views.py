@@ -12,7 +12,11 @@ from stores.errors.api_exceptions import (
     StoreAlreadyExists,
     StoreDoesNotExist,
 )
-from stores.schemas.contexts import StoreDetailContext, StoreOverviewContext
+from stores.schemas.contexts import (
+    StoreContext,
+    StoreDetailContext,
+    StoreOverviewContext,
+)
 from stores.schemas.input import NewStore
 from stores.services import store_service
 
@@ -105,12 +109,22 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
         HttpResponse: The response object.
     """
     try:
-        store = await store_service.get_store_detail(store_id)
+        page_number = int(request.GET.get("page", "1"))
+        limit = int(request.GET.get("limit", "10"))
+    except ValueError:
+        page_number = 1
+        limit = 10
+
+    try:
+        store, items = await store_service.get_store_detail_with_items(
+            store_id=store_id, page_number=page_number, items_per_page=limit
+        )
         context = StoreDetailContext(
             store=store,
             page_title=f"Store - {store.name}",  # type: ignore
             is_personal=False,
             show_advanced_navigation=True,
+            items=items,
         )
         return render(request, "stores/detail.html", context.model_dump())
     except StoreDoesNotExist:
@@ -205,7 +219,7 @@ async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
     try:
         error = request.GET.get("error")
         store = await store_service.get_store_detail(store_id=store_id)
-        context = StoreDetailContext(
+        context = StoreContext(
             error=error,
             page_title="Update Store",
             store=store,
@@ -271,7 +285,7 @@ async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
     try:
         error = request.GET.get("error")
         store = await store_service.get_store_detail(store_id=store_id)
-        context = StoreDetailContext(
+        context = StoreContext(
             error=error,
             page_title="Delete Store",
             store=store,

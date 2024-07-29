@@ -3,7 +3,6 @@
 from django.http import HttpRequest
 from ninja import Router
 
-from authentication.auth.api_key import ApiKey
 from authentication.auth.session_auth import SessionAuth
 from dashboard.schemas.output import (
     DashboardHistory,
@@ -12,11 +11,11 @@ from dashboard.schemas.output import (
 )
 from dashboard.schemas.sub_output import BarChartDataset
 
-session_dashboard_router = Router(tags=["Session Dashboard"], auth=SessionAuth(csrf=True))
-token_dashboard_router = Router(tags=["Token Dashboard"], auth=ApiKey())
+dashboard_router = Router(tags=["Dashboard"], auth=SessionAuth())
 
 
-async def _dashboard_overview() -> DashboardOverview:
+@dashboard_router.get("/overview")
+async def dashboard_overview(request: HttpRequest) -> DashboardOverview:
     """Get the dashboard overview."""
     return DashboardOverview(
         total=0,
@@ -26,12 +25,14 @@ async def _dashboard_overview() -> DashboardOverview:
     )
 
 
-async def _dashboard_recent_items() -> DashboardRecentItems:
+@dashboard_router.get("/recent/items")
+async def dashboard_recent_items(request: HttpRequest) -> DashboardRecentItems:
     """Get the dashboard recent items."""
     return DashboardRecentItems(items=[])
 
 
-async def _dashboard_history() -> DashboardHistory:
+@dashboard_router.get("/history")
+async def dashboard_history(request: HttpRequest) -> DashboardHistory:
     """Get the dashboard history."""
     DATA_SET_PRICE = BarChartDataset(
         label="Price",
@@ -54,39 +55,3 @@ async def _dashboard_history() -> DashboardHistory:
         ],
         data=[DATA_SET_PRICE, DATA_SET_BUDGET],
     )
-
-
-@session_dashboard_router.get("/overview")
-async def session_dashboard_overview(request: HttpRequest) -> DashboardOverview:
-    """Get the dashboard overview."""
-    return await _dashboard_overview()
-
-
-@session_dashboard_router.get("/recent/items")
-async def session_dashboard_recent_items(request: HttpRequest) -> DashboardRecentItems:
-    """Get the dashboard recent items."""
-    return await _dashboard_recent_items()
-
-
-@session_dashboard_router.get("/history")
-async def session_dashboard_history(request: HttpRequest) -> DashboardHistory:
-    """Get the dashboard history."""
-    return await _dashboard_history()
-
-
-@token_dashboard_router.get("/overview")
-async def token_dashboard_overview(request: HttpRequest) -> DashboardOverview:
-    """Get the dashboard overview."""
-    return await _dashboard_overview()
-
-
-@token_dashboard_router.get("/recent/items")
-async def token_dashboard_recent_items(request: HttpRequest) -> DashboardRecentItems:
-    """Get the dashboard recent items."""
-    return await _dashboard_recent_items()
-
-
-@token_dashboard_router.get("/history")
-async def token_dashboard_history(request: HttpRequest) -> DashboardHistory:
-    """Get the dashboard history."""
-    return await _dashboard_history()
