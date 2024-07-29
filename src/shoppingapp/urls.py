@@ -34,10 +34,7 @@ from authentication.errors.api_exceptions import (
     UserNotLoggedIn,
 )
 from authentication.routers.auth_router import auth_router
-from dashboard.routers.dashboard_router import (
-    session_dashboard_router,
-    token_dashboard_router,
-)
+from dashboard.routers.dashboard_router import dashboard_router
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.routers.item_router import item_router
 from stores.errors.api_exceptions import (
@@ -52,8 +49,7 @@ api = NinjaAPI(title="Shopping App API", version=version)
 api.add_router("/auth", auth_router)
 api.add_router("/stores", store_router)
 api.add_router("/items", item_router)
-api.add_router("/dashboard/session", session_dashboard_router)
-api.add_router("/dashboard/token", token_dashboard_router)
+api.add_router("/dashboard", dashboard_router)
 
 
 @api.exception_handler(EmailAlreadyExists)
