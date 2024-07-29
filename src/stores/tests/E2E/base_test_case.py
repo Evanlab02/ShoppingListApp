@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
 from authentication.tests.helpers import create_test_user
+from items.models import ShoppingItem as Item
 from stores.models import ShoppingStore as Store
 
 USERNAME_INPUT = "username"
@@ -64,3 +65,11 @@ class BaseEndToEndTestCase(StaticLiveServerTestCase):
         )
         store.save()
         return store
+
+    def _create_test_item(self, store: Store) -> Item:
+        """Create test item."""
+        item = Item.objects.create(
+            name="Test Item", description="", price=100, store=store, user=self.user
+        )
+        item.save()
+        return item

@@ -61,6 +61,7 @@ async def get_items(
     page: int = 1,
     items_per_page: int = 10,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
+    store: Store | None = None,
 ) -> ItemPaginationSchema:
     """
     Get all items.
@@ -68,7 +69,9 @@ async def get_items(
     Returns:
         ItemPaginationSchema: A paginated list of items.
     """
-    items = await item_repo.get_items(page=page, items_per_page=items_per_page, user=user)
+    items = await item_repo.get_items(
+        page=page, items_per_page=items_per_page, user=user, store=store
+    )
     return items
 
 

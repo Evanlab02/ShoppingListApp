@@ -91,6 +91,7 @@ def _paginate(
     page_number: int = 1,
     items_per_page: int = 10,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
+    store: Store | None = None,
 ) -> ItemPaginationSchema:
     """
     Paginate the items.
@@ -104,7 +105,7 @@ def _paginate(
     Returns:
         ItemPaginationSchema: The paginated items.
     """
-    records = _filter(user=user)
+    records = _filter(user=user, store=store)
 
     paginator = Paginator(records, items_per_page)
     paginated_page = paginator.get_page(page_number)
@@ -181,6 +182,7 @@ async def get_items(
     page: int = 1,
     items_per_page: int = 10,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
+    store: Store | None = None,
 ) -> ItemPaginationSchema:
     """
     Get all the items.
@@ -192,7 +194,7 @@ async def get_items(
     Returns:
         ItemPaginationSchema: The paginated items.
     """
-    items = await _paginate(page_number=page, items_per_page=items_per_page, user=user)
+    items = await _paginate(page_number=page, items_per_page=items_per_page, user=user, store=store)
     return items
 
 

@@ -40,7 +40,7 @@
             </div>
             <div class="mini-card-content">
                 <p class="value">Number of items</p>
-                <p id="number-of-items-sub-value" class="sub-value">COMING SOON</p>
+                <p id="number-of-items-sub-value" class="sub-value">{{items.total}}</p>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
     </div>
     <div class="table-wrapper">
         <table class="overview-table">
-            <caption>COMING SOON</caption>
+            <caption>Store Items</caption>
             <thead>
                 <tr>
                     <th>Name</th>
@@ -84,7 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item in items %}
+                {% for item in items.items %}
                 <tr class="store-item-row">
                     <td><a href="/items/detail/{{ item.id }}">{{ item.name }}</a></td>
                     <td>{{ item.price }}</td>
@@ -96,18 +96,18 @@
     </div>
     <div class="pagination">
         <span class="step-links">
-            {% if has_previous %}
+            {% if items.has_previous %}
             <a href="?page=1">&laquo; First</a>
-            <a href="?page={{ previous_page_no }}">Previous</a>
+            <a href="?page={{ items.previous_page }}">Previous</a>
             {% endif %}
 
             <span class="current">
-                Page {{ page_no }} of {{ total_pages }}.
+                Page {{ items.page_number }} of {{ items.total_pages }}.
             </span>
 
-            {% if has_next %}
-            <a href="?page={{ next_page_no }}">next</a>
-            <a href="?page={{ total_pages }}">last &raquo;</a>
+            {% if items.has_next %}
+            <a href="?page={{ items.next_page }}">next</a>
+            <a href="?page={{ items.total_pages }}">last &raquo;</a>
             {% endif %}
         </span>
     </div>

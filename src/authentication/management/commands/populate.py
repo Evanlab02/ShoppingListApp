@@ -5,6 +5,7 @@ from typing import no_type_check
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
+from items.models import ShoppingItem as Item
 from stores.models import ShoppingStore as Store
 
 
@@ -43,3 +44,13 @@ class Command(BaseCommand):
             user=user,
         )
         store.save()
+
+        for i in range(1, 101):
+            item = Item.objects.create(
+                name=f"Item {i}",
+                description=f"Description {i}",
+                price=i * 100,
+                store=store,
+                user=user,
+            )
+            item.save()
