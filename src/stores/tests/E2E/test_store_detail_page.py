@@ -40,3 +40,22 @@ class TestStoreDetailView(BaseEndToEndTestCase):
 
         row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
         self.assertEqual(len(row_elements), 1)
+
+    def test_detail_page_with_invalid_parameters(self) -> None:
+        """Test the detail page with invalid parameters."""
+        self.driver.get(f"{self.url}?page=witness")
+        time.sleep(1)
+
+        self.driver.get_screenshot_as_file(
+            "./screenshots/stores/detail_page_handles_invalid_params.png"
+        )
+        self.assertEqual(self.driver.find_element(value="store-name-sub-value").text, "Test Store")
+        self.assertEqual(self.driver.find_element(value="store-type-sub-value").text, "Online")
+        self.assertEqual(
+            self.driver.find_element(value="number-of-items-sub-value").text,
+            "1",
+        )
+        self.assertEqual(self.driver.find_element(value="user-sub-value").text, "test")
+
+        row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
+        self.assertEqual(len(row_elements), 1)
