@@ -1,6 +1,11 @@
 """Contains context schemas for the authentication app."""
 
+import logging
+
 from ninja import Schema
+
+log = logging.getLogger(__name__)
+log.info("Loading authentication contexts...")
 
 
 class BaseContext(Schema):
@@ -41,3 +46,6 @@ class TokenContext(BaseContext):
     """Token context schema."""
 
     token: str | None = None
+
+
+log.info("Loaded authentication contexts.")

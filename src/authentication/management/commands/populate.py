@@ -1,5 +1,6 @@
 """Contains the populate command."""
 
+import logging
 from typing import no_type_check
 
 from django.contrib.auth.models import User
@@ -7,6 +8,9 @@ from django.core.management.base import BaseCommand
 
 from items.models import ShoppingItem as Item
 from stores.models import ShoppingStore as Store
+
+log = logging.getLogger(__name__)
+log.info("Loading django populate command...")
 
 
 class Command(BaseCommand):
@@ -54,3 +58,6 @@ class Command(BaseCommand):
                 user=user,
             )
             item.save()
+
+
+log.info("Loaded django populate command.")

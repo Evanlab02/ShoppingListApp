@@ -1,5 +1,6 @@
 """Contains the session authentication class."""
 
+import logging
 from typing import Any, Optional
 
 from asgiref.sync import sync_to_async
@@ -8,6 +9,9 @@ from django.http import HttpRequest
 from ninja.security.apikey import APIKeyCookie
 
 from authentication.database.user_repository import is_user_authenticated
+
+log = logging.getLogger(__name__)
+log.info("Loading ninja session auth...")
 
 
 class SessionAuth(APIKeyCookie):
@@ -26,3 +30,6 @@ class SessionAuth(APIKeyCookie):
             return request.user
 
         return None
+
+
+log.info("Loaded ninja session auth.")

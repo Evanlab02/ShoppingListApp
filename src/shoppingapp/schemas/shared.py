@@ -1,7 +1,12 @@
 """Contains shared schemas."""
 
+import logging
+
 from django.contrib.auth.models import User
 from ninja import ModelSchema, Schema
+
+log = logging.getLogger(__name__)
+log.info("Loading shared schemas...")
 
 
 class UserSchema(ModelSchema):
@@ -41,3 +46,6 @@ class BaseContext(Schema):
     is_overview: bool = False
     show_advanced_navigation: bool = False
     error: str | None = None
+
+
+log.info("Loaded shared schemas.")

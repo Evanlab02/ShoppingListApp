@@ -1,5 +1,7 @@
 """Contains view user service functions."""
 
+import logging
+
 from asgiref.sync import sync_to_async
 from django.contrib.auth import authenticate
 from django.http import HttpRequest
@@ -24,6 +26,13 @@ from authentication.errors.api_exceptions import (
 )
 from authentication.schemas.contexts import LoginContext, LogoutContext, RegisterContext
 
+log = logging.getLogger(__name__)
+log.info("Authentication View user service loading...")
+
+LOADING_REQUEST = "Loading request info..."
+CHECKING_USER_LOGGED_IN = "Checking if user is logged in..."
+USER_ALREADY_LOGGED_IN = "User is already logged in."
+
 
 def get_login_view_context(request: HttpRequest) -> LoginContext:
     """
@@ -35,9 +44,12 @@ def get_login_view_context(request: HttpRequest) -> LoginContext:
     Returns:
         LoginContext: The context for the login view.
     """
+    log.info(CHECKING_USER_LOGGED_IN)
     if is_user_authenticated(request.user):
+        log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
+    log.info(LOADING_REQUEST)
     error = request.GET.get("error")
     username_input = INPUT_MAPPING.get("username-input", "username-input")
     password_input = INPUT_MAPPING.get("password-input", "password-input")
@@ -61,9 +73,12 @@ def get_logout_view_context(request: HttpRequest) -> LogoutContext:
     Returns:
         LogoutContext: The context for the logout view.
     """
+    log.info("Checking if user is logged out...")
     if not is_user_authenticated(request.user):
+        log.warning("User is already logged out.")
         raise UserNotLoggedIn()
 
+    log.info(LOADING_REQUEST)
     error = request.GET.get("error")
     submit_logout = INPUT_MAPPING.get("submit-logout", "submit-logout")
     submit_cancel = INPUT_MAPPING.get("submit-cancel", "submit-cancel")
@@ -81,9 +96,12 @@ def get_register_page_context(request: HttpRequest) -> RegisterContext:
     Returns:
         RegisterContext: The context for the register page.
     """
+    log.info(CHECKING_USER_LOGGED_IN)
     if is_user_authenticated(request.user):
+        log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
+    log.info(LOADING_REQUEST)
     error = request.GET.get("error")
     username_input = INPUT_MAPPING.get("username-input", "username-input")
     email_input = INPUT_MAPPING.get("email-input", "email-input")
@@ -112,18 +130,24 @@ def login(request: HttpRequest) -> None:
     Args:
         request (HttpRequest): The request object.
     """
+    log.info(CHECKING_USER_LOGGED_IN)
     if is_user_authenticated(request.user):
+        log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
+    log.info(LOADING_REQUEST)
     username_input = INPUT_MAPPING.get("username-input", "username-input")
     password_input = INPUT_MAPPING.get("password-input", "password-input")
     username = request.POST.get(username_input)
     password = request.POST.get(password_input)
 
+    log.info("Authenticating user...")
     user = authenticate(request=request, username=username, password=password)
     if user is None:
+        log.warning("Invalid credentails.")
         raise InvalidCredentials()
 
+    log.info("Logging user in...")
     login_user(request, user)
 
 
@@ -134,9 +158,12 @@ def logout(request: HttpRequest) -> None:
     Args:
         request (HttpRequest): The request object.
     """
+    log.info("Checking if user is logged out...")
     if not is_user_authenticated(request.user):
+        log.warning("User is already logged out.")
         raise UserNotLoggedIn()
 
+    log.info("Logging user out...")
     logout_user(request)
 
 
@@ -147,11 +174,14 @@ async def register_user(request: HttpRequest) -> None:
     Args:
         request (HttpRequest): The request object.
     """
+    log.info(CHECKING_USER_LOGGED_IN)
     user = request.user
     is_authenticated = await sync_to_async(is_user_authenticated)(user)
     if is_authenticated:
+        log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
+    log.info("Loading Field IDs")
     username_input = INPUT_MAPPING.get("username-input", "username-input")
     email_input = INPUT_MAPPING.get("email-input", "email-input")
     first_name_input = INPUT_MAPPING.get("first-name-input", "first-name-input")
@@ -159,6 +189,7 @@ async def register_user(request: HttpRequest) -> None:
     password_input = INPUT_MAPPING.get("password-input", "password-input")
     password_confirm_input = INPUT_MAPPING.get("password-confirm-input", "password-confirm-input")
 
+    log.info(LOADING_REQUEST)
     username = request.POST.get(username_input, None)
     email = request.POST.get(email_input)
     first_name = request.POST.get(first_name_input)
@@ -166,13 +197,19 @@ async def register_user(request: HttpRequest) -> None:
     password = request.POST.get(password_input)
     password_confirmation = request.POST.get(password_confirm_input)
 
+    log.info("Validating user details...")
     if not username or not email or not first_name or not last_name or not password:
+        log.warning("Invalid user details.")
         raise InvalidUserDetails()
     elif await does_username_exist(username):
+        log.warning("Invalid username.")
         raise UsernameAlreadyExists()
     elif await does_email_exist(email):
+        log.warning("Invalid email.")
         raise EmailAlreadyExists()
     elif password != password_confirmation:
+        log.warning("Passwords do not match.")
         raise NonMatchingCredentials()
 
+    log.info("Creating user...")
     await create_user(username, password, first_name, last_name, email)

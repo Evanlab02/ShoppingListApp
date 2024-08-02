@@ -7,22 +7,21 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 """
 
+import logging
 import os
 
 from django.core.asgi import get_asgi_application
-from django.core.handlers.asgi import ASGIHandler
+
+log = logging.getLogger(__name__)
+log.info("Loading ASGI Handler...")
 
 SERVICE_PORT = os.getenv("SERVICE_PORT", 8000)
+log.info(f"Loaded SERVICE_PORT: {SERVICE_PORT}")
 
 
-def main() -> ASGIHandler:
-    """Contains the main entrypoint for the ASGI server."""
-    DEFAULT_SETTINGS = "shoppingapp.settings.settings"
-    SETTINGS_MODULE = os.getenv("DEFAULT_SETTINGS_MODULE", DEFAULT_SETTINGS)
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
-    application = get_asgi_application()
-    return application
+DEFAULT_SETTINGS = "shoppingapp.settings.settings"
+SETTINGS_MODULE = os.getenv("DEFAULT_SETTINGS_MODULE", DEFAULT_SETTINGS)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
 
-
-if __name__ == "__main__":
-    main()
+log.info("Loaded ASGI Handler.")
+app = get_asgi_application()

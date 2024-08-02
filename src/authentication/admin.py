@@ -1,8 +1,13 @@
 """Contains admin configuration for the authentication app."""
 
+import logging
+
 from django.contrib import admin
 
 from authentication.models import ApiClient
+
+log = logging.getLogger(__name__)
+log.info("Authentication admin config loading...")
 
 
 class ApiClientAdmin(admin.ModelAdmin):  # type: ignore
@@ -16,3 +21,5 @@ class ApiClientAdmin(admin.ModelAdmin):  # type: ignore
 
 
 admin.site.register(ApiClient, ApiClientAdmin)
+
+log.info("Authentication admin config loaded.")
