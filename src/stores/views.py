@@ -108,16 +108,13 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    try:
-        page_number = int(request.GET.get("page", "1"))
-        limit = int(request.GET.get("limit", "10"))
-    except ValueError:
-        page_number = 1
-        limit = 10
+    params = await get_overview_params(request=request)
+    page = params.get("page", 1)
+    limit = params.get("limit", 10)
 
     try:
         store, items = await store_service.get_store_detail_with_items(
-            store_id=store_id, page_number=page_number, items_per_page=limit
+            store_id=store_id, page_number=page, items_per_page=limit
         )
         context = StoreDetailContext(
             store=store,

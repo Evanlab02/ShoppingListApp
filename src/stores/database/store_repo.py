@@ -26,6 +26,7 @@ def _filter(
     updated_before: date | None = None,
     updated_after: date | None = None,
     user: User | AnonymousUser | AbstractBaseUser | None = None,
+    ids: list[int] | None = None,
 ) -> StorePaginationSchema:
     """
     Filter stores.
@@ -42,12 +43,15 @@ def _filter(
         updated_before (date | None): The date the store was updated before.
         updated_after (date | None): The date the store was updated after.
         user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+        ids (list[int] | None): The ids to filter from.
 
     Returns:
         StorePaginationSchema: Store pagination object.
     """
     stores = Store.objects.all()
 
+    if ids:
+        stores = stores.filter(id__in=ids)
     if name:
         stores = stores.filter(name__icontains=name)
     if store_types:
@@ -156,6 +160,7 @@ async def filter_stores(
     updated_before: date | None = None,
     updated_after: date | None = None,
     user: User | AnonymousUser | AbstractBaseUser | None = None,
+    ids: list[int] | None = None,
 ) -> StorePaginationSchema:
     """
     Filter stores.
@@ -172,6 +177,7 @@ async def filter_stores(
         updated_before (date | None): The date the store was updated before.
         updated_after (date | None): The date the store was updated after.
         user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+        ids (list[int] | None): The store ids to filter from.
 
     Returns:
         StorePaginationSchema: Store pagination object.
@@ -188,6 +194,7 @@ async def filter_stores(
         updated_before,
         updated_after,
         user,
+        ids=ids,
     )
 
 

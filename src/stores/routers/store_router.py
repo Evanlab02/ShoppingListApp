@@ -6,7 +6,7 @@ from ninja import Router
 from authentication.auth.api_key import ApiKey
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
-from stores.schemas.input import NewStore, StoreDescription
+from stores.schemas.input import NewStore, StoreDescription, StoreSearch
 from stores.schemas.output import (
     StoreAggregationSchema,
     StorePaginationSchema,
@@ -187,3 +187,46 @@ async def delete_store(
     user = request.user
     result = await store_service.delete_store(store_id=store_id, user=user)
     return result
+
+
+@store_router.post("/search", response={200: StorePaginationSchema})
+async def search(
+    request: HttpRequest,
+    filters: StoreSearch,
+    page: int = 1,
+    limit: int = 10,
+    name: str | None = None,
+    own: bool = False,
+) -> StorePaginationSchema:
+    """
+    Perform search for stores.
+
+    Args:
+        request (HttpRequest): The HTTP request to the API.
+        filters (StoreSearch): The body containing the filters.
+        page (int): The page number.
+        limit (int): The number of stores per page.
+        name (str): Full or partial name to search for.
+        own (bool): Flag indicating if you would like to see only your own stores.
+
+    Returns:
+        StorePaginationSchema: The stores in a paginated response.
+    """
+    user = None
+    if own:
+        user = request.user
+
+    return await store_service.search_stores(
+        page=page,
+        limit=limit,
+        name=name,
+        user=user,
+        ids=filters.ids,
+        store_types=filters.store_types,
+        created_on=filters.created_on,
+        created_before=filters.created_before,
+        created_after=filters.created_after,
+        updated_on=filters.updated_on,
+        updated_before=filters.updated_before,
+        updated_after=filters.updated_after,
+    )

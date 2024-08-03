@@ -1,6 +1,7 @@
 """API Service for the stores app."""
 
 import logging
+from datetime import date
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
@@ -253,3 +254,53 @@ async def delete_store(
         )
     except Store.DoesNotExist:
         raise StoreDoesNotExist(store_id=store_id)
+
+
+async def search_stores(
+    page: int = 1,
+    limit: int = 10,
+    name: str | None = None,
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+    ids: list[int] | None = None,
+    store_types: list[int] | None = None,
+    created_on: date | None = None,
+    created_before: date | None = None,
+    created_after: date | None = None,
+    updated_on: date | None = None,
+    updated_before: date | None = None,
+    updated_after: date | None = None,
+) -> StorePaginationSchema:
+    """
+    Search for stores based on criteria.
+
+    Args:
+        page (int): The page number.
+        limit (int): The number of stores per page.
+        name (str): Partial or full name of store.
+        user (User): The user that owns the store.
+        ids (list[int]): List of ids to filter from.
+        store_types (list[int]): List of store types to filter from.
+        created_on (date): The date the store was created.
+        created_before (date): Date the store was created before.
+        created_after (date): Date the store was created after.
+        updated_on (date): Date the store was last updated.
+        updated_before (date): Date the store was last updated before.
+        updated_after (date): Date the store was last updated after.
+
+    Returns:
+        StorePaginationSchema: The schema result which contains the stores that were searched for.
+    """
+    return await store_repo.filter_stores(
+        page_number=page,
+        stores_per_page=limit,
+        name=name,
+        user=user,
+        store_types=store_types,
+        created_on=created_on,
+        created_before=created_before,
+        created_after=created_after,
+        updated_on=updated_on,
+        updated_before=updated_before,
+        updated_after=updated_after,
+        ids=ids,
+    )
