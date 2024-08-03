@@ -316,7 +316,6 @@ async def search_stores(
     """
     log.info(f"PAGE NO - {page}")
     log.info(f"LIMIT - {limit}")
-    log.info(f"NAME - {name}")
     log.info(f"STORE TYPES - {store_types}")
     log.info(f"CREATED ON - {created_on}")
     log.info(f"CREATED BEFORE - {created_before}")
