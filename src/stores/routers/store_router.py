@@ -1,5 +1,7 @@
 """Contains store router functions."""
 
+import logging
+
 from django.http import HttpRequest
 from ninja import Router
 
@@ -17,6 +19,10 @@ from stores.services import store_service
 store_router = Router(tags=["Stores"], auth=ApiKey())
 
 
+log = logging.getLogger(__name__)
+log.info("Store router loading...")
+
+
 @store_router.post("/create", response={201: StoreSchema})
 async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema:
     """
@@ -29,6 +35,7 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema
     Returns:
         StoreSchema: The created store.
     """
+    log.info("User requested to create a store.")
     user = request.user
     store = await store_service.create(new_store, user)
     return store
@@ -45,6 +52,7 @@ async def get_mapping(request: HttpRequest) -> dict[int, str]:
     Returns:
         dict[int, str]: The mapping.
     """
+    log.info("User requested store type mapping.")
     return STORE_TYPE_MAPPING
 
 
@@ -60,6 +68,7 @@ async def get_store_detail(request: HttpRequest, store_id: int) -> StoreSchema:
     Returns:
         StoreSchema: The store details.
     """
+    log.info(f"User requested store detail for store: {store_id}.")
     store = await store_service.get_store_detail(store_id)
     return store
 
@@ -75,6 +84,7 @@ async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
+    log.info("User requested store aggregation.")
     result = await store_service.aggregate()
     return result
 
@@ -91,6 +101,7 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
         StoreAggregationSchema: The store aggregation by user.
     """
     user = request.user
+    log.info("User requested personal store aggregation.")
     result = await store_service.aggregate(user=user)
     return result
 
@@ -108,6 +119,7 @@ async def get_stores(request: HttpRequest, limit: int = 10, page: int = 1) -> St
     Returns:
         StorePaginationSchema: The stores.
     """
+    log.info(f"User requested stores with limit ({limit}) for page: {page}.")
     result = await store_service.get_stores(limit, page)
     return result
 
@@ -126,6 +138,7 @@ async def get_personal_stores(
         StorePaginationSchema: The stores.
     """
     user = request.user
+    log.info(f"User requested personal stores with limit ({limit}) for page: {page}.")
     result = await store_service.get_stores(limit, page, user)
     return result
 
@@ -160,6 +173,7 @@ async def update_store(
         formatted_type = store_type
 
     user = request.user
+    log.info(f"User requested to update store: {store_id}")
     result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
     return result
 
@@ -185,6 +199,7 @@ async def delete_store(
         StoreDoesNotExist: If there store_id is invalid or you do not own the store.
     """
     user = request.user
+    log.info(f"User requested to delete store: {store_id}")
     result = await store_service.delete_store(store_id=store_id, user=user)
     return result
 
@@ -216,6 +231,8 @@ async def search(
     if own:
         user = request.user
 
+    log.info("User searching stores...")
+
     return await store_service.search_stores(
         page=page,
         limit=limit,
@@ -230,3 +247,6 @@ async def search(
         updated_before=filters.updated_before,
         updated_after=filters.updated_after,
     )
+
+
+log.info("Store router loaded.")

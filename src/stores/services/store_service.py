@@ -24,7 +24,10 @@ from stores.schemas.output import (
     StoreSchema,
 )
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
+log.info("Store service loading...")
+
+STORE_DOES_NOT_EXIST = "Store does not exist."
 
 
 def _get_store_type_label(store_type_value: int) -> str:
@@ -40,9 +43,11 @@ def _get_store_type_label(store_type_value: int) -> str:
     Raises:
         InvalidStoreType: If the store type is invalid.
     """
+    log.info("Attempting store type conversion to label.")
     try:
         return STORE_TYPE_MAPPING[store_type_value]
     except KeyError:
+        log.warning("Failed store type conversion to label.")
         raise InvalidStoreType(store_type_value)
 
 
@@ -59,10 +64,12 @@ def _get_store_type_value(store_type_label: str) -> int:
     Raises:
         InvalidStoreType: If the store type is invalid.
     """
+    log.info("Attempting store type conversion to value.")
     for key, value in STORE_TYPE_MAPPING.items():
         if value == store_type_label:
             return key
 
+    log.warning("Failed store type conversion to value.")
     raise InvalidStoreType(store_type_label)
 
 
@@ -80,20 +87,26 @@ async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousU
         InvalidStoreType: If the store type is invalid.
         StoreAlreadyExists: If the store already exists.
     """
+    log.info("Retrieving info for new store...")
     name = new_store.name
     store_type = new_store.store_type
     store_type_label = ""
     description = new_store.description
 
+    log.info("Validating store type...")
     if isinstance(store_type, int):
         store_type_label = _get_store_type_label(store_type)
     elif isinstance(store_type, str):
         store_type_label = store_type
 
+    store_type_value = _get_store_type_value(store_type_label)
+
+    log.info("Validating store name...")
     if await store_repo.does_name_exist(name):
+        log.warning("Store with this name already exists...")
         raise StoreAlreadyExists(name)
 
-    store_type_value = _get_store_type_value(store_type_label)
+    log.info("Creating store...")
     store = await store_repo.create_store(name, store_type_value, description, user)
     store_schema = StoreSchema.from_orm(store)
     return store_schema
@@ -113,10 +126,12 @@ async def get_store_detail(store_id: int) -> StoreSchema:
         StoreDoesNotExist: If the store does not exist.
     """
     try:
+        log.info("Getting store details...")
         store = await store_repo.get_store(store_id)
         store_schema = StoreSchema.from_orm(store)
         return store_schema
     except Store.DoesNotExist:
+        log.warning(STORE_DOES_NOT_EXIST)
         raise StoreDoesNotExist(store_id)
 
 
@@ -136,6 +151,7 @@ async def get_store_detail_with_items(
         StoreDoesNotExist: If the store does not exist.
     """
     try:
+        log.info("Getting store details with related items...")
         store = await store_repo.get_store(store_id)
         store_schema = StoreSchema.from_orm(store)
         related_items = await item_repo.get_items(
@@ -143,6 +159,7 @@ async def get_store_detail_with_items(
         )
         return store_schema, related_items
     except Store.DoesNotExist:
+        log.warning(STORE_DOES_NOT_EXIST)
         raise StoreDoesNotExist(store_id)
 
 
@@ -155,6 +172,7 @@ async def aggregate(
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
+    log.info("Aggregating store details...")
     aggregation = await store_repo.aggregate_stores(user)
     result = StoreAggregationSchema.model_validate(aggregation)
     result.combined_online_stores = result.online_stores + result.combined_stores
@@ -178,7 +196,7 @@ async def get_stores(
     Returns:
         StorePaginationSchema: The stores in a paginated format.
     """
-    logging.info(f"Retrieving stores for page {page_number} with limit {limit}.")
+    log.info(f"Retrieving stores for page {page_number} with limit {limit}...")
     paginated_stores = await store_repo.get_stores(page_number, limit, user)
     return paginated_stores
 
@@ -210,7 +228,9 @@ async def update_store(
     store_type_label = ""
     store_type_value = None
 
+    log.info("Validating store info...")
     if store_name and await store_repo.does_name_exist(store_name):
+        log.warning("Store already exists.")
         raise StoreAlreadyExists(store_name)
     elif isinstance(store_type, int):
         store_type_label = _get_store_type_label(store_type)
@@ -221,6 +241,7 @@ async def update_store(
         store_type_value = _get_store_type_value(store_type_label)
 
     try:
+        log.info("Updating store...")
         store = await store_repo.edit_store(
             store_id=store_id,
             user=user,
@@ -231,6 +252,7 @@ async def update_store(
         store_schema = await sync_to_async(StoreSchema.from_orm)(store)
         return store_schema
     except Store.DoesNotExist:
+        log.warning(STORE_DOES_NOT_EXIST)
         raise StoreDoesNotExist(store_id)
 
 
@@ -248,11 +270,13 @@ async def delete_store(
         DeleteSchema: The schema result which contains the result message and details.
     """
     try:
+        log.info("Deleting store...")
         await store_repo.delete_store(store_id=store_id, user=user)
         return DeleteSchema(
             message="Deleted Store.", detail=f"Store with ID #{store_id} was deleted."
         )
     except Store.DoesNotExist:
+        log.warning(STORE_DOES_NOT_EXIST)
         raise StoreDoesNotExist(store_id=store_id)
 
 
@@ -290,6 +314,17 @@ async def search_stores(
     Returns:
         StorePaginationSchema: The schema result which contains the stores that were searched for.
     """
+    log.info(f"PAGE NO - {page}")
+    log.info(f"LIMIT - {limit}")
+    log.info(f"NAME - {name}")
+    log.info(f"STORE TYPES - {store_types}")
+    log.info(f"CREATED ON - {created_on}")
+    log.info(f"CREATED BEFORE - {created_before}")
+    log.info(f"CREATED AFTER - {created_after}")
+    log.info(f"UPDATED ON - {updated_on}")
+    log.info(f"UPDATED BEFORE - {updated_before}")
+    log.info(f"UPDATED AFTER - {updated_after}")
+    log.info(f"IDS - {ids}")
     return await store_repo.filter_stores(
         page_number=page,
         stores_per_page=limit,
@@ -304,3 +339,6 @@ async def search_stores(
         updated_after=updated_after,
         ids=ids,
     )
+
+
+log.info("Store service loaded.")

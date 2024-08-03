@@ -1,5 +1,7 @@
 """Contains the views for the stores app."""
 
+import logging
+
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
@@ -19,6 +21,9 @@ from stores.schemas.contexts import (
 )
 from stores.schemas.input import NewStore
 from stores.services import store_service
+
+log = logging.getLogger(__name__)
+log.info("Stores app views loading...")
 
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
@@ -324,3 +329,6 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
     user = request.user
     await store_service.delete_store(store_id=formatted_store_id, user=user)
     return HttpResponseRedirect("/stores/me")
+
+
+log.info("Stores app views loaded.")

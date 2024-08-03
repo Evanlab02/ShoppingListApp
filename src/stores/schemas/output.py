@@ -1,9 +1,14 @@
 """Contains outgoing data schemas for the stores app."""
 
+import logging
+
 from ninja import ModelSchema, Schema
 
 from shoppingapp.schemas.shared import UserSchema
 from stores.models import ShoppingStore as Store
+
+log = logging.getLogger(__name__)
+log.info("Store output schemas loading...")
 
 
 class StoreSchemaNoUser(ModelSchema):
@@ -64,3 +69,6 @@ class StorePaginationSchema(Schema):
     has_next: bool = False
     next_page: int | None = None
     stores: list[StoreSchema] = []
+
+
+log.info("Store output schemas loaded.")

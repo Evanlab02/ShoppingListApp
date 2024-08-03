@@ -12,6 +12,9 @@ from django.db.models import Case, Count, F, IntegerField, When
 from stores.models import ShoppingStore as Store
 from stores.schemas.output import StorePaginationSchema, StoreSchema
 
+log = logging.getLogger(__name__)
+log.info("Store repository loading...")
+
 
 @sync_to_async
 def _filter(
@@ -144,7 +147,6 @@ async def get_stores(
     Returns:
         StorePaginationSchema: Store pagination object.
     """
-    logging.info("Retrieving stores...")
     return await _filter(page_number, stores_per_page, user=user)
 
 
@@ -323,3 +325,6 @@ async def does_name_exist(name: str) -> bool:
         bool: True if the store name exists, False otherwise.
     """
     return await Store.objects.filter(name=name).aexists()
+
+
+log.info("Store repository loaded.")

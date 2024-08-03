@@ -1,5 +1,7 @@
 """Contains the schemas for the stores app."""
 
+import logging
+
 from items.schemas.output import ItemPaginationSchema
 from shoppingapp.schemas.shared import BaseContext
 from stores.schemas.output import (
@@ -7,6 +9,9 @@ from stores.schemas.output import (
     StorePaginationSchema,
     StoreSchema,
 )
+
+log = logging.getLogger(__name__)
+log.info("Store context schemas loading...")
 
 
 class StoreContext(BaseContext):
@@ -26,3 +31,6 @@ class StoreOverviewContext(BaseContext):
 
     pagination: StorePaginationSchema
     aggregation: StoreAggregationSchema | None
+
+
+log.info("Store context schemas loaded.")
