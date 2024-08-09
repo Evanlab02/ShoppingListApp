@@ -75,6 +75,8 @@ jobs:
       - name: Upload static
         run: |
           gh release upload ${{ needs.release-please.outputs.tag_name }} static.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
 
   release-coverage:
     runs-on: ubuntu-latest
