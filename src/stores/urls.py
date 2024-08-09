@@ -1,8 +1,13 @@
 """Contains the URL patterns for the stores app."""
 
+import logging
+
 from django.urls import path
 
 from . import views
+
+log = logging.getLogger(__name__)
+log.info("Stores app URLs loading...")
 
 urlpatterns = [
     path(views.CREATE_PAGE, views.create_page, name="store_create_page"),
@@ -19,3 +24,5 @@ urlpatterns = [
         name="store_personal_overview_page",
     ),
 ]
+
+log.info("Stores app URLs loaded.")

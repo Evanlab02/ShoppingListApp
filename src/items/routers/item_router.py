@@ -6,10 +6,13 @@ from django.http import HttpRequest
 from ninja import Router
 
 from authentication.auth.api_key import ApiKey
-from items.schemas.input import NewItem, UpdateItem
+from items.schemas.input import ItemSearchSchema, NewItem, UpdateItem
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services import item_service
 from shoppingapp.schemas.shared import DeleteSchema
+
+log = logging.getLogger(__name__)
+log.info("Item router loading...")
 
 item_router = Router(tags=["Items"], auth=ApiKey())
 
@@ -170,7 +173,30 @@ async def delete_item(request: HttpRequest, item_id: int) -> DeleteSchema:
     Returns:
         DeleteSchema: The delete schema.
     """
-    logging.info(f"Requested to delete item with ID: {item_id}")
+    log.info(f"Requested to delete item with ID: {item_id}")
     user = request.user
     result = await item_service.delete_item(item_id=item_id, user=user)
     return result
+
+
+@item_router.post("/search", response={200: ItemPaginationSchema})
+async def search(
+    request: HttpRequest,
+    search: ItemSearchSchema,
+    page: int = 1,
+    limit: int = 10,
+    name: str | None = None,
+    own: bool = False,
+    store: int | None = None,
+) -> ItemPaginationSchema:
+    """Search for items based off filters."""
+    user = None
+    if own:
+        user = request.user
+
+    return await item_service.search_items(
+        user=user, limit=limit, name=name, page=page, search=search, store_id=store
+    )
+
+
+log.info("Item router loaded.")

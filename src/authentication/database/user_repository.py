@@ -1,8 +1,13 @@
 """Contains the user repository functions."""
 
+import logging
+
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
+
+log = logging.getLogger(__name__)
+log.info("Loading user respository...")
 
 
 async def create_user(
@@ -97,3 +102,6 @@ def logout_user(request: HttpRequest) -> None:
         request (HttpRequest): The request.
     """
     logout(request)
+
+
+log.info("Loaded user respository.")

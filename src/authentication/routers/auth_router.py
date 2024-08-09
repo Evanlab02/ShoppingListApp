@@ -1,5 +1,7 @@
 """Contains authentication routes."""
 
+import logging
+
 from django.http import HttpRequest
 from ninja import Router
 
@@ -7,6 +9,8 @@ from authentication.schemas.input import NewUser, UserCredentials
 from authentication.schemas.output import GeneralResponse
 from authentication.services.api.user_service import login, logout, register_user
 
+log = logging.getLogger(__name__)
+log.info("Loading authentication router...")
 auth_router = Router(tags=["Authentication"])
 
 
@@ -22,6 +26,7 @@ def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResp
     Returns:
         GeneralResponse: The response object
     """
+    log.info(f"Retrieved request to log user in. ({user_creds.username})")
     response = login(request, user_creds.username, user_creds.password)
     return response
 
@@ -37,6 +42,7 @@ def logout_user(request: HttpRequest) -> GeneralResponse:
     Returns:
         GeneralResponse: The response object
     """
+    log.info("Retrieved request to log user out.")
     response = logout(request)
     return response
 
@@ -53,6 +59,10 @@ async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
     Returns:
         GeneralResponse: The response object
     """
+    log.info("Retrieved request to register user.")
     user = request.user
     response = await register_user(user, new_user)
     return response
+
+
+log.info("Loaded authentication router.")

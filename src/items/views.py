@@ -28,6 +28,9 @@ UPDATE_ACTION = "update/action"
 DELETE_PAGE = "delete/<int:item_id>"
 DELETE_ACTION = "delete/action"
 
+log = logging.getLogger(__name__)
+log.info("Items views loading...")
+
 
 async def _handle_validation_error(
     name: str | None, store_id: str | None, price: str | None, description: str | None
@@ -366,3 +369,6 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
     except ItemDoesNotExist:
         logging.error("Item does not exist for deletion.")
         return HttpResponse(f"Could not find item with ID: {formatted_item_id}.", status=404)
+
+
+log.info("Items views loaded.")

@@ -1,5 +1,6 @@
 """Contains the API key authentication class."""
 
+import logging
 from os import getenv
 
 from asgiref.sync import sync_to_async
@@ -10,6 +11,9 @@ from ninja.security import APIKeyHeader
 
 from authentication.database.user_repository import is_user_authenticated
 from authentication.models import ApiClient
+
+log = logging.getLogger(__name__)
+log.info("Loading ninja API key auth...")
 
 
 class ApiKey(APIKeyHeader):
@@ -42,3 +46,6 @@ class ApiKey(APIKeyHeader):
             return None
         except ApiClient.DoesNotExist:
             return None
+
+
+log.info("Loaded ninja API key auth.")

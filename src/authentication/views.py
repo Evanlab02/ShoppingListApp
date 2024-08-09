@@ -1,5 +1,7 @@
 """Contains views for the authentication app."""
 
+import logging
+
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
@@ -38,6 +40,9 @@ CONFIRM_TOKEN_ROUTE = "token"
 ENABLE_CLIENT_ROUTE = "token/register"
 DISABLE_CLIENT_ROUTE = "token/disable"
 
+log = logging.getLogger(__name__)
+log.info("Auth Views loading...")
+
 
 @require_http_methods(["POST"])
 @redirect_if_logged_in
@@ -51,10 +56,12 @@ def login_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to login.")
     try:
         login(request)
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
     except InvalidCredentials as error:
+        log.warning(f"Error with login: {error}")
         return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
 
 
@@ -70,6 +77,7 @@ def login_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to view login page.")
     context = get_login_view_context(request)
     return render(request, "auth/index.html", context.model_dump())
 
@@ -86,6 +94,7 @@ def logout_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to logout.")
     logout(request)
     return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
 
@@ -102,6 +111,7 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to view logout page.")
     context = get_logout_view_context(request)
     return render(request, "auth/logout.html", context.model_dump())
 
@@ -118,6 +128,7 @@ async def register_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to register a user.")
     try:
         await register_user(request)
         return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
@@ -127,6 +138,7 @@ async def register_action(request: HttpRequest) -> HttpResponse:
         UsernameAlreadyExists,
         EmailAlreadyExists,
     ) as error:
+        log.warning(f"Registration error: {error}")
         return HttpResponseRedirect(f"/{REGISTER_ROUTE}?error={error}")
 
 
@@ -142,6 +154,7 @@ def register_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to view register page.")
     context = get_register_page_context(request)
     return render(request, "auth/register.html", context.model_dump())
 
@@ -158,6 +171,7 @@ def confirm_token(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to get token landing page.")
     return render(request, "auth/confirm_token.html", {})
 
 
@@ -173,6 +187,7 @@ async def enable_api_client(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to enable API client.")
     user = request.user
     context = await enable_client(user)
     return render(request, "auth/token.html", context.model_dump())
@@ -190,6 +205,10 @@ async def disable_api_client(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
+    log.info("Retrieved request to disable API client.")
     user = request.user
     context = await disable_client(user)
     return render(request, "auth/disable-token.html", context.model_dump())
+
+
+log.info("Auth Views loaded.")

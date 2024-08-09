@@ -1,5 +1,10 @@
 """Contains exceptions for the items app."""
 
+import logging
+
+log = logging.getLogger(__name__)
+log.info("Item API exceptions loading...")
+
 
 class ItemAlreadyExists(Exception):
     """Raised when the item already exists."""
@@ -18,3 +23,6 @@ class ItemDoesNotExist(Exception):
         """Initialize the exception."""
         self.item_id = item_id
         super().__init__(f"Item with id '{item_id}' does not exist.")
+
+
+log.info("Item API exceptions loaded.")

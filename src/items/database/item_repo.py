@@ -1,7 +1,6 @@
 """Contains item repository functions."""
 
 import logging
-from datetime import date
 from typing import Any, no_type_check
 
 from asgiref.sync import sync_to_async
@@ -10,24 +9,20 @@ from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Max, Min, QuerySet, Sum
 
 from items.models import ShoppingItem as Item
+from items.schemas.input import ItemSearchSchema
 from items.schemas.output import ItemPaginationSchema, ItemSchema
 from stores.models import ShoppingStore as Store
+
+log = logging.getLogger(__name__)
+log.info("Item repository loading...")
 
 
 def _filter(
     name: str | None = None,
-    description: str | None = None,
-    price_is: float | None = None,
-    price_is_gt: float | None = None,
-    price_is_lt: float | None = None,
-    created_on: date | None = None,
-    created_after: date | None = None,
-    created_before: date | None = None,
-    updated_on: date | None = None,
-    updated_after: date | None = None,
-    updated_before: date | None = None,
     store: Store | None = None,
+    stores: list[Store] | None = None,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
+    search: ItemSearchSchema | None = None,
 ) -> QuerySet[Item]:
     """
     Filter items and order them by the updated date.
@@ -48,6 +43,8 @@ def _filter(
         updated_before (date | None): The date the item was updated before.
         store (Store | None): The store where the item is stocked.
         user (User | AbstractBaseUser | AnonymousUser | None): The user who created the item.
+        ids (list[int] | None): The item ids to filter off of.
+        stores (list[Store] | None): The stores to filter off of.
 
     Returns:
         list[Item]: The filtered items.
@@ -56,32 +53,53 @@ def _filter(
 
     if name:
         items = items.filter(name__icontains=name)
-    if description:
-        items = items.filter(description__icontains=description)
-    if price_is:
-        items = items.filter(price=price_is)
-    if price_is_gt:
-        items = items.filter(price__gt=price_is_gt)
-    if price_is_lt:
-        items = items.filter(price__lt=price_is_lt)
-    if created_on:
-        items = items.filter(created_at__date=created_on)
-    if created_after:
-        items = items.filter(created_at__date__gt=created_after)
-    if created_before:
-        items = items.filter(created_at__date__lt=created_before)
-    if updated_on:
-        items = items.filter(updated_at__date=updated_on)
-    if updated_after:
-        items = items.filter(updated_at__date__gt=updated_after)
-    if updated_before:
-        items = items.filter(updated_at__date__lt=updated_before)
     if store:
         items = items.filter(store=store)
+    if stores:
+        items = items.filter(store__in=stores)
     if user:
         items = items.filter(user=user)
+    if search:
+        items = _search(items=items, search=search)
 
     items = items.order_by("-updated_at")
+
+    return items
+
+
+def _search(items: QuerySet[Item], search: ItemSearchSchema) -> QuerySet[Item]:
+    """
+    Search items using the search schema object.
+
+    Args:
+        items (QuerySet[Item]): The query set to search upon.
+        search (ItemSearchSchema): The search object to use.
+
+    Returns:
+        items (QuerySet[Item]): The search result.
+    """
+    if search.description:
+        items = items.filter(description__icontains=search.description)
+    if search.price:
+        items = items.filter(price=search.price)
+    if search.price_is_gt:
+        items = items.filter(price__gt=search.price_is_gt)
+    if search.price_is_lt:
+        items = items.filter(price__lt=search.price_is_lt)
+    if search.created_on:
+        items = items.filter(created_at__date=search.created_on)
+    if search.created_after:
+        items = items.filter(created_at__date__gt=search.created_after)
+    if search.created_before:
+        items = items.filter(created_at__date__lt=search.created_before)
+    if search.updated_on:
+        items = items.filter(updated_at__date=search.updated_on)
+    if search.updated_after:
+        items = items.filter(updated_at__date__gt=search.updated_after)
+    if search.updated_before:
+        items = items.filter(updated_at__date__lt=search.updated_before)
+    if search.ids:
+        items = items.filter(id__in=search.ids)
 
     return items
 
@@ -92,6 +110,9 @@ def _paginate(
     items_per_page: int = 10,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
     store: Store | None = None,
+    stores: list[Store] | None = None,
+    name: str | None = None,
+    search: ItemSearchSchema | None = None,
 ) -> ItemPaginationSchema:
     """
     Paginate the items.
@@ -101,11 +122,26 @@ def _paginate(
     Args:
         page_number (int): The page number.
         items_per_page (int): The number of items per page.
+        user (User): The user to filter off.
+        store (Store): Specific store to filter off.
+        name (int): The full or partial name of the item to filter by.
+        ids (list[int]): The items to filter off of.
+        stores (list[Store]): The stores to filter off.
+        created_on (date): The date the store was created on.
+        created_before (date): All items created before this date.
+        created_after (date): All items created after this date.
+        updated_on (date): The date the item was last updated on.
+        updated_before (date): All items that were updated before this date.
+        updated_after (date): All items that were updated after this date.
+        description (str): Full or partial description to filter by.
+        price (float): The price of the item.
+        price_is_lt (float): Items where the price is less than this.
+        price_is_get (float): Items where the price is greater than this.
 
     Returns:
         ItemPaginationSchema: The paginated items.
     """
-    records = _filter(user=user, store=store)
+    records = _filter(user=user, store=store, name=name, search=search, stores=stores)
 
     paginator = Paginator(records, items_per_page)
     paginated_page = paginator.get_page(page_number)
@@ -183,6 +219,9 @@ async def get_items(
     items_per_page: int = 10,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
     store: Store | None = None,
+    name: str | None = None,
+    stores: list[Store] | None = None,
+    search: ItemSearchSchema | None = None,
 ) -> ItemPaginationSchema:
     """
     Get all the items.
@@ -194,7 +233,15 @@ async def get_items(
     Returns:
         ItemPaginationSchema: The paginated items.
     """
-    items = await _paginate(page_number=page, items_per_page=items_per_page, user=user, store=store)
+    items = await _paginate(
+        page_number=page,
+        items_per_page=items_per_page,
+        user=user,
+        store=store,
+        search=search,
+        name=name,
+        stores=stores,
+    )
     return items
 
 
@@ -294,3 +341,6 @@ async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUse
     item = await Item.objects.aget(id=item_id, user=user)
     logging.info(f"Deleting item with ID: '{item_id}'.")
     await item.adelete()
+
+
+log.info("Item repository loaded.")

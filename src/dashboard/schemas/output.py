@@ -1,9 +1,14 @@
 """Contains the outgoing schemas from the dashboard app."""
 
+import logging
+
 from ninja import Schema
 
 from dashboard.schemas.sub_output import BarChartDataset
 from items.schemas.output import ItemSchema
+
+log = logging.getLogger(__name__)
+log.info("Loading dashboard output schemas...")
 
 
 class DashboardOverview(Schema):
@@ -26,3 +31,6 @@ class DashboardHistory(Schema):
 
     labels: list[str]
     data: list[BarChartDataset]
+
+
+log.info("Loaded dashboard output schemas.")

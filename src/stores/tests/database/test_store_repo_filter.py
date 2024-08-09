@@ -141,3 +141,8 @@ class TestStoreRepoFilter(TestCase):
         """Test filter_stores by user."""
         paginated_data = await filter_stores(user=self.user)
         await self.base_check(paginated_data)
+
+    async def test_filter_stores_by_id(self) -> None:
+        """Test filter_stores by id."""
+        paginated_data = await filter_stores(ids=[self.store.id])
+        await self.base_check(paginated_data)

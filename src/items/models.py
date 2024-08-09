@@ -1,5 +1,7 @@
 """Contains the models for the items app."""
 
+import logging
+
 from django.contrib.auth.models import User
 from django.db.models import (
     CASCADE,
@@ -12,6 +14,9 @@ from django.db.models import (
 )
 
 from stores.models import ShoppingStore as Store
+
+log = logging.getLogger(__name__)
+log.info("Items models loading...")
 
 
 class ShoppingItem(Model):
@@ -28,3 +33,6 @@ class ShoppingItem(Model):
     def __str__(self) -> str:
         """Return a string representation of the shopping item."""
         return f"{self.name}@{self.store.name}"
+
+
+log.info("Items models loaded.")

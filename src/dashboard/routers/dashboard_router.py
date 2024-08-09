@@ -1,5 +1,7 @@
 """Contains the dashboard router."""
 
+import logging
+
 from django.http import HttpRequest
 from ninja import Router
 
@@ -10,6 +12,9 @@ from dashboard.schemas.output import (
     DashboardRecentItems,
 )
 from dashboard.schemas.sub_output import BarChartDataset
+
+log = logging.getLogger(__name__)
+log.info("Dashboard router loading...")
 
 dashboard_router = Router(tags=["Dashboard"], auth=SessionAuth())
 
@@ -55,3 +60,6 @@ async def dashboard_history(request: HttpRequest) -> DashboardHistory:
         ],
         data=[DATA_SET_PRICE, DATA_SET_BUDGET],
     )
+
+
+log.info("Dashboard router loaded.")

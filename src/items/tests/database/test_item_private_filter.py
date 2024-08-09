@@ -7,6 +7,7 @@ from django.test.testcases import TestCase
 
 from items.database import item_repo
 from items.models import ShoppingItem as Item
+from items.schemas.input import ItemSearchSchema
 from stores.models import ShoppingStore as Store
 
 
@@ -98,7 +99,8 @@ class TestFilterItems(TestCase):
 
     def test_filter_item_description_is_equal(self) -> None:
         """Test the _filter function with a description filter."""
-        records = item_repo._filter(description="Test Description")
+        search = ItemSearchSchema(description="Test Description")
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 1)
@@ -106,7 +108,8 @@ class TestFilterItems(TestCase):
 
     def test_filter_item_description_contains(self) -> None:
         """Test the _filter function with a description filter."""
-        records = item_repo._filter(description="Test")
+        search = ItemSearchSchema(description="Test")
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 1)
@@ -114,21 +117,24 @@ class TestFilterItems(TestCase):
 
     def test_filter_item_description_is_not_equal(self) -> None:
         """Test the _filter function with a description filter."""
-        records = item_repo._filter(description="Not Test Description")
+        search = ItemSearchSchema(description="Not Test Description")
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_item_description_both(self) -> None:
         """Test the _filter function with a description filter."""
-        records = item_repo._filter(description="Description")
+        search = ItemSearchSchema(description="Description")
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_price_is_equal(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is=100)
+        search = ItemSearchSchema(price=100)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 1)
@@ -136,21 +142,24 @@ class TestFilterItems(TestCase):
 
     def test_filter_price_is_not_equal(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is=50)
+        search = ItemSearchSchema(price=50)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_price_is_greater_than(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is_gt=50)
+        search = ItemSearchSchema(price_is_gt=50)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_price_is_greater_than_does_not_include(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is_gt=100)
+        search = ItemSearchSchema(price_is_gt=100)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 1)
@@ -158,21 +167,24 @@ class TestFilterItems(TestCase):
 
     def test_filter_price_is_greater_than_none(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is_gt=200)
+        search = ItemSearchSchema(price_is_gt=200)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_price_is_less_than(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is_lt=250)
+        search = ItemSearchSchema(price_is_lt=250)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_price_is_less_than_does_not_include(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is_lt=200)
+        search = ItemSearchSchema(price_is_lt=200)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 1)
@@ -180,91 +192,104 @@ class TestFilterItems(TestCase):
 
     def test_filter_price_is_less_than_none(self) -> None:
         """Test the _filter function with a price filter."""
-        records = item_repo._filter(price_is_lt=100)
+        search = ItemSearchSchema(price_is_lt=100)
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_created_on(self) -> None:
         """Test the _filter function with a created_on filter."""
-        records = item_repo._filter(created_on=self.item.created_at.date())
+        search = ItemSearchSchema(created_on=self.item.created_at.date())
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_created_on_none(self) -> None:
         """Test the _filter function with a created_on filter."""
-        records = item_repo._filter(created_on=date(2020, 1, 1))
+        search = ItemSearchSchema(created_on=date(2020, 1, 1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_created_after(self) -> None:
         """Test the _filter function with a created_after filter."""
-        records = item_repo._filter(created_after=self.item.created_at.date() - timedelta(days=1))
+        search = ItemSearchSchema(created_after=self.item.created_at.date() - timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_created_after_none(self) -> None:
         """Test the _filter function with a created_after filter."""
-        records = item_repo._filter(created_after=self.item.created_at.date() + timedelta(days=1))
+        search = ItemSearchSchema(created_after=self.item.created_at.date() + timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_created_before(self) -> None:
         """Test the _filter function with a created_before filter."""
-        records = item_repo._filter(created_before=self.item.created_at.date() + timedelta(days=1))
+        search = ItemSearchSchema(created_before=self.item.created_at.date() + timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_created_before_none(self) -> None:
         """Test the _filter function with a created_before filter."""
-        records = item_repo._filter(created_before=self.item.created_at.date() - timedelta(days=1))
+        search = ItemSearchSchema(created_before=self.item.created_at.date() - timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_updated_on(self) -> None:
         """Test the _filter function with a updated_on filter."""
-        records = item_repo._filter(updated_on=self.item.updated_at.date())
+        search = ItemSearchSchema(updated_on=self.item.updated_at.date())
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_updated_on_none(self) -> None:
         """Test the _filter function with a updated_on filter."""
-        records = item_repo._filter(updated_on=date(2020, 1, 1))
+        search = ItemSearchSchema(updated_on=date(2020, 1, 1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_updated_after(self) -> None:
         """Test the _filter function with a updated_after filter."""
-        records = item_repo._filter(updated_after=self.item.updated_at.date() - timedelta(days=1))
+        search = ItemSearchSchema(updated_after=self.item.updated_at.date() - timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_updated_after_none(self) -> None:
         """Test the _filter function with a updated_after filter."""
-        records = item_repo._filter(updated_after=self.item.updated_at.date() + timedelta(days=1))
+        search = ItemSearchSchema(updated_after=self.item.updated_at.date() + timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
 
     def test_filter_updated_before(self) -> None:
         """Test the _filter function with a updated_before filter."""
-        records = item_repo._filter(updated_before=self.item.updated_at.date() + timedelta(days=1))
+        search = ItemSearchSchema(updated_before=self.item.updated_at.date() + timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 2)
 
     def test_filter_updated_before_none(self) -> None:
         """Test the _filter function with a updated_before filter."""
-        records = item_repo._filter(updated_before=self.item.updated_at.date() - timedelta(days=1))
+        search = ItemSearchSchema(updated_before=self.item.updated_at.date() - timedelta(days=1))
+        records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)
@@ -308,6 +333,39 @@ class TestFilterItems(TestCase):
         )
         test_user.save()
         records = item_repo._filter(user=test_user)
+        items = [record for record in records]
+        self.assertIsInstance(items, list)
+        self.assertEqual(len(items), 0)
+
+    def test_filter_item_ids(self) -> None:
+        """Test the _filter function with ids filter."""
+        search = ItemSearchSchema(ids=[self.item.id])
+        records = item_repo._filter(search=search)
+        items = [record for record in records]
+        self.assertIsInstance(items, list)
+        self.assertEqual(len(items), 1)
+
+        item = items[0]
+        self.assertEqual(item.name, self.item.name)
+
+    def test_filter_item_stores(self) -> None:
+        """Test the filter with stores."""
+        records = item_repo._filter(stores=[self.store])
+        items = [record for record in records]
+        self.assertIsInstance(items, list)
+        self.assertEqual(len(items), 2)
+
+    def test_filter_item_stores_with_no_items(self) -> None:
+        """Test the filter with a store that has no items."""
+        self.store = Store.objects.create(
+            name="No Items Test Store",
+            store_type=3,
+            description="",
+            user=self.user,
+        )
+        self.store.save()
+
+        records = item_repo._filter(stores=[self.store])
         items = [record for record in records]
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 0)

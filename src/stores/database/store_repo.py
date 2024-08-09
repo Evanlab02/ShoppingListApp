@@ -12,6 +12,9 @@ from django.db.models import Case, Count, F, IntegerField, When
 from stores.models import ShoppingStore as Store
 from stores.schemas.output import StorePaginationSchema, StoreSchema
 
+log = logging.getLogger(__name__)
+log.info("Store repository loading...")
+
 
 @sync_to_async
 def _filter(
@@ -26,6 +29,7 @@ def _filter(
     updated_before: date | None = None,
     updated_after: date | None = None,
     user: User | AnonymousUser | AbstractBaseUser | None = None,
+    ids: list[int] | None = None,
 ) -> StorePaginationSchema:
     """
     Filter stores.
@@ -42,12 +46,15 @@ def _filter(
         updated_before (date | None): The date the store was updated before.
         updated_after (date | None): The date the store was updated after.
         user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+        ids (list[int] | None): The ids to filter from.
 
     Returns:
         StorePaginationSchema: Store pagination object.
     """
     stores = Store.objects.all()
 
+    if ids:
+        stores = stores.filter(id__in=ids)
     if name:
         stores = stores.filter(name__icontains=name)
     if store_types:
@@ -140,7 +147,6 @@ async def get_stores(
     Returns:
         StorePaginationSchema: Store pagination object.
     """
-    logging.info("Retrieving stores...")
     return await _filter(page_number, stores_per_page, user=user)
 
 
@@ -156,6 +162,7 @@ async def filter_stores(
     updated_before: date | None = None,
     updated_after: date | None = None,
     user: User | AnonymousUser | AbstractBaseUser | None = None,
+    ids: list[int] | None = None,
 ) -> StorePaginationSchema:
     """
     Filter stores.
@@ -172,6 +179,7 @@ async def filter_stores(
         updated_before (date | None): The date the store was updated before.
         updated_after (date | None): The date the store was updated after.
         user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+        ids (list[int] | None): The store ids to filter from.
 
     Returns:
         StorePaginationSchema: Store pagination object.
@@ -188,6 +196,7 @@ async def filter_stores(
         updated_before,
         updated_after,
         user,
+        ids=ids,
     )
 
 
@@ -316,3 +325,6 @@ async def does_name_exist(name: str) -> bool:
         bool: True if the store name exists, False otherwise.
     """
     return await Store.objects.filter(name=name).aexists()
+
+
+log.info("Store repository loaded.")

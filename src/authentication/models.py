@@ -1,5 +1,6 @@
 """Contains the models for the authentication app."""
 
+import logging
 from uuid import uuid4
 
 from django.contrib.auth.hashers import make_password
@@ -7,6 +8,9 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.db.models import CASCADE, BooleanField, CharField, ForeignKey, Model
 
 from authentication.errors.api_exceptions import ApiClientAlreadyRegistered
+
+log = logging.getLogger(__name__)
+log.info("Auth app models loading...")
 
 
 class ApiClient(Model):
@@ -57,3 +61,6 @@ class ApiClient(Model):
         client = await cls.objects.aget(user=user)
         client.is_active = False
         await client.asave()
+
+
+log.info("Auth app models loaded.")

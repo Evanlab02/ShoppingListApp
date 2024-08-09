@@ -1,5 +1,10 @@
 """Contains api exceptions for the authentication app."""
 
+import logging
+
+log = logging.getLogger(__name__)
+log.info("Loading auth API exceptions...")
+
 
 class UserAlreadyLoggedIn(Exception):
     """Exception raised when a user is already logged in."""
@@ -63,3 +68,6 @@ class ApiClientAlreadyRegistered(Exception):
     def __init__(self) -> None:
         """Exception raised when a user has already registered an api client."""
         super().__init__("Api Client is already registered.")
+
+
+log.info("Loaded auth API exceptions.")

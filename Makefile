@@ -24,3 +24,6 @@ requirements:
 
 clean:
 	@rm -rf site/
+
+exec:
+	docker exec -it shopping-django-app bash
