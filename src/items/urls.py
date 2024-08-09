@@ -1,8 +1,13 @@
 """Contains the URL patterns for the items app."""
 
+import logging
+
 from django.urls import path
 
 from . import views
+
+log = logging.getLogger(__name__)
+log.info("Items URLs loading...")
 
 urlpatterns = [
     path(views.CREATE_PAGE, views.create_page, name="item_create_page"),
@@ -19,3 +24,5 @@ urlpatterns = [
     path(views.DELETE_PAGE, views.delete_page, name="item_delete_page"),
     path(views.DELETE_ACTION, views.delete_action, name="item_delete_action"),
 ]
+
+log.info("Items URLs loaded.")

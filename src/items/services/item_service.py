@@ -7,11 +7,15 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from items.database import item_repo
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.models import ShoppingItem as Item
+from items.schemas.input import ItemSearchSchema
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.database import store_repo
 from stores.errors.api_exceptions import StoreDoesNotExist
 from stores.models import ShoppingStore as Store
+
+log = logging.getLogger(__name__)
+log.info("Item Service Loading...")
 
 
 async def create_item(
@@ -218,3 +222,66 @@ async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUse
     except Item.DoesNotExist:
         logging.warning(f"Item with ID: {item_id} does not exist for user: {user}. (For deletion)")
         raise ItemDoesNotExist(item_id=item_id)
+
+
+async def search_items(
+    page: int = 1,
+    limit: int = 10,
+    user: User | AbstractBaseUser | AnonymousUser | None = None,
+    name: str | None = None,
+    store_id: int | None = None,
+    search: ItemSearchSchema | None = None,
+) -> ItemPaginationSchema:
+    """
+    Search items based on the provided filters.
+
+    Args:
+        page (int): The page number.
+        limit (int): The number of items per page.
+        user (User): The user that owns the items.
+        store_id (int): The store to filter off.
+        store_ids (int): Stores to filter off.
+        ids (list[int]): The list of ids to filter off.
+        created_on (date): The date the item was created.
+        created_before (date): Items created before this date.
+        created_after (date): Items created after this date.
+        updated_on (date): The items updated on this date.
+        updated_before (date): The items updated before this date.
+        updated_after (date): The items updated after this date.
+        description (str): The description to filter for.
+        price (float): Price to filter by.
+        price_is_lt (float): Price is smaller than.
+        price_is_gt (float): The price is greater than.
+
+    Returns:
+        ItemPaginationSchema: Returns the item pagination schema.
+    """
+    stores = None
+    if search and search.stores:
+        try:
+            stores = [await store_repo.get_store(store_id) for store_id in search.stores]
+        except Store.DoesNotExist:
+            log.warning("Could not find selected stores.")
+            raise StoreDoesNotExist(store_id=0)
+
+    store = None
+    if store_id:
+        try:
+            store = await store_repo.get_store(store_id)
+        except Store.DoesNotExist:
+            log.warning("Could not find selected store.")
+            raise StoreDoesNotExist(store_id=store_id)
+
+    result = await item_repo.get_items(
+        name=name,
+        items_per_page=limit,
+        page=page,
+        store=store,
+        user=user,
+        search=search,
+        stores=stores,
+    )
+    return result
+
+
+log.info("Item Service Loaded.")
