@@ -7,6 +7,7 @@ dev:
 	@docker compose -f docker/docker-compose.yaml watch
 
 build:
+	@docker compose -f docker/docker-compose.yaml pull
 	@docker compose -f docker/docker-compose.yaml build
 
 up:
