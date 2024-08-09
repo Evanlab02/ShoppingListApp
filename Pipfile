@@ -33,4 +33,4 @@ mkdocs = "==1.6.0"
 pytest-sugar = "==1.0.0"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"

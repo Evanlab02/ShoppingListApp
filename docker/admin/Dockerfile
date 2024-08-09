@@ -1,5 +1,6 @@
-FROM python:3.11.6-slim
+FROM python:3.12.4-alpine3.20
 
+RUN apk add --no-cache bash
 COPY src/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
