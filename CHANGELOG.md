@@ -1,5 +1,66 @@
 # Changelog
 
+## [0.15.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.6...v0.15.0) (2024-08-09)
+
+
+### Features
+
+* **Dashboard-App:** Setup initial dashboard app with mock API endpoints ([1b8adbc](https://github.com/Evanlab02/ShoppingListApp-BE/commit/1b8adbc3683762bc991c29078cf61a9a76957eff))
+* **Dependencies:** Updated several dev dependencies ([3b0b12e](https://github.com/Evanlab02/ShoppingListApp-BE/commit/3b0b12ea6fdbc94c56b06b8f70f3d01081e046e3))
+* **Items-App:** Added item search API ([ddc556d](https://github.com/Evanlab02/ShoppingListApp-BE/commit/ddc556de127e1574a8bd1b916dd5876f47f3b5eb))
+* **Items-App:** Can now access item delete page ([7a28a3a](https://github.com/Evanlab02/ShoppingListApp-BE/commit/7a28a3a3a758613d7567a07cfc585986699a9c66))
+* **Items-app:** Can now access item update endpoint ([cd5a100](https://github.com/Evanlab02/ShoppingListApp-BE/commit/cd5a100ddbd2d938435da49ddb6f0eec166337ab))
+* **Items-app:** Can now access item update page ([b12ada3](https://github.com/Evanlab02/ShoppingListApp-BE/commit/b12ada3aa96f6dc2e11fa3015549113186989c16))
+* **Items-app:** Can now delete items via the API ([779ecd1](https://github.com/Evanlab02/ShoppingListApp-BE/commit/779ecd15062384322ef41cb1e54ae5f569e53bd6))
+* **Pytest:** Use pytest-sugar for pretty pytest runs ([c296f6a](https://github.com/Evanlab02/ShoppingListApp-BE/commit/c296f6a5a1380c59cb70b860c09c1f2430306ed8))
+* **Python:** Migrated to python 3.12 ([686ae11](https://github.com/Evanlab02/ShoppingListApp-BE/commit/686ae11f51fb536df2c46d304f1980e1775e6353))
+* **Stores-App:** Can now view store items on store detail page ([d7bffe9](https://github.com/Evanlab02/ShoppingListApp-BE/commit/d7bffe93a6f26cf2dcf7bb805e3983ba7bc9e7e7))
+* **Stores-App:** Created search API ([31e117c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/31e117cf18a1b356108a2a06186f102b93afbff8))
+
+
+### Bug Fixes
+
+* **Auth-App:** E2E Logging ([3165c3d](https://github.com/Evanlab02/ShoppingListApp-BE/commit/3165c3de1770bfb2ae533fca57351a64186ff447))
+* **Auth:** Fixed issue where API clients that were disabled would still be able to access the API ([7079d7a](https://github.com/Evanlab02/ShoppingListApp-BE/commit/7079d7ab01015f179d097c06db9d7efa60c2e6c6))
+* Bump black to 24.4.2 ([6bc4c26](https://github.com/Evanlab02/ShoppingListApp-BE/commit/6bc4c26ac9f1b220a59498030d1eb528008e9e1c))
+* Bump certifi to 2024.7.4 ([7dceea6](https://github.com/Evanlab02/ShoppingListApp-BE/commit/7dceea611962388262888ea51ddcdcd3efaa21c1))
+* Bump coverage to 7.5.4 ([f4e4435](https://github.com/Evanlab02/ShoppingListApp-BE/commit/f4e4435aa8dc2f0c0b2fe4fbe343d75c477e7660))
+* Bump django to 5.0.7 ([f9f94fa](https://github.com/Evanlab02/ShoppingListApp-BE/commit/f9f94fac39f3c615f4b1ae40c27720e7ba64a359))
+* Bump django-ninja to 1.2.1 ([57ba7a8](https://github.com/Evanlab02/ShoppingListApp-BE/commit/57ba7a87722ce422c3d8d9abe25e454a0ee45b72))
+* Bump django-stubs to 5.0.2 ([8fde871](https://github.com/Evanlab02/ShoppingListApp-BE/commit/8fde8710d91962f2f45648efb0015dd382665079))
+* Bump django-stubs-ext to 5.0.2 ([7d00c77](https://github.com/Evanlab02/ShoppingListApp-BE/commit/7d00c77b1ab71621db7eaaec8d9ac6895328ad85))
+* Bump flake8 to 7.1.0 ([30f5eac](https://github.com/Evanlab02/ShoppingListApp-BE/commit/30f5eac23ce8d7a3152d00b5c000f6047cbdd342))
+* Bump mypy to 1.10.1 ([e463836](https://github.com/Evanlab02/ShoppingListApp-BE/commit/e4638365c3fa2e971212807cc0f94eac3827f5b8))
+* Bump packaging to 24.1 ([9c4c584](https://github.com/Evanlab02/ShoppingListApp-BE/commit/9c4c5846627afab3be2d2568be6c142b6929b33d))
+* Bump psycopg and psycopg binary to 3.2.1 ([b1c629d](https://github.com/Evanlab02/ShoppingListApp-BE/commit/b1c629d668c25f50ac3d2bdf055592f471916622))
+* Bump pycodestyle to 2.12.0 ([554b371](https://github.com/Evanlab02/ShoppingListApp-BE/commit/554b37120279d4bb1e7f93b9a2a7e237e6e98951))
+* Bump pydantic to 2.8.2 ([2847feb](https://github.com/Evanlab02/ShoppingListApp-BE/commit/2847feb513eea79c91ce2ed49c2ce012c7d7bcf0))
+* Bump pydantic-core to 2.20.1 ([02c8328](https://github.com/Evanlab02/ShoppingListApp-BE/commit/02c8328ed5585b5372511ebdbc7bcf1f8c287392))
+* Bump pytest to 8.2.2 ([b3915b4](https://github.com/Evanlab02/ShoppingListApp-BE/commit/b3915b4d7cc8ad0bc25fab839ff438d17ba71b55))
+* Bump requests to 2.32.3 ([40e525a](https://github.com/Evanlab02/ShoppingListApp-BE/commit/40e525a858350eeefa298e20129f0db60d40546e))
+* Bump selenium to 4.22.0 ([1a4c4bc](https://github.com/Evanlab02/ShoppingListApp-BE/commit/1a4c4bcf8cf8b8f0c787a99eb4e34b9d40434e64))
+* Bump trio to 0.26.0 ([2215d9e](https://github.com/Evanlab02/ShoppingListApp-BE/commit/2215d9e20853bb388016db1f4c1c33b095960b8a))
+* Bump types-requests to 2.32.0.20240622 ([f5f38e9](https://github.com/Evanlab02/ShoppingListApp-BE/commit/f5f38e9b6e9199758c40e7996f23d9d42832973c))
+* Bump typing-extensions to 4.12.2 ([2e66d1c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/2e66d1cadbe6777392b6d877178d12e4bffd7d69))
+* Bump urllib3[socks] to 2.2.2 ([0573966](https://github.com/Evanlab02/ShoppingListApp-BE/commit/0573966542f1cd020c0ced31de2afec1da8a3dbc))
+* Bump watchdog to 4.0.1 ([0bee177](https://github.com/Evanlab02/ShoppingListApp-BE/commit/0bee177fcdd8d5a2834706db3b601212785d4084))
+* **Dependencies:** Requests updated to '2.32.1' along other dependencies ([970396c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/970396c2cb13a8be71c9e90b00651e37a008f9ab))
+* **Django:** Bump to django from 5.0.7 to 5.0.8 ([1895da2](https://github.com/Evanlab02/ShoppingListApp-BE/commit/1895da2fa49fd6adca5e2926a4a502a5aaec7325))
+* **E2E Tests:** Bump webdriver manager to 4.0.2 to fix E2E tests ([6f249e6](https://github.com/Evanlab02/ShoppingListApp-BE/commit/6f249e6049d60d7f0038c6664ee6fd6baf7140ae))
+* **Items-App:** Remove deprecated warn log and replace it with a warning log ([b87d562](https://github.com/Evanlab02/ShoppingListApp-BE/commit/b87d562ca5a417d271870b9cda3e82b063c72b9d))
+* **Jinja:** Updated jinja2 from 3.1.3 to 3.1.4 ([2bea831](https://github.com/Evanlab02/ShoppingListApp-BE/commit/2bea831e4a0ca6e340805467730ca708de343508))
+* Pinned flake8 docstrings package correctly ([36325e5](https://github.com/Evanlab02/ShoppingListApp-BE/commit/36325e5e5e3093adce8aa03eb3ba8fb5693329af))
+* **Release-Please:** Split workflow into more jobs ([69b14a6](https://github.com/Evanlab02/ShoppingListApp-BE/commit/69b14a6cd9f39d0dcfe04615e2d5e94e08d090d4))
+* **Requests:** Updated requests to '2.32.2' due to previous versions that were being used being yanked ([13c5cec](https://github.com/Evanlab02/ShoppingListApp-BE/commit/13c5cece7b2cd7d721978f8ec7c80f741a7e0098))
+* **Requests:** Updated requests to '2.32.2' due to previous versions that were being used being yanked ([264d03f](https://github.com/Evanlab02/ShoppingListApp-BE/commit/264d03f53d0b3a439dafe1f540925e0f138907f3))
+* Selenium 4.22.0 added websocket client 1.8.0 to requirements ([08f94ab](https://github.com/Evanlab02/ShoppingListApp-BE/commit/08f94ab4b80bc7db178da356772bf805f1aa2c9c))
+* **Stores-App:** E2E Logging ([6b2f9fa](https://github.com/Evanlab02/ShoppingListApp-BE/commit/6b2f9fa0c4862338d3a6f4a622cae6001211121b))
+* **Stores-App:** Fixed issue where types were not being checked on the create action for stores view before being passed into a pydantic object ([7e8331d](https://github.com/Evanlab02/ShoppingListApp-BE/commit/7e8331d07f0990914cf1cbcbca8780f6412e7afa))
+* **Stores-app:** Updated update endpoint to 'PATCH' instead of 'PUT' ([fca683e](https://github.com/Evanlab02/ShoppingListApp-BE/commit/fca683e96f2dbd9f565c9be004eb21508d108d55))
+* **Uvicorn:** Bump uvicorn to 0.30.1 and switch over to new uvicorn worker module for gunicorn ([7c66e81](https://github.com/Evanlab02/ShoppingListApp-BE/commit/7c66e81cc01ce7c85fe8448b8a279b982f61c24c))
+* **Workflows:** Cache dependencies on workflow runs ([97903a0](https://github.com/Evanlab02/ShoppingListApp-BE/commit/97903a0fac221654e3b43f42c773e141f04130bd))
+* **Workflows:** Updated workflows to use python 3.12 ([9d0026f](https://github.com/Evanlab02/ShoppingListApp-BE/commit/9d0026f15cf9623a523e7434483c050aacf8e11f))
+
 ## [0.14.6](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.5...v0.14.6) (2024-05-01)
 
 
