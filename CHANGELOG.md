@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.15.1...v0.15.2) (2024-08-09)
+
+
+### Bug Fixes
+
+* **Settings:** Updated shopping app to only contain one settings file to simplify ([5385f8b](https://github.com/Evanlab02/ShoppingListApp-BE/commit/5385f8bf96cc7d4526f9c66f7682e9011fdc4a71))
+
 ## [0.15.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.15.0...v0.15.1) (2024-08-09)
 
 
