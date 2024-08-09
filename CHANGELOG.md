@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.15.0...v0.15.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* **Workflows:** Fix static files release by adding github token to env ([6cf8dca](https://github.com/Evanlab02/ShoppingListApp-BE/commit/6cf8dcad714edc25813ba5e6a1b1461bee5900c1))
+
 ## [0.15.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.14.6...v0.15.0) (2024-08-09)
 
 
