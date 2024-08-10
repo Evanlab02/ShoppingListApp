@@ -128,8 +128,8 @@ jobs:
         run: |
           docker build -f docker/site/Dockerfile -t shoppinglistapp-site:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} .
           docker build -f docker/site/Dockerfile -t shoppinglistapp-site:latest .
-          - name: Log in to registry
-          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       - name: Push image
         run: |
           docker tag shoppinglistapp-site:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} ghcr.io/evanlab02/shoppingappsite:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}
