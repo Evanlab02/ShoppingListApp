@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.15.2...v0.16.0) (2024-08-10)
+
+
+### Features
+
+* **Monorepo:** Back to monorepo structure ([c8ed53c](https://github.com/Evanlab02/ShoppingListApp-BE/commit/c8ed53ccb61a1a2f251cb68222b24fe1a6081503))
+
+
+### Bug Fixes
+
+* **Workflows:** Fix node workflows ([18abda4](https://github.com/Evanlab02/ShoppingListApp-BE/commit/18abda4e354569ceacf1edb34789d30baab20a4d))
+
 ## [0.15.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.15.1...v0.15.2) (2024-08-09)
 
 
