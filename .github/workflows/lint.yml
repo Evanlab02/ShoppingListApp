@@ -9,14 +9,14 @@ on:
 permissions:
   contents: read
 
-defaults:
-  run:
-    working-directory: src
+
 
 jobs:
-  lint-and-docs-styling:
+  be-lint:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.12
@@ -32,3 +32,22 @@ jobs:
           black . --check
           isort . --check-only --profile black
           flake8 . --max-line-length=100
+          mypy . --strict
+
+  fe-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.20.4"
+          cache: 'npm'
+      - name: Setup
+        run: |
+          npm ci
+      - name: Lint and Docs Styling
+        run: |
+          npm run lint

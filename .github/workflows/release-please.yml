@@ -17,13 +17,11 @@ jobs:
       patch: ${{ steps.release.outputs.patch }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: google-github-actions/release-please-action@v4
         id: release
         with:
           release-type: simple
-          package-name: ShoppingListApp-Backend
           token: ${{ secrets.GITHUB_TOKEN }}
-          default-branch: trunk
 
   release-backend:
     runs-on: ubuntu-latest
@@ -78,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
 
-  release-coverage:
+  release-site:
     runs-on: ubuntu-latest
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
@@ -126,3 +124,15 @@ jobs:
           gh release upload ${{ needs.release-please.outputs.tag_name }} coverage.zip
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
+      - name: Build docker image
+        run: |
+          docker build -f docker/site/Dockerfile -t shoppinglistapp-site:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} .
+          docker build -f docker/site/Dockerfile -t shoppinglistapp-site:latest .
+          - name: Log in to registry
+          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Push image
+        run: |
+          docker tag shoppinglistapp-site:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} ghcr.io/evanlab02/shoppingappsite:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}
+          docker push ghcr.io/evanlab02/shoppingappsite:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}
+          docker tag shoppinglistapp-site:latest ghcr.io/evanlab02/shoppingappsite:latest
+          docker push ghcr.io/evanlab02/shoppingappsite:latest

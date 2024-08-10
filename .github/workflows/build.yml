@@ -9,14 +9,14 @@ on:
 permissions:
   contents: read
 
-defaults:
-  run:
-    working-directory: src
+
 
 jobs:
-  build:
+  static-files-build:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - name: Load .env file
@@ -38,8 +38,30 @@ jobs:
       - name: Create/Build Static Files
         run: |
           python manage.py collectstatic --no-input
+
+  assets-files-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.20.4"
+          cache: 'npm'
+      - name: Setup
+        run: |
+          npm ci
+      - name: Create/Build FE assets
+        run: |
+          npm run build
+
+  docker-images-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Build Docker Images
-        working-directory: .
         run: |
           docker build -f docker/admin/Dockerfile -t shopping-app .
           docker build -f docker/server/Dockerfile -t shopping-app-admin .
