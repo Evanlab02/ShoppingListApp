@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.16.0...v0.16.1) (2024-08-10)
+
+
+### Bug Fixes
+
+* **Workflows:** Fix release please issues ([a589f88](https://github.com/Evanlab02/ShoppingListApp-BE/commit/a589f88f12dfbd39ac1557e85c716b85ce7fea9b))
+
 ## [0.16.0](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.15.2...v0.16.0) (2024-08-10)
 
 
