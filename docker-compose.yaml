@@ -1,38 +1,38 @@
 services:
-  dev-shopping-app-pgadmin:
+  shopping-app-pgadmin:
     container_name: shopping-pgadmin
     image: dpage/pgadmin4:8.5
     env_file:
-      - .env.dev
+      - .env
     environment:
       SCRIPT_NAME: /pgadmin
     networks:
-      - dev-postgres-django-network
+      - shopping-app-network
     restart: always
     volumes:
-      - dev-pgadmin-data:/var/lib/pgadmin
+      - pgadmin-data:/var/lib/pgadmin
     deploy:
       resources:
         limits:
           cpus: '4.0'
           memory: 4096M
 
-  dev-shopping-app-db:
+  shopping-app-db:
     container_name: shopping-db
     image: postgres:16.2-alpine3.18
     environment:
       POSTGRES_USER: postgres
     env_file:
-      - .env.dev
+      - .env
     volumes:
-      - dev-postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
-      - dev-postgres-django-network
+      - shopping-app-network
     restart: always
     deploy:
       resources:
@@ -40,91 +40,58 @@ services:
           cpus: '4.0'
           memory: 4096M
 
-  dev-shopping-django-administration:
+  shopping-django-administration:
     container_name: shopping-django-admin
-    build:
-      context: .
-      dockerfile: docker/admin/Dockerfile
+    image: ghcr.io/evanlab02/shoppingappadmin:0.16.2
     env_file:
-      - .env.dev
+      - .env
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
     command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
     depends_on:
-      dev-shopping-app-db:
+      shopping-app-db:
         condition: service_healthy
     networks:
-      - dev-postgres-django-network
+      - shopping-app-network
     deploy:
       resources:
         limits:
           cpus: '4.0'
           memory: 4096M
 
-  dev-shopping-django-app:
+  shopping-django-app:
     container_name: shopping-django-app
-    build:
-      context: .
-      dockerfile: docker/server/Dockerfile
+    image: ghcr.io/evanlab02/shoppingappbe:0.16.2
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
     env_file:
-      - .env.dev
+      - .env
     command: "gunicorn -b 0.0.0.0:80 -w 4 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
     depends_on:
-      dev-shopping-app-db:
+      shopping-app-db:
         condition: service_healthy
     networks:
-      - dev-postgres-django-network
+      - shopping-app-network
     restart: always
-    develop:
-      watch:
-        - action: sync+restart
-          path: ../src/authentication
-          target: /src/authentication
-        - action: sync+restart
-          path: ../src/stores
-          target: /src/stores
-        - action: sync+restart
-          path: ../src/items
-          target: /src/items
-        - action: sync+restart
-          path: ../src/shoppingapp
-          target: /src/shoppingapp
-        - action: rebuild
-          path: ../src/requirements.txt
     deploy:
       resources:
         limits:
           cpus: '4.0'
           memory: 4096M
 
-  dev-shopping-django-site:
+  shopping-django-site:
     container_name: shopping-django-site
-    build:
-      context: .
-      dockerfile: docker/site/Dockerfile
+    image: ghcr.io/evanlab02/shoppingappsite:0.16.2
     expose:
       - "80"
     ports:
-      - "8000:80"
+      - "80:80"
     depends_on:
-      dev-shopping-app-db:
+      shopping-app-db:
         condition: service_healthy
     networks:
-      - dev-postgres-django-network
+      - shopping-app-network
     restart: always
-    develop:
-      watch:
-        - action: sync+restart
-          path: ../src/Caddyfile
-          target: /etc/caddy/Caddyfile
-        - action: sync+restart
-          path: ../src/static
-          target: /var/www/html/static/
-        - action: sync+restart
-          path: ../src/htmlcov
-          target: /var/www/html/htmlcov/
     deploy:
       resources:
         limits:
@@ -132,11 +99,11 @@ services:
           memory: 4096M
 
 networks:
-  dev-postgres-django-network:
+  shopping-app-network:
     driver: bridge
 
 volumes:
-  dev-postgres-data:
+  postgres-data:
     external: false
-  dev-pgadmin-data:
+  pgadmin-data:
     external: false
