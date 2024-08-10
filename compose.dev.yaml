@@ -3,7 +3,7 @@ services:
     container_name: shopping-pgadmin
     image: dpage/pgadmin4:8.5
     env_file:
-      - ../.env
+      - .env
     environment:
       SCRIPT_NAME: /pgadmin
     networks:
@@ -23,7 +23,7 @@ services:
     environment:
       POSTGRES_USER: postgres
     env_file:
-      - ../.env
+      - .env
     volumes:
       - dev-postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -43,10 +43,10 @@ services:
   dev-shopping-django-administration:
     container_name: shopping-django-admin
     build:
-      context: ../
+      context: .
       dockerfile: docker/admin/Dockerfile
     env_file:
-      - ../.env
+      - .env
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
     command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
@@ -64,12 +64,12 @@ services:
   dev-shopping-django-app:
     container_name: shopping-django-app
     build:
-      context: ../
+      context: .
       dockerfile: docker/server/Dockerfile
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
     env_file:
-      - ../.env
+      - .env
     command: "gunicorn -b 0.0.0.0:80 -w 4 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
     depends_on:
       dev-shopping-app-db:
@@ -102,14 +102,12 @@ services:
   dev-shopping-django-site:
     container_name: shopping-django-site
     build:
-      context: ../
+      context: .
       dockerfile: docker/site/Dockerfile
     expose:
       - "80"
-      - "9999"
     ports:
       - "8000:80"
-      - "9999:9999"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy

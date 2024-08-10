@@ -1,4 +1,4 @@
-.PHONY: static clean format lint test coverage unit-test api-test e2e-test
+.PHONY: static clean format lint test coverage unit-test api-test e2e-test requirements
 
 static:
 	@rm -rf static/
@@ -48,3 +48,7 @@ api-test:
 
 e2e-test:
 	@pytest **/tests/E2E/ -n auto
+
+requirements:
+	pipenv requirements > requirements.txt
+	pipenv requirements --dev > requirements-dev.txt

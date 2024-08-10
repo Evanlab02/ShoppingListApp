@@ -1,0 +1,29 @@
+:80 {
+  	handle_path /* {
+    	reverse_proxy shopping-django-app:80
+	}
+
+	handle_path /apis/shopping/* {
+    	reverse_proxy shopping-django-app:80
+	}
+
+	handle_path /static/* {
+		root * /var/www/html/static/
+		file_server
+	}
+
+	handle_path /shopping/dashboard/* {
+    	root * /var/www/html/site/
+    	file_server
+	}
+
+	handle_path /coverage/backend/* {
+    	root * /var/www/html/htmlcov/
+    	file_server
+	}
+
+	handle_path /pgadmin* {
+    	rewrite * /pgadmin{uri}
+    	reverse_proxy shopping-app-pgadmin:80
+	}
+}

@@ -1,1 +1,1 @@
-# Shopping List App BE
+# Shopping List App

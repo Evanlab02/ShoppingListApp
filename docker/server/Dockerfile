@@ -1,18 +1,18 @@
 FROM python:3.12.4-alpine3.20
 
 RUN apk add --no-cache bash
-COPY src/requirements.txt requirements.txt
+COPY backend/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 COPY version.txt version.txt
 
-WORKDIR /src
+WORKDIR /backend
 
-COPY src/authentication /src/authentication
-COPY src/stores /src/stores
-COPY src/items /src/items
-COPY src/shoppingapp /src/shoppingapp
-COPY src/dashboard /src/dashboard
+COPY backend/authentication /backend/authentication
+COPY backend/stores /backend/stores
+COPY backend/items /backend/items
+COPY backend/shoppingapp /backend/shoppingapp
+COPY backend/dashboard /backend/dashboard
 
 EXPOSE 80
 
