@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.16.1...v0.16.2) (2024-08-10)
+
+
+### Bug Fixes
+
+* **Workflows:** Fix indent issue in release-site workflows ([4c3d47e](https://github.com/Evanlab02/ShoppingListApp-BE/commit/4c3d47ec4026bf65799c3fa706f0c40840a4d385))
+
 ## [0.16.1](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.16.0...v0.16.1) (2024-08-10)
 
 
