@@ -76,6 +76,35 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
 
+  release-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18.20.4"
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Setup
+        run: |
+          npm ci
+      - name: Lint and Docs Styling
+        run: |
+          npm run build
+      - name: Zip frontend
+        run: |
+          zip -r frontend.zip dist
+      - name: Upload frontend
+        run: |
+          gh release upload ${{ needs.release-please.outputs.tag_name }} frontend.zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+
   release-site:
     runs-on: ubuntu-latest
     needs: release-please
