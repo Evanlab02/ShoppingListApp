@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.16.3](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.2...v0.16.3) (2024-09-20)
+
+
+### Features
+
+* Added docker-compose reference file ([09726e7](https://github.com/Evanlab02/ShoppingListApp/commit/09726e7a23c58e3c3a50e9ca16499b4cbf3a3790))
+
+
+### Bug Fixes
+
+* **Dependencies:** Updated dependencies with non-breaking changes ([c2e039a](https://github.com/Evanlab02/ShoppingListApp/commit/c2e039a080ff79321b2792ca03232e4ab6d48480))
+* **Dependencies:** Updated MUI to 6.1.1 ([3afe0c6](https://github.com/Evanlab02/ShoppingListApp/commit/3afe0c6cb4cb05898bc27a33fa5d2e83af6fd259))
+* **Dependencies:** Updated vulnerable dependencies ([35b8ec3](https://github.com/Evanlab02/ShoppingListApp/commit/35b8ec3e12aa53d6805e54e72676e372b780ee74))
+* **eslint:** Updated eslint plugin dependencies ([7092f1d](https://github.com/Evanlab02/ShoppingListApp/commit/7092f1d12c0a05897199ce34d355cee835fc5177))
+* **Storybook:** Remove storybook from frontend ([8e61dd2](https://github.com/Evanlab02/ShoppingListApp/commit/8e61dd202df832451f9d5e87127168e4f4045e5e))
+* Upload dashboard static files to github release ([0172365](https://github.com/Evanlab02/ShoppingListApp/commit/017236528bd1f862e5559d4bbdbc46f4bb8d5d9d))
+* **Vite:** Upgraded vite to v5 ([8d2a3f2](https://github.com/Evanlab02/ShoppingListApp/commit/8d2a3f201566a0b463b64d203cf27f3585ef7654))
+
+
+### Miscellaneous Chores
+
+* release 0.16.3 ([6f50699](https://github.com/Evanlab02/ShoppingListApp/commit/6f5069910c090faf25a49df90f220b0256f8236a))
+
 ## [0.16.2](https://github.com/Evanlab02/ShoppingListApp-BE/compare/v0.16.1...v0.16.2) (2024-08-10)
 
 
