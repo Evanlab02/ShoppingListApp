@@ -1,4 +1,4 @@
-FROM node:18.20.4-alpine3.20 AS build
+FROM node:20.17.0-alpine3.20 AS build
 
 COPY frontend/ /app/
 WORKDIR /app
