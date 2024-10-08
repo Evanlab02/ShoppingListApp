@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "==5.0.8"
+django = "==5.0.9"
 psycopg = {extras = ["binary"], version = "==3.2.1"}
 django-ninja = "==1.2.1"
 uvicorn = "==0.30.1"
