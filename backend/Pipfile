@@ -12,7 +12,7 @@ gunicorn = "==23.0.0"
 uvicorn-worker = "==0.2.0"
 
 [dev-packages]
-black = "==24.4.2"
+black = "==24.10.0"
 mypy = "==1.10.1"
 flake8 = "==7.1.0"
 pydocstyle = "==6.3.0"
