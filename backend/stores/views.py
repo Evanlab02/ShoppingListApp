@@ -68,7 +68,7 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = request.user
+    user = await request.auser()
     store_name = request.POST.get("store-input")
     description = request.POST.get("description-input")
     store_type = request.POST.get("store-type-input")
@@ -148,7 +148,9 @@ async def _get_overview_context(
     page = params.get("page", 1)
     limit = params.get("limit", 10)
 
-    user, page_title = (request.user, "Your Stores") if is_personalized else (None, "All Stores")
+    user, page_title = (
+        (await request.auser(), "Your Stores") if is_personalized else (None, "All Stores")
+    )
 
     pagination = await store_service.get_stores(limit=limit, page_number=page, user=user)
     aggregation = await store_service.aggregate(user=user)
@@ -245,7 +247,7 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
         HttpResponse: The response from the API.
     """
     formatted_store_type: str | int | None = None
-    user = request.user
+    user = await request.auser()
     store_name = request.POST.get("store-input")
     store_type = request.POST.get("store-type-input")
     store_description = request.POST.get("description-input")
@@ -326,7 +328,7 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
             status=500,
         )
 
-    user = request.user
+    user = await request.auser()
     await store_service.delete_store(store_id=formatted_store_id, user=user)
     return HttpResponseRedirect("/stores/me")
 

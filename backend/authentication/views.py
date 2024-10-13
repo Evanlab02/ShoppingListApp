@@ -6,12 +6,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from authentication.decorators import (
-    async_login_required,
-    async_redirect_if_logged_in,
-    login_required,
-    redirect_if_logged_in,
-)
+from authentication.decorators import async_login_required, async_redirect_if_logged_in
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
@@ -45,8 +40,8 @@ log.info("Auth Views loading...")
 
 
 @require_http_methods(["POST"])
-@redirect_if_logged_in
-def login_action(request: HttpRequest) -> HttpResponse:
+@async_redirect_if_logged_in
+async def login_action(request: HttpRequest) -> HttpResponse:
     """
     Handle the login action.
 
@@ -58,7 +53,7 @@ def login_action(request: HttpRequest) -> HttpResponse:
     """
     log.info("Retrieved request to login.")
     try:
-        login(request)
+        await login(request)
         return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
     except InvalidCredentials as error:
         log.warning(f"Error with login: {error}")
@@ -66,8 +61,8 @@ def login_action(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
-@redirect_if_logged_in
-def login_view(request: HttpRequest) -> HttpResponse:
+@async_redirect_if_logged_in
+async def login_view(request: HttpRequest) -> HttpResponse:
     """
     Handle the login view.
 
@@ -78,13 +73,13 @@ def login_view(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     log.info("Retrieved request to view login page.")
-    context = get_login_view_context(request)
+    context = await get_login_view_context(request)
     return render(request, "auth/index.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
-@login_required
-def logout_action(request: HttpRequest) -> HttpResponse:
+@async_login_required
+async def logout_action(request: HttpRequest) -> HttpResponse:
     """
     Handle the logout action.
 
@@ -95,13 +90,13 @@ def logout_action(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     log.info("Retrieved request to logout.")
-    logout(request)
+    await logout(request)
     return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
 
 
 @require_http_methods(["GET"])
-@login_required
-def logout_view(request: HttpRequest) -> HttpResponse:
+@async_login_required
+async def logout_view(request: HttpRequest) -> HttpResponse:
     """
     Render the logout view.
 
@@ -112,7 +107,7 @@ def logout_view(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     log.info("Retrieved request to view logout page.")
-    context = get_logout_view_context(request)
+    context = await get_logout_view_context(request)
     return render(request, "auth/logout.html", context.model_dump())
 
 
@@ -143,8 +138,8 @@ async def register_action(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
-@redirect_if_logged_in
-def register_view(request: HttpRequest) -> HttpResponse:
+@async_redirect_if_logged_in
+async def register_view(request: HttpRequest) -> HttpResponse:
     """
     Handle the register view.
 
@@ -155,13 +150,13 @@ def register_view(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     log.info("Retrieved request to view register page.")
-    context = get_register_page_context(request)
+    context = await get_register_page_context(request)
     return render(request, "auth/register.html", context.model_dump())
 
 
 @require_http_methods(["GET"])
-@login_required
-def confirm_token(request: HttpRequest) -> HttpResponse:
+@async_login_required
+async def confirm_token(request: HttpRequest) -> HttpResponse:
     """
     Handle the register view.
 
@@ -188,7 +183,7 @@ async def enable_api_client(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     log.info("Retrieved request to enable API client.")
-    user = request.user
+    user = await request.auser()
     context = await enable_client(user)
     return render(request, "auth/token.html", context.model_dump())
 
@@ -206,7 +201,7 @@ async def disable_api_client(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     log.info("Retrieved request to disable API client.")
-    user = request.user
+    user = await request.auser()
     context = await disable_client(user)
     return render(request, "auth/disable-token.html", context.model_dump())
 

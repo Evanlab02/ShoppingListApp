@@ -3,7 +3,6 @@
 import logging
 from os import getenv
 
-from asgiref.sync import sync_to_async
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
@@ -21,11 +20,6 @@ class ApiKey(APIKeyHeader):
 
     param_name = "X-API-Key"
 
-    @sync_to_async
-    def is_authenticated(self, request: HttpRequest) -> bool:
-        """Check if the user is authenticated."""
-        return is_user_authenticated(request.user)
-
     async def authenticate(
         self, request: HttpRequest, key: str | None
     ) -> ApiClient | AnonymousUser | None:
@@ -33,14 +27,15 @@ class ApiKey(APIKeyHeader):
         if getenv("TESTS_ENVIRONMENT", "False").lower() == "true":
             return AnonymousUser()
 
-        if not await self.is_authenticated(request):
+        user = await request.auser()
+        if not is_user_authenticated(user):
             return None
 
         if key is None:
             return None
 
         try:
-            client = await ApiClient.objects.aget(user=request.user, is_active=True)
+            client = await ApiClient.objects.aget(user=user, is_active=True)
             if check_password(key, client.client_secret):
                 return client
             return None

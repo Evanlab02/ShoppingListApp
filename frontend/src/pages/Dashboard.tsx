@@ -1,6 +1,6 @@
 import { useState, lazy, useEffect } from "react";
 
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 
 import DataRepo from "../api/dataRepository";
 import { BarChartProps } from "../components/BarChart/helpers/intefaces";
@@ -106,11 +106,11 @@ export default function Dashboard() {
     return (
         <>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
+            <Grid2 container spacing={2}>
+                <Grid2 size={{ xs: 12 }}>
                     <Navbar />
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
 
             <ButtonDialog
                 open={openItemsDialog}
@@ -129,8 +129,8 @@ export default function Dashboard() {
             />
 
             <div className="content">
-                <Grid container spacing={1}>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
+                <Grid2 container spacing={1}>
+                    <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 4 }}>
                         <Card
                             mainText={`${cardData.total ?? "Shopping list not found"}`}
                             subText="Total items on current shopping list"
@@ -139,8 +139,8 @@ export default function Dashboard() {
                             directLink="/items/me"
                             onClick={() => { setOpenItemsDialog(true) }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 4 }}>
                         <Card
                             mainText={`R${cardData.total_price ?? 0}`}
                             subText="Price of shopping list"
@@ -150,8 +150,8 @@ export default function Dashboard() {
                             directLink="/list/current"
                             onClick={() => { setOpenListDialog(true) }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={4}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 4 }}>
                         <MiniCard
                             backgroundColor="#3b5fe2"
                             iconBackgroundColor="#2f48a2"
@@ -169,19 +169,19 @@ export default function Dashboard() {
                             iconName="cash-stack"
                             directLink="/metrics"
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={8}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 8 }}>
                         <BarChart
                             labels={chartData.labels}
                             datasets={chartData.datasets}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={4}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 4 }}>
                         <DetailPanel
                             records={recentItems.records}
                         />
-                    </Grid>
-                </Grid>
+                    </Grid2>
+                </Grid2>
             </div>
         </>
     );

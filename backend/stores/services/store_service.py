@@ -2,6 +2,7 @@
 
 import logging
 from datetime import date
+from typing import Any
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
@@ -183,7 +184,7 @@ async def aggregate(
 async def get_stores(
     limit: int = 10,
     page_number: int = 1,
-    user: User | AnonymousUser | AbstractBaseUser | None = None,
+    user: Any | None = None,
 ) -> StorePaginationSchema:
     """
     Get the stores.
@@ -284,7 +285,7 @@ async def search_stores(
     page: int = 1,
     limit: int = 10,
     name: str | None = None,
-    user: User | AnonymousUser | AbstractBaseUser | None = None,
+    user: Any | None = None,
     ids: list[int] | None = None,
     store_types: list[int] | None = None,
     created_on: date | None = None,

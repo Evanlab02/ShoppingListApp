@@ -56,11 +56,12 @@ async def create_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    logging.info(f"{request.user.id} requested item create page.")
+    user = await request.auser()
+    logging.info(f"{user.id} requested item create page.")
     error = request.GET.get("error")
 
     if error:
-        logging.warning(f"{request.user.id} encountered error: {error}")
+        logging.warning(f"{user.id} encountered error: {error}")
 
     stores = await store_service.get_stores(limit=1000)
     context = ItemCreateContext(page_title="Create Item", error=error, stores=stores.stores)
@@ -79,7 +80,7 @@ async def create_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = request.user
+    user = await request.auser()
     logging.info(f"{user.id} attempting to create an item.")
 
     item_name = request.POST.get("item-input")
@@ -137,7 +138,9 @@ async def _get_overview_context(
     page = params.get("page", 1)
     limit = params.get("limit", 10)
 
-    user, page_title = (request.user, "Your Items") if is_personalized else (None, "All Items")
+    user, page_title = (
+        (await request.auser(), "Your Items") if is_personalized else (None, "All Items")
+    )
 
     pagination = await item_service.get_items(page=page, items_per_page=limit, user=user)
     aggregation = await item_service.aggregate(user=user)
@@ -254,7 +257,7 @@ async def update_action(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response from the API.
     """
     logging.info("Requested to update item via view, retrieving request info...")
-    user = request.user
+    user = await request.auser()
     item_id = request.POST.get("item-id")
     item_name = request.POST.get("item-input")
     store_id = request.POST.get("store-input")
@@ -310,7 +313,7 @@ async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = request.user
+    user = await request.auser()
     logging.info(f"User ({user}) requested delete page for item: {item_id}")
 
     logging.info("Retrieving errors passed to this view...")
@@ -343,7 +346,7 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response from the API.
     """
     logging.info("Requested to delete item via view, retrieving request info...")
-    user = request.user
+    user = await request.auser()
     item_id = request.POST.get("item-id")
 
     logging.info("Formatting view input for deletion on item...")

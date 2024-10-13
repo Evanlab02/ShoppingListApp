@@ -14,6 +14,8 @@ lint:
 
 clean:
 	rm -rf dist/
+	rm -rf html/
+	rm -rf coverage/
 
 storybook:
 	npm run storybook

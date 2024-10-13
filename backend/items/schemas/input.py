@@ -2,6 +2,7 @@
 
 import logging
 from datetime import date
+from decimal import Decimal
 
 from ninja import Schema
 
@@ -39,7 +40,7 @@ class ItemSearchSchema(Schema):
     updated_before: date | None = None
     updated_after: date | None = None
     description: str | None = None
-    price: float | None = None
+    price: str | Decimal | None = None
     price_is_lt: float | None = None
     price_is_gt: float | None = None
 

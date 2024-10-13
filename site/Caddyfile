@@ -24,6 +24,6 @@
 
 	handle_path /pgadmin* {
     	rewrite * /pgadmin{uri}
-    	reverse_proxy shopping-app-pgadmin:80
+    	reverse_proxy shopping-pgadmin:80
 	}
 }

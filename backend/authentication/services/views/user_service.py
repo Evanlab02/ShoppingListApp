@@ -2,8 +2,7 @@
 
 import logging
 
-from asgiref.sync import sync_to_async
-from django.contrib.auth import authenticate
+from django.contrib.auth import aauthenticate
 from django.http import HttpRequest
 
 from authentication.constants import INPUT_MAPPING
@@ -34,7 +33,7 @@ CHECKING_USER_LOGGED_IN = "Checking if user is logged in..."
 USER_ALREADY_LOGGED_IN = "User is already logged in."
 
 
-def get_login_view_context(request: HttpRequest) -> LoginContext:
+async def get_login_view_context(request: HttpRequest) -> LoginContext:
     """
     Generate context for the login view.
 
@@ -45,7 +44,8 @@ def get_login_view_context(request: HttpRequest) -> LoginContext:
         LoginContext: The context for the login view.
     """
     log.info(CHECKING_USER_LOGGED_IN)
-    if is_user_authenticated(request.user):
+    user = await request.auser()
+    if is_user_authenticated(user):
         log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
@@ -63,7 +63,7 @@ def get_login_view_context(request: HttpRequest) -> LoginContext:
     )
 
 
-def get_logout_view_context(request: HttpRequest) -> LogoutContext:
+async def get_logout_view_context(request: HttpRequest) -> LogoutContext:
     """
     Generate context for the logout view.
 
@@ -74,7 +74,8 @@ def get_logout_view_context(request: HttpRequest) -> LogoutContext:
         LogoutContext: The context for the logout view.
     """
     log.info("Checking if user is logged out...")
-    if not is_user_authenticated(request.user):
+    user = await request.auser()
+    if not is_user_authenticated(user):
         log.warning("User is already logged out.")
         raise UserNotLoggedIn()
 
@@ -86,7 +87,7 @@ def get_logout_view_context(request: HttpRequest) -> LogoutContext:
     return LogoutContext(error=error, submit_logout=submit_logout, submit_cancel=submit_cancel)
 
 
-def get_register_page_context(request: HttpRequest) -> RegisterContext:
+async def get_register_page_context(request: HttpRequest) -> RegisterContext:
     """
     Get the context for the register page.
 
@@ -97,7 +98,8 @@ def get_register_page_context(request: HttpRequest) -> RegisterContext:
         RegisterContext: The context for the register page.
     """
     log.info(CHECKING_USER_LOGGED_IN)
-    if is_user_authenticated(request.user):
+    user = await request.auser()
+    if is_user_authenticated(user):
         log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
@@ -123,7 +125,7 @@ def get_register_page_context(request: HttpRequest) -> RegisterContext:
     )
 
 
-def login(request: HttpRequest) -> None:
+async def login(request: HttpRequest) -> None:
     """
     Log in the user.
 
@@ -131,7 +133,8 @@ def login(request: HttpRequest) -> None:
         request (HttpRequest): The request object.
     """
     log.info(CHECKING_USER_LOGGED_IN)
-    if is_user_authenticated(request.user):
+    request_user = await request.auser()
+    if is_user_authenticated(request_user):
         log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()
 
@@ -142,16 +145,16 @@ def login(request: HttpRequest) -> None:
     password = request.POST.get(password_input)
 
     log.info("Authenticating user...")
-    user = authenticate(request=request, username=username, password=password)
+    user = await aauthenticate(request=request, username=username, password=password)
     if user is None:
         log.warning("Invalid credentails.")
         raise InvalidCredentials()
 
     log.info("Logging user in...")
-    login_user(request, user)
+    await login_user(request, user)
 
 
-def logout(request: HttpRequest) -> None:
+async def logout(request: HttpRequest) -> None:
     """
     Log out the user.
 
@@ -159,12 +162,13 @@ def logout(request: HttpRequest) -> None:
         request (HttpRequest): The request object.
     """
     log.info("Checking if user is logged out...")
-    if not is_user_authenticated(request.user):
+    user = await request.auser()
+    if not is_user_authenticated(user):
         log.warning("User is already logged out.")
         raise UserNotLoggedIn()
 
     log.info("Logging user out...")
-    logout_user(request)
+    await logout_user(request)
 
 
 async def register_user(request: HttpRequest) -> None:
@@ -175,8 +179,8 @@ async def register_user(request: HttpRequest) -> None:
         request (HttpRequest): The request object.
     """
     log.info(CHECKING_USER_LOGGED_IN)
-    user = request.user
-    is_authenticated = await sync_to_async(is_user_authenticated)(user)
+    user = await request.auser()
+    is_authenticated = is_user_authenticated(user)
     if is_authenticated:
         log.warning(USER_ALREADY_LOGGED_IN)
         raise UserAlreadyLoggedIn()

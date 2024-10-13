@@ -38,7 +38,7 @@ class ApiClient(Model):
         """
         client_secret = uuid4().hex
 
-        if await cls.objects.filter(user=user).aexists():  # type: ignore
+        if await cls.objects.filter(user=user).aexists():
             raise ApiClientAlreadyRegistered()
 
         client = await cls.objects.acreate(

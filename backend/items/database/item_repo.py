@@ -21,7 +21,7 @@ def _filter(
     name: str | None = None,
     store: Store | None = None,
     stores: list[Store] | None = None,
-    user: User | AbstractBaseUser | AnonymousUser | None = None,
+    user: Any | None = None,
     search: ItemSearchSchema | None = None,
 ) -> QuerySet[Item]:
     """

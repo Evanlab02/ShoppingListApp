@@ -56,3 +56,22 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: backend/
+
+  fe-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.17.0"
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Setup
+        run: |
+          npm ci
+      - name: Lint and Docs Styling
+        run: |
+          npm run test
