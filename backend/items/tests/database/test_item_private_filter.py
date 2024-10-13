@@ -1,6 +1,7 @@
 """Contains tests for the _filter function of the item repository."""
 
 from datetime import date, timedelta
+from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
@@ -133,7 +134,7 @@ class TestFilterItems(TestCase):
 
     def test_filter_price_is_equal(self) -> None:
         """Test the _filter function with a price filter."""
-        search = ItemSearchSchema(price=100)
+        search = ItemSearchSchema(price=Decimal(100))
         records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)
@@ -142,7 +143,7 @@ class TestFilterItems(TestCase):
 
     def test_filter_price_is_not_equal(self) -> None:
         """Test the _filter function with a price filter."""
-        search = ItemSearchSchema(price=50)
+        search = ItemSearchSchema(price=Decimal(50))
         records = item_repo._filter(search=search)
         items = [record for record in records]
         self.assertIsInstance(items, list)

@@ -229,7 +229,7 @@ async def search(
     """
     user = None
     if own:
-        user = request.user
+        user = await request.auser()
 
     log.info("User searching stores...")
 

@@ -83,13 +83,13 @@ def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool
     return authenticated
 
 
-def login_user(request: HttpRequest, user: AbstractBaseUser | User) -> None:
+def login_user(request: HttpRequest, user: User) -> None:
     """
     Login a user.
 
     Args:
         request (HttpRequest): The request.
-        user (AbstractBaseUser | User): The user to login.
+        user (User): The user to login.
     """
     login(request, user)
 

@@ -28,7 +28,7 @@ def _filter(
     updated_on: date | None = None,
     updated_before: date | None = None,
     updated_after: date | None = None,
-    user: User | AnonymousUser | AbstractBaseUser | None = None,
+    user: User | None = None,
     ids: list[int] | None = None,
 ) -> StorePaginationSchema:
     """
@@ -134,7 +134,7 @@ async def create_store(
 async def get_stores(
     page_number: int = 1,
     stores_per_page: int = 10,
-    user: User | AnonymousUser | AbstractBaseUser | None = None,
+    user: User | None = None,
 ) -> StorePaginationSchema:
     """
     Get all stores.
@@ -161,7 +161,7 @@ async def filter_stores(
     updated_on: date | None = None,
     updated_before: date | None = None,
     updated_after: date | None = None,
-    user: User | AnonymousUser | AbstractBaseUser | None = None,
+    user: User | None = None,
     ids: list[int] | None = None,
 ) -> StorePaginationSchema:
     """
@@ -178,7 +178,7 @@ async def filter_stores(
         updated_on (date | None): The date the store was updated.
         updated_before (date | None): The date the store was updated before.
         updated_after (date | None): The date the store was updated after.
-        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+        user (User | None): The user who created the store.
         ids (list[int] | None): The store ids to filter from.
 
     Returns:
