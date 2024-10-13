@@ -2,9 +2,10 @@
 
 from random import randint
 from uuid import uuid4
-from locust import FastHttpUser, task, tag
 
-KEY = "319d79eed1d94708adb4f4c6e71eaea4"
+from locust import FastHttpUser, tag, task
+
+KEY = ""
 
 
 class TestCase(FastHttpUser):
@@ -15,18 +16,13 @@ class TestCase(FastHttpUser):
         self.client.post(
             "/api/v1/auth/login",
             json={"username": "AnimalAlpaca", "password": "devadmin"},
-            headers={
-                "Content-Type": "application/json"
-            }
+            headers={"Content-Type": "application/json"},
         )
 
     def on_stop(self):
         """On user close."""
         self.client.post(
-            "/api/v1/auth/logout",
-            headers={
-                "Content-Type": "application/json"
-            }
+            "/api/v1/auth/logout", headers={"Content-Type": "application/json"}
         )
 
     @task
@@ -42,11 +38,9 @@ class TestCase(FastHttpUser):
                 "password_confirmation": f"{random_id}",
                 "first_name": f"{random_id}",
                 "last_name": f"{random_id}",
-                "email": f"{random_id}@gmail.com"
+                "email": f"{random_id}@gmail.com",
             },
-            headers={
-                "Content-Type": "application/json"
-            }
+            headers={"Content-Type": "application/json"},
         )
 
         self.client.post(
@@ -55,16 +49,11 @@ class TestCase(FastHttpUser):
                 "username": f"{random_id}",
                 "password": f"{random_id}",
             },
-            headers={
-                "Content-Type": "application/json"
-            }
+            headers={"Content-Type": "application/json"},
         )
 
         self.client.post(
-            "/api/v1/auth/logout",
-            headers={
-                "Content-Type": "application/json"
-            }
+            "/api/v1/auth/logout", headers={"Content-Type": "application/json"}
         )
 
     @task
@@ -73,10 +62,7 @@ class TestCase(FastHttpUser):
         """Get store types mapping."""
         self.client.get(
             "/api/v1/stores/types/mapping",
-            headers={
-                "Content-Type": "application/json",
-                "X-API-Key": KEY
-            }
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
         )
 
     @task
@@ -90,12 +76,9 @@ class TestCase(FastHttpUser):
             json={
                 "name": f"{random_id}",
                 "store_type": random_store_type,
-                "description": f"{random_id}"
+                "description": f"{random_id}",
             },
-            headers={
-                "Content-Type": "application/json",
-                "X-API-Key": KEY
-            }
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
         )
 
         data = response.json()
@@ -104,22 +87,14 @@ class TestCase(FastHttpUser):
         self.client.get(
             f"/api/v1/stores/detail/{store_id}",
             name="/api/v1/stores/detail/id",
-            headers={
-                "Content-Type": "application/json",
-                "X-API-Key": KEY
-            }
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
         )
 
     @task
     @tag("web")
     def create_store_and_detail_store_web(self):
         """Create store and get details."""
-        self.client.get(
-            "/stores/",
-            headers={
-                "X-API-Key": KEY
-            }
-        )
+        self.client.get("/stores/", headers={"X-API-Key": KEY})
 
     @task
     @tag("api")
@@ -132,10 +107,7 @@ class TestCase(FastHttpUser):
             response = self.client.get(
                 f"/api/v1/stores?limit=10&page={page}",
                 name="/api/v1/stores",
-                headers={
-                    "Content-Type": "application/json",
-                    "X-API-Key": KEY
-                }
+                headers={"Content-Type": "application/json", "X-API-Key": KEY},
             )
             data = response.json()
 
@@ -146,10 +118,7 @@ class TestCase(FastHttpUser):
             response = self.client.get(
                 f"/api/v1/stores/me?limit=10&page={page}",
                 name="/api/v1/stores/me",
-                headers={
-                    "Content-Type": "application/json",
-                    "X-API-Key": KEY
-                }
+                headers={"Content-Type": "application/json", "X-API-Key": KEY},
             )
             data = response.json()
 
@@ -159,16 +128,10 @@ class TestCase(FastHttpUser):
         """Aggregations."""
         self.client.get(
             "/api/v1/stores/aggregate",
-            headers={
-                "Content-Type": "application/json",
-                "X-API-Key": KEY
-            }
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
         )
 
         self.client.get(
             "/api/v1/stores/aggregate/me",
-            headers={
-                "Content-Type": "application/json",
-                "X-API-Key": KEY
-            }
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
         )
