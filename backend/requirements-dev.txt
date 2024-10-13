@@ -30,7 +30,7 @@ pyflakes==3.2.0; python_version >= '3.8'
 pysocks==1.7.1
 pytest==8.3.3; python_version >= '3.8'
 pytest-cov==5.0.0; python_version >= '3.8'
-pytest-django==4.8.0; python_version >= '3.8'
+pytest-django==4.9.0; python_version >= '3.8'
 pytest-sugar==1.0.0
 pytest-xdist==3.6.1; python_version >= '3.8'
 python-dotenv==1.0.1; python_version >= '3.8'
