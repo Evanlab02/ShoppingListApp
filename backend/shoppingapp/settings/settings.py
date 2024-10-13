@@ -27,7 +27,8 @@ SECRET_KEY = getenv("SHOPPING_DJANGO_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [getenv("SHOPPING_DJANGO_HOST")]
-
+if getenv("SHOPPING_DJANGO_LT"):
+    ALLOWED_HOSTS.append(getenv("SHOPPING_DJANGO_LT"))
 
 # Application definition
 
@@ -86,6 +87,12 @@ DATABASES = {
         "PASSWORD": getenv("SHOPPING_DATABASE_PASSWORD"),
         "HOST": getenv("SHOPPING_DB_HOST"),
         "PORT": getenv("SHOPPING_DB_PORT", "5432"),
+        "OPTIONS": {
+            "pool": {
+                "min_size": 2,
+                "max_size": 8,
+            }
+        },
     }
 }
 

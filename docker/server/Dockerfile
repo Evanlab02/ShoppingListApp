@@ -15,5 +15,3 @@ COPY backend/shoppingapp /backend/shoppingapp
 COPY backend/dashboard /backend/dashboard
 
 EXPOSE 80
-
-CMD ["gunicorn","-b" ,"0.0.0.0:80", "-w" ,"4" ,"--worker-class" ,"uvicorn_worker.UvicornWorker", "'shoppingapp.config.asgi:main()'"]

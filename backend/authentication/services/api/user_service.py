@@ -3,10 +3,6 @@
 import logging
 
 from asgiref.sync import sync_to_async
-from django.contrib.auth import aauthenticate
-from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
-from django.http import HttpRequest
-
 from authentication.database.user_repository import (
     create_user,
     does_email_exist,
@@ -26,6 +22,9 @@ from authentication.errors.api_exceptions import (
 )
 from authentication.schemas.input import NewUser
 from authentication.schemas.output import GeneralResponse
+from django.contrib.auth import aauthenticate
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+from django.http import HttpRequest
 
 log = logging.getLogger(__name__)
 log.info("Authentication API user service loading...")
@@ -95,7 +94,7 @@ async def register_user(
         GeneralResponse: The general response.
     """
     log.info("Checking if user is logged in...")
-    is_authenticated = await sync_to_async(is_user_authenticated)(user)
+    is_authenticated = is_user_authenticated(user)
     if is_authenticated:
         log.warning("User already logged in.")
         raise UserAlreadyLoggedIn()

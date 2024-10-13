@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c3185329f1b735bb8cbdcf9c296dad8251d785d3bf0a14e525f8b74fb295814a"
+            "sha256": "05014e1b81a427465a7b223afe5b10677653758df936cdec1f4b326a8a7c53d4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -85,7 +85,8 @@
         },
         "psycopg": {
             "extras": [
-                "binary"
+                "binary",
+                "pool"
             ],
             "hashes": [
                 "sha256:644d3973fe26908c73d4be746074f6e5224b03c1101d302d9a53bf565ad64907",
@@ -160,6 +161,13 @@
                 "sha256:fd40af959173ea0d087b6b232b855cfeaa6738f47cb2a0fd10a7f4fa8b74293f",
                 "sha256:fd65774ed7d65101b314808b6893e1a75b7664f680c3ef18d2e5c84d570fa393",
                 "sha256:fda0162b0dbfa5eaed6cdc708179fa27e148cb8490c7d62e5cf30713909658ea"
+            ],
+            "version": "==3.2.3"
+        },
+        "psycopg-pool": {
+            "hashes": [
+                "sha256:53bd8e640625e01b2927b2ad96df8ed8e8f91caea4597d45e7673fc7bbb85eb1",
+                "sha256:bb942f123bef4b7fbe4d55421bd3fb01829903c95c0f33fd42b7e94e5ac9b52a"
             ],
             "version": "==3.2.3"
         },
