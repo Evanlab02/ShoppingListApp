@@ -14,7 +14,7 @@ uvicorn-worker = "==0.2.0"
 [dev-packages]
 black = "==24.10.0"
 mypy = "==1.11.2"
-flake8 = "==7.1.0"
+flake8 = "==7.1.1"
 pydocstyle = "==6.3.0"
 pytest = "==8.2.2"
 isort = "==5.13.2"
