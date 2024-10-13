@@ -29,7 +29,7 @@ async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
     Returns:
         ItemSchema: The created item.
     """
-    user = request.user
+    user = await request.auser()
     store_id = new_item.store_id
     item_name = new_item.name
     item_price = new_item.price
@@ -78,7 +78,7 @@ async def get_my_items(
     Returns:
         ItemPaginationSchema: The paginated list of items.
     """
-    user = request.user
+    user = await request.auser()
     items = await item_service.get_items(page=page, items_per_page=per_page, user=user)
     return items
 
@@ -109,7 +109,7 @@ async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
     Returns:
         ItemAggregationSchema: The aggregation of personal items.
     """
-    user = request.user
+    user = await request.auser()
     aggregation = await item_service.aggregate(user=user)
     return aggregation
 
@@ -144,7 +144,7 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
         ItemSchema: The updated item.
     """
     logging.info(f"Requested to update item with ID: {item_id}")
-    user = request.user
+    user = await request.auser()
     store_id = item_schema.store_id
     name = item_schema.name
     price = item_schema.price
@@ -174,7 +174,7 @@ async def delete_item(request: HttpRequest, item_id: int) -> DeleteSchema:
         DeleteSchema: The delete schema.
     """
     log.info(f"Requested to delete item with ID: {item_id}")
-    user = request.user
+    user = await request.auser()
     result = await item_service.delete_item(item_id=item_id, user=user)
     return result
 
@@ -192,7 +192,7 @@ async def search(
     """Search for items based off filters."""
     user = None
     if own:
-        user = request.user
+        user = await request.auser()
 
     return await item_service.search_items(
         user=user, limit=limit, name=name, page=page, search=search, store_id=store

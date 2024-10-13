@@ -32,8 +32,8 @@ def async_login_required(function: Any) -> Any:
 
     async def wrapper(request: HttpRequest, *args: Any, **kw: Any) -> Any:
         """Wrap around child function."""
-        user = request.user
-        is_authenticated = await sync_to_async(is_user_authenticated)(user)
+        user = await request.auser()
+        is_authenticated = is_user_authenticated(user)
         if not is_authenticated:
             return HttpResponseRedirect("/?error=You must be logged in to access that page.")
         else:
@@ -62,7 +62,7 @@ def async_redirect_if_logged_in(function: Any) -> Any:
 
     async def wrapper(request: HttpRequest, *args: Any, **kw: Any) -> Any:
         """Wrap around child function."""
-        user = request.user
+        user = await request.auser()
         is_authenticated = await sync_to_async(is_user_authenticated)(user)
         if is_authenticated:
             return HttpResponseRedirect("/shopping/dashboard/")

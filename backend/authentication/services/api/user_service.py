@@ -3,7 +3,7 @@
 import logging
 
 from asgiref.sync import sync_to_async
-from django.contrib.auth import authenticate
+from django.contrib.auth import aauthenticate
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
 
@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 log.info("Authentication API user service loading...")
 
 
-def login(request: HttpRequest, username: str, password: str) -> GeneralResponse:
+async def login(request: HttpRequest, username: str, password: str) -> GeneralResponse:
     """
     Login a user.
 
@@ -44,22 +44,23 @@ def login(request: HttpRequest, username: str, password: str) -> GeneralResponse
         GeneralResponse: The general response.
     """
     log.info("Checking if user is logged in...")
-    if is_user_authenticated(request.user):
+    request_user = await request.auser()
+    if is_user_authenticated(request_user):
         log.warning("User already logged in.")
         raise UserAlreadyLoggedIn()
 
     log.info("Checking user credentials...")
-    user = authenticate(request=request, username=username, password=password)
+    user = await aauthenticate(request=request, username=username, password=password)
     if user is None:
         log.warning("CRITICAL - Invalid credentials provided for user!")
         raise InvalidCredentials()
 
     log.info("Logging in...")
-    login_user(request, user)
+    await login_user(request, user)
     return GeneralResponse(message="User successfully logged in.", detail="")
 
 
-def logout(request: HttpRequest) -> GeneralResponse:
+async def logout(request: HttpRequest) -> GeneralResponse:
     """
     Logout a user.
 
@@ -70,12 +71,13 @@ def logout(request: HttpRequest) -> GeneralResponse:
         GeneralResponse: The general response.
     """
     log.info("Checking if user is logged out...")
-    if not is_user_authenticated(request.user):
+    user = await request.auser()
+    if not is_user_authenticated(user):
         log.warning("User already logged out.")
         raise UserNotLoggedIn()
 
     log.info("Logging out...")
-    logout_user(request)
+    await logout_user(request)
     return GeneralResponse(message="User successfully logged out.", detail="")
 
 

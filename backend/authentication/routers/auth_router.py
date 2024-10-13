@@ -15,7 +15,7 @@ auth_router = Router(tags=["Authentication"])
 
 
 @auth_router.post("/login", response={200: GeneralResponse})
-def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResponse:
+async def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResponse:
     """
     Login a user.
 
@@ -27,12 +27,12 @@ def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResp
         GeneralResponse: The response object
     """
     log.info(f"Retrieved request to log user in. ({user_creds.username})")
-    response = login(request, user_creds.username, user_creds.password)
+    response = await login(request, user_creds.username, user_creds.password)
     return response
 
 
 @auth_router.post("/logout", response={200: GeneralResponse})
-def logout_user(request: HttpRequest) -> GeneralResponse:
+async def logout_user(request: HttpRequest) -> GeneralResponse:
     """
     Logout a user.
 
@@ -43,7 +43,7 @@ def logout_user(request: HttpRequest) -> GeneralResponse:
         GeneralResponse: The response object
     """
     log.info("Retrieved request to log user out.")
-    response = logout(request)
+    response = await logout(request)
     return response
 
 
@@ -60,7 +60,7 @@ async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
         GeneralResponse: The response object
     """
     log.info("Retrieved request to register user.")
-    user = request.user
+    user = await request.auser()
     response = await register_user(user, new_user)
     return response
 

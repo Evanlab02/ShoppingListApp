@@ -2,7 +2,7 @@
 
 import logging
 
-from django.contrib.auth import login, logout
+from django.contrib.auth import alogin, alogout
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
 
@@ -83,7 +83,7 @@ def is_user_authenticated(user: AbstractBaseUser | AnonymousUser | User) -> bool
     return authenticated
 
 
-def login_user(request: HttpRequest, user: User) -> None:
+async def login_user(request: HttpRequest, user: User) -> None:
     """
     Login a user.
 
@@ -91,17 +91,17 @@ def login_user(request: HttpRequest, user: User) -> None:
         request (HttpRequest): The request.
         user (User): The user to login.
     """
-    login(request, user)
+    await alogin(request, user)
 
 
-def logout_user(request: HttpRequest) -> None:
+async def logout_user(request: HttpRequest) -> None:
     """
     Logout a user.
 
     Args:
         request (HttpRequest): The request.
     """
-    logout(request)
+    await alogout(request)
 
 
 log.info("Loaded user respository.")

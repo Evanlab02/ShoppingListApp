@@ -86,7 +86,6 @@ DATABASES = {
         "PASSWORD": getenv("SHOPPING_DATABASE_PASSWORD"),
         "HOST": getenv("SHOPPING_DB_HOST"),
         "PORT": getenv("SHOPPING_DB_PORT", "5432"),
-        "CONN_MAX_AGE": 0,
     }
 }
 

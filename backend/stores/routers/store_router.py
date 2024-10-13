@@ -36,7 +36,7 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema
         StoreSchema: The created store.
     """
     log.info("User requested to create a store.")
-    user = request.user
+    user = await request.auser()
     store = await store_service.create(new_store, user)
     return store
 
@@ -100,7 +100,7 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
     Returns:
         StoreAggregationSchema: The store aggregation by user.
     """
-    user = request.user
+    user = await request.auser()
     log.info("User requested personal store aggregation.")
     result = await store_service.aggregate(user=user)
     return result
@@ -137,7 +137,7 @@ async def get_personal_stores(
     Returns:
         StorePaginationSchema: The stores.
     """
-    user = request.user
+    user = await request.auser()
     log.info(f"User requested personal stores with limit ({limit}) for page: {page}.")
     result = await store_service.get_stores(limit, page, user)
     return result
@@ -172,7 +172,7 @@ async def update_store(
     except ValueError:
         formatted_type = store_type
 
-    user = request.user
+    user = await request.auser()
     log.info(f"User requested to update store: {store_id}")
     result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
     return result
@@ -198,7 +198,7 @@ async def delete_store(
     Raises:
         StoreDoesNotExist: If there store_id is invalid or you do not own the store.
     """
-    user = request.user
+    user = await request.auser()
     log.info(f"User requested to delete store: {store_id}")
     result = await store_service.delete_store(store_id=store_id, user=user)
     return result

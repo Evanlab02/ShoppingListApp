@@ -68,7 +68,7 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = request.user
+    user = await request.auser()
     store_name = request.POST.get("store-input")
     description = request.POST.get("description-input")
     store_type = request.POST.get("store-type-input")
@@ -247,7 +247,7 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
         HttpResponse: The response from the API.
     """
     formatted_store_type: str | int | None = None
-    user = request.user
+    user = await request.auser()
     store_name = request.POST.get("store-input")
     store_type = request.POST.get("store-type-input")
     store_description = request.POST.get("description-input")
@@ -328,7 +328,7 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
             status=500,
         )
 
-    user = request.user
+    user = await request.auser()
     await store_service.delete_store(store_id=formatted_store_id, user=user)
     return HttpResponseRedirect("/stores/me")
 
