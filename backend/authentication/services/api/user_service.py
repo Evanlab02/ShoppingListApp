@@ -2,7 +2,6 @@
 
 import logging
 
-from asgiref.sync import sync_to_async
 from django.contrib.auth import aauthenticate
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
