@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.5](https://github.com/Evanlab02/ShoppingListApp/compare/v1.6.4...v0.16.5) (2024-10-15)
+
+
+### Bug Fixes
+
+* Release V0.16.4 as V0.16.5 due to release issues ([9085a69](https://github.com/Evanlab02/ShoppingListApp/commit/9085a69e301fff4d8f73fc5a1ebc5de5c6204e5f))
+
+
+### Miscellaneous Chores
+
+* release 0.16.5 ([1638467](https://github.com/Evanlab02/ShoppingListApp/commit/1638467f52370f2043b2218719c66c3fe2a05532))
+
 ## [0.16.4](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.3...v0.16.4) (2024-10-15)
 
 
