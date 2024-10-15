@@ -17,7 +17,7 @@ export default function ButtonDialog(props: ButtonDialogProps) {
         <>
             <SlDialog label={title} open={open} onSlAfterHide={onClose}>
                 <p>{text}</p>
-                <SlButton slot="footer" variant="danger" onClick={onClose}>
+                <SlButton slot="footer" variant="danger" onClick={onClose} data-testid="sa-btn-dl-close">
                     Close
                 </SlButton>
                 <>
@@ -28,6 +28,7 @@ export default function ButtonDialog(props: ButtonDialogProps) {
                                 slot="footer"
                                 variant={buttonValue.variant}
                                 onClick={buttonValue.onClick}
+                                data-testid={`sa-btn-dl-custom-${index}`}
                             >
                                 {buttonValue.text}
                             </SlButton>

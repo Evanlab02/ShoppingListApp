@@ -1,0 +1,83 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Empty detail panel renders correctly. 1`] = `
+<div
+  class="detail-panel"
+  data-testid="sa-detail-panel"
+>
+  <h4>
+    Recent Items
+  </h4>
+</div>
+`;
+
+exports[`Populated detail panel renders correctly. 1`] = `
+<div
+  class="detail-panel"
+  data-testid="sa-detail-panel"
+>
+  <h4>
+    Recent Items
+  </h4>
+  <hr />
+  <div
+    class="recent-item"
+  >
+    <h4>
+      1
+    </h4>
+    <h4>
+      R
+      100
+    </h4>
+  </div>
+  <hr />
+  <div
+    class="recent-item"
+  >
+    <h4>
+      2
+    </h4>
+    <h4>
+      R
+      200
+    </h4>
+  </div>
+  <hr />
+  <div
+    class="recent-item"
+  >
+    <h4>
+      3
+    </h4>
+    <h4>
+      R
+      300
+    </h4>
+  </div>
+  <hr />
+  <div
+    class="recent-item"
+  >
+    <h4>
+      4
+    </h4>
+    <h4>
+      R
+      400
+    </h4>
+  </div>
+  <hr />
+  <div
+    class="recent-item"
+  >
+    <h4>
+      5
+    </h4>
+    <h4>
+      R
+      500
+    </h4>
+  </div>
+</div>
+`;

@@ -17,14 +17,14 @@ export default function Card(props: CardProps) {
     const { backgroundColor, iconBackgroundColor, mainText, subText = "", height = "200px", iconName = "shop", directLink = "", onClick } = props;
 
     return (
-        <div className="card" style={{ backgroundColor: backgroundColor, height: height }}>
+        <div data-testid="sa-card" className="card" style={{ backgroundColor: backgroundColor, height: height }}>
             <div className="card-icons">
                 <a href={directLink}>
                     <div className="left-icon" style={{ backgroundColor: iconBackgroundColor }}>
                         <SlIcon name={iconName} />
                     </div>
                 </a>
-                <div className="right-icon"
+                <div className="right-icon" data-testid="sa-card-click"
                     style={{ backgroundColor: iconBackgroundColor }}
                     onClick={() => { if (onClick) { onClick() } }}
                 >

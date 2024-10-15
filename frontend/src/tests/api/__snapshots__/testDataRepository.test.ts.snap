@@ -1,0 +1,74 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Data repository returns current dashboard data. 1`] = `
+{
+  "average_item_price": 80,
+  "budget_remaining": 150,
+  "total": 10,
+  "total_price": 300,
+}
+`;
+
+exports[`Data repository returns dashboard history. 1`] = `
+{
+  "data": [
+    {
+      "data": [
+        65,
+        59,
+        80,
+        81,
+        56,
+        55,
+      ],
+      "label": "Price",
+    },
+    {
+      "data": [
+        28,
+        48,
+        40,
+        19,
+        86,
+        27,
+      ],
+      "label": "Budget",
+    },
+  ],
+  "labels": [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+  ],
+}
+`;
+
+exports[`Data repository returns recent items. 1`] = `
+{
+  "items": [
+    {
+      "name": "1",
+      "price": 100,
+    },
+    {
+      "name": "2",
+      "price": 200,
+    },
+    {
+      "name": "3",
+      "price": 300,
+    },
+    {
+      "name": "4",
+      "price": 400,
+    },
+    {
+      "name": "5",
+      "price": 500,
+    },
+  ],
+}
+`;

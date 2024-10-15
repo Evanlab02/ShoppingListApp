@@ -9,8 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from "react-chartjs-2";
-
-import { BarChartProps } from './helpers/intefaces';
+import { BarChartProps } from './helpers/interfaces';
 
 // Styles
 import "./styles/BarChart.scss"

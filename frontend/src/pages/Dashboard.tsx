@@ -3,7 +3,7 @@ import { useState, lazy, useEffect } from "react";
 import { Grid2 } from "@mui/material";
 
 import DataRepo from "../api/dataRepository";
-import { BarChartProps } from "../components/BarChart/helpers/intefaces";
+import { BarChartProps } from "../components/BarChart/helpers/interfaces";
 import { ButtonProps } from "../components/ButtonDialog/helpers/interfaces";
 import { DetailPanelProps } from "../components/DetailPanel/helpers/interfaces";
 import { DashboardCurrent } from "../helpers/apiInterfaces";

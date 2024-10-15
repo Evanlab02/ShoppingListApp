@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest --no-watch --coverage"
+    "test": "vitest --no-watch --coverage",
+    "test:update": "vitest -u --no-watch --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -26,6 +27,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.12.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.0.1",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.8.1",

@@ -1,0 +1,40 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Button Dialog renders and functions correctly. 1`] = `
+<div
+  data-testid="test-button-dialog"
+>
+  <sl-dialog
+    label=""
+  >
+    <p />
+    <sl-button
+      data-optional=""
+      data-testid="sa-btn-dl-close"
+      data-valid=""
+      size="medium"
+      variant="default"
+    >
+      Close
+    </sl-button>
+    <sl-button
+      data-optional=""
+      data-testid="sa-btn-dl-custom-0"
+      data-valid=""
+      size="medium"
+      variant="default"
+    >
+      Hi
+    </sl-button>
+    <sl-button
+      data-optional=""
+      data-testid="sa-btn-dl-custom-1"
+      data-valid=""
+      size="medium"
+      variant="default"
+    >
+      Goodbye
+    </sl-button>
+  </sl-dialog>
+</div>
+`;
