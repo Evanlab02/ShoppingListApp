@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.6.4](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.3...v1.6.4) (2024-10-15)
+## [0.16.4](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.3...v0.16.4) (2024-10-15)
 
 
 ### Features
