@@ -25,7 +25,7 @@ export default function MiniCard(props: MiniCardProps) {
     } = props;
 
     return (
-        <div className="mini-card" style={{ backgroundColor: backgroundColor, color: textColor }}>
+        <div data-testid="sa-mini-card" className="mini-card" style={{ backgroundColor: backgroundColor, color: textColor }}>
             <a href={directLink}>
                 <div className="mini-card-icon" style={{ backgroundColor: iconBackgroundColor }}>
                     <SlIcon name={iconName} />

@@ -1,0 +1,91 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Advanced Card renders correctly. 1`] = `
+<div
+  class="card"
+  data-testid="sa-card"
+  style="background-color: rgb(96, 39, 134); height: 200px;"
+>
+  <div
+    class="card-icons"
+  >
+    <a
+      href="/hi/"
+    >
+      <div
+        class="left-icon"
+        style="background-color: rgb(86, 47, 111);"
+      >
+        <sl-icon
+          aria-hidden="true"
+          library="default"
+        />
+      </div>
+    </a>
+    <div
+      class="right-icon"
+      data-testid="sa-card-click"
+      style="background-color: rgb(86, 47, 111);"
+    >
+      <sl-icon
+        aria-hidden="true"
+        library="default"
+      />
+    </div>
+  </div>
+  <div
+    class="card-content"
+  >
+    <h1>
+      Advanced Card
+    </h1>
+    <h4>
+      Hello World!
+    </h4>
+  </div>
+</div>
+`;
+
+exports[`Basic Card renders correctly. 1`] = `
+<div
+  class="card"
+  data-testid="sa-card"
+  style="background-color: rgb(96, 39, 134); height: 200px;"
+>
+  <div
+    class="card-icons"
+  >
+    <a
+      href=""
+    >
+      <div
+        class="left-icon"
+        style="background-color: rgb(86, 47, 111);"
+      >
+        <sl-icon
+          aria-hidden="true"
+          library="default"
+        />
+      </div>
+    </a>
+    <div
+      class="right-icon"
+      data-testid="sa-card-click"
+      style="background-color: rgb(86, 47, 111);"
+    >
+      <sl-icon
+        aria-hidden="true"
+        library="default"
+      />
+    </div>
+  </div>
+  <div
+    class="card-content"
+  >
+    <h1>
+      Test Card
+    </h1>
+    <h4 />
+  </div>
+</div>
+`;

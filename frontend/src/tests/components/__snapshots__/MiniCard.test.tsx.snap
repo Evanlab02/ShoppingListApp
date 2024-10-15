@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Populated detail panel renders correctly. 1`] = `
+<div
+  class="mini-card"
+  data-testid="sa-mini-card"
+  style="background-color: rgb(59, 95, 226); color: rgb(255, 255, 255);"
+>
+  <a
+    href="/budgets"
+  >
+    <div
+      class="mini-card-icon"
+      style="background-color: rgb(47, 72, 162);"
+    >
+      <sl-icon
+        aria-hidden="true"
+        library="default"
+      />
+    </div>
+  </a>
+  <div
+    class="mini-card-content"
+  >
+    <p
+      class="value"
+    >
+      R1000
+    </p>
+    <p
+      class="sub-value"
+    >
+      Budget remaining
+    </p>
+  </div>
+</div>
+`;

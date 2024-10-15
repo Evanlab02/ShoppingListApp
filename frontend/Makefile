@@ -19,3 +19,9 @@ clean:
 
 storybook:
 	npm run storybook
+
+test:
+	npm run test
+
+update:
+	npm run test:update
