@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.6.4](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.3...v1.6.4) (2024-10-15)
+
+
+### Features
+
+* **Backend:** Async improvements across the board for everything authentication related ([b8f37be](https://github.com/Evanlab02/ShoppingListApp/commit/b8f37bee2407e2757ed08cbd641b2c4fe4bb95d1))
+* **Backend:** Created load tests to evaluate performance of the API along with several improvements ([4cd122b](https://github.com/Evanlab02/ShoppingListApp/commit/4cd122b0de453079d839cdbdd4aca3f9c4271c91))
+
+
+### Bug Fixes
+
+* **Backend:** black upgraded to 24.10.0 ([b4e8408](https://github.com/Evanlab02/ShoppingListApp/commit/b4e8408ba0a6a663556207e862d2f44969020518))
+* **Backend:** coverage upgraded to 4.9.0 ([5d723f9](https://github.com/Evanlab02/ShoppingListApp/commit/5d723f9f2d8b18a4254fdc4aac8e2b2071a4035c))
+* **Backend:** django-ninja upgraded to 1.3.0 ([59150c9](https://github.com/Evanlab02/ShoppingListApp/commit/59150c99162c4ddb81ec70faf4b4b8e20a6c941c))
+* **Backend:** django-stubs upgraded to 5.1.0 ([eca1976](https://github.com/Evanlab02/ShoppingListApp/commit/eca1976a193c1e053a0ede264572700335ba8636))
+* **Backend:** flake8 upgraded to 7.1.1 ([a252101](https://github.com/Evanlab02/ShoppingListApp/commit/a2521016357edd2ae831747a3da79e486481f2df))
+* **Backend:** gunicorn upgraded to 23.0.0 ([4542dd7](https://github.com/Evanlab02/ShoppingListApp/commit/4542dd76965837727375796d9bfe57e31593a684))
+* **Backend:** mypy upgraded to 1.11.2 ([b1c322b](https://github.com/Evanlab02/ShoppingListApp/commit/b1c322b2b6add3298b73a8070fa3c92d394dd9dc))
+* **Backend:** psycopg upgraded to 3.2.3 ([ecded99](https://github.com/Evanlab02/ShoppingListApp/commit/ecded99555fbafd187c3ea46b0555c03b54cb05b))
+* **Backend:** pytest upgraded to 8.3.3 ([4a36229](https://github.com/Evanlab02/ShoppingListApp/commit/4a36229737d4ba03118cb33adb9a91413f90ed09))
+* **Backend:** pytest-django upgraded to 4.9.0 ([1f421a2](https://github.com/Evanlab02/ShoppingListApp/commit/1f421a2f9b53fe21b10b45f0455634545402439a))
+* **Backend:** Remove rich as a dependency ([afbb331](https://github.com/Evanlab02/ShoppingListApp/commit/afbb33119fb125e71ad312df5d53319c3b3becfa))
+* **Backend:** Requirements refresh ([be8e55a](https://github.com/Evanlab02/ShoppingListApp/commit/be8e55acb06de2680bc168eb3f50e6d5a924e116))
+* **Backend:** selenium upgraded to 4.25.0 ([591ea72](https://github.com/Evanlab02/ShoppingListApp/commit/591ea72b275bbf4e0c9a88aec0d3d34c2e49e88a))
+* **Backend:** types-requests upgraded to 2.32.0.20240914 ([6bbfbdd](https://github.com/Evanlab02/ShoppingListApp/commit/6bbfbdd7143ddde006478c3589d48bd0ca5878b1))
+* **Backend:** Upgraded to Django 5.1 ([891b5d1](https://github.com/Evanlab02/ShoppingListApp/commit/891b5d19b491c938b5f313d993a918a0d620b6c0))
+* **Backend:** uvicorn upgraded to 0.31.1 ([c8f918e](https://github.com/Evanlab02/ShoppingListApp/commit/c8f918e18203419d34df1d539039ed9bf69f7f24))
+* **Front-End:** @mui/material upgraded to 6.1.3 ([8244ef6](https://github.com/Evanlab02/ShoppingListApp/commit/8244ef6f816d1245733758516d5bae27504fe2fa))
+* **Frontend:** [@typescript-eslint](https://github.com/typescript-eslint) packages upgraded to 8.8.1 ([8766d98](https://github.com/Evanlab02/ShoppingListApp/commit/8766d985fdfbd54962fcca29c00a39ade991e7f3))
+* **Frontend:** @shoelace-style/shoelace upgraded to 2.17.1 ([cd1742a](https://github.com/Evanlab02/ShoppingListApp/commit/cd1742a142e379acb69529c9dc93bfee85c49bdf))
+* **Frontend:** @types/react upgraded to 18.3.11 ([49f50f6](https://github.com/Evanlab02/ShoppingListApp/commit/49f50f6db8415e0122a31e663bee347ab76783c9))
+* **Frontend:** General package updates ([5ea4988](https://github.com/Evanlab02/ShoppingListApp/commit/5ea49880dbf81b766740325380ab48d6975d46e2))
+* **Frontend:** Migrated to eslint 9 ([8494048](https://github.com/Evanlab02/ShoppingListApp/commit/8494048feb92e4b40076c90aa8e327e592dcf74a))
+* **Frontend:** Removed eslint-plugin-storybook ([219e4ed](https://github.com/Evanlab02/ShoppingListApp/commit/219e4ed0d2d4277655d4550b2f0b7ec8435c2bc6))
+* **Frontend:** Unit-tests for FE using vitest ([88ca865](https://github.com/Evanlab02/ShoppingListApp/commit/88ca865647794d30b4b1c1c76debcbee3d0aa33c))
+* **Frontend:** Updated rollup to remove vulnerability ([4646321](https://github.com/Evanlab02/ShoppingListApp/commit/4646321c2ee0b6fb89374d54311e5c9d63f0a8ea))
+* **Frontend:** Updated to @types/react-dom@18.3.1 ([849a578](https://github.com/Evanlab02/ShoppingListApp/commit/849a5785f4570c11ff63e3fdd43d32e833025332))
+* **Frontend:** Upgrade to Grid2 from MUI ([5d772be](https://github.com/Evanlab02/ShoppingListApp/commit/5d772be68c90c741000a2f4e31c5f640334202a5))
+* **Frontend:** Upgraded eslint-plugin-react-hooks to 5.0.0 ([ec53bd0](https://github.com/Evanlab02/ShoppingListApp/commit/ec53bd000ec307ec8f08bef460a3a06757df7581))
+* **Frontend:** Upgraded to eslint V9 ([05f58f0](https://github.com/Evanlab02/ShoppingListApp/commit/05f58f0be9bbd36e87a02bd159304a5502feb259))
+* **Frontend:** Upgraded to react-router-dom@6.27.0 ([b04b008](https://github.com/Evanlab02/ShoppingListApp/commit/b04b008a51ad7d3729021ad162372684b58263f7))
+* **Frontend:** Upgraded to sass@1.79.5 ([e0c37a7](https://github.com/Evanlab02/ShoppingListApp/commit/e0c37a7673508d27ed317a7b304e0a3b61c85270))
+* **Frontend:** Upgraded to TS 5.6.3 ([c69526d](https://github.com/Evanlab02/ShoppingListApp/commit/c69526d19561c1151936ca6890d69b5248c94ac9))
+* **Frontend:** Upgraded vite packages to latest ([98932cb](https://github.com/Evanlab02/ShoppingListApp/commit/98932cbc5d040ed2b0309ac1e17c7b9c61887a98))
+* **Node:** Upgrade to node 20 ([6781779](https://github.com/Evanlab02/ShoppingListApp/commit/678177971490ec4211282487d7ead5b97bb7b02f))
+* **Workflows:** Created tests workflow for frontend ([e669051](https://github.com/Evanlab02/ShoppingListApp/commit/e66905111d4d46e7bc6c11833db495e6831eefe7))
+
+
+### Miscellaneous Chores
+
+* release 1.6.4 ([a03489f](https://github.com/Evanlab02/ShoppingListApp/commit/a03489f4e05840679b054f868e7e30381a9eb520))
+
 ## [0.16.3](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.2...v0.16.3) (2024-09-20)
 
 
