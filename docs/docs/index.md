@@ -8,8 +8,9 @@ Ever found yourself staring at a shopping list that just doesn't cut it? Same he
 
 This app allows households to **share items**, **stores**, and **shopping lists** with each other, all while keeping an eye on that budget. Say goodbye to the chaos of last-minute shopping trips and missed items! With **ShoppingListApp**, you can collaboratively manage your shopping endeavors like a pro. 🛒💸
 
-NOTE: ShoppingListApp is still under development and still on its way to V1 release.
-NOTE: Unfortunately, ShoppingListApp will have poor mobile support with the V1 release, this will be addressed in V2.
+**NOTE: ShoppingListApp is still under development and still on its way to V1 release.**
+
+**NOTE: Unfortunately, ShoppingListApp will have poor mobile support with the V1 release, this will be addressed in V2.**
 
 ## Tech Stack
 
