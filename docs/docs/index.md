@@ -1,17 +1,35 @@
-# Welcome to MkDocs
+# ShoppingListApp
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Welcome to the **ShoppingListApp**! 🎉
 
-## Commands
+## Overview
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+Ever found yourself staring at a shopping list that just doesn't cut it? Same here! That's why I created this app — because I could never find a ShoppingListApp that met my needs. This is a personal project born out of sheer frustration (and maybe a little too much time spent on the couch). 
 
-## Project layout
+This app allows households to **share items**, **stores**, and **shopping lists** with each other, all while keeping an eye on that budget. Say goodbye to the chaos of last-minute shopping trips and missed items! With **ShoppingListApp**, you can collaboratively manage your shopping endeavors like a pro. 🛒💸
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+NOTE: ShoppingListApp is still under development and still on its way to V1 release.
+NOTE: Unfortunately, ShoppingListApp will have poor mobile support with the V1 release, this will be addressed in V2.
+
+## Tech Stack
+
+- **Backend:** Python
+- **Frontend:** React
+- **Containerization:** Docker
+
+## Features
+
+- **Share Items:** Allow others to use shopping items easily that you have created.
+- **Store Management:** Keep track of your favorite stores and their offerings.
+- **Collaborative Lists:** Create shopping lists that everyone can access and update.
+- **Budget Tracking:** Manage your household budget together — because money matters!
+
+## Why?
+
+Because I wanted to! 🎈 I built this app to solve a problem I faced and to learn something new along the way. Plus, it was a fun distraction from my usual coding routine. 
+
+Feel free to check it out, contribute, or just laugh at my coding choices. Happy shopping! 🛍️
+
+## Getting Started
+
+Please take a look at the docs to get started, you can view them [here](https://evanlab-gme8r.ondigitalocean.app/shopping/)
