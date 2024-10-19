@@ -25,7 +25,10 @@ theme:
 nav:
   - Home: index.md
   - Getting Started: start.md
-  - User Guide: web/index.md
+  - User Guides:
+    - Logging in: web/index.md
+    - Dashboard: web/dashboard.md
+    - Items: web/items.md
   - Admin Guide: admin/index.md
   - Consuming the API: api/index.md
   - Architecture and code: code/index.md
