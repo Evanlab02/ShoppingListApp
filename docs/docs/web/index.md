@@ -125,6 +125,8 @@ Now, when we go back to the list view, we can see the updated price:
 
 To delete an item, click the bin icon next to the item you want to remove.
 
+![Edit and Delete](./assets/editAndDelete.png)
+
 On the delete page, just hit the "Delete item" button, and it’s gone!
 
 ![Delete Item page](./assets/deleteItem.png)
