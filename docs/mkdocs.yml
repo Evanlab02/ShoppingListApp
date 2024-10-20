@@ -29,6 +29,7 @@ nav:
     - Logging in: web/index.md
     - Dashboard: web/dashboard.md
     - Items: web/items.md
-  - Admin Guide: admin/index.md
+  - Admin Guides: 
+    - Reset API Client: admin/index.md
   - Consuming the API: api/index.md
   - Architecture and code: code/index.md
