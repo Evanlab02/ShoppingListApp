@@ -17,11 +17,6 @@
     	file_server
 	}
 
-	handle_path /coverage/backend/* {
-    	root * /var/www/html/htmlcov/
-    	file_server
-	}
-
 	handle_path /pgadmin* {
     	rewrite * /pgadmin{uri}
     	reverse_proxy shopping-pgadmin:80

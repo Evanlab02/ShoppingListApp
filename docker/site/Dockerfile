@@ -9,7 +9,6 @@ FROM caddy:2.7.5-alpine
 
 COPY site/Caddyfile /etc/caddy/Caddyfile
 COPY backend/static/ /var/www/html/static/
-COPY backend/htmlco[v]/ /var/www/html/htmlcov/
 COPY --from=build /app/dist /var/www/html/site/
 
 EXPOSE 80
