@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.17.0](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.5...v0.17.0) (2024-10-24)
+
+
+### Features
+
+* **Documentation:** Created documentation site for the ShoppingListApp ([416acd9](https://github.com/Evanlab02/ShoppingListApp/commit/416acd9159cf0d3ac3416dd7593b3c284b1e2f7a))
+
+
+### Bug Fixes
+
+* **Workflows:** Build admin and backend image in same step to enable reuse of layers ([311e5ce](https://github.com/Evanlab02/ShoppingListApp/commit/311e5ce85606d7b09f1ba1a1a7ea0109848d5d07))
+
 ## [0.16.5](https://github.com/Evanlab02/ShoppingListApp/compare/v1.6.4...v0.16.5) (2024-10-15)
 
 
