@@ -91,6 +91,46 @@ class TestCase(FastHttpUser):
         )
 
     @task
+    @tag("api")
+    def create_item_and_detail_item(self):
+        """Create item and get details."""
+        random_id = uuid4().hex
+        random_store_type = randint(1, 3)
+        response = self.client.post(
+            "/api/v1/stores/create",
+            json={
+                "name": f"{random_id}",
+                "store_type": random_store_type,
+                "description": f"{random_id}",
+            },
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
+        )
+
+        data = response.json()
+        store_id = data.get("id", 1)
+        random_price = randint(1, 1000)
+
+        response = self.client.post(
+            "/api/v1/items/create",
+            json={
+                "store_id": store_id,
+                "name": random_id,
+                "price": random_price,
+                "description": random_id,
+            },
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
+        )
+
+        data = response.json()
+        item_id = data.get("id", 1)
+
+        self.client.get(
+            f"/api/v1/items/detail/{item_id}",
+            name="/api/v1/stores/detail/id",
+            headers={"Content-Type": "application/json", "X-API-Key": KEY},
+        )
+
+    @task
     @tag("web")
     def create_store_and_detail_store_web(self):
         """Create store and get details."""

@@ -17,8 +17,8 @@
     	file_server
 	}
 
-	handle_path /coverage/backend/* {
-    	root * /var/www/html/htmlcov/
+	handle_path /docs/* {
+    	root * /var/www/html/docs/
     	file_server
 	}
 
