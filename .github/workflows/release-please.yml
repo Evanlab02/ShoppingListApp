@@ -33,6 +33,10 @@ jobs:
         run: |
           docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} .
           docker build -f docker/server/Dockerfile -t shoppinglistapp-backend:latest .
+      - name: Build Docker Image - Admin
+        run: |
+          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} .
+          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:latest .
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       - name: Push image
@@ -41,20 +45,7 @@ jobs:
           docker push ghcr.io/evanlab02/shoppingappbe:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}
           docker tag shoppinglistapp-backend:latest ghcr.io/evanlab02/shoppingappbe:latest
           docker push ghcr.io/evanlab02/shoppingappbe:latest
-  
-  release-admin:
-    runs-on: ubuntu-latest
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Docker Image
-        run: |
-          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} .
-          docker build -f docker/admin/Dockerfile -t shoppinglistapp-admin:latest .
-      - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-      - name: Push image
+      - name: Push image - Admin
         run: |
           docker tag shoppinglistapp-admin:${{needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }} ghcr.io/evanlab02/shoppingappadmin:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}
           docker push ghcr.io/evanlab02/shoppingappadmin:${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}

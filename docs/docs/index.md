@@ -36,3 +36,5 @@ Feel free to check it out, contribute, or just laugh at my coding choices. Happy
 ## Getting Started
 
 Please take a look at the docs to get started, you can view them [here](https://evanlab-gme8r.ondigitalocean.app/shopping/)
+
+Also remember that the docs are also available on the ShoppingListApp when running it at `<host>/docs/`

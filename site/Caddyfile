@@ -17,6 +17,11 @@
     	file_server
 	}
 
+	handle_path /docs/* {
+    	root * /var/www/html/docs/
+    	file_server
+	}
+
 	handle_path /pgadmin* {
     	rewrite * /pgadmin{uri}
     	reverse_proxy shopping-pgadmin:80
