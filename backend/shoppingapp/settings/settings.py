@@ -193,3 +193,13 @@ LOGGING = {
 }
 
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.Argon2PasswordHasher"]
+
+OPTIONAL_LEGACY_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+]
+
+ENABLE_LEGACY_HASHING = getenv("SHOPPING_ALLOW_LEGACY_HASHING", "1")
+if ENABLE_LEGACY_HASHING == "1":
+    PASSWORD_HASHERS = OPTIONAL_LEGACY_HASHERS
