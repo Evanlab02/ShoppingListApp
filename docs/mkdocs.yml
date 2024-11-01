@@ -40,5 +40,6 @@ nav:
     - Consuming the API: api/consume.md
   - Architecture and code: 
     - Overview: code/index.md
+    - App Structure: code/pattern.md
   - Upgrading/Updating:
     - Upgrading to 0.18.0: upgrade/0_18_0.md
