@@ -11,11 +11,6 @@ services:
     restart: always
     volumes:
       - dev-pgadmin-data:/var/lib/pgadmin
-    deploy:
-      resources:
-        limits:
-          cpus: '12.0'
-          memory: 4096M
 
   dev-shopping-app-db:
     container_name: shopping-db
@@ -34,11 +29,6 @@ services:
     networks:
       - dev-postgres-django-network
     restart: always
-    deploy:
-      resources:
-        limits:
-          cpus: '12.0'
-          memory: 4096M
 
   dev-shopping-django-administration:
     container_name: shopping-django-admin
@@ -55,11 +45,6 @@ services:
         condition: service_healthy
     networks:
       - dev-postgres-django-network
-    deploy:
-      resources:
-        limits:
-          cpus: '12.0'
-          memory: 4096M
 
   dev-shopping-django-app:
     container_name: shopping-django-app
@@ -68,9 +53,10 @@ services:
       dockerfile: docker/server/Dockerfile
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
+      TESTS_ENVIRONMENT: true
     env_file:
       - .env.dev
-    command: "gunicorn -b 0.0.0.0:80 -w 4 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
+    command: "uvicorn shoppingapp.config.asgi:app --host 0.0.0.0 --port 80 --workers 16"
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
@@ -93,11 +79,6 @@ services:
           target: /src/shoppingapp
         - action: rebuild
           path: ../src/requirements.txt
-    deploy:
-      resources:
-        limits:
-          cpus: '12.0'
-          memory: 4096M
 
   dev-shopping-django-site:
     container_name: shopping-django-site
@@ -125,11 +106,6 @@ services:
         - action: sync+restart
           path: ../src/htmlcov
           target: /var/www/html/htmlcov/
-    deploy:
-      resources:
-        limits:
-          cpus: '12.0'
-          memory: 4096M
 
   dev-shopping-load-testing:
     container_name: shopping-load-testing
@@ -143,11 +119,6 @@ services:
     networks:
       - dev-postgres-django-network
     restart: always
-    deploy:
-      resources:
-        limits:
-          cpus: '4.0'
-          memory: 4096M
 
 networks:
   dev-postgres-django-network:
