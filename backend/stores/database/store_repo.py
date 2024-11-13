@@ -2,11 +2,11 @@
 
 import logging
 from datetime import date
+from math import ceil
 from typing import Any, Literal, no_type_check
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
-from django.core.paginator import Paginator
 from django.db.models import Case, Count, F, IntegerField, When
 
 from stores.models import ShoppingStore as Store
@@ -16,8 +16,7 @@ log = logging.getLogger(__name__)
 log.info("Store repository loading...")
 
 
-@sync_to_async
-def _filter(
+async def _filter(
     page_number: int = 1,
     stores_per_page: int = 10,
     name: str | None = None,
@@ -53,7 +52,7 @@ def _filter(
     Returns:
         StorePaginationSchema: Store pagination object.
     """
-    stores = Store.objects.all()
+    stores = Store.objects.select_related("user").all()
 
     if ids:
         stores = stores.filter(id__in=ids)
@@ -76,34 +75,28 @@ def _filter(
     if user:
         stores = stores.filter(user=user)
 
-    if sort and sort_dir:
-        prefix = "-" if sort_dir == "desc" else ""
-        stores = stores.order_by(f"{prefix}{sort}")
-    elif sort and not sort_dir:
-        stores = stores.order_by(f"{sort}")
-    elif not sort and sort_dir:
-        prefix = "-" if sort_dir == "desc" else ""
-        stores = stores.order_by(f"{prefix}updated_at")
-    else:
-        stores = stores.order_by("-updated_at")
+    sort_field = sort or "updated_at"
+    prefix = "" if sort_dir == "asc" else "-"
+    stores = stores.order_by(f"{prefix}{sort_field}")
 
-    paginator = Paginator(stores, stores_per_page)
-    paginated_page = paginator.get_page(page_number)
+    start = (page_number - 1) * stores_per_page
+    end = start + stores_per_page
 
-    paginated_stores = paginated_page.object_list
-    results = [StoreSchema.from_orm(store) for store in paginated_stores]
-    total = paginator.count
-    page = paginated_page.number
-    total_pages = paginator.num_pages
-    has_previous = paginated_page.has_previous()
-    previous_page = paginated_page.previous_page_number() if has_previous else None
-    has_next = paginated_page.has_next()
-    next_page = paginated_page.next_page_number() if has_next else None
+    total = await stores.acount()
+    total_pages = ceil(total / stores_per_page)
+
+    paginated_stores = stores[start:end]
+    results = [StoreSchema.from_orm(store) async for store in paginated_stores]
+
+    has_previous = page_number > 1
+    previous_page = page_number - 1 if page_number > 1 else None
+    has_next = end < total
+    next_page = page_number + 1 if end < total else None
 
     result = StorePaginationSchema(
         stores=results,
         total=total,
-        page_number=page,
+        page_number=page_number,
         total_pages=total_pages,
         has_previous=has_previous,
         previous_page=previous_page,

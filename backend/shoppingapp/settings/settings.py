@@ -89,8 +89,8 @@ DATABASES = {
         "PORT": getenv("SHOPPING_DB_PORT", "5432"),
         "OPTIONS": {
             "pool": {
-                "min_size": 2,
-                "max_size": 8,
+                "min_size": 1,
+                "max_size": 6,
             }
         },
     }
