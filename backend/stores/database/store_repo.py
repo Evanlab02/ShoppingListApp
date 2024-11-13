@@ -79,11 +79,16 @@ async def _filter(
     prefix = "" if sort_dir == "asc" else "-"
     stores = stores.order_by(f"{prefix}{sort_field}")
 
+    total = await stores.acount()
+    total_pages = ceil(total / stores_per_page)
+
     start = (page_number - 1) * stores_per_page
     end = start + stores_per_page
 
-    total = await stores.acount()
-    total_pages = ceil(total / stores_per_page)
+    if start > total:
+        page_number = total_pages
+        start = (page_number - 1) * stores_per_page
+        end = start + stores_per_page
 
     paginated_stores = stores[start:end]
     results = [StoreSchema.from_orm(store) async for store in paginated_stores]

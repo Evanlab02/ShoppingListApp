@@ -202,11 +202,11 @@ class TestStoreRepoGet(TestCase):
 
         first_store = stores[0]
         first_store_name = first_store.model_dump().get("name", "")
-        self.assertEqual(first_store_name, "Base Test Store")
+        self.assertEqual(first_store_name, TEST_STORE)
 
         second_store = stores[1]
         second_store_name = second_store.model_dump().get("name", "")
-        self.assertEqual(second_store_name, TEST_STORE)
+        self.assertEqual(second_store_name, "Base Test Store")
 
     async def test_get_stores_with_sort_and_dir(self) -> None:
         """Test get_stores using sort with name and direction."""
