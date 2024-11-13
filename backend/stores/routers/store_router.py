@@ -1,6 +1,7 @@
 """Contains store router functions."""
 
 import logging
+from typing import Literal
 
 from django.http import HttpRequest
 from ninja import Router
@@ -107,7 +108,13 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
 
 
 @store_router.get("", response={200: StorePaginationSchema})
-async def get_stores(request: HttpRequest, limit: int = 10, page: int = 1) -> StorePaginationSchema:
+async def get_stores(
+    request: HttpRequest,
+    limit: int = 10,
+    page: int = 1,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
+) -> StorePaginationSchema:
     """
     Get the stores.
 
@@ -115,31 +122,41 @@ async def get_stores(request: HttpRequest, limit: int = 10, page: int = 1) -> St
         request (HttpRequest): The HTTP request.
         limit (int): The limit of stores to get per page.
         page (int): The page number.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: The stores.
     """
     log.info(f"User requested stores with limit ({limit}) for page: {page}.")
-    result = await store_service.get_stores(limit, page)
+    result = await store_service.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
     return result
 
 
 @store_router.get("/me", response={200: StorePaginationSchema})
 async def get_personal_stores(
-    request: HttpRequest, limit: int = 10, page: int = 1
+    request: HttpRequest,
+    limit: int = 10,
+    page: int = 1,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Get the stores you have created.
 
     Args:
         request (HttpRequest): The HTTP request.
+        limit (int): The limit of stores to get per page.
+        page (int): The page number.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: The stores.
     """
     user = await request.auser()
     log.info(f"User requested personal stores with limit ({limit}) for page: {page}.")
-    result = await store_service.get_stores(limit, page, user)
+    result = await store_service.get_stores(limit, page, user, sort, sort_dir)
     return result
 
 
@@ -212,6 +229,8 @@ async def search(
     limit: int = 10,
     name: str | None = None,
     own: bool = False,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Perform search for stores.
@@ -223,6 +242,8 @@ async def search(
         limit (int): The number of stores per page.
         name (str): Full or partial name to search for.
         own (bool): Flag indicating if you would like to see only your own stores.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: The stores in a paginated response.
@@ -246,6 +267,8 @@ async def search(
         updated_on=filters.updated_on,
         updated_before=filters.updated_before,
         updated_after=filters.updated_after,
+        sort=sort,
+        sort_dir=sort_dir,
     )
 
 
