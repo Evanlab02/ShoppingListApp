@@ -23,8 +23,5 @@ requirements:
 	@pipenv requirements > src/requirements.txt
 	@pipenv requirements --dev > src/requirements-dev.txt
 
-clean:
-	@rm -rf site/
-
 exec:
 	docker exec -it shopping-django-app bash
