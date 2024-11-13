@@ -157,7 +157,7 @@ async def get_stores(
         stores_per_page (int): The number of stores per page, default to 10.
         user (User | None): User who owns the stores.
         sort (str | None): The field to sort by.
-        dir (str | None): The direction to sort in.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: Store pagination object.
@@ -198,7 +198,7 @@ async def filter_stores(
         user (User | None): The user who created the store.
         ids (list[int] | None): The store ids to filter from.
         sort (str | None): The field to sort by.
-        dir (str | None): The direction to sort in.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: Store pagination object.

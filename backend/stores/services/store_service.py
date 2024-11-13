@@ -2,7 +2,7 @@
 
 import logging
 from datetime import date
-from typing import Any
+from typing import Any, Literal
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
@@ -185,20 +185,24 @@ async def get_stores(
     limit: int = 10,
     page_number: int = 1,
     user: Any | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Get the stores.
 
     Args:
-        limit (int): The limit of stores per page.
-        page_number (int): The page number.
+        limit (int): The limit of stores per page, defaults 10.
+        page_number (int): The page number, defaults to 1.
         user (User): User who created the stores.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: The stores in a paginated format.
     """
     log.info(f"Retrieving stores for page {page_number} with limit {limit}...")
-    paginated_stores = await store_repo.get_stores(page_number, limit, user)
+    paginated_stores = await store_repo.get_stores(page_number, limit, user, sort, sort_dir)
     return paginated_stores
 
 
@@ -294,6 +298,8 @@ async def search_stores(
     updated_on: date | None = None,
     updated_before: date | None = None,
     updated_after: date | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Search for stores based on criteria.
@@ -311,6 +317,8 @@ async def search_stores(
         updated_on (date): Date the store was last updated.
         updated_before (date): Date the store was last updated before.
         updated_after (date): Date the store was last updated after.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: The schema result which contains the stores that were searched for.
@@ -338,6 +346,8 @@ async def search_stores(
         updated_before=updated_before,
         updated_after=updated_after,
         ids=ids,
+        sort=sort,
+        sort_dir=sort_dir,
     )
 
 
