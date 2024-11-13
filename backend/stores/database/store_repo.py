@@ -2,7 +2,7 @@
 
 import logging
 from datetime import date
-from typing import Any, no_type_check
+from typing import Any, Literal, no_type_check
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
@@ -30,6 +30,8 @@ def _filter(
     updated_after: date | None = None,
     user: User | None = None,
     ids: list[int] | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Filter stores.
@@ -74,7 +76,16 @@ def _filter(
     if user:
         stores = stores.filter(user=user)
 
-    stores = stores.order_by("-updated_at")
+    if sort and sort_dir:
+        prefix = "-" if sort_dir == "desc" else ""
+        stores = stores.order_by(f"{prefix}{sort}")
+    elif sort and not sort_dir:
+        stores = stores.order_by(f"{sort}")
+    elif not sort and sort_dir:
+        prefix = "-" if sort_dir == "desc" else ""
+        stores = stores.order_by(f"{prefix}updated_at")
+    else:
+        stores = stores.order_by("-updated_at")
 
     paginator = Paginator(stores, stores_per_page)
     paginated_page = paginator.get_page(page_number)
@@ -135,19 +146,23 @@ async def get_stores(
     page_number: int = 1,
     stores_per_page: int = 10,
     user: User | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Get all stores.
 
     Args:
-        page (int): The page number.
-        stores_per_page (int): The number of stores per page.
-        user (User): User who owns the stores.
+        page (int): The page number, default to 1.
+        stores_per_page (int): The number of stores per page, default to 10.
+        user (User | None): User who owns the stores.
+        sort (str | None): The field to sort by.
+        dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: Store pagination object.
     """
-    return await _filter(page_number, stores_per_page, user=user)
+    return await _filter(page_number, stores_per_page, user=user, sort=sort, sort_dir=sort_dir)
 
 
 async def filter_stores(
@@ -163,6 +178,8 @@ async def filter_stores(
     updated_after: date | None = None,
     user: User | None = None,
     ids: list[int] | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> StorePaginationSchema:
     """
     Filter stores.
@@ -180,6 +197,8 @@ async def filter_stores(
         updated_after (date | None): The date the store was updated after.
         user (User | None): The user who created the store.
         ids (list[int] | None): The store ids to filter from.
+        sort (str | None): The field to sort by.
+        dir (str | None): The direction to sort in.
 
     Returns:
         StorePaginationSchema: Store pagination object.
@@ -197,6 +216,8 @@ async def filter_stores(
         updated_after,
         user,
         ids=ids,
+        sort=sort,
+        sort_dir=sort_dir,
     )
 
 
