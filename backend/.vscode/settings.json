@@ -16,6 +16,9 @@
         "**/.mypy_cache": true,
         ".pytest_cache": true,
         ".coverage": true,
+        "htmlcov": true,
+        "coverage.xml": true,
+        "debug.log": true
     },
     "mypy-type-checker.severity": {
         "error": "Error",

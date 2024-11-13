@@ -16,3 +16,9 @@ I split the apps into three main parts when developing API endpoints.
     - Utilizes the services, and is responsible for returning the result and is the entry point.
 
 ![Overview of Repositories, Services and Routers](./assets/pattern.png)
+
+## Views
+
+Similiar to the above, we have services and repositories for the views.
+
+![Overview of Repositories, Services and Views](./assets/pattern-two.png)

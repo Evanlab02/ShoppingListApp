@@ -146,6 +146,97 @@ class TestStoreRepoGet(TestCase):
         self.assertIsInstance(stores, list)
         self.assertEqual(len(stores), 0)
 
+    async def test_get_stores_with_sort_dir(self) -> None:
+        """Test get_stores using only sort direction."""
+        name = TEST_STORE
+        store_type = 1
+        description = TEST_DESCRIPTION
+        store = await ShoppingStore.objects.acreate(
+            name=name,
+            store_type=store_type,
+            description=description,
+            user=self.user,
+        )
+        await store.asave()
+
+        paginated_data = await get_stores(sort_dir="asc")
+        stores = paginated_data.stores
+        page_number = paginated_data.page_number
+
+        self.assertEqual(page_number, 1)
+        self.assertIsInstance(stores, list)
+        self.assertEqual(len(stores), 2)
+
+        first_store = stores[0]
+        first_store_name = first_store.model_dump().get("name", "")
+        self.assertEqual(first_store_name, "Base Test Store")
+
+        second_store = stores[1]
+        second_store_name = second_store.model_dump().get("name", "")
+        self.assertEqual(second_store_name, TEST_STORE)
+
+        first_store_updated = first_store.model_dump().get("updated_at", "")
+        second_store_updated = second_store.model_dump().get("updated_at", "")
+        self.assertLess(first_store_updated, second_store_updated)
+
+    async def test_get_stores_with_sort(self) -> None:
+        """Test get_stores using only sort with name."""
+        name = TEST_STORE
+        store_type = 1
+        description = TEST_DESCRIPTION
+        store = await ShoppingStore.objects.acreate(
+            name=name,
+            store_type=store_type,
+            description=description,
+            user=self.user,
+        )
+        await store.asave()
+
+        paginated_data = await get_stores(sort="name")
+        stores = paginated_data.stores
+        page_number = paginated_data.page_number
+
+        self.assertEqual(page_number, 1)
+        self.assertIsInstance(stores, list)
+        self.assertEqual(len(stores), 2)
+
+        first_store = stores[0]
+        first_store_name = first_store.model_dump().get("name", "")
+        self.assertEqual(first_store_name, TEST_STORE)
+
+        second_store = stores[1]
+        second_store_name = second_store.model_dump().get("name", "")
+        self.assertEqual(second_store_name, "Base Test Store")
+
+    async def test_get_stores_with_sort_and_dir(self) -> None:
+        """Test get_stores using sort with name and direction."""
+        name = TEST_STORE
+        store_type = 1
+        description = TEST_DESCRIPTION
+        store = await ShoppingStore.objects.acreate(
+            name=name,
+            store_type=store_type,
+            description=description,
+            user=self.user,
+        )
+        await store.asave()
+
+        paginated_data = await get_stores(sort="name", sort_dir="desc")
+        stores = paginated_data.stores
+        page_number = paginated_data.page_number
+
+        self.assertEqual(page_number, 1)
+        self.assertIsInstance(stores, list)
+        self.assertEqual(len(stores), 2)
+
+        first_store = stores[0]
+        first_store_name = first_store.model_dump().get("name", "")
+        self.assertEqual(first_store_name, TEST_STORE)
+
+        second_store = stores[1]
+        second_store_name = second_store.model_dump().get("name", "")
+        self.assertEqual(second_store_name, "Base Test Store")
+
     async def test_get_store(self) -> None:
         """Test get_store."""
         store = await get_store(self.store.id)
