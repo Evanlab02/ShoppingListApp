@@ -17,6 +17,7 @@ class StoreAdmin(ModelAdmin):  # type: ignore
     list_display = ["name", "store_type", "description", "created_at", "updated_at", "user"]
     list_filter = ["store_type", "user", "created_at", "updated_at"]
     actions = ["make_online", "make_in_store", "make_online_and_in_store"]
+    search_fields = ["name", "description"]
 
     @admin.action(description="Mark selected stores as online.")
     def make_online(self, request, queryset) -> None:  # type: ignore
