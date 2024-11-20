@@ -16,6 +16,22 @@ class StoreAdmin(ModelAdmin):  # type: ignore
 
     list_display = ["name", "store_type", "description", "created_at", "updated_at", "user"]
     list_filter = ["store_type", "user", "created_at", "updated_at"]
+    actions = ["make_online", "make_in_store", "make_online_and_in_store"]
+
+    @admin.action(description="Mark selected stores as online.")
+    def make_online(self, request, queryset) -> None:  # type: ignore
+        """Update all selected stores to be online."""
+        queryset.update(store_type=1)
+
+    @admin.action(description="Mark selected stores as in-store.")
+    def make_in_store(self, request, queryset) -> None:  # type: ignore
+        """Update all selected stores to be in-store."""
+        queryset.update(store_type=2)
+
+    @admin.action(description="Mark selected stores as online and in-store.")
+    def make_online_and_in_store(self, request, queryset) -> None:  # type: ignore
+        """Update all selected stores as online and in-store."""
+        queryset.update(store_type=3)
 
 
 admin.site.register(Store, StoreAdmin)
