@@ -15,6 +15,7 @@ class StoreAdmin(ModelAdmin):  # type: ignore
     """Admin configuration class for store models."""
 
     list_display = ["name", "store_type", "description", "created_at", "updated_at", "user"]
+    list_filter = ["store_type", "user", "created_at", "updated_at"]
 
 
 admin.site.register(Store, StoreAdmin)
