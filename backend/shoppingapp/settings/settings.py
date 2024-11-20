@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "items.apps.ItemsConfig",
     "stores.apps.StoresConfig",
     "dashboard.apps.DashboardConfig",
+    "django.contrib.admindocs",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

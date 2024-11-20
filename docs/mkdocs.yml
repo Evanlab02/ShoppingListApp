@@ -38,6 +38,8 @@ nav:
   - Consuming the API:
     - Creating your token: api/index.md
     - Consuming the API: api/consume.md
+  - Development:
+    - Getting Started: dev/index.md
   - Architecture and code: 
     - Overview: code/index.md
     - App Structure: code/pattern.md

@@ -2,23 +2,26 @@ services:
   dev-shopping-app-pgadmin:
     container_name: shopping-pgadmin
     image: dpage/pgadmin4:8.5
+    restart: always
     env_file:
       - .env.dev
     environment:
       SCRIPT_NAME: /pgadmin
     networks:
       - dev-postgres-django-network
-    restart: always
     volumes:
       - dev-pgadmin-data:/var/lib/pgadmin
 
   dev-shopping-app-db:
     container_name: shopping-db
     image: postgres:16.2-alpine3.18
+    restart: always
     environment:
       POSTGRES_USER: postgres
     env_file:
       - .env.dev
+    networks:
+      - dev-postgres-django-network
     volumes:
       - dev-postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -26,12 +29,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - dev-postgres-django-network
-    restart: always
 
   dev-shopping-django-administration:
     container_name: shopping-django-admin
+    command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
     build:
       context: .
       dockerfile: docker/admin/Dockerfile
@@ -39,15 +40,15 @@ services:
       - .env.dev
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
-    command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
+    networks:
+      - dev-postgres-django-network
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
-    networks:
-      - dev-postgres-django-network
 
   dev-shopping-django-app:
     container_name: shopping-django-app
+    command: "gunicorn -b 0.0.0.0:80 -w 1 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
     build:
       context: .
       dockerfile: docker/server/Dockerfile
@@ -56,32 +57,32 @@ services:
       TESTS_ENVIRONMENT: true
     env_file:
       - .env.dev
-    command: "uvicorn shoppingapp.config.asgi:app --host 0.0.0.0 --port 80 --workers 16"
+    networks:
+      - dev-postgres-django-network
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
-    networks:
-      - dev-postgres-django-network
     restart: always
     develop:
       watch:
         - action: sync+restart
-          path: ../src/authentication
-          target: /src/authentication
+          path: ./backend/authentication
+          target: /backend/authentication
         - action: sync+restart
-          path: ../src/stores
-          target: /src/stores
+          path: ./backend/stores
+          target: /backend/stores
         - action: sync+restart
-          path: ../src/items
-          target: /src/items
+          path: ./backenditems
+          target: /backend/items
         - action: sync+restart
-          path: ../src/shoppingapp
-          target: /src/shoppingapp
+          path: ./backend/shoppingapp
+          target: /backend/shoppingapp
         - action: rebuild
-          path: ../src/requirements.txt
+          path: ./backend/requirements.txt
 
   dev-shopping-django-site:
     container_name: shopping-django-site
+    restart: always
     build:
       context: .
       dockerfile: docker/site/Dockerfile
@@ -89,26 +90,23 @@ services:
       - "80"
     ports:
       - "8001:80"
+    networks:
+      - dev-postgres-django-network
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
-    networks:
-      - dev-postgres-django-network
-    restart: always
     develop:
       watch:
         - action: sync+restart
-          path: ../src/Caddyfile
+          path: ./site/Caddyfile
           target: /etc/caddy/Caddyfile
         - action: sync+restart
-          path: ../src/static
+          path: ./backend/static
           target: /var/www/html/static/
-        - action: sync+restart
-          path: ../src/htmlcov
-          target: /var/www/html/htmlcov/
 
   dev-shopping-load-testing:
     container_name: shopping-load-testing
+    restart: always
     build:
       context: .
       dockerfile: docker/testing/Dockerfile
@@ -118,7 +116,6 @@ services:
       - "8089:8089"
     networks:
       - dev-postgres-django-network
-    restart: always
 
 networks:
   dev-postgres-django-network:
