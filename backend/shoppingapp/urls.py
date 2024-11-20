@@ -156,6 +156,7 @@ def item_does_not_exist_handler(request: HttpRequest, exception: ItemDoesNotExis
 
 
 urlpatterns = [
+    path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/", api.urls),
     path("", include("authentication.urls")),
