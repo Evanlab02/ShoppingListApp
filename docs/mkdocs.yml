@@ -40,8 +40,11 @@ nav:
     - Consuming the API: api/consume.md
   - Development:
     - Getting Started: dev/index.md
-  - Architecture and code: 
-    - Overview: code/index.md
-    - App Structure: code/pattern.md
+    - Architecture and code: 
+      - Overview: code/index.md
+      - App Structure: code/pattern.md
+    - Workflows:
+      - Overview: dev/workflows.md
+      - Build: dev/github/build.md
   - Upgrading/Updating:
     - Upgrading to 0.18.0: upgrade/0_18_0.md

@@ -94,6 +94,42 @@ class TestGetItemsEndpoint(TestCase):
         self.assertEqual(items[1].get("user").get("username"), "testuser")
         self.assertEqual(items[0].get("user").get("username"), "testuser")
 
+    def test_get_items_sorted_by_price_asc(self) -> None:
+        """Test getting all items."""
+        response = self.client.get("/api/v1/items?sort=price&sort_dir=asc")
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        self.assertIn("items", data)
+        self.assertIn("total", data)
+        self.assertIn("page_number", data)
+        self.assertIn("total_pages", data)
+        self.assertIn("has_previous", data)
+        self.assertIn("previous_page", data)
+        self.assertIn("has_next", data)
+        self.assertIn("next_page", data)
+
+        self.assertEqual(data.get("total"), 2)
+        self.assertEqual(data.get("page_number"), 1)
+        self.assertEqual(data.get("total_pages"), 1)
+        self.assertEqual(data.get("has_previous"), False)
+        self.assertEqual(data.get("previous_page"), None)
+        self.assertEqual(data.get("has_next"), False)
+        self.assertEqual(data.get("next_page"), None)
+
+        items = data.get("items")
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0].get("name"), "Test Item")
+        self.assertEqual(items[1].get("name"), "Alternate Item")
+        self.assertEqual(items[0].get("description"), "Test Description")
+        self.assertEqual(items[1].get("description"), "Alternate Description")
+        self.assertEqual(items[0].get("price"), "100.00")
+        self.assertEqual(items[1].get("price"), "200.00")
+        self.assertEqual(items[0].get("store").get("name"), "Base Test Store")
+        self.assertEqual(items[1].get("store").get("name"), "Base Test Store")
+        self.assertEqual(items[0].get("user").get("username"), "testuser")
+        self.assertEqual(items[1].get("user").get("username"), "testuser")
+
     def test_get_items_page_1(self) -> None:
         """Test getting all items on page 1."""
         response = self.client.get("/api/v1/items?page=1&per_page=1")
@@ -153,6 +189,34 @@ class TestGetItemsEndpoint(TestCase):
         self.assertEqual(items[0].get("store").get("name"), "Base Test Store")
         self.assertEqual(items[1].get("user").get("username"), "testuser")
         self.assertEqual(items[0].get("user").get("username"), "testuser")
+
+    def test_get_personal_items_with_sort_on_price(self) -> None:
+        """Test getting personal items with a sort on the price asc."""
+        self.client.force_login(self.user)
+        response = self.client.get("/api/v1/items/me?sort=price&sort_dir=asc")
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        self.assertEqual(data.get("total"), 2)
+        self.assertEqual(data.get("page_number"), 1)
+        self.assertEqual(data.get("total_pages"), 1)
+        self.assertEqual(data.get("has_previous"), False)
+        self.assertEqual(data.get("previous_page"), None)
+        self.assertEqual(data.get("has_next"), False)
+        self.assertEqual(data.get("next_page"), None)
+
+        items = data.get("items")
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0].get("name"), "Test Item")
+        self.assertEqual(items[1].get("name"), "Alternate Item")
+        self.assertEqual(items[0].get("description"), "Test Description")
+        self.assertEqual(items[1].get("description"), "Alternate Description")
+        self.assertEqual(items[0].get("price"), "100.00")
+        self.assertEqual(items[1].get("price"), "200.00")
+        self.assertEqual(items[0].get("store").get("name"), "Base Test Store")
+        self.assertEqual(items[1].get("store").get("name"), "Base Test Store")
+        self.assertEqual(items[0].get("user").get("username"), "testuser")
+        self.assertEqual(items[1].get("user").get("username"), "testuser")
 
     def test_get_personal_items_with_no_items(self) -> None:
         """Test getting personal items with no items."""

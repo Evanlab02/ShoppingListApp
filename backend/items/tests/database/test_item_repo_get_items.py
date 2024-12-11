@@ -41,7 +41,7 @@ class TestGetItems(TestCase):
         self.item = Item.objects.create(
             name="Test Item",
             description="Test Description",
-            price=100,
+            price=200,
             store=self.store,
             user=self.user,
         )
@@ -50,7 +50,7 @@ class TestGetItems(TestCase):
         self.alt_item = Item.objects.create(
             name="Alternate Item",
             description="Alternate Description",
-            price=200,
+            price=100,
             store=self.store,
             user=self.user,
         )
@@ -145,3 +145,33 @@ class TestGetItems(TestCase):
         self.assertEqual(items.has_next, False)
         self.assertIsNone(items.previous_page)
         self.assertIsNone(items.next_page)
+
+    async def test_get_items_sort(self) -> None:
+        """Test getting items and sort by price."""
+        items = await item_repo.get_items(sort="price")
+        self.assertEqual(len(items.items), 2)
+
+        results = items.items
+
+        item1 = results[0].model_dump()
+        self.assertEqual(item1.get("name"), "Test Item")
+        self.assertEqual(item1.get("price"), 200.00)
+
+        item2 = results[1].model_dump()
+        self.assertEqual(item2.get("name"), "Alternate Item")
+        self.assertEqual(item2.get("price"), 100.00)
+
+    async def test_get_items_sort_with_direction(self) -> None:
+        """Test getting items and sort by price in a direction."""
+        items = await item_repo.get_items(sort="price", sort_dir="asc")
+        self.assertEqual(len(items.items), 2)
+
+        results = items.items
+
+        item1 = results[0].model_dump()
+        self.assertEqual(item1.get("name"), "Alternate Item")
+        self.assertEqual(item1.get("price"), 100.00)
+
+        item2 = results[1].model_dump()
+        self.assertEqual(item2.get("name"), "Test Item")
+        self.assertEqual(item2.get("price"), 200.00)

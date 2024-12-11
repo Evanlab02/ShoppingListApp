@@ -1,6 +1,7 @@
 """Contains item router functions."""
 
 import logging
+from typing import Literal
 
 from django.http import HttpRequest
 from ninja import Router
@@ -46,7 +47,11 @@ async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
 
 @item_router.get("", response={200: ItemPaginationSchema})
 async def get_items(
-    request: HttpRequest, page: int = 1, per_page: int = 10
+    request: HttpRequest,
+    page: int = 1,
+    per_page: int = 10,
+    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> ItemPaginationSchema:
     """
     Get all items.
@@ -55,17 +60,25 @@ async def get_items(
         request (HttpRequest): The HTTP request.
         page (int): The page number.
         per_page (int): The number of items per page.
+        sort (str): The field to sort by.
+        sort_dir (str): The direction to sort in, default is 'desc'.
 
     Returns:
         ItemPaginationSchema: The paginated list of items.
     """
-    items = await item_service.get_items(page=page, items_per_page=per_page)
+    items = await item_service.get_items(
+        page=page, items_per_page=per_page, sort=sort, sort_dir=sort_dir
+    )
     return items
 
 
 @item_router.get("/me", response={200: ItemPaginationSchema})
 async def get_my_items(
-    request: HttpRequest, page: int = 1, per_page: int = 10
+    request: HttpRequest,
+    page: int = 1,
+    per_page: int = 10,
+    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> ItemPaginationSchema:
     """
     Get all items.
@@ -74,12 +87,16 @@ async def get_my_items(
         request (HttpRequest): The HTTP request.
         page (int): The page number.
         per_page (int): The number of items per page.
+        sort (str): The field to sort by.
+        sort_dir (str): The direction to sort in, default is 'desc'.
 
     Returns:
         ItemPaginationSchema: The paginated list of items.
     """
     user = await request.auser()
-    items = await item_service.get_items(page=page, items_per_page=per_page, user=user)
+    items = await item_service.get_items(
+        page=page, items_per_page=per_page, user=user, sort=sort, sort_dir=sort_dir
+    )
     return items
 
 
@@ -188,6 +205,8 @@ async def search(
     name: str | None = None,
     own: bool = False,
     store: int | None = None,
+    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> ItemPaginationSchema:
     """Search for items based off filters."""
     user = None
@@ -195,7 +214,14 @@ async def search(
         user = await request.auser()
 
     return await item_service.search_items(
-        user=user, limit=limit, name=name, page=page, search=search, store_id=store
+        user=user,
+        limit=limit,
+        name=name,
+        page=page,
+        search=search,
+        store_id=store,
+        sort=sort,
+        sort_dir=sort_dir,
     )
 
 

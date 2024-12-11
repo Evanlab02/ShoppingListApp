@@ -64,3 +64,14 @@ class BaseTestCase(StaticLiveServerTestCase):
             "password": self.mock_password,
         }
         self.session.post(url, json=data)
+
+    def _create_alt_item(self) -> None:
+        """Create another item."""
+        self.alt_item = Item.objects.create(
+            name="Very expensive item",
+            description="Yum!",
+            price=3000,
+            store=self.store,
+            user=self.user,
+        )
+        self.alt_item.save()
