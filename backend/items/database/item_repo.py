@@ -235,6 +235,13 @@ async def get_items(
     Args:
         page (int): The page number.
         items_per_page (int): The number of items per page.
+        user (User): The user to filter off.
+        store (Store): Specific store to filter off.
+        name (int): The full or partial name of the item to filter by.
+        stores (list[Store]): The stores to filter off.
+        search (ItemSearchSchema): The search object for advanced filtering/searching.
+        sort (str): The field to sort by.
+        sort_dir (str): The direction to sort in.
 
     Returns:
         ItemPaginationSchema: The paginated items.

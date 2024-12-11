@@ -1,6 +1,7 @@
 """Contains item service functions."""
 
 import logging
+from typing import Literal
 
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
@@ -66,15 +67,30 @@ async def get_items(
     items_per_page: int = 10,
     user: User | AbstractBaseUser | AnonymousUser | None = None,
     store: Store | None = None,
+    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> ItemPaginationSchema:
     """
     Get all items.
+
+    Args:
+        page (int): The page number.
+        items_per_page (int): The number of items per page.
+        user (User): The user to filter off.
+        store (Store): Specific store to filter off.
+        sort (str): The field to sort by.
+        sort_dir (str): The direction to sort in.
 
     Returns:
         ItemPaginationSchema: A paginated list of items.
     """
     items = await item_repo.get_items(
-        page=page, items_per_page=items_per_page, user=user, store=store
+        page=page,
+        items_per_page=items_per_page,
+        user=user,
+        store=store,
+        sort=sort,
+        sort_dir=sort_dir,
     )
     return items
 
@@ -231,6 +247,8 @@ async def search_items(
     name: str | None = None,
     store_id: int | None = None,
     search: ItemSearchSchema | None = None,
+    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
 ) -> ItemPaginationSchema:
     """
     Search items based on the provided filters.
@@ -238,20 +256,12 @@ async def search_items(
     Args:
         page (int): The page number.
         limit (int): The number of items per page.
-        user (User): The user that owns the items.
-        store_id (int): The store to filter off.
-        store_ids (int): Stores to filter off.
-        ids (list[int]): The list of ids to filter off.
-        created_on (date): The date the item was created.
-        created_before (date): Items created before this date.
-        created_after (date): Items created after this date.
-        updated_on (date): The items updated on this date.
-        updated_before (date): The items updated before this date.
-        updated_after (date): The items updated after this date.
-        description (str): The description to filter for.
-        price (float): Price to filter by.
-        price_is_lt (float): Price is smaller than.
-        price_is_gt (float): The price is greater than.
+        user (User): The user to filter off.
+        name (int): The full or partial name of the item to filter by.
+        store_id (int): Specific store to filter off.
+        search (ItemSearchSchema): The search object for advanced filtering/searching.
+        sort (str): The field to sort by.
+        sort_dir (str): The direction to sort in.
 
     Returns:
         ItemPaginationSchema: Returns the item pagination schema.
@@ -280,6 +290,8 @@ async def search_items(
         user=user,
         search=search,
         stores=stores,
+        sort=sort,
+        sort_dir=sort_dir,
     )
     return result
 
