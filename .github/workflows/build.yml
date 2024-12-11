@@ -9,7 +9,8 @@ on:
 permissions:
   contents: read
 
-
+env:
+  UV_SYSTEM_PYTHON: 1
 
 jobs:
   static-files-build:
@@ -19,6 +20,7 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+
       - name: Load .env file
         uses: aarcangeli/load-dotenv@v1.0.0
         with:
@@ -27,14 +29,22 @@ jobs:
             .env.template
           quiet: false
           if-file-not-found: error
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-          cache: "pip"
-      - name: Setup
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/requirements.txt"
+
+      - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          uv pip install -r requirements.txt
+
       - name: Create/Build Static Files
         run: |
           python manage.py collectstatic --no-input
