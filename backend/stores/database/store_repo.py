@@ -13,7 +13,6 @@ from stores.models import ShoppingStore as Store
 from stores.schemas.output import StorePaginationSchema, StoreSchema
 
 log = logging.getLogger(__name__)
-log.info("Store repository loading...")
 
 
 async def _filter(
@@ -136,7 +135,6 @@ async def create_store(
         description=description,
         user=user,
     )
-    await store.asave()
     return store
 
 
@@ -344,6 +342,3 @@ async def does_name_exist(name: str) -> bool:
         bool: True if the store name exists, False otherwise.
     """
     return await Store.objects.filter(name=name).aexists()
-
-
-log.info("Store repository loaded.")

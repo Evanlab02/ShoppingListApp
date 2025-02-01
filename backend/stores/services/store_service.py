@@ -18,6 +18,7 @@ from stores.errors.api_exceptions import (
     StoreDoesNotExist,
 )
 from stores.models import ShoppingStore as Store
+from stores.constants import STORE_TYPE_MAPPING
 from stores.schemas.input import NewStore
 from stores.schemas.output import (
     StoreAggregationSchema,
@@ -30,6 +31,27 @@ log.info("Store service loading...")
 
 STORE_DOES_NOT_EXIST = "Store does not exist."
 
+
+def _is_valid_store_type(store_type: int) -> int:
+    """
+    Check if the store type is valid. 
+    
+    Raise an error if it is not.
+
+    Args:
+        store_type (int): The store type.
+
+    Returns:
+        int: The store type.
+
+    Raises:
+        InvalidStoreType: If the store type is invalid.
+    """
+    if store_type in STORE_TYPE_MAPPING.keys():
+        return store_type
+    
+    log.warning("Invalid store type provided.")
+    raise InvalidStoreType(store_type)
 
 def _get_store_type_label(store_type_value: int) -> str:
     """
@@ -44,13 +66,11 @@ def _get_store_type_label(store_type_value: int) -> str:
     Raises:
         InvalidStoreType: If the store type is invalid.
     """
-    log.info("Attempting store type conversion to label.")
     try:
         return STORE_TYPE_MAPPING[store_type_value]
     except KeyError:
         log.warning("Failed store type conversion to label.")
         raise InvalidStoreType(store_type_value)
-
 
 def _get_store_type_value(store_type_label: str) -> int:
     """
@@ -65,7 +85,6 @@ def _get_store_type_value(store_type_label: str) -> int:
     Raises:
         InvalidStoreType: If the store type is invalid.
     """
-    log.info("Attempting store type conversion to value.")
     for key, value in STORE_TYPE_MAPPING.items():
         if value == store_type_label:
             return key
@@ -74,7 +93,7 @@ def _get_store_type_value(store_type_label: str) -> int:
     raise InvalidStoreType(store_type_label)
 
 
-async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousUser) -> StoreSchema:
+async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousUser) -> Store:
     """
     Create a new store.
 
@@ -82,35 +101,27 @@ async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousU
         new_store (NewStore): The new store data.
 
     Returns:
-        StoreSchema: The created store.
+        Store: The created store.
 
     Raises:
         InvalidStoreType: If the store type is invalid.
         StoreAlreadyExists: If the store already exists.
     """
-    log.info("Retrieving info for new store...")
     name = new_store.name
     store_type = new_store.store_type
-    store_type_label = ""
     description = new_store.description
 
-    log.info("Validating store type...")
-    if isinstance(store_type, int):
-        store_type_label = _get_store_type_label(store_type)
-    elif isinstance(store_type, str):
-        store_type_label = store_type
+    if isinstance(store_type, str):
+        store_type_value = _get_store_type_value(store_type)
+    else:
+        store_type_value = _is_valid_store_type(store_type)
 
-    store_type_value = _get_store_type_value(store_type_label)
-
-    log.info("Validating store name...")
     if await store_repo.does_name_exist(name):
         log.warning("Store with this name already exists...")
         raise StoreAlreadyExists(name)
 
-    log.info("Creating store...")
     store = await store_repo.create_store(name, store_type_value, description, user)
-    store_schema = StoreSchema.from_orm(store)
-    return store_schema
+    return store
 
 
 async def get_store_detail(store_id: int) -> StoreSchema:

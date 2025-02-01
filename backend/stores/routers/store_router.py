@@ -21,7 +21,6 @@ store_router = Router(tags=["Stores"], auth=ApiKey())
 
 
 log = logging.getLogger(__name__)
-log.info("Store router loading...")
 
 
 @store_router.post("/create", response={201: StoreSchema})
@@ -36,7 +35,6 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema
     Returns:
         StoreSchema: The created store.
     """
-    log.info("User requested to create a store.")
     user = await request.auser()
     store = await store_service.create(new_store, user)
     return store

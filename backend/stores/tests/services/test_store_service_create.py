@@ -40,11 +40,10 @@ class TestStoreService(TestCase):
             description=TEST_DESCRIPTION,
         )
         store = await create(new_store, self.user)
-        store_dict = store.model_dump()
-        self.assertEqual(store_dict.get("name"), TEST_STORE)
-        self.assertEqual(store_dict.get("store_type"), TEST_STORE_TYPE)
-        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
-        self.assertIsInstance(store_dict.get("id"), int)
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.store_type, TEST_STORE_TYPE)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertIsInstance(store.id, int)
 
     async def test_create_store_invalid_store_type(self) -> None:
         """Test create store with invalid store type."""
@@ -75,11 +74,10 @@ class TestStoreService(TestCase):
             description=TEST_DESCRIPTION,
         )
         store = await create(new_store, self.user)
-        store_dict = store.model_dump()
-        self.assertEqual(store_dict.get("name"), TEST_STORE)
-        self.assertEqual(store_dict.get("store_type"), TEST_STORE_TYPE)
-        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
-        self.assertIsInstance(store_dict.get("id"), int)
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.store_type, TEST_STORE_TYPE)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertIsInstance(store.id, int)
 
     async def test_create_store_in_store_type_int(self) -> None:
         """Test create store with in store type as int."""
@@ -89,11 +87,10 @@ class TestStoreService(TestCase):
             description=TEST_DESCRIPTION,
         )
         store = await create(new_store, self.user)
-        store_dict = store.model_dump()
-        self.assertEqual(store_dict.get("name"), TEST_STORE)
-        self.assertEqual(store_dict.get("store_type"), 2)
-        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
-        self.assertIsInstance(store_dict.get("id"), int)
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.store_type, 2)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertIsInstance(store.id, int)
 
     async def test_create_store_both_type_int(self) -> None:
         """Test create store with both type as int."""
@@ -103,11 +100,10 @@ class TestStoreService(TestCase):
             description=TEST_DESCRIPTION,
         )
         store = await create(new_store, self.user)
-        store_dict = store.model_dump()
-        self.assertEqual(store_dict.get("name"), TEST_STORE)
-        self.assertEqual(store_dict.get("store_type"), 3)
-        self.assertEqual(store_dict.get("description"), TEST_DESCRIPTION)
-        self.assertIsInstance(store_dict.get("id"), int)
+        self.assertEqual(store.name, TEST_STORE)
+        self.assertEqual(store.store_type, 3)
+        self.assertEqual(store.description, TEST_DESCRIPTION)
+        self.assertIsInstance(store.id, int)
 
     async def test_create_store_invalid_store_type_int(self) -> None:
         """Test create store with invalid store type int."""
