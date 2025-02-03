@@ -9,6 +9,7 @@ from ninja import Router
 from authentication.auth.api_key import ApiKey
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
+from stores.models import ShoppingStore
 from stores.schemas.input import NewStore, StoreDescription, StoreSearch
 from stores.schemas.output import (
     StoreAggregationSchema,
@@ -24,7 +25,7 @@ log = logging.getLogger(__name__)
 
 
 @store_router.post("/create", response={201: StoreSchema})
-async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema:
+async def create_store(request: HttpRequest, new_store: NewStore) -> ShoppingStore:
     """
     Create a new store.
 

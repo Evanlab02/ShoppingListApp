@@ -18,7 +18,6 @@ from stores.errors.api_exceptions import (
     StoreDoesNotExist,
 )
 from stores.models import ShoppingStore as Store
-from stores.constants import STORE_TYPE_MAPPING
 from stores.schemas.input import NewStore
 from stores.schemas.output import (
     StoreAggregationSchema,
@@ -34,8 +33,8 @@ STORE_DOES_NOT_EXIST = "Store does not exist."
 
 def _is_valid_store_type(store_type: int) -> int:
     """
-    Check if the store type is valid. 
-    
+    Check if the store type is valid.
+
     Raise an error if it is not.
 
     Args:
@@ -49,9 +48,10 @@ def _is_valid_store_type(store_type: int) -> int:
     """
     if store_type in STORE_TYPE_MAPPING.keys():
         return store_type
-    
+
     log.warning("Invalid store type provided.")
     raise InvalidStoreType(store_type)
+
 
 def _get_store_type_label(store_type_value: int) -> str:
     """
@@ -71,6 +71,7 @@ def _get_store_type_label(store_type_value: int) -> str:
     except KeyError:
         log.warning("Failed store type conversion to label.")
         raise InvalidStoreType(store_type_value)
+
 
 def _get_store_type_value(store_type_label: str) -> int:
     """

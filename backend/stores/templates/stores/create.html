@@ -42,11 +42,22 @@
                     <input id="submit-create-store" class="submit-input" type="submit" value="Create Store">
                 </div>
                 <div class="form-row submit-row">
-                    <input id="cancel-create-store" class="cancel-input" type="button" value="Cancel"
-                        onclick="window.location.href='/stores/me'">
+                    <input 
+                        id="cancel-create-store" 
+                        class="cancel-input" 
+                        type="button" 
+                        value="Cancel"
+                        onclick="cancelOnClick()"
+                    >
                 </div>
             </fieldset>
         </form>
     </div>
 </div>
+
+<script>
+    const cancelOnClick = () => {
+        window.location.href = "{% url 'store_personal_overview_page' %}";
+    }
+</script>
 {% endblock %}

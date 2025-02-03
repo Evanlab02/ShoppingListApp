@@ -4,10 +4,10 @@ import logging
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from authentication.decorators import async_login_required
-from shoppingapp.schemas.shared import BaseContext
+from authentication.decorators import async_login_required, login_required
 from shoppingapp.utilities.utils import get_overview_params
 from stores.errors.api_exceptions import (
     InvalidStoreType,
@@ -23,7 +23,6 @@ from stores.schemas.input import NewStore
 from stores.services import store_service
 
 log = logging.getLogger(__name__)
-log.info("Stores app views loading...")
 
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
@@ -37,8 +36,8 @@ DELETE_ACTION = "delete/action"
 
 
 @require_http_methods(["GET"])
-@async_login_required
-async def create_page(request: HttpRequest) -> HttpResponse:
+@login_required
+def create_page(request: HttpRequest) -> HttpResponse:
     """
     Render the create page.
 
@@ -49,11 +48,14 @@ async def create_page(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     error = request.GET.get("error")
-    context = BaseContext(
-        page_title="Create Store",
-        error=error,
+    return render(
+        request=request,
+        template_name="stores/create.html",
+        context={
+            "page_title": "Create Store",
+            "error": error,
+        },
     )
-    return render(request, "stores/create.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
@@ -78,7 +80,7 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
 
     if not store_name or not store_type:
         return HttpResponseRedirect(
-            f"/stores/{CREATE_PAGE}?error=Store name and type are required."
+            f"{reverse("store_create_page")}?error=Store name and type are required."
         )
 
     new_store = NewStore(
@@ -89,10 +91,10 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
 
     try:
         store = await store_service.create(new_store, user)
-        store_id = store.id  # type: ignore
-        return HttpResponseRedirect(f"/stores/detail/{store_id}")
+        store_id = store.id
+        return HttpResponseRedirect(f"{reverse("store_detail_page", args=[store_id])}")
     except (StoreAlreadyExists, InvalidStoreType) as error:
-        return HttpResponseRedirect(f"/stores/{CREATE_PAGE}?error={str(error)}")
+        return HttpResponseRedirect(f"{reverse("store_create_page")}?error={str(error)}")
 
 
 @require_http_methods(["GET"])

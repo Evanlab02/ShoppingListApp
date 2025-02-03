@@ -11,6 +11,11 @@ services:
       - dev-postgres-django-network
     volumes:
       - dev-pgadmin-data:/var/lib/pgadmin
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
   dev-shopping-app-db:
     container_name: shopping-db
@@ -29,6 +34,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
 
   dev-shopping-django-administration:
     container_name: shopping-django-admin
@@ -45,10 +55,15 @@ services:
     depends_on:
       dev-shopping-app-db:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
   dev-shopping-django-app:
     container_name: shopping-django-app
-    command: "gunicorn -b 0.0.0.0:80 -w 16 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
+    command: "gunicorn -b 0.0.0.0:80 -w 8 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
     build:
       context: .
       dockerfile: docker/server/Dockerfile
@@ -72,13 +87,18 @@ services:
           path: ./backend/stores
           target: /backend/stores
         - action: sync+restart
-          path: ./backenditems
+          path: ./backend/items
           target: /backend/items
         - action: sync+restart
           path: ./backend/shoppingapp
           target: /backend/shoppingapp
         - action: rebuild
           path: ./backend/requirements.txt
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+          memory: 8192M
 
   dev-shopping-django-site:
     container_name: shopping-django-site
@@ -103,6 +123,11 @@ services:
         - action: sync+restart
           path: ./backend/static
           target: /var/www/html/static/
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
 
   dev-shopping-load-testing:
     container_name: shopping-load-testing
@@ -116,6 +141,11 @@ services:
       - "8089:8089"
     networks:
       - dev-postgres-django-network
+    deploy:
+      resources:
+        limits:
+          cpus: '3.0'
+          memory: 3072M
 
 networks:
   dev-postgres-django-network:
