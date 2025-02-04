@@ -42,19 +42,16 @@ async def login(request: HttpRequest, username: str, password: str) -> GeneralRe
     Returns:
         GeneralResponse: The general response.
     """
-    log.info("Checking if user is logged in...")
     request_user = await request.auser()
     if is_user_authenticated(request_user):
         log.warning("User already logged in.")
         raise UserAlreadyLoggedIn()
 
-    log.info("Checking user credentials...")
     user = await aauthenticate(request=request, username=username, password=password)
     if user is None:
         log.warning("CRITICAL - Invalid credentials provided for user!")
         raise InvalidCredentials()
 
-    log.info("Logging in...")
     await login_user(request, user)
     return GeneralResponse(message="User successfully logged in.", detail="")
 
@@ -69,13 +66,11 @@ async def logout(request: HttpRequest) -> GeneralResponse:
     Returns:
         GeneralResponse: The general response.
     """
-    log.info("Checking if user is logged out...")
     user = await request.auser()
     if not is_user_authenticated(user):
         log.warning("User already logged out.")
         raise UserNotLoggedIn()
 
-    log.info("Logging out...")
     await logout_user(request)
     return GeneralResponse(message="User successfully logged out.", detail="")
 

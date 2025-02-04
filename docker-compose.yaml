@@ -40,6 +40,20 @@ services:
           cpus: '1.0'
           memory: 1024M
 
+  shopping-app-redis:
+    image: redis:7.4.1-alpine3.20
+    container_name: shopping-redis
+    volumes:
+      - redis-data:/data
+    networks:
+      - shopping-app-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
   shopping-django-administration:
     container_name: shopping-django-admin
     image: ghcr.io/evanlab02/shoppingappadmin:0.17.0
@@ -106,4 +120,6 @@ volumes:
   postgres-data:
     external: false
   pgadmin-data:
+    external: false
+  redis-data:
     external: false

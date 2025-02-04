@@ -8,6 +8,8 @@ from faker import Faker
 from locust import FastHttpUser, tag, task
 
 faker = Faker()
+KEY_HEADER = "X-API-KEY"
+KEY_VALUE = "c15e08d907054eb39e13842356793949"
 
 
 class TestCase(FastHttpUser):
@@ -39,7 +41,7 @@ class TestCase(FastHttpUser):
                 "store_type": faker.random_element(elements=[1, 2, 3]),
                 "description": faker.sentence(),
             },
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", KEY_HEADER: KEY_VALUE},
         )
         sleep(1)
 

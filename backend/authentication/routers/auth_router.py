@@ -10,7 +10,6 @@ from authentication.schemas.output import GeneralResponse
 from authentication.services.api.user_service import login, logout, register_user
 
 log = logging.getLogger(__name__)
-log.info("Loading authentication router...")
 auth_router = Router(tags=["Authentication"])
 
 
@@ -26,7 +25,6 @@ async def login_user(request: HttpRequest, user_creds: UserCredentials) -> Gener
     Returns:
         GeneralResponse: The response object
     """
-    log.info(f"Retrieved request to log user in. ({user_creds.username})")
     response = await login(request, user_creds.username, user_creds.password)
     return response
 
@@ -42,7 +40,6 @@ async def logout_user(request: HttpRequest) -> GeneralResponse:
     Returns:
         GeneralResponse: The response object
     """
-    log.info("Retrieved request to log user out.")
     response = await logout(request)
     return response
 

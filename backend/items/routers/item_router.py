@@ -13,7 +13,6 @@ from items.services import item_service
 from shoppingapp.schemas.shared import DeleteSchema
 
 log = logging.getLogger(__name__)
-log.info("Item router loading...")
 
 item_router = Router(tags=["Items"], auth=ApiKey())
 
@@ -223,6 +222,3 @@ async def search(
         sort=sort,
         sort_dir=sort_dir,
     )
-
-
-log.info("Item router loaded.")

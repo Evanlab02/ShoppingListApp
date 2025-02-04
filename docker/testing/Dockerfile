@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 WORKDIR /server
 COPY testing/ /server
-CMD ["locust", "-f", "__init__.py", "--processes", "3", "--tags", "view_store_create_action"]
+CMD ["locust", "-f", "__init__.py", "--processes", "3", "--tags", "api"]

@@ -40,6 +40,20 @@ services:
           cpus: '2.0'
           memory: 2048M
 
+  dev-shopping-app-redis:
+    image: redis:7.4.1-alpine3.20
+    container_name: shopping-redis
+    volumes:
+      - dev-redis-data:/data
+    networks:
+      - dev-postgres-django-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
   dev-shopping-django-administration:
     container_name: shopping-django-admin
     command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
@@ -69,7 +83,6 @@ services:
       dockerfile: docker/server/Dockerfile
     environment:
       SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
-      TESTS_ENVIRONMENT: true
     env_file:
       - .env.dev
     networks:
@@ -155,4 +168,6 @@ volumes:
   dev-postgres-data:
     external: false
   dev-pgadmin-data:
+    external: false
+  dev-redis-data:
     external: false
