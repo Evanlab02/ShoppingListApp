@@ -21,10 +21,10 @@ log = logging.getLogger(__name__)
 class ApiClient(Model):
     """Model for an API client."""
 
-    user = ForeignKey(User, on_delete=CASCADE)
+    user = ForeignKey(User, on_delete=CASCADE, db_index=True)
     is_active = BooleanField(default=True)
     client_secret = CharField(max_length=255, default=None, null=True, blank=True)
-    token = CharField(max_length=255, null=True, blank=True)
+    token = CharField(max_length=255, null=True, blank=True, db_index=True)
     token_expiration = DateTimeField(default=datetime.now)
 
     def __str__(self) -> str:

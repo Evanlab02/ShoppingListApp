@@ -48,3 +48,5 @@ nav:
       - Build: dev/github/build.md
   - Upgrading/Updating:
     - Upgrading to 0.18.0: upgrade/0_18_0.md
+  - Performance:
+    - Review 0.18.0 (Pre-release): performance/0.18.0.pr.md

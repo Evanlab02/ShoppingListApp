@@ -91,7 +91,7 @@ DATABASES = {
         "OPTIONS": {
             "pool": {
                 "min_size": 1,
-                "max_size": 6,
+                "max_size": 10,
             }
         },
     }

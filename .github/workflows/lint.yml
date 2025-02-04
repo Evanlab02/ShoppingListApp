@@ -9,8 +9,6 @@ on:
 permissions:
   contents: read
 
-
-
 jobs:
   be-lint:
     runs-on: ubuntu-latest

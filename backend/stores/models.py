@@ -22,12 +22,12 @@ log.info("Stores app models loading...")
 class ShoppingStore(Model):
     """Model for a shopping store."""
 
-    name = CharField(max_length=100, unique=True)
-    store_type = IntegerField(choices=STORE_TYPE_CHOICES)
+    name = CharField(max_length=100, unique=True, db_index=True)
+    store_type = IntegerField(choices=STORE_TYPE_CHOICES, db_index=True)
     description = TextField(blank=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
-    user = ForeignKey(User, on_delete=CASCADE)
+    user = ForeignKey(User, on_delete=CASCADE, db_index=True)
 
     def __str__(self) -> str:
         """Return a string representation of the shopping store."""
