@@ -145,6 +145,8 @@ services:
   dev-shopping-load-testing:
     container_name: shopping-load-testing
     restart: always
+    env_file:
+      - testing/.env
     build:
       context: .
       dockerfile: docker/testing/Dockerfile

@@ -21,6 +21,7 @@ locust==2.32.6
 markupsafe==3.0.2
 msgpack==1.1.0
 psutil==6.1.1
+pyjwt==2.10.1
 python-dateutil==2.9.0.post0
 pyzmq==26.2.1
 requests==2.32.3

@@ -3,7 +3,6 @@
 import logging
 
 log = logging.getLogger(__name__)
-log.info("Loading auth API exceptions...")
 
 
 class UserAlreadyLoggedIn(Exception):
@@ -60,14 +59,3 @@ class UserNotLoggedIn(Exception):
     def __init__(self) -> None:
         """Exception raised when a user is not logged in."""
         super().__init__("User is not logged in.")
-
-
-class ApiClientAlreadyRegistered(Exception):
-    """Exception raised when a user has already registered an api client."""
-
-    def __init__(self) -> None:
-        """Exception raised when a user has already registered an api client."""
-        super().__init__("Api Client is already registered.")
-
-
-log.info("Loaded auth API exceptions.")

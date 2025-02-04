@@ -9,7 +9,6 @@ from django.http import HttpRequest, HttpResponseRedirect
 from authentication.database.user_repository import is_user_authenticated
 
 log = logging.getLogger(__name__)
-log.info("Loading login decorators...")
 
 
 def login_required(function: Any) -> Any:
@@ -70,6 +69,3 @@ def async_redirect_if_logged_in(function: Any) -> Any:
             return await function(request, *args, **kw)
 
     return wrapper
-
-
-log.info("Loaded login decorators.")

@@ -11,6 +11,7 @@ from authentication.models import ApiClient
 
 log = logging.getLogger(__name__)
 
+
 class ApiToken(APIKeyHeader):
     """API Token authentication class."""
 

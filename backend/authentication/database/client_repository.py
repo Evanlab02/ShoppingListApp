@@ -8,17 +8,16 @@ from authentication.models import ApiClient
 
 log = logging.getLogger(__name__)
 
-async def enable_for_user(user: User | AbstractBaseUser | AnonymousUser) -> str:
-    """Enable a client."""
-    client_secret = await ApiClient.enable_client(user)
-    return client_secret
 
+async def get_token(user: User | AbstractBaseUser | AnonymousUser) -> tuple[str, str]:
+    """
+    Get a token.
 
-async def disable_for_user(user: User | AbstractBaseUser | AnonymousUser) -> None:
-    """Disable a client."""
-    await ApiClient.disable_client(user)
+    Args:
+        user: The user to get the token for.
 
-async def get_token(user: User | AbstractBaseUser | AnonymousUser, secret: str) -> str:
-    """Get a token."""
-    client = await ApiClient.objects.aget(user=user)
-    return await client.get_token(user, secret)
+    Returns:
+        The JWT token.
+    """
+    client, _ = await ApiClient.objects.aget_or_create(user=user)
+    return await client.get_token(user)

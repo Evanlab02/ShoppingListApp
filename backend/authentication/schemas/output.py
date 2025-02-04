@@ -14,4 +14,11 @@ class GeneralResponse(Schema):
     detail: str
 
 
+class TokenResponse(Schema):
+    """The schema for a token response."""
+
+    token: str
+    secret: str
+
+
 logging.info("Loaded authentication output schemas.")

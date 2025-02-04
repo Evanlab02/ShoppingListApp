@@ -1,39 +1,89 @@
 """Load testing for auth endpoints."""
 
+import os
+from datetime import datetime, timedelta
 from time import sleep
 from uuid import uuid4
 
-from bs4 import BeautifulSoup, NavigableString
+import jwt
 from faker import Faker
 from locust import FastHttpUser, tag, task
 
 faker = Faker()
-KEY_HEADER = "X-API-KEY"
-KEY_VALUE = "c15e08d907054eb39e13842356793949"
+TOKEN_HEADER = "X-API-Token"
 
 
 class TestCase(FastHttpUser):
     """Test the API."""
 
+    host = "http://shopping-django-site:80"
+
+    def __init__(self, environment) -> None:
+        super().__init__(environment)
+        self.token = None
+        self.token_expiry = None
+
     def on_start(self) -> None:
         """On test user start up."""
-        self.client.post(
-            "/api/v1/auth/login",
-            json={"username": "AnimalAlpaca", "password": "devadmin"},
+        username = faker.user_name() + uuid4().hex
+        password = faker.password()
+        response = self.client.post(
+            "/api/v1/auth/register",
+            json={
+                "username": username,
+                "password": password,
+                "password_confirmation": password,
+                "first_name": faker.first_name(),
+                "last_name": faker.last_name(),
+                "email": uuid4().hex + faker.email(),
+            },
             headers={"Content-Type": "application/json"},
         )
+
+        if response.status_code != 201:
+            raise Exception(f"Failed to register user: {response.json()}")
+
+        login_response = self.client.post(
+            "/api/v1/auth/login",
+            json={"username": username, "password": password},
+            headers={"Content-Type": "application/json"},
+        )
+
+        if login_response.status_code != 200:
+            raise Exception(f"Failed to login user: {login_response.json()}")
 
     def on_stop(self) -> None:
         """On user close."""
         self.client.post("/api/v1/auth/logout", headers={"Content-Type": "application/json"})
 
-    @tag("write")
-    @tag("store")
+    def get_token(self) -> str:
+        """Get the token for the user."""
+        if (
+            self.token is None
+            or self.token_expiry is None
+            or (self.token_expiry - timedelta(minutes=1)) <= datetime.now()
+        ):
+            response = self.client.get(
+                "/api/v1/token",
+                headers={"Content-Type": "application/json"},
+            )
+            token = response.json()["token"]
+            secret = response.json()["secret"]
+
+            self.token = token
+            self.token_expiry = datetime.fromtimestamp(
+                jwt.decode(token, secret, algorithms=["HS256"])["exp"]
+            )
+            sleep(1)
+
+        return self.token
+
     @tag("api")
     @tag("api_store_create")
     @task
     def create_store(self) -> None:
         """Create a store via the API."""
+        token = self.get_token()
         self.client.post(
             "/api/v1/stores/create",
             json={
@@ -41,57 +91,6 @@ class TestCase(FastHttpUser):
                 "store_type": faker.random_element(elements=[1, 2, 3]),
                 "description": faker.sentence(),
             },
-            headers={"Content-Type": "application/json", KEY_HEADER: KEY_VALUE},
-        )
-        sleep(1)
-
-    @tag("read")
-    @tag("store")
-    @tag("view")
-    @tag("view_store_create")
-    @task
-    def view_store_create(self) -> None:
-        """View the store create page."""
-        self.client.get("/stores/create")
-        sleep(1)
-
-    @tag("write")
-    @tag("store")
-    @tag("view")
-    @tag("view_store_create_action")
-    @task
-    def view_store_create_action(self) -> None:
-        """Post to the the store create action view."""
-        # Get CSRF middleware token from form
-        response = self.client.get("/stores/create")
-        sleep(1)
-
-        if response.status_code != 200 or response.text is None:
-            raise Exception(f"Failed to get store create page: {response.status_code}")
-
-        # Parse the HTML and find the CSRF token using BeautifulSoup
-        soup = BeautifulSoup(response.text, "html.parser")
-        csrf_token_element = soup.find("input", {"name": "csrfmiddlewaretoken"})
-
-        if csrf_token_element is None or isinstance(csrf_token_element, NavigableString):
-            raise Exception("Failed to find CSRF element in the form")
-
-        csrf_token = csrf_token_element.get("value")
-
-        if csrf_token is None:
-            raise Exception("Failed to find CSRF token value in the form")
-
-        if not isinstance(csrf_token, str):
-            raise Exception("CSRF token is not a string")
-
-        self.client.post(
-            "/stores/create/action",
-            data={
-                "csrfmiddlewaretoken": csrf_token,
-                "store-input": faker.company() + uuid4().hex,
-                "store-type-input": faker.random_element(elements=["Both", "Online", "In-Store"]),
-                "description-input": faker.sentence(),
-            },
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            headers={"Content-Type": "application/json", TOKEN_HEADER: token},
         )
         sleep(1)

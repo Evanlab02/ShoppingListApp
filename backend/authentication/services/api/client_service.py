@@ -8,14 +8,15 @@ from authentication.database import client_repository as repo
 
 log = logging.getLogger(__name__)
 
-async def get_token(user: User | AbstractBaseUser | AnonymousUser, secret: str) -> str:
+
+async def get_token(user: User | AbstractBaseUser | AnonymousUser) -> tuple[str, str]:
     """
     Get a token.
 
     Args:
-        secret: The secret of the client
+        user: The user to get the token for.
 
     Returns:
-        str: The token
+        The JWT token.
     """
-    return await repo.get_token(user, secret)
+    return await repo.get_token(user)

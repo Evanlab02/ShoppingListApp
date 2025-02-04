@@ -100,7 +100,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{getenv("SHOPPING_REDIS_HOST")}:6379"
+        "LOCATION": f"redis://{getenv("SHOPPING_REDIS_HOST")}:6379",
     }
 }
 
