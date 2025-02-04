@@ -10,7 +10,7 @@ from django.db.models import (
     CASCADE,
     BooleanField,
     CharField,
-    DateTimeField,
+    FloatField,
     ForeignKey,
     Model,
 )
@@ -25,7 +25,7 @@ class ApiClient(Model):
     is_active = BooleanField(default=True)
     client_secret = CharField(max_length=255, default=None, null=True, blank=True)
     token = CharField(max_length=255, null=True, blank=True, db_index=True)
-    token_expiration = DateTimeField(default=datetime.now)
+    token_expiration = FloatField(default=0)
 
     def __str__(self) -> str:
         """Return the string representation of the model."""
@@ -45,7 +45,7 @@ class ApiClient(Model):
             self.client_secret = uuid4().hex
             await self.asave()
 
-        expiration = datetime.now() + timedelta(minutes=5)
+        expiration = (datetime.now() + timedelta(minutes=5)).timestamp()
         jwt_token = jwt.encode(
             {
                 "username": user.username,  # type: ignore
