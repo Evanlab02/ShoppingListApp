@@ -13,6 +13,7 @@ psycopg = {extras = ["binary", "pool"], version = "==3.2.3"}
 argon2-cffi = "==23.1.0"
 docutils = "==0.21.2"
 redis = {extras = ["hiredis"], version = "==5.2.1"}
+pyjwt = "==2.10.1"
 
 [dev-packages]
 black = "==24.10.0"

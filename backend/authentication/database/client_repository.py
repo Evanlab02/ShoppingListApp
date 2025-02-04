@@ -7,8 +7,6 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from authentication.models import ApiClient
 
 log = logging.getLogger(__name__)
-log.info("Loading client repository...")
-
 
 async def enable_for_user(user: User | AbstractBaseUser | AnonymousUser) -> str:
     """Enable a client."""
@@ -20,5 +18,7 @@ async def disable_for_user(user: User | AbstractBaseUser | AnonymousUser) -> Non
     """Disable a client."""
     await ApiClient.disable_client(user)
 
-
-log.info("Loaded client repository.")
+async def get_token(user: User | AbstractBaseUser | AnonymousUser, secret: str) -> str:
+    """Get a token."""
+    client = await ApiClient.objects.aget(user=user)
+    return await client.get_token(user, secret)

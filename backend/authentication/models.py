@@ -1,11 +1,14 @@
 """Contains the models for the authentication app."""
 
+from datetime import timedelta, datetime
 import logging
+import jwt
+
 from uuid import uuid4
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
-from django.db.models import CASCADE, BooleanField, CharField, ForeignKey, Model
+from django.db.models import CASCADE, BooleanField, CharField, ForeignKey, Model, DateTimeField
 
 from authentication.errors.api_exceptions import ApiClientAlreadyRegistered
 
@@ -20,10 +23,37 @@ class ApiClient(Model):
     user = ForeignKey(User, on_delete=CASCADE)
     is_active = BooleanField(default=False)
     client_secret = CharField(max_length=255)
+    token = CharField(max_length=255, null=True, blank=True)
+    token_expiration = DateTimeField(default=datetime.now)
 
     def __str__(self) -> str:
         """Return the string representation of the model."""
         return f"ApiClient for {self.user.username}"
+
+    async def get_token(self, user: User | AbstractBaseUser | AnonymousUser, secret: str) -> str:
+        """
+        Get a JWT token generated with the secret.
+
+        Args:
+            secret: The secret of the client.
+
+        Returns:
+            str: The token
+        """
+        expiration = datetime.now() + timedelta(minutes=5)
+        jwt_token = jwt.encode(
+            {
+                "username": user.username,
+                "client_id": self.id,
+                "exp": expiration,
+            },
+            secret,
+            algorithm="HS256",
+        )
+        self.token = jwt_token
+        self.token_expiration = expiration
+        await self.asave()
+        return jwt_token
 
     @classmethod
     async def enable_client(cls, user: User | AbstractBaseUser | AnonymousUser) -> str:

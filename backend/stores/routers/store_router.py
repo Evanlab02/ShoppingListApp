@@ -6,7 +6,7 @@ from typing import Literal
 from django.http import HttpRequest
 from ninja import Router
 
-from authentication.auth.api_key import ApiKey
+from authentication.auth.token_auth import ApiToken
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.models import ShoppingStore
@@ -18,8 +18,7 @@ from stores.schemas.output import (
 )
 from stores.services import store_service
 
-store_router = Router(tags=["Stores"], auth=ApiKey())
-
+store_router = Router(tags=["Stores"], auth=ApiToken())
 
 log = logging.getLogger(__name__)
 
