@@ -34,7 +34,7 @@ jobs:
           cache: "pip"
       - name: Setup
         run: |
-          pip install -r requirements-dev.txt
+          pip install -r requirements.dev.txt
       - name: Create Migrations
         run: |
           python manage.py makemigrations
