@@ -41,10 +41,7 @@ class ApiClient(Model):
         Returns:
             str: The token
         """
-        if self.client_secret is None:
-            self.client_secret = uuid4().hex
-            await self.asave()
-
+        secret = uuid4().hex
         expiration = (datetime.now() + timedelta(minutes=5)).timestamp()
         jwt_token = jwt.encode(
             {
@@ -52,10 +49,11 @@ class ApiClient(Model):
                 "client_id": self.id,
                 "exp": expiration,
             },
-            self.client_secret,
+            secret,
             algorithm="HS256",
         )
         self.token = jwt_token
         self.token_expiration = expiration
+        self.client_secret = secret
         await self.asave()
-        return jwt_token, self.client_secret
+        return jwt_token, secret

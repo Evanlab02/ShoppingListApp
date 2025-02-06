@@ -7,9 +7,10 @@ from django.conf import settings
 from django.http import HttpRequest
 from ninja.security.apikey import APIKeyCookie
 
-from authentication.database.user_repository import is_user_authenticated
+from authentication.database.user_repo import UserRepository
 
 log = logging.getLogger(__name__)
+repo = UserRepository()
 
 
 class SessionAuth(APIKeyCookie):
@@ -20,7 +21,7 @@ class SessionAuth(APIKeyCookie):
     async def authenticate(self, request: HttpRequest, key: Optional[str]) -> Optional[Any]:
         """Authenticate the user."""
         user = await request.auser()
-        if is_user_authenticated(user):
+        if repo.is_user_authenticated(user):
             return user
 
         return None

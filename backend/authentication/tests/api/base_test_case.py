@@ -4,15 +4,13 @@ import requests
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
-from authentication.tests.helpers import create_test_user
+from authentication.tests.factory import UserFactory
 
 
 class BaseTestCase(StaticLiveServerTestCase):
     """Contains the base class for the API tests."""
 
     session: requests.Session
-    mock_username: str = "test"
-    mock_password: str = "test"
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -28,7 +26,7 @@ class BaseTestCase(StaticLiveServerTestCase):
 
     def setUp(self) -> None:
         """Set up the test."""
-        self.user = create_test_user()
+        self.user = UserFactory()  # type: ignore
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -36,11 +34,11 @@ class BaseTestCase(StaticLiveServerTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
-    def _login(self) -> None:
-        """Test that a user can login."""
+    def login(self) -> None:
+        """Login the user."""
         url = f"{self.live_server_url}/api/v1/auth/login"
         data = {
-            "username": self.mock_username,
-            "password": self.mock_password,
+            "username": self.user.username,
+            "password": "test",
         }
         self.session.post(url, json=data)

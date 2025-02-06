@@ -4,7 +4,7 @@ import logging
 
 from ninja import Schema
 
-logging.info("Loading authentication output schemas...")
+log = logging.getLogger(__name__)
 
 
 class GeneralResponse(Schema):
@@ -19,6 +19,3 @@ class TokenResponse(Schema):
 
     token: str
     secret: str
-
-
-logging.info("Loaded authentication output schemas.")

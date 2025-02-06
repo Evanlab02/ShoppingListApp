@@ -8,7 +8,7 @@ class LogoutAPITests(BaseTestCase):
 
     def test_logout(self) -> None:
         """Test that a user can logout."""
-        self._login()
+        self.login()
         url = f"{self.live_server_url}/api/v1/auth/logout"
         response = self.session.post(url)
         self.assertEqual(response.status_code, 200)

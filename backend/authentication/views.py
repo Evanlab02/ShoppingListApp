@@ -5,6 +5,7 @@ import logging
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
+from django.urls import reverse
 
 from authentication.decorators import async_login_required, async_redirect_if_logged_in
 from authentication.errors.api_exceptions import (
@@ -14,14 +15,7 @@ from authentication.errors.api_exceptions import (
     NonMatchingCredentials,
     UsernameAlreadyExists,
 )
-from authentication.services.views.user_service import (
-    get_login_view_context,
-    get_logout_view_context,
-    get_register_page_context,
-    login,
-    logout,
-    register_user,
-)
+from authentication.services.views.user_service import UserService
 
 DASHBOARD_ROUTE = "shopping/dashboard/"
 LOGOUT_ROUTE = "logout"
@@ -35,6 +29,7 @@ ENABLE_CLIENT_ROUTE = "token/register"
 DISABLE_CLIENT_ROUTE = "token/disable"
 
 log = logging.getLogger(__name__)
+service = UserService()
 
 
 @require_http_methods(["POST"])
@@ -50,11 +45,11 @@ async def login_action(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     try:
-        await login(request)
-        return HttpResponseRedirect(f"/{DASHBOARD_ROUTE}")
+        await service.login(request)
+        return HttpResponseRedirect(reverse("dashboard"))
     except InvalidCredentials as error:
         log.warning(f"Error with login: {error}")
-        return HttpResponseRedirect(f"/{LOGIN_ROUTE}?error={error}")
+        return HttpResponseRedirect(f"{reverse('login_page')}?error={error}")
 
 
 @require_http_methods(["GET"])
@@ -69,7 +64,7 @@ async def login_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    context = await get_login_view_context(request)
+    context = await service.get_login_view_context(request)
     return render(request, "auth/index.html", context.model_dump())
 
 
@@ -85,7 +80,7 @@ async def logout_action(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    await logout(request)
+    await service.logout(request)
     return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
 
 
@@ -101,7 +96,7 @@ async def logout_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    context = await get_logout_view_context(request)
+    context = await service.get_logout_view_context(request)
     return render(request, "auth/logout.html", context.model_dump())
 
 
@@ -118,8 +113,8 @@ async def register_action(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     try:
-        await register_user(request)
-        return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
+        await service.register_user(request)
+        return HttpResponseRedirect(reverse("login_page"))
     except (
         InvalidUserDetails,
         NonMatchingCredentials,
@@ -127,7 +122,7 @@ async def register_action(request: HttpRequest) -> HttpResponse:
         EmailAlreadyExists,
     ) as error:
         log.warning(f"Registration error: {error}")
-        return HttpResponseRedirect(f"/{REGISTER_ROUTE}?error={error}")
+        return HttpResponseRedirect(f"{reverse('register_page')}?error={error}")
 
 
 @require_http_methods(["GET"])
@@ -142,5 +137,5 @@ async def register_view(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    context = await get_register_page_context(request)
+    context = await service.get_register_page_context(request)
     return render(request, "auth/register.html", context.model_dump())

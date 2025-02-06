@@ -1,5 +1,6 @@
 build:
 	npm run build
+	mv ../backend/dashboard/static/dashboard/index.html ../backend/dashboard/templates/dashboard/index.html
 
 up:
 	npm run dev

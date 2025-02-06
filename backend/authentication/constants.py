@@ -3,7 +3,6 @@
 import logging
 
 log = logging.getLogger(__name__)
-log.info("Loading authentication constants...")
 
 INPUT_MAPPING = {
     "username-input": "username",
@@ -17,5 +16,3 @@ INPUT_MAPPING = {
     "submit-logout": "submit",
     "submit-cancel": "cancel",
 }
-
-log.info("Loaded authentication constants.")

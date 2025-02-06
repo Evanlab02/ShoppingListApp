@@ -133,7 +133,7 @@ async def create_store(
         name=name,
         store_type=store_type,
         description=description,
-        user=user,
+        user=user,  # type: ignore
     )
     return store
 

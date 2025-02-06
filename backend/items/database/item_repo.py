@@ -212,7 +212,7 @@ async def create_item(
         description=description,
         price=price,
         store=store,
-        user=user,
+        user=user,  # type: ignore
     )
     await item.asave()
     return item

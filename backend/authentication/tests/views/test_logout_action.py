@@ -1,11 +1,9 @@
 """Tests the logout action."""
 
-from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.urls import reverse
 
-from authentication.views import LOGIN_ROUTE, LOGOUT_ACTION_ROUTE
-
-TEST_EMAIL = "test_logout_action@gmail.com"
+from authentication.tests.factory import UserFactory
 
 
 class TestLogoutAction(TestCase):
@@ -14,14 +12,7 @@ class TestLogoutAction(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = User.objects.create_user(
-            username="testuser",
-            email=TEST_EMAIL,
-            password="testpassword",
-            first_name="test",
-            last_name="user",
-        )
-        self.user.save()
+        self.user = UserFactory()
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -32,17 +23,17 @@ class TestLogoutAction(TestCase):
     def test_logout_action(self) -> None:
         """Test the logout action."""
         self.client.force_login(self.user)
-        response = self.client.post(f"/{LOGOUT_ACTION_ROUTE}")
+        response = self.client.post(reverse("logout_action"))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f"/{LOGIN_ROUTE}", 302, 200)
+        self.assertRedirects(response, reverse("login_page"), 302, 200)
 
     def test_logout_action_not_logged_in(self) -> None:
         """Test the logout action when not logged in."""
-        response = self.client.post(f"/{LOGOUT_ACTION_ROUTE}")
+        response = self.client.post(reverse("logout_action"))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
-            f"/{LOGIN_ROUTE}?error=You+must+be+logged+in+to+access+that+page.",
+            reverse("login_page") + "?error=You must be logged in to access that page.",
             302,
             200,
         )

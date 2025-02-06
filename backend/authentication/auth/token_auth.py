@@ -12,7 +12,7 @@ from authentication.models import ApiClient
 log = logging.getLogger(__name__)
 
 
-class ApiToken(APIKeyHeader):
+class TokenAuth(APIKeyHeader):
     """API Token authentication class."""
 
     param_name = "X-API-Token"
@@ -21,6 +21,7 @@ class ApiToken(APIKeyHeader):
         self, request: HttpRequest, key: str | None
     ) -> ApiClient | AnonymousUser | None:
         """Authenticate the user."""
+        # TODO: Remove this once tests are fixed
         if getenv("TESTS_ENVIRONMENT", "False").lower() == "true":
             return AnonymousUser()
 
@@ -28,7 +29,6 @@ class ApiToken(APIKeyHeader):
             return None
 
         try:
-            client = await ApiClient.objects.aget(token=key)
-            return client
+            return await ApiClient.objects.aget(token=key)
         except ApiClient.DoesNotExist:
             return None

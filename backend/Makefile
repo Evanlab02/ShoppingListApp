@@ -35,7 +35,7 @@ coverage:
 	@python -m http.server --directory htmlcov
 
 unit-test:
-	@pytest . -vv --cov=. --no-cov-on-fail --cov-report term-missing \
+	@pytest . --cov=. --no-cov-on-fail --cov-report term-missing \
 	--ignore=authentication/tests/api/ \
 	--ignore=authentication/tests/E2E/ \
 	--ignore=items/tests/api/ \
@@ -50,5 +50,5 @@ e2e-test:
 	@pytest **/tests/E2E/ -n auto
 
 requirements:
-	pipenv requirements > requirements.txt
-	pipenv requirements --dev > requirements-dev.txt
+	uv pip compile --no-annotate requirements.in > requirements.txt
+	uv pip compile --no-annotate requirements.dev.in > requirements.dev.txt

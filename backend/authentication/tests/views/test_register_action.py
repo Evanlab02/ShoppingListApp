@@ -1,9 +1,10 @@
 """Contains tests for the register action view."""
 
-from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from authentication.constants import INPUT_MAPPING
+from authentication.tests.factory import UserFactory
 from authentication.views import (
     DASHBOARD_ROUTE,
     LOGIN_ROUTE,
@@ -26,24 +27,12 @@ class TestRegisterActionView(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = User.objects.create_user(
-            username="testuser",
-            email="tester@gmail.com",
-            password="testpassword",
-            first_name="test",
-            last_name="user",
-        )
-        self.user.save()
-
-    def tearDown(self) -> None:
-        """Tear down the test environment."""
-        self.client.logout()
-        return super().tearDown()
+        self.user = UserFactory()
 
     def test_register_action_endpoint(self) -> None:
         """Test the register action endpoint."""
         response = self.client.post(
-            f"/{REGISTER_ACTION_ROUTE}",
+            reverse("register_action"),
             {
                 USERNAME_INPUT: "registeruser",
                 PASSWORD_INPUT: "testpassword",
@@ -53,13 +42,13 @@ class TestRegisterActionView(TestCase):
                 PASSWORD_CONFIRM_INPUT: "testpassword",
             },
         )
-        self.assertRedirects(response, f"/{LOGIN_ROUTE}", 302, 200, fetch_redirect_response=False)
+        self.assertRedirects(response, reverse("login_page"), 302, 200, fetch_redirect_response=False)
 
     def test_register_action_endpoint_when_already_logged_in(self) -> None:
         """Test the register action endpoint redirects when the user is already logged in."""
         self.client.force_login(self.user)
         response = self.client.post(
-            f"/{REGISTER_ACTION_ROUTE}",
+            reverse("register_action"),
             {
                 USERNAME_INPUT: "registeruser",
                 PASSWORD_INPUT: "testpassword",
@@ -70,13 +59,13 @@ class TestRegisterActionView(TestCase):
             },
         )
         self.assertRedirects(
-            response, f"/{DASHBOARD_ROUTE}", 302, 404, fetch_redirect_response=False
+            response, reverse("dashboard"), 302, 404, fetch_redirect_response=False
         )
 
     def test_login_action_endpoint_with_invalid_username(self) -> None:
         """Test the register action endpoint with an invalid username."""
         response = self.client.post(
-            f"/{REGISTER_ACTION_ROUTE}",
+            reverse("register_action"),
             {
                 USERNAME_INPUT: "",
                 PASSWORD_INPUT: "testpassword",
@@ -88,7 +77,7 @@ class TestRegisterActionView(TestCase):
         )
         self.assertRedirects(
             response,
-            f"/{REGISTER_ROUTE}?error=Please ensure username, email, first name and last name are provided.",  # noqa: E501
+            reverse("register_page") + "?error=Please ensure username, email, first name and last name are provided.",  # noqa: E501
             302,
             200,
             fetch_redirect_response=False,
@@ -97,7 +86,7 @@ class TestRegisterActionView(TestCase):
     def test_login_action_endpoint_with_invalid_password(self) -> None:
         """Test the register action endpoint with an invalid password."""
         response = self.client.post(
-            f"/{REGISTER_ACTION_ROUTE}",
+            reverse("register_action"),
             {
                 USERNAME_INPUT: "registeruser",
                 PASSWORD_INPUT: "abcd",
@@ -109,7 +98,7 @@ class TestRegisterActionView(TestCase):
         )
         self.assertRedirects(
             response,
-            f"/{REGISTER_ROUTE}?error=Password+and+password+confirmation+do+not+match.",
+            reverse("register_page") + "?error=Password and password confirmation do not match.",
             302,
             200,
             fetch_redirect_response=False,
@@ -117,8 +106,9 @@ class TestRegisterActionView(TestCase):
 
     def test_login_action_endpoint_already_existing_username(self) -> None:
         """Test the register action endpoint with an already existing username."""
+        UserFactory(username="testuser")
         response = self.client.post(
-            f"/{REGISTER_ACTION_ROUTE}",
+            reverse("register_action"),
             {
                 USERNAME_INPUT: "testuser",
                 PASSWORD_INPUT: "testpassword",
@@ -130,7 +120,7 @@ class TestRegisterActionView(TestCase):
         )
         self.assertRedirects(
             response,
-            f"/{REGISTER_ROUTE}?error=Username+already+exists.",
+            reverse("register_page") + "?error=Username already exists.",
             302,
             200,
             fetch_redirect_response=False,
@@ -138,12 +128,13 @@ class TestRegisterActionView(TestCase):
 
     def test_login_action_endpoint_already_existing_email(self) -> None:
         """Test the register action endpoint with an already existing email."""
+        UserFactory(username="random_very_random_username", email="duplicate@gmail.com")
         response = self.client.post(
-            f"/{REGISTER_ACTION_ROUTE}?error=Email+already+exists.",
+            reverse("register_action"),
             {
                 USERNAME_INPUT: "registeruser",
                 PASSWORD_INPUT: "testpassword",
-                EMAIL_INPUT: "tester@gmail.com",
+                EMAIL_INPUT: "duplicate@gmail.com",
                 FIRST_NAME_INPUT: "test",
                 LAST_NAME_INPUT: "user",
                 PASSWORD_CONFIRM_INPUT: "testpassword",
@@ -151,7 +142,7 @@ class TestRegisterActionView(TestCase):
         )
         self.assertRedirects(
             response,
-            f"/{REGISTER_ROUTE}?error=Email+already+exists.",
+            reverse("register_page") + "?error=Email already exists.",
             302,
             200,
             fetch_redirect_response=False,

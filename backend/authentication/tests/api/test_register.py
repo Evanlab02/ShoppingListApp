@@ -24,7 +24,7 @@ class RegisterAPITests(BaseTestCase):
 
     def test_register_when_logged_in(self) -> None:
         """Test that a user cannot register when logged in."""
-        self._login()
+        self.login()
         url = f"{self.live_server_url}/api/v1/auth/register"
         data = {
             "username": "AuthTester1",

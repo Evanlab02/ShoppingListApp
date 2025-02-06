@@ -4,9 +4,12 @@ import react from '@vitejs/plugin-react-swc'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/shopping/dashboard/",
+  base: "/static/dashboard/",
+  build: {
+    outDir: "../backend/dashboard/static/dashboard",
+  },
   server: {
-    open: '/shopping/dashboard/',
+    open: '/dashboard/',
     proxy: {
       '/apis/shopping': {
         target: 'http://localhost:8000',

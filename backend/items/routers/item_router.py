@@ -6,7 +6,7 @@ from typing import Literal
 from django.http import HttpRequest
 from ninja import Router
 
-from authentication.auth.token_auth import ApiToken
+from authentication.auth import TOKEN_AUTH
 from items.schemas.input import ItemSearchSchema, NewItem, UpdateItem
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services import item_service
@@ -14,7 +14,7 @@ from shoppingapp.schemas.shared import DeleteSchema
 
 log = logging.getLogger(__name__)
 
-item_router = Router(tags=["Items"], auth=ApiToken())
+item_router = Router(tags=["Items"], auth=TOKEN_AUTH)
 
 
 @item_router.post("/create", response={201: ItemSchema})
