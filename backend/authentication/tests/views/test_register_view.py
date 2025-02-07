@@ -3,8 +3,9 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
-from authentication.views import DASHBOARD_ROUTE, REGISTER_ROUTE
+
 from authentication.tests.factory import UserFactory
+from authentication.views import DASHBOARD_ROUTE, REGISTER_ROUTE
 
 TEST_EMAIL = "user@test.com"
 

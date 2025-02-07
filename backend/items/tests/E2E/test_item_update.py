@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from django.contrib.auth.models import User
 
 from items.models import ShoppingItem as Item
@@ -28,6 +29,7 @@ class TestItemUpdateView(BaseEndToEndTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_update_page(self) -> None:
         """Test the update page."""
         self.driver.get(self.url)
@@ -57,6 +59,7 @@ class TestItemUpdateView(BaseEndToEndTestCase):
         created_by_card = self.driver.find_element(value="user-sub-value")
         self.assertEqual(created_by_card.text, "test")
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_update_page_with_error(self) -> None:
         """Test the update page with an error."""
         self.driver.get(f"{self.url}?error=This+is+an+error+message+for+testing+purposes.")

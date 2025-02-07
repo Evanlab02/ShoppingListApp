@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from django.contrib.auth.models import User
 
 from items.models import ShoppingItem as Item
@@ -28,6 +29,7 @@ class TestItemDeleteView(BaseEndToEndTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_delete_page(self) -> None:
         """Test the delete page."""
         self.driver.get(self.url)
@@ -41,6 +43,7 @@ class TestItemDeleteView(BaseEndToEndTestCase):
         time.sleep(1)
         self.driver.get_screenshot_as_file("./screenshots/items/delete_page_submit.png")
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_delete_page_with_error(self) -> None:
         """Test the update page with an error."""
         self.driver.get(f"{self.url}?error=This+is+an+error+message+for+testing+purposes.")

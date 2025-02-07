@@ -1,9 +1,9 @@
-
 import asyncio
 
-from authentication.database.user_repo import UserRepository
-from django.http import HttpRequest
 from django.contrib.auth.models import AnonymousUser, User
+from django.http import HttpRequest
+
+from authentication.database.user_repo import UserRepository
 
 
 class MockUserRepo(UserRepository):

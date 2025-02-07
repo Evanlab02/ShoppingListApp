@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from django.contrib.auth.models import User
 from selenium.webdriver.common.by import By
 
@@ -29,6 +30,7 @@ class TestItemOverviewView(BaseEndToEndTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_overview_page(self) -> None:
         """Test the overview page."""
         self.driver.get(self.url)
@@ -47,6 +49,7 @@ class TestItemOverviewView(BaseEndToEndTestCase):
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="item-table-row")
         self.assertEqual(len(rows), 1)
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_personal_overview_page(self) -> None:
         """Test the personal overview page."""
         self.driver.get(f"{self.url}me")

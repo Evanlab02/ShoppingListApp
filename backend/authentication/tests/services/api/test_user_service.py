@@ -3,7 +3,7 @@
 import asyncio
 
 from django.contrib.auth.models import AnonymousUser, User
-from django.test import Client, TestCase, AsyncRequestFactory
+from django.test import AsyncRequestFactory, Client, TestCase
 
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
@@ -14,9 +14,9 @@ from authentication.errors.api_exceptions import (
     UsernameAlreadyExists,
     UserNotLoggedIn,
 )
-from authentication.tests.mocks.user_repo import MockUserRepo
 from authentication.services.api.user_service import UserService
 from authentication.tests.factory import NewUserSchemaFactory, UserFactory
+from authentication.tests.mocks.user_repo import MockUserRepo
 
 
 class TestApiUserService(TestCase):

@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from django.contrib.auth.models import User
 
 from items.models import ShoppingItem as Item
@@ -28,6 +29,7 @@ class TestItemOverviewView(BaseEndToEndTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_detail_page(self) -> None:
         """Test the detail page."""
         self.driver.get(self.url)

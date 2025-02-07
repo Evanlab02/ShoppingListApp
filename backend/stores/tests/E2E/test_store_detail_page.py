@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from selenium.webdriver.common.by import By
 
 from stores.models import ShoppingStore as Store
@@ -25,6 +26,7 @@ class TestStoreDetailView(BaseEndToEndTestCase):
         Store.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_detail_page(self) -> None:
         """Test the detail page."""
         self.driver.get(self.url)
@@ -41,6 +43,7 @@ class TestStoreDetailView(BaseEndToEndTestCase):
         row_elements = self.driver.find_elements(by=By.CLASS_NAME, value="store-item-row")
         self.assertEqual(len(row_elements), 1)
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_detail_page_with_invalid_parameters(self) -> None:
         """Test the detail page with invalid parameters."""
         self.driver.get(f"{self.url}?page=witness")

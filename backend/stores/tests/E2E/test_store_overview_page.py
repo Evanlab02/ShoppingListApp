@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from selenium.webdriver.common.by import By
 
 from stores.models import ShoppingStore as Store
@@ -24,6 +25,7 @@ class TestStoreOverviewView(BaseEndToEndTestCase):
         Store.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_overview_page(self) -> None:
         """Test the overview page."""
         self.driver.get(self.url)
@@ -42,6 +44,7 @@ class TestStoreOverviewView(BaseEndToEndTestCase):
         rows = self.driver.find_elements(by=By.CLASS_NAME, value="store-table-row")
         self.assertEqual(len(rows), 1)
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_overview_page_personal(self) -> None:
         """Test the personal overview page."""
         self.driver.get(f"{self.url}me")

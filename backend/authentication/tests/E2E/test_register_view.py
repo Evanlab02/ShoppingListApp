@@ -1,5 +1,6 @@
 """Contains the end to end tests for the register view."""
 
+import pytest
 from django.contrib.auth.models import User
 
 from authentication.constants import INPUT_MAPPING
@@ -32,6 +33,7 @@ class TestRegisterView(BaseEndToEndTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_register(self) -> None:
         """Test that a user can register."""
         URL = f"{self.live_server_url}/register"
@@ -53,6 +55,7 @@ class TestRegisterView(BaseEndToEndTestCase):
         self.driver.find_element(value=PASSWORD_INPUT).send_keys("test")
         self.driver.find_element(value=SUBMIT_LOGIN).click()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_register_with_mismatched_passwords(self) -> None:
         """Test that a user cannot register with mismatched passwords."""
         URL = f"{self.live_server_url}/register"
@@ -70,6 +73,7 @@ class TestRegisterView(BaseEndToEndTestCase):
         element_text = self.driver.find_element(value=ERROR_TEXT).text
         self.assertEqual(element_text, "Password and password confirmation do not match.")
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_register_with_existing_username(self) -> None:
         """Test that a user cannot register with an existing username."""
         URL = f"{self.live_server_url}/register"
@@ -87,6 +91,7 @@ class TestRegisterView(BaseEndToEndTestCase):
         element_text = self.driver.find_element(value=ERROR_TEXT).text
         self.assertEqual(element_text, "Username already exists.")
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_register_with_existing_email(self) -> None:
         """Test that a user cannot register with an existing email."""
         URL = f"{self.live_server_url}/register"

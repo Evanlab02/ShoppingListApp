@@ -42,7 +42,9 @@ class TestRegisterActionView(TestCase):
                 PASSWORD_CONFIRM_INPUT: "testpassword",
             },
         )
-        self.assertRedirects(response, reverse("login_page"), 302, 200, fetch_redirect_response=False)
+        self.assertRedirects(
+            response, reverse("login_page"), 302, 200, fetch_redirect_response=False
+        )
 
     def test_register_action_endpoint_when_already_logged_in(self) -> None:
         """Test the register action endpoint redirects when the user is already logged in."""
@@ -77,7 +79,8 @@ class TestRegisterActionView(TestCase):
         )
         self.assertRedirects(
             response,
-            reverse("register_page") + "?error=Please ensure username, email, first name and last name are provided.",  # noqa: E501
+            reverse("register_page")
+            + "?error=Please ensure username, email, first name and last name are provided.",  # noqa: E501
             302,
             200,
             fetch_redirect_response=False,

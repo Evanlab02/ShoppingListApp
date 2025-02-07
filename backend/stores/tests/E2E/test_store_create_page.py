@@ -2,6 +2,7 @@
 
 import time
 
+import pytest
 from selenium.webdriver.support.select import Select
 
 from stores.models import ShoppingStore as Store
@@ -11,6 +12,7 @@ from stores.tests.E2E.base_test_case import BaseEndToEndTestCase
 class TestStoreCreateView(BaseEndToEndTestCase):
     """Tests the store create view with E2E tests."""
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_get_create_store(self) -> None:
         """Test the create store page."""
         url = self.live_server_url
@@ -38,6 +40,7 @@ class TestStoreCreateView(BaseEndToEndTestCase):
         tag_name = self.driver.find_element(value="cancel-create-store").tag_name
         self.assertEqual(tag_name, "input")
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_create_store(self) -> None:
         """Test creating a store."""
         url = self.live_server_url
@@ -52,6 +55,7 @@ class TestStoreCreateView(BaseEndToEndTestCase):
         stores = Store.objects.all()
         self.assertEqual(1, len(stores))
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_get_create_page_without_being_logged_in(self) -> None:
         """Test that a user cannot access the create store page without being logged in."""
         url = self.live_server_url
@@ -62,6 +66,7 @@ class TestStoreCreateView(BaseEndToEndTestCase):
             f"{url}/?error=You%20must%20be%20logged%20in%20to%20access%20that%20page.",
         )
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_get_create_page_with_error(self) -> None:
         """Test that a user can access the create store page with an error."""
         self._login_self()

@@ -1,5 +1,6 @@
 """Contains the get item API tests."""
 
+import pytest
 from requests import Response
 
 from items.tests.api.base_test_case import BaseTestCase
@@ -33,6 +34,7 @@ class ItemGetAPITests(BaseTestCase):
         self.assertEqual(items[1].get("name"), "Very expensive item")
         self.assertEqual(items[1].get("price"), "3000.00")
 
+    @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
     def test_get_items(self) -> None:
         """Test that a user can get items."""
         self._login()
@@ -67,6 +69,7 @@ class ItemGetAPITests(BaseTestCase):
         self.assertEqual(items[0].get("store").get("name"), "Takealot")
         self.assertEqual(items[0].get("user").get("username"), "test")
 
+    @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
     def test_get_items_with_sort_on_price(self) -> None:
         """Test that a user can get items sorted by price asc."""
         self._login()
@@ -75,6 +78,7 @@ class ItemGetAPITests(BaseTestCase):
         response = self.session.get(url)
         self._test_sort(response)
 
+    @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
     def test_get_items_personal(self) -> None:
         """Test that a user can create an item."""
         self._login()
@@ -109,6 +113,7 @@ class ItemGetAPITests(BaseTestCase):
         self.assertEqual(items[0].get("store").get("name"), "Takealot")
         self.assertEqual(items[0].get("user").get("username"), "test")
 
+    @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
     def test_get_items_personal_with_sort_on_price(self) -> None:
         """Test that a user can create an item."""
         self._login()

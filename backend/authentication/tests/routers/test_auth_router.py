@@ -48,12 +48,22 @@ class TestAuthentication(TestCase):
         """Test the register endpoint with incomplete details."""
         response = self.client.post(
             reverse("ninja-api:auth_register"),
-            NewUserSchemaFactory(username="", email="", password="", password_confirmation="", first_name="", last_name="").model_dump(),
+            NewUserSchemaFactory(
+                username="",
+                email="",
+                password="",
+                password_confirmation="",
+                first_name="",
+                last_name="",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"detail": "Please ensure username, email, first name and last name are provided."})
+        self.assertEqual(
+            response.json(),
+            {"detail": "Please ensure username, email, first name and last name are provided."},
+        )
 
     def test_register_user_with_existing_username(self) -> None:
         """Test the register endpoint with an existing username."""
@@ -61,20 +71,34 @@ class TestAuthentication(TestCase):
 
         response = self.client.post(
             reverse("ninja-api:auth_register"),
-            NewUserSchemaFactory(username="testuser", email="testusername@user.com", password="testuserpassword", password_confirmation="testuserpassword", first_name="test", last_name="user").model_dump(),
+            NewUserSchemaFactory(
+                username="testuser",
+                email="testusername@user.com",
+                password="testuserpassword",
+                password_confirmation="testuserpassword",
+                first_name="test",
+                last_name="user",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"detail": "Username already exists."})
 
-    def test_register_user_with_existing_email(self) -> None:   
+    def test_register_user_with_existing_email(self) -> None:
         """Test the register endpoint with an existing email."""
         UserFactory(email="testemail@user.com")
 
         response = self.client.post(
             reverse("ninja-api:auth_register"),
-            NewUserSchemaFactory(username="testuser", email="testemail@user.com", password="testpassword", password_confirmation="testpassword", first_name="test", last_name="user").model_dump(),
+            NewUserSchemaFactory(
+                username="testuser",
+                email="testemail@user.com",
+                password="testpassword",
+                password_confirmation="testpassword",
+                first_name="test",
+                last_name="user",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -85,7 +109,14 @@ class TestAuthentication(TestCase):
         """Test the register endpoint with non matching passwords."""
         response = self.client.post(
             reverse("ninja-api:auth_register"),
-            NewUserSchemaFactory(username="test", email="testpassword@test.com", password="testpassword", password_confirmation="testpassword1", first_name="test", last_name="user").model_dump(),
+            NewUserSchemaFactory(
+                username="test",
+                email="testpassword@test.com",
+                password="testpassword",
+                password_confirmation="testpassword1",
+                first_name="test",
+                last_name="user",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 

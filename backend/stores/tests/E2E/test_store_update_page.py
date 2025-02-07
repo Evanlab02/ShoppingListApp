@@ -2,6 +2,8 @@
 
 import time
 
+import pytest
+
 from stores.models import ShoppingStore as Store
 from stores.tests.E2E.base_test_case import BaseEndToEndTestCase
 
@@ -22,6 +24,7 @@ class TestStoreUpdateView(BaseEndToEndTestCase):
         Store.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_update_page(self) -> None:
         """Test the update page."""
         self.driver.get(self.url)

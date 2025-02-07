@@ -44,10 +44,10 @@ unit-test:
 	--ignore=stores/tests/E2E/ \
 
 api-test:
-	@pytest **/tests/api/ -vv
+	@pytest **/tests/api/ -vv --cov=. --no-cov-on-fail --cov-report term-missing
 
 e2e-test:
-	@pytest **/tests/E2E/ -n auto
+	@pytest **/tests/E2E/ -n auto --cov=. --no-cov-on-fail --cov-report term-missing
 
 requirements:
 	uv pip compile --no-annotate requirements.in > requirements.txt

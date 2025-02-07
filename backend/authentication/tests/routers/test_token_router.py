@@ -1,12 +1,11 @@
 """Contains tests for the token routes."""
 
 import jwt
-
 from django.test import TestCase
 from django.test.client import Client
 from django.urls import reverse
 
-from authentication.tests.factory import UserFactory, ClientFactory
+from authentication.tests.factory import ClientFactory, UserFactory
 
 CONTENT_TYPE = "application/json"
 SUCCESS_REGISTER_MESSAGE = "User successfully registered."
@@ -22,7 +21,7 @@ class TestTokenRouter(TestCase):
         self.client = Client()
         self.user = UserFactory()
         self.api_client = ClientFactory(user=self.user)
-        
+
     def test_token_refresh(self) -> None:
         """Test the token refresh endpoint."""
         self.client.force_login(self.user)
@@ -34,7 +33,7 @@ class TestTokenRouter(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse("ninja-api:auth_token"))
         self.assertEqual(response.status_code, 200)
-        
+
         response_data = response.json()
         token = response_data["token"]
         secret = response_data["secret"]

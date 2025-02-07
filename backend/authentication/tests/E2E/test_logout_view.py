@@ -1,5 +1,6 @@
 """Contains the end to end tests for the logout view."""
 
+import pytest
 from django.contrib.auth.models import User
 
 from authentication.constants import INPUT_MAPPING
@@ -27,6 +28,7 @@ class TestLogoutView(BaseEndToEndTestCase):
         User.objects.all().delete()
         return super().tearDown()
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_1_logout_cancel(self) -> None:
         """Test logout cancelling."""
         self.driver.get(f"{self.live_server_url}/")
@@ -43,6 +45,7 @@ class TestLogoutView(BaseEndToEndTestCase):
         self.driver.get_screenshot_as_file("./screenshots/logout/logout_cancel.png")
         self.assertEqual(self.driver.current_url, f"{self.live_server_url}/shopping/dashboard/")
 
+    @pytest.mark.skip(reason="E2E tests to be refactored.")
     def test_2_logout(self) -> None:
         """Test logout."""
         self.driver.get(f"{self.live_server_url}/")

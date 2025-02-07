@@ -18,6 +18,7 @@ from authentication.services.views.user_service import UserService
 from authentication.tests.factory import UserFactory
 from authentication.tests.mocks.user_repo import MockUserRepo
 
+
 class TestUserService(TestCase):
     """Tests for the view user service."""
 

@@ -11,8 +11,6 @@ class BaseEndToEndTestCase(StaticLiveServerTestCase):
 
     driver: webdriver.Chrome
     delay: int
-    mock_username: str
-    mock_password: str
 
     @classmethod
     def setUpClass(cls) -> None:

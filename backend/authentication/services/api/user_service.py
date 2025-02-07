@@ -4,6 +4,7 @@ from django.contrib.auth import aauthenticate
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 from django.http import HttpRequest
 
+from authentication.database.interfaces.i_user_repo import IUserRepository
 from authentication.database.user_repo import UserRepository
 from authentication.errors.api_exceptions import (
     EmailAlreadyExists,
@@ -17,7 +18,7 @@ from authentication.errors.api_exceptions import (
 from authentication.schemas.input import NewUser
 from authentication.schemas.output import GeneralResponse
 from authentication.services.interfaces.api.i_user_service import IUserService
-from authentication.database.interfaces.i_user_repo import IUserRepository
+
 
 class UserService(IUserService):
     """The user service."""
