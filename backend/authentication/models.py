@@ -23,8 +23,8 @@ class ApiClient(Model):
 
     user = ForeignKey(User, on_delete=CASCADE, db_index=True)
     is_active = BooleanField(default=True)
-    client_secret = CharField(max_length=255, default=None, null=True, blank=True)
-    token = CharField(max_length=255, null=True, blank=True, db_index=True)
+    client_secret = CharField(max_length=255, default="", blank=True)
+    token = CharField(max_length=255, default="", blank=True, db_index=True)
     token_expiration = FloatField(default=0)
 
     def __str__(self) -> str:
