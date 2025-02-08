@@ -14,7 +14,7 @@ export default function Navbar() {
     return (
         <header className="navbar">
             <div className="main-item navbar-item">
-                <Link to={""}><SlIcon name="cart4" />Dashboard</Link>
+                <Link to={"#"}><SlIcon name="cart4" />Dashboard</Link>
                 <div className="menu-list-button">
                     <SlIconButton name="list" />
                 </div>

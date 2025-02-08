@@ -8,6 +8,11 @@
 		file_server
 	}
 
+	handle_path /admin/* {
+		reverse_proxy shopping-django-admin:80
+		rewrite * /admin{uri}
+	}
+
 	handle_path /pgadmin* {
     	rewrite * /pgadmin{uri}
     	reverse_proxy shopping-pgadmin:80

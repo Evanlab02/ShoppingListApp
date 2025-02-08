@@ -19,7 +19,6 @@ import logging
 
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.http import HttpRequest, HttpResponse
 from django.urls import include, path
 from ninja import NinjaAPI
@@ -157,8 +156,6 @@ def item_does_not_exist_handler(request: HttpRequest, exception: ItemDoesNotExis
 
 
 urlpatterns = [
-    path("admin/doc/", include("django.contrib.admindocs.urls")),
-    path("admin/", admin.site.urls),
     path("api/v1/", api.urls),
     path("", include("authentication.urls")),
     path("stores/", include("stores.urls")),

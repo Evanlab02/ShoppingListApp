@@ -14,7 +14,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: '1.0'
           memory: 512M
 
   dev-shopping-app-db:
@@ -37,8 +37,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2048M
+          cpus: '1.0'
+          memory: 1024M
 
   dev-shopping-app-redis:
     image: redis:7.4.1-alpine3.20
@@ -56,14 +56,11 @@ services:
 
   dev-shopping-django-administration:
     container_name: shopping-django-admin
-    command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
     build:
       context: .
       dockerfile: docker/admin/Dockerfile
     env_file:
       - .env.dev
-    environment:
-      SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
     networks:
       - dev-postgres-django-network
     depends_on:
@@ -72,17 +69,14 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: '1.0'
+          memory: 1024M
 
   dev-shopping-django-app:
     container_name: shopping-django-app
-    command: "gunicorn -b 0.0.0.0:80 -w 9 --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'"
     build:
       context: .
       dockerfile: docker/server/Dockerfile
-    environment:
-      SHOPPING_DEFAULT_SETTINGS_MODULE: shoppingapp.settings.settings
     env_file:
       - .env.dev
     networks:
@@ -110,15 +104,41 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8.0'
-          memory: 8192M
+          cpus: '1.0'
+          memory: 1024M
+
+  dev-shopping-django-fe:
+    container_name: shopping-django-fe-dev
+    build:
+      context: .
+      dockerfile: docker/frontend/dev/Dockerfile
+    env_file:
+      - .env.dev
+    networks:
+      - dev-postgres-django-network
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./frontend/vite.config.ts
+          target: /app/vite.config.ts
+        - action: rebuild
+          path: ./frontend/package.json
+          target: /app/package.json
+        - action: rebuild
+          path: ./frontend/package-lock.json
+          target: /app/package-lock.json
+        - action: sync
+          path: ./frontend/src/
+          target: /app/src/
 
   dev-shopping-django-site:
     container_name: shopping-django-site
     restart: always
     build:
       context: .
-      dockerfile: docker/site/Dockerfile
+      dockerfile: docker/web/Dockerfile
     expose:
       - "80"
     ports:
@@ -141,26 +161,6 @@ services:
         limits:
           cpus: '1.0'
           memory: 1024M
-
-  dev-shopping-load-testing:
-    container_name: shopping-load-testing
-    restart: always
-    env_file:
-      - testing/.env
-    build:
-      context: .
-      dockerfile: docker/testing/Dockerfile
-    expose:
-      - "8089"
-    ports:
-      - "8089:8089"
-    networks:
-      - dev-postgres-django-network
-    deploy:
-      resources:
-        limits:
-          cpus: '3.0'
-          memory: 3072M
 
 networks:
   dev-postgres-django-network:

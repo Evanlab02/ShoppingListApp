@@ -24,11 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = getenv("SHOPPING_DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+SHOPPING_DEV = int(getenv("SHOPPING_DEV", "0"))
+DEBUG = SHOPPING_DEV == 1
 
-ALLOWED_HOSTS = [getenv("SHOPPING_DJANGO_HOST")]
-if getenv("SHOPPING_DJANGO_LT"):
-    ALLOWED_HOSTS.append(getenv("SHOPPING_DJANGO_LT"))
+ALLOWED_HOSTS = [
+    getenv("SHOPPING_DJANGO_HOST"),
+    getenv("SHOPPING_DJANGO_INTERNAL_HOST"),
+]
 
 # Application definition
 
@@ -38,8 +40,6 @@ INSTALLED_APPS = [
     "stores.apps.StoresConfig",
     "dashboard.apps.DashboardConfig",
     "django_vite",
-    "django.contrib.admindocs",
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -57,7 +57,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "shoppingapp.urls"
+ROOT_URLCONF = "shoppingapp.core.urls"
 
 TEMPLATES = [
     {
@@ -224,8 +224,11 @@ if FORCE_LEGACY_HASHING == "1":
 
 DJANGO_VITE = {
     "default": {
-        "dev_mode": False,
+        "dev_mode": SHOPPING_DEV == 1,
         "manifest_path": f"{STATIC_URL}dashboard/manifest.json",
         "static_url_prefix": "dashboard",
+        "dev_server_host": "localhost",
+        "dev_server_port": 5173,
+        "dev_server_protocol": "http",
     }
 }
