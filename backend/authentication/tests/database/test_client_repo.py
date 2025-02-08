@@ -18,8 +18,8 @@ class TestClientRepository(TestCase):
 
     async def test_get_token(self) -> None:
         """Test the get_token method."""
-        self.assertIsNone(self.api_client.client_secret)
-        self.assertIsNone(self.api_client.token)
+        self.assertEqual(self.api_client.client_secret, "")
+        self.assertEqual(self.api_client.token, "")
         self.assertEqual(self.api_client.token_expiration, 0)
 
         token, secret = await self.repo.get_token(self.user)
