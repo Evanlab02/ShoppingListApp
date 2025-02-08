@@ -13,7 +13,7 @@ COPY backend/stores /backend/stores
 COPY backend/items /backend/items
 COPY backend/shoppingapp /backend/shoppingapp
 COPY backend/dashboard /backend/dashboard
-
+COPY backend/static /backend/static
 COPY backend/manage.py /backend/manage.py
 
 CMD ["python","manage.py", "runserver"]

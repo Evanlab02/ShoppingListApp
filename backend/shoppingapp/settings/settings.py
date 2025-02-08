@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "items.apps.ItemsConfig",
     "stores.apps.StoresConfig",
     "dashboard.apps.DashboardConfig",
+    "django_vite",
     "django.contrib.admindocs",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -220,3 +221,11 @@ FORCED_LEGACY_HASHERS = [
 FORCE_LEGACY_HASHING = getenv("SHOPPING_FORCE_LEGACY_HASHING", "0")
 if FORCE_LEGACY_HASHING == "1":
     PASSWORD_HASHERS = FORCED_LEGACY_HASHERS
+
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": False,
+        "manifest_path": f"{STATIC_URL}dashboard/manifest.json",
+        "static_url_prefix": "dashboard",
+    }
+}

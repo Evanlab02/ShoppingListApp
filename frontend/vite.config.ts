@@ -6,13 +6,19 @@ export default defineConfig({
   plugins: [react()],
   base: "/static/dashboard/",
   build: {
+    manifest: "manifest.json",
     outDir: "../backend/dashboard/static/dashboard",
+    rollupOptions: {
+      input: {
+        "dashboard": "./src/main.tsx"
+      }
+    }
   },
   server: {
     open: '/dashboard/',
     proxy: {
-      '/apis/shopping': {
-        target: 'http://localhost:8000',
+      '/api': {
+        target: 'http://localhost:8001',
         changeOrigin: true,
       }
     }

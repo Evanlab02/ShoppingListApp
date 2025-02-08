@@ -3,10 +3,6 @@
     	reverse_proxy shopping-django-app:80
 	}
 
-	handle_path /apis/shopping/* {
-    	reverse_proxy shopping-django-app:80
-	}
-
 	handle_path /static/* {
 		root * /var/www/html/static/
 		file_server

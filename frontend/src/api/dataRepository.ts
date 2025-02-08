@@ -8,7 +8,7 @@ export default class DataRepo {
     }
 
     async getDashboardCurrent(): Promise<DashboardCurrent> {
-        const response = await fetch("/apis/shopping/api/v1/dashboard/overview",
+        const response = await fetch("/api/v1/dashboard/overview",
             {
                 method: "GET",
                 headers: {
@@ -27,7 +27,7 @@ export default class DataRepo {
     }
 
     async getDashboardHistory(): Promise<DashboardHistory> {
-        const response = await fetch("/apis/shopping/api/v1/dashboard/history",
+        const response = await fetch("/api/v1/dashboard/history",
             {
                 method: "GET",
                 headers: {
@@ -46,7 +46,7 @@ export default class DataRepo {
     }
 
     async getRecentItems(): Promise<RecentItems> {
-        const response = await fetch("/apis/shopping/api/v1/dashboard/recent/items",
+        const response = await fetch("/api/v1/dashboard/recent/items",
             {
                 method: "GET",
                 headers: {

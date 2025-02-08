@@ -50,5 +50,5 @@ e2e-test:
 	@pytest **/tests/E2E/ -n auto --cov=. --no-cov-on-fail --cov-report term-missing
 
 requirements:
-	uv pip compile --no-annotate requirements.in > requirements.txt
-	uv pip compile --no-annotate requirements.dev.in > requirements.dev.txt
+	uv pip compile --no-annotate requirements.in -o requirements.txt
+	uv pip compile --no-annotate requirements.dev.in -o requirements.dev.txt

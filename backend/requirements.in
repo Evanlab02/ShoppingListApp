@@ -8,3 +8,4 @@ argon2-cffi
 docutils
 redis[hiredis]
 pyjwt
+django-vite
