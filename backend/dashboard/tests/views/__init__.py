@@ -1,4 +1,4 @@
-"""Contains the schemas for the dashboard app."""
+"""Contains the tests for the dashboard views."""
 
 import logging
 

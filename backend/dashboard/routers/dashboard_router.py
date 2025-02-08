@@ -14,7 +14,6 @@ from dashboard.schemas.output import (
 from dashboard.schemas.sub_output import BarChartDataset
 
 log = logging.getLogger(__name__)
-log.info("Dashboard router loading...")
 
 dashboard_router = Router(tags=["Dashboard"], auth=SessionAuth())
 
