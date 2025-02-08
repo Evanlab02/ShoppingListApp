@@ -1,9 +1,10 @@
 """Contains the end to end tests for the logout view."""
 
 import time
-import pytest
+
 from django.contrib.auth.models import User
 from django.urls import reverse
+
 from authentication.constants import INPUT_MAPPING
 from authentication.tests.E2E.base_test_case import BaseEndToEndTestCase
 from authentication.tests.factory import UserFactory
@@ -21,7 +22,7 @@ class TestLogoutView(BaseEndToEndTestCase):
 
     def setUp(self) -> None:
         """Set up the tests."""
-        self.user = UserFactory()
+        self.user = UserFactory.create()
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -37,7 +38,9 @@ class TestLogoutView(BaseEndToEndTestCase):
 
         self.driver.get(URL)
         self.assertEqual(self.driver.current_url, URL)
-        self.driver.get_screenshot_as_file("./screenshots/logout/test_user_can_view_logout_page.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/logout/test_user_can_view_logout_page.png"
+        )
 
     def test_logout_page_has_correct_heading(self) -> None:
         """Test logout page has correct heading."""
@@ -55,13 +58,16 @@ class TestLogoutView(BaseEndToEndTestCase):
         """Test logout page can render error message."""
         self.login(self.user.username, "test")
 
-        URL = f"{self.live_server_url}{reverse('logout_page')}?error=This a test error messsage, please ignore."
+        error = "This a test error messsage, please ignore."
+        URL = f"{self.live_server_url}{reverse('logout_page')}?error={error}"
 
         self.driver.get(URL)
 
         error_message = self.driver.find_element(value="error-text").text
-        self.assertEqual(error_message, "This a test error messsage, please ignore.")
-        self.driver.get_screenshot_as_file("./screenshots/logout/test_logout_page_can_render_error_message.png")
+        self.assertEqual(error_message, error)
+        self.driver.get_screenshot_as_file(
+            "./screenshots/logout/test_logout_page_can_render_error_message.png"
+        )
 
     def test_logout_form_has_correct_url(self) -> None:
         """Test logout form has correct URL."""
@@ -90,7 +96,9 @@ class TestLogoutView(BaseEndToEndTestCase):
         submit_button.click()
         self.assertEqual(self.driver.current_url, TARGET_URL)
         time.sleep(1)
-        self.driver.get_screenshot_as_file("./screenshots/logout/test_logout_cancel_redirects_to_dashboard.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/logout/test_logout_cancel_redirects_to_dashboard.png"
+        )
 
     def test_logout_submit_redirects_to_login(self) -> None:
         """Test logout submit redirects to login."""
@@ -105,4 +113,6 @@ class TestLogoutView(BaseEndToEndTestCase):
         submit_button = self.driver.find_element(value=SUBMIT_LOGOUT)
         submit_button.click()
         self.assertEqual(self.driver.current_url, TARGET_URL)
-        self.driver.get_screenshot_as_file("./screenshots/logout/test_logout_submit_redirects_to_login.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/logout/test_logout_submit_redirects_to_login.png"
+        )

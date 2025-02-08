@@ -1,3 +1,5 @@
+"""Contains the mock user repository for testing."""
+
 import asyncio
 
 from django.contrib.auth.models import AnonymousUser, User

@@ -2,7 +2,7 @@
 
 import asyncio
 
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser
 from django.test import AsyncRequestFactory, Client, TestCase
 
 from authentication.errors.api_exceptions import (
@@ -26,30 +26,30 @@ class TestApiUserService(TestCase):
         """Set up the tests."""
         self.client = Client()
         self.service = UserService()
-        self.user = UserFactory()
+        self.user = UserFactory.create()
 
         self.request = AsyncRequestFactory()
-        self.request.auser = lambda: asyncio.to_thread(lambda: AnonymousUser())
-        self.request.GET = {}
-        self.request.POST = {}
+        self.request.auser = lambda: asyncio.to_thread(lambda: AnonymousUser())  # type: ignore
+        self.request.GET = {}  # type: ignore
+        self.request.POST = {}  # type: ignore
 
         self.auth_request = AsyncRequestFactory()
-        self.auth_request.auser = lambda: asyncio.to_thread(lambda: self.user)
-        self.auth_request.GET = {}
-        self.auth_request.POST = {}
+        self.auth_request.auser = lambda: asyncio.to_thread(lambda: self.user)  # type: ignore
+        self.auth_request.GET = {}  # type: ignore
+        self.auth_request.POST = {}  # type: ignore
         return super().setUp()
 
     async def test_register_user(self) -> None:
         """Test the register user function."""
         user = AnonymousUser()
-        new_user = NewUserSchemaFactory()
+        new_user = NewUserSchemaFactory.create()
         response = await self.service.register_user(user, new_user)
         self.assertEqual(response.message, "User successfully registered.")
         self.assertEqual(response.detail, "")
 
     async def test_register_user_when_already_logged_in(self) -> None:
         """Test the register user function."""
-        new_user = NewUserSchemaFactory()
+        new_user = NewUserSchemaFactory.create()
 
         with self.assertRaises(UserAlreadyLoggedIn):
             await self.service.register_user(self.user, new_user)
@@ -57,7 +57,7 @@ class TestApiUserService(TestCase):
     async def test_register_user_with_empty_detail(self) -> None:
         """Test the register user function."""
         user = AnonymousUser()
-        new_user = NewUserSchemaFactory(
+        new_user = NewUserSchemaFactory.create(
             username="",
             first_name="",
             last_name="",
@@ -74,7 +74,7 @@ class TestApiUserService(TestCase):
         self.user.username = "existinguser"
         await self.user.asave()
 
-        new_user = NewUserSchemaFactory(username="existinguser")
+        new_user = NewUserSchemaFactory.create(username="existinguser")
 
         with self.assertRaises(UsernameAlreadyExists):
             await self.service.register_user(api_user, new_user)
@@ -85,7 +85,7 @@ class TestApiUserService(TestCase):
         self.user.email = "existingemail@gmail.com"
         await self.user.asave()
 
-        new_user = NewUserSchemaFactory(email="existingemail@gmail.com")
+        new_user = NewUserSchemaFactory.create(email="existingemail@gmail.com")
 
         with self.assertRaises(EmailAlreadyExists):
             await self.service.register_user(api_user, new_user)
@@ -94,7 +94,7 @@ class TestApiUserService(TestCase):
         """Test the register user function."""
         api_user = AnonymousUser()
 
-        new_user = NewUserSchemaFactory(password="test", password_confirmation="test1")
+        new_user = NewUserSchemaFactory.create(password="test", password_confirmation="test1")
 
         with self.assertRaises(NonMatchingCredentials):
             await self.service.register_user(api_user, new_user)
@@ -102,28 +102,32 @@ class TestApiUserService(TestCase):
     async def test_login_user(self) -> None:
         """Test the login user function."""
         mock_service = UserService(MockUserRepo())
-        response = await mock_service.login(self.request, self.user.username, "test")
+        response = await mock_service.login(
+            self.request,  # type: ignore
+            self.user.username,
+            "test",
+        )
         self.assertEqual(response.message, "User successfully logged in.")
         self.assertEqual(response.detail, "")
 
     async def test_login_user_when_already_logged_in(self) -> None:
         """Test the login user function."""
         with self.assertRaises(UserAlreadyLoggedIn):
-            await self.service.login(self.auth_request, self.user.username, "test")
+            await self.service.login(self.auth_request, self.user.username, "test")  # type: ignore
 
     async def test_login_user_with_invalid_credentials(self) -> None:
         """Test the login user function."""
         with self.assertRaises(InvalidCredentials):
-            await self.service.login(self.request, self.user.username, "invalid")
+            await self.service.login(self.request, self.user.username, "invalid")  # type: ignore
 
     async def test_logout_user(self) -> None:
         """Test the logout user function."""
         mock_service = UserService(MockUserRepo())
-        response = await mock_service.logout(self.auth_request)
+        response = await mock_service.logout(self.auth_request)  # type: ignore
         self.assertEqual(response.message, "User successfully logged out.")
         self.assertEqual(response.detail, "")
 
     async def test_logout_user_when_not_logged_in(self) -> None:
         """Test the logout user function."""
         with self.assertRaises(UserNotLoggedIn):
-            await self.service.logout(self.request)
+            await self.service.logout(self.request)  # type: ignore

@@ -12,7 +12,7 @@ class TestLogoutView(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = UserFactory()
+        self.user = UserFactory.create()
 
     def tearDown(self) -> None:
         """Tear down the test environment."""

@@ -20,7 +20,7 @@ class TestLoginView(BaseEndToEndTestCase):
 
     def setUp(self) -> None:
         """Set up the tests."""
-        self.user = UserFactory()
+        self.user = UserFactory.create()
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -42,19 +42,22 @@ class TestLoginView(BaseEndToEndTestCase):
 
         self.driver.get(URL)
         self.assertEqual(self.driver.current_url, URL)
-        
+
         heading = self.driver.find_element(value="auth-heading").text
         self.assertEqual(heading, "Shopping App Login")
 
     def test_login_page_can_render_error_message(self) -> None:
         """Test the login page can render an error message."""
-        URL = f"{self.live_server_url}{reverse('login_page')}?error=This a test error messsage, please ignore."
+        error = "This a test error messsage, please ignore."
+        URL = f"{self.live_server_url}{reverse('login_page')}?error={error}"
 
         self.driver.get(URL)
 
         error_message = self.driver.find_element(value="error-text").text
-        self.assertEqual(error_message, "This a test error messsage, please ignore.")
-        self.driver.get_screenshot_as_file("./screenshots/login/test_login_page_can_render_error_message.png")
+        self.assertEqual(error_message, error)
+        self.driver.get_screenshot_as_file(
+            "./screenshots/login/test_login_page_can_render_error_message.png"
+        )
 
     def test_login_form_has_correct_url(self) -> None:
         """Test the login form has the correct URL."""
@@ -73,7 +76,7 @@ class TestLoginView(BaseEndToEndTestCase):
 
         self.driver.get(URL)
         self.assertEqual(self.driver.current_url, URL)
-        
+
         username_input = self.driver.find_element(value=USERNAME_INPUT)
         username_input.send_keys(self.user.username)
         username_input_value = username_input.get_attribute("value")
@@ -83,8 +86,10 @@ class TestLoginView(BaseEndToEndTestCase):
         password_input.send_keys("test")
         password_input_value = password_input.get_attribute("value")
         self.assertEqual(password_input_value, "test")
-        
-        self.driver.get_screenshot_as_file("./screenshots/login/test_login_page_can_fill_in_inputs.png")
+
+        self.driver.get_screenshot_as_file(
+            "./screenshots/login/test_login_page_can_fill_in_inputs.png"
+        )
 
     def test_login_page_can_go_to_register_page(self) -> None:
         """Test the login page can go to the register page."""
@@ -93,11 +98,13 @@ class TestLoginView(BaseEndToEndTestCase):
 
         self.driver.get(URL)
         self.assertEqual(self.driver.current_url, URL)
-        
+
         register_button = self.driver.find_element(value="go-to-register")
         register_button.click()
         self.assertEqual(self.driver.current_url, TARGET_URL)
-        self.driver.get_screenshot_as_file("./screenshots/login/test_login_page_can_go_to_register_page.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/login/test_login_page_can_go_to_register_page.png"
+        )
 
     def test_login_page_can_submit_form(self) -> None:
         """Test the login page can submit the form."""
@@ -118,7 +125,9 @@ class TestLoginView(BaseEndToEndTestCase):
 
         self.assertEqual(self.driver.current_url, TARGET_URL)
         time.sleep(1)
-        self.driver.get_screenshot_as_file("./screenshots/login/test_login_page_can_submit_form.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/login/test_login_page_can_submit_form.png"
+        )
 
     def test_redirect_to_dashboard_when_logged_in(self) -> None:
         """Test that a user is redirected to the dashboard when logged in."""
@@ -130,7 +139,9 @@ class TestLoginView(BaseEndToEndTestCase):
         self.driver.get(URL)
         self.assertEqual(self.driver.current_url, TARGET_URL)
         time.sleep(1)
-        self.driver.get_screenshot_as_file("./screenshots/login/test_redirect_to_dashboard_when_logged_in.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/login/test_redirect_to_dashboard_when_logged_in.png"
+        )
 
     def test_login_with_invalid_credentials(self) -> None:
         """Test that a user is redirected to the login page with invalid credentials."""
@@ -150,4 +161,6 @@ class TestLoginView(BaseEndToEndTestCase):
 
         error_message = self.driver.find_element(value="error-text").text
         self.assertEqual(error_message, "Invalid Credentials.")
-        self.driver.get_screenshot_as_file("./screenshots/login/test_login_with_invalid_credentials.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/login/test_login_with_invalid_credentials.png"
+        )

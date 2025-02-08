@@ -14,7 +14,7 @@ class TestUserRepository(TestCase):
         """Set up the tests."""
         self.client = Client()
         self.repo = UserRepository()
-        self.user = UserFactory()  # type: ignore
+        self.user = UserFactory.create()
         return super().setUp()
 
     async def test_create_user(self) -> None:

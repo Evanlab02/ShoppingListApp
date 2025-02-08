@@ -8,5 +8,5 @@ from authentication.decorators import login_required
 
 @login_required
 def dashboard_view(request: HttpRequest) -> HttpResponse:
-    """Renders the dashboard page."""
+    """Render the dashboard page."""
     return render(request, "dashboard/index.html")

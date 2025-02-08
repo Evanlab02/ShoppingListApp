@@ -1,11 +1,9 @@
 """Contains tests for the register view."""
 
-from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 
 from authentication.tests.factory import UserFactory
-from authentication.views import DASHBOARD_ROUTE, REGISTER_ROUTE
 
 TEST_EMAIL = "user@test.com"
 
@@ -16,7 +14,7 @@ class TestRegisterView(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = UserFactory()
+        self.user = UserFactory.create()
 
     def tearDown(self) -> None:
         """Tear down the test environment."""

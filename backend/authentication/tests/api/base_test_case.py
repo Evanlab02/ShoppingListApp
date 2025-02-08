@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import Client
 
-from authentication.tests.factory import ClientFactory, UserFactory
+from authentication.tests.factory import UserFactory
 
 
 class BaseTestCase(StaticLiveServerTestCase):
@@ -12,7 +12,7 @@ class BaseTestCase(StaticLiveServerTestCase):
 
     def setUp(self) -> None:
         """Set up the test."""
-        self.user = UserFactory()  # type: ignore
+        self.user = UserFactory.create()
         self.client = Client()
         return super().setUp()
 

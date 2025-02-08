@@ -5,12 +5,6 @@ from django.urls import reverse
 
 from authentication.constants import INPUT_MAPPING
 from authentication.tests.factory import UserFactory
-from authentication.views import (
-    DASHBOARD_ROUTE,
-    LOGIN_ROUTE,
-    REGISTER_ACTION_ROUTE,
-    REGISTER_ROUTE,
-)
 
 TEST_EMAIL = "user@test.com"
 USERNAME_INPUT = INPUT_MAPPING.get("username-input", "username-input")
@@ -27,7 +21,7 @@ class TestRegisterActionView(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = UserFactory()
+        self.user = UserFactory.create()
 
     def test_register_action_endpoint(self) -> None:
         """Test the register action endpoint."""
@@ -109,7 +103,7 @@ class TestRegisterActionView(TestCase):
 
     def test_login_action_endpoint_already_existing_username(self) -> None:
         """Test the register action endpoint with an already existing username."""
-        UserFactory(username="testuser")
+        UserFactory.create(username="testuser")
         response = self.client.post(
             reverse("register_action"),
             {
@@ -131,7 +125,7 @@ class TestRegisterActionView(TestCase):
 
     def test_login_action_endpoint_already_existing_email(self) -> None:
         """Test the register action endpoint with an already existing email."""
-        UserFactory(username="random_very_random_username", email="duplicate@gmail.com")
+        UserFactory.create(username="random_very_random_username", email="duplicate@gmail.com")
         response = self.client.post(
             reverse("register_action"),
             {

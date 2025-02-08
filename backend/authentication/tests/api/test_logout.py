@@ -1,7 +1,5 @@
 """Contains the logout API tests."""
 
-import pytest
-
 from authentication.tests.api.base_test_case import BaseTestCase
 
 

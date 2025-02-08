@@ -1,7 +1,7 @@
 """Contains factories for the authentication app."""
 
 from django.contrib.auth.models import User
-from factory import Factory, SubFactory
+from factory import Factory, SubFactory  # type: ignore
 from factory.django import DjangoModelFactory, Password
 from faker import Faker
 
@@ -11,7 +11,7 @@ from authentication.schemas.input import NewUser
 faker = Faker()
 
 
-class UserFactory(DjangoModelFactory):  # type: ignore
+class UserFactory(DjangoModelFactory[User]):
     """Factory for the User model."""
 
     class Meta:
@@ -26,7 +26,7 @@ class UserFactory(DjangoModelFactory):  # type: ignore
     password = Password("test")  # type: ignore
 
 
-class ClientFactory(DjangoModelFactory):  # type: ignore
+class ClientFactory(DjangoModelFactory[ApiClient]):
     """Factory for the Client model."""
 
     class Meta:
@@ -34,14 +34,14 @@ class ClientFactory(DjangoModelFactory):  # type: ignore
 
         model = ApiClient
 
-    user = SubFactory(UserFactory)
+    user = SubFactory(UserFactory)  # type: ignore
     is_active = True
     client_secret = None
     token = None
     token_expiration = 0
 
 
-class NewUserSchemaFactory(Factory):
+class NewUserSchemaFactory(Factory[NewUser]):
     """Factory for the NewUserSchema model."""
 
     class Meta:

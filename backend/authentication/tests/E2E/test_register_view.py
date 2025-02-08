@@ -1,8 +1,7 @@
 """Contains the end to end tests for the register view."""
 
-from django.urls import reverse
-import pytest
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 from authentication.constants import INPUT_MAPPING
 from authentication.tests.E2E.base_test_case import BaseEndToEndTestCase
@@ -26,7 +25,7 @@ class TestRegisterView(BaseEndToEndTestCase):
 
     def setUp(self) -> None:
         """Set up the tests."""
-        self.user = UserFactory()
+        self.user = UserFactory.create()
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -40,7 +39,9 @@ class TestRegisterView(BaseEndToEndTestCase):
 
         self.driver.get(URL)
         self.assertEqual(self.driver.current_url, URL)
-        self.driver.get_screenshot_as_file("./screenshots/register/test_user_can_view_register_page.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_user_can_view_register_page.png"
+        )
 
     def test_register_page_has_correct_heading(self) -> None:
         """Test that the register page has the correct heading."""
@@ -54,13 +55,16 @@ class TestRegisterView(BaseEndToEndTestCase):
 
     def test_register_page_can_render_error_message(self) -> None:
         """Test that the register page can render an error message."""
-        URL = f"{self.live_server_url}{reverse('register_page')}?error=This a test error messsage, please ignore."
+        error = "This a test error messsage, please ignore."
+        URL = f"{self.live_server_url}{reverse('register_page')}?error={error}"
 
         self.driver.get(URL)
 
         error_message = self.driver.find_element(value=ERROR_TEXT).text
-        self.assertEqual(error_message, "This a test error messsage, please ignore.")
-        self.driver.get_screenshot_as_file("./screenshots/register/test_register_page_can_render_error_message.png")
+        self.assertEqual(error_message, error)
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_register_page_can_render_error_message.png"
+        )
 
     def test_register_form_has_correct_url(self) -> None:
         """Test that the register form has the correct URL."""
@@ -110,7 +114,9 @@ class TestRegisterView(BaseEndToEndTestCase):
         last_name_input_value = last_name_input.get_attribute("value")
         self.assertEqual(last_name_input_value, "test_last_name")
 
-        self.driver.get_screenshot_as_file("./screenshots/register/test_register_page_can_fill_in_inputs.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_register_page_can_fill_in_inputs.png"
+        )
 
     def test_register_page_can_submit_form(self) -> None:
         """Test that the register page can submit the form."""
@@ -142,7 +148,9 @@ class TestRegisterView(BaseEndToEndTestCase):
         submit_button.click()
 
         self.assertEqual(self.driver.current_url, TARGET_URL)
-        self.driver.get_screenshot_as_file("./screenshots/register/test_register_page_can_submit_form.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_register_page_can_submit_form.png"
+        )
 
     def test_register_with_existing_username(self) -> None:
         """Test that a user is redirected to the register page with an existing username."""
@@ -174,7 +182,9 @@ class TestRegisterView(BaseEndToEndTestCase):
 
         error_message = self.driver.find_element(value="error-text").text
         self.assertEqual(error_message, "Username already exists.")
-        self.driver.get_screenshot_as_file("./screenshots/register/test_register_with_existing_username.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_register_with_existing_username.png"
+        )
 
     def test_register_with_existing_email(self) -> None:
         """Test that a user is redirected to the register page with an existing email."""
@@ -206,7 +216,9 @@ class TestRegisterView(BaseEndToEndTestCase):
 
         error_message = self.driver.find_element(value="error-text").text
         self.assertEqual(error_message, "Email already exists.")
-        self.driver.get_screenshot_as_file("./screenshots/register/test_register_with_existing_email.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_register_with_existing_email.png"
+        )
 
     def test_register_with_non_matching_passwords(self) -> None:
         """Test that a user is redirected to the register page with non-matching passwords."""
@@ -238,4 +250,6 @@ class TestRegisterView(BaseEndToEndTestCase):
 
         error_message = self.driver.find_element(value="error-text").text
         self.assertEqual(error_message, "Password and password confirmation do not match.")
-        self.driver.get_screenshot_as_file("./screenshots/register/test_register_with_non_matching_passwords.png")
+        self.driver.get_screenshot_as_file(
+            "./screenshots/register/test_register_with_non_matching_passwords.png"
+        )

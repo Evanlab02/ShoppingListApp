@@ -12,30 +12,30 @@ class TestTokenAuth(TestCase):
 
     def setUp(self) -> None:
         """Set up the test."""
-        self.user = UserFactory()
-        self.client = ClientFactory(user=self.user)
+        self.user = UserFactory.create()
+        self.api_client = ClientFactory.create(user=self.user)
         self.token_auth = TokenAuth()
         self.factory = AsyncRequestFactory()
 
         self.request = self.factory.get("/")
-        self.request.headers = {"X-API-Token": self.client.token}
+        self.request.headers = {"X-API-Token": self.api_client.token}  # type: ignore
 
     @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
-    async def test_authenticate_with_valid_token(self):
+    async def test_authenticate_with_valid_token(self) -> None:
         """Test the authenticate method with a valid token."""
-        result = await self.token_auth.__call__(self.request)
-        self.assertEqual(result, self.client)
+        result = await self.token_auth.__call__(self.request)  # type: ignore
+        self.assertEqual(result, self.api_client)
 
     @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
-    async def test_authenticate_with_invalid_token(self):
+    async def test_authenticate_with_invalid_token(self) -> None:
         """Test the authenticate method with an invalid token."""
-        self.request.headers = {"X-API-Token": "invalid"}
-        result = await self.token_auth.__call__(self.request)
+        self.request.headers = {"X-API-Token": "invalid"}  # type: ignore
+        result = await self.token_auth.__call__(self.request)  # type: ignore
         self.assertIsNone(result)
 
     @pytest.mark.skip("Need to fix auth on other tests before this can be fixed")
-    async def test_authenticate_with_no_token(self):
+    async def test_authenticate_with_no_token(self) -> None:
         """Test the authenticate method with no token."""
-        self.request.headers = {}
-        result = await self.token_auth.__call__(self.request)
+        self.request.headers = {}  # type: ignore
+        result = await self.token_auth.__call__(self.request)  # type: ignore
         self.assertIsNone(result)

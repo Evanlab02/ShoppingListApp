@@ -13,8 +13,8 @@ class TestClientService(TestCase):
     def setUp(self) -> None:
         """Set up the test."""
         self.service = ClientService()
-        self.user = UserFactory()
-        self.client = ClientFactory(user=self.user)
+        self.user = UserFactory.create()
+        self.api_client = ClientFactory.create(user=self.user)
         return super().setUp()
 
     async def test_get_token(self) -> None:
@@ -28,4 +28,4 @@ class TestClientService(TestCase):
         token, secret = await self.service.get_token(self.user)
         decoded_token = jwt.decode(token, secret, algorithms=["HS256"])
         self.assertEqual(decoded_token["username"], self.user.username)
-        self.assertEqual(decoded_token["client_id"], self.client.id)
+        self.assertEqual(decoded_token["client_id"], self.api_client.id)

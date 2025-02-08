@@ -19,8 +19,8 @@ class TestTokenRouter(TestCase):
     def setUp(self) -> None:
         """Set up the test."""
         self.client = Client()
-        self.user = UserFactory()
-        self.api_client = ClientFactory(user=self.user)
+        self.user = UserFactory.create()
+        self.api_client = ClientFactory.create(user=self.user)
 
     def test_token_refresh(self) -> None:
         """Test the token refresh endpoint."""

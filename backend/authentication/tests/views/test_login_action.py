@@ -5,7 +5,6 @@ from django.urls import reverse
 
 from authentication.constants import INPUT_MAPPING
 from authentication.tests.factory import UserFactory
-from authentication.views import DASHBOARD_ROUTE, LOGIN_ACTION_ROUTE, LOGIN_ROUTE
 
 USERNAME_INPUT = INPUT_MAPPING.get("username-input", "username-input")
 PASSWORD_INPUT = INPUT_MAPPING.get("password-input", "password-input")
@@ -17,7 +16,7 @@ class TestLoginView(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = UserFactory(username="testuser")
+        self.user = UserFactory.create(username="testuser")
 
     def tearDown(self) -> None:
         """Tear down the test environment."""
@@ -53,7 +52,7 @@ class TestLoginView(TestCase):
         )
         self.assertRedirects(
             response,
-            f"/{LOGIN_ROUTE}?error=Invalid Credentials.",
+            f"{reverse('login_page')}?error=Invalid Credentials.",
             302,
             404,
             fetch_redirect_response=False,

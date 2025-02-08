@@ -12,28 +12,28 @@ class TestClientRepository(TestCase):
 
     def setUp(self) -> None:
         """Set up the tests."""
-        self.user = UserFactory()
-        self.client = ClientFactory(user=self.user)
+        self.user = UserFactory.create()
+        self.api_client = ClientFactory.create(user=self.user)
         self.repo = ClientRepository()
 
     async def test_get_token(self) -> None:
         """Test the get_token method."""
-        self.assertIsNone(self.client.client_secret)
-        self.assertIsNone(self.client.token)
-        self.assertEqual(self.client.token_expiration, 0)
+        self.assertIsNone(self.api_client.client_secret)
+        self.assertIsNone(self.api_client.token)
+        self.assertEqual(self.api_client.token_expiration, 0)
 
         token, secret = await self.repo.get_token(self.user)
 
-        await self.client.arefresh_from_db()
+        await self.api_client.arefresh_from_db()
         self.assertIsNotNone(token)
         self.assertIsNotNone(secret)
-        self.assertIsNotNone(self.client.client_secret)
-        self.assertIsNotNone(self.client.token)
-        self.assertIsNotNone(self.client.token_expiration)
+        self.assertIsNotNone(self.api_client.client_secret)
+        self.assertIsNotNone(self.api_client.token)
+        self.assertIsNotNone(self.api_client.token_expiration)
 
     async def test_client_get_token_decodes_correctly(self) -> None:
         """Test that the get_token method decodes correctly."""
         token, secret = await self.repo.get_token(self.user)
         decoded = jwt.decode(token, secret, algorithms=["HS256"])
         self.assertEqual(decoded["username"], self.user.username)
-        self.assertEqual(decoded["client_id"], self.client.id)
+        self.assertEqual(decoded["client_id"], self.api_client.id)
