@@ -7,10 +7,10 @@
     </div>
     {% if error %}
     <div class="auth-middle">
-        <p>{{ error }}</p>
+        <p id="error-text">{{ error }}</p>
     </div>
     {% endif %}
-    <form class="auth-bottom" method="post" action="{% url 'logout_action' %}">
+    <form id="logout-form" class="auth-bottom" method="post" action="{% url 'logout_action' %}">
         {% csrf_token %}
         <fieldset>
             <div class="form-row">
@@ -18,10 +18,21 @@
             </div>
             <div class="form-row submit-row">
                 <input class="submit-input" type="submit" value="Yes" id="{{ submit_logout }}">
-                <input class="submit-input" type="button" value="No" id="{{ submit_cancel }}"
-                    onclick="location.href='/shopping/dashboard/'">
+                <input 
+                    class="submit-input" 
+                    type="button" 
+                    value="No" 
+                    id="{{ submit_cancel }}"
+                    onclick="redirectToDashboard()"
+                >
             </div>
         </fieldset>
     </form>
 </div>
+
+<script>
+    function redirectToDashboard() {
+        window.location.href = "{% url 'dashboard' %}";
+    }
+</script>
 {% endblock %}

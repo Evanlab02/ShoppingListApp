@@ -7,10 +7,10 @@
     </div>
     {% if error %}
     <div class="auth-middle">
-        <p>{{ error }}</p>
+        <p id="error-text">{{ error }}</p>
     </div>
     {% endif %}
-    <form class="auth-bottom" method="post" action="{% url 'login_action' %}">
+    <form id="login-form" class="auth-bottom" method="post" action="{% url 'login_action' %}">
         {% csrf_token %}
         <fieldset>
             <div class="form-row">
@@ -28,9 +28,15 @@
                 <input class="submit-input" type="submit" value="Login" id="{{ submit_login }}">
             </div>
             <div class="form-row submit-row">
-                <input class="submit-input" type="button" value="Register" onclick="window.location.href='/register'">
+                <input id="go-to-register" class="submit-input" type="button" value="Register" onclick="redirectToRegister()">
             </div>
         </fieldset>
     </form>
 </div>
+
+<script>
+    function redirectToRegister() {
+        window.location.href = "{% url 'register_page' %}";
+    }
+</script>
 {% endblock %}

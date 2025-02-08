@@ -10,7 +10,7 @@
         <p class="error-message" id="error-text">{{ error }}</p>
     </div>
     {% endif %}
-    <form class="auth-bottom" method="post" action="{% url 'register_action' %}">
+    <form id="register-form" class="auth-bottom" method="post" action="{% url 'register_action' %}">
         {% csrf_token %}
         <fieldset>
             <div class="form-row">
@@ -32,15 +32,15 @@
             </div>
             <div class="form-row">
                 <label for="{{ email_input }}">Email:</label>
-                <input class="text-input" type="email" name="{{ email_input }}" id="{{ email_input }}">
+                <input class="text-input" type="email" name="{{ email_input }}" id="{{ email_input }}" required>
             </div>
             <div class="form-row">
                 <label for="{{ first_name_input }}">First Name:</label>
-                <input class="text-input" type="text" name="{{ first_name_input }}" id="{{ first_name_input }}">
+                <input class="text-input" type="text" name="{{ first_name_input }}" id="{{ first_name_input }}" required>
             </div>
             <div class="form-row">
                 <label for="{{ last_name_input }}">Last Name:</label>
-                <input class="text-input" type="text" name="{{ last_name_input }}" id="{{ last_name_input }}">
+                <input class="text-input" type="text" name="{{ last_name_input }}" id="{{ last_name_input }}" required>
             </div>
             <div class="form-row submit-row">
                 <input class="submit-input" type="submit" value="Create Account" id="{{ submit_register }}">
