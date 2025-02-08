@@ -36,8 +36,8 @@ class ClientFactory(DjangoModelFactory[ApiClient]):
 
     user = SubFactory(UserFactory)  # type: ignore
     is_active = True
-    client_secret = None
-    token = None
+    client_secret = ""
+    token = ""
     token_expiration = 0
 
 
