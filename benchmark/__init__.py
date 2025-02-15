@@ -41,7 +41,7 @@ class TestCase(FastHttpUser):
         )
 
         if response.status_code != 201:
-            raise Exception(f"Failed to register user: {response.json()}")
+            raise Exception(f"Failed to register user: {response.text}")
 
         login_response = self.client.post(
             "/api/v1/auth/login",
@@ -50,7 +50,7 @@ class TestCase(FastHttpUser):
         )
 
         if login_response.status_code != 200:
-            raise Exception(f"Failed to login user: {login_response.json()}")
+            raise Exception(f"Failed to login user: {login_response.text}")
 
     def on_stop(self) -> None:
         """On user close."""

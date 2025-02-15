@@ -132,6 +132,11 @@ services:
         - action: sync
           path: ./frontend/src/
           target: /app/src/
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
 
   dev-shopping-django-site:
     container_name: shopping-django-site

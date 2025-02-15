@@ -1,4 +1,4 @@
-.PHONY: debug dev build up down setup requirements clean
+.PHONY: debug dev build up down super-user requirements exec
 
 debug:
 	@docker compose -f compose.dev.yaml up
