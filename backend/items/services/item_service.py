@@ -176,12 +176,13 @@ class ItemService(IItemService):
         """
         try:
             item = await self.repo.get_item_for_user(item_id=item_id, user=user)
-            store = new_store_id if new_store_id else item.store.id
-            name = new_name if new_name else item.name
-            item_exists = await self.repo.does_item_exist(name=name, store_id=store)
         except Item.DoesNotExist:
             raise ItemDoesNotExist(item_id=item_id)
 
+        store = new_store_id if new_store_id else item.store.id
+        name = new_name if new_name else item.name
+
+        item_exists = await self.repo.does_item_exist(name=name, store_id=store)
         if item_exists:
             raise ItemAlreadyExists(item_name=name, store_name=str(store))
 
