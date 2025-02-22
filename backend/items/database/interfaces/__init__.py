@@ -1,4 +1,4 @@
-"""Contains the repositories for the items app."""
+"""Contains the interfaces for the items app."""
 
 import logging
 

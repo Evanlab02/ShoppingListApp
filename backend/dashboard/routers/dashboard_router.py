@@ -20,7 +20,15 @@ dashboard_router = Router(tags=["Dashboard"], auth=SessionAuth())
 
 @dashboard_router.get("/overview")
 async def dashboard_overview(request: HttpRequest) -> DashboardOverview:
-    """Get the dashboard overview."""
+    """
+    Get the dashboard overview.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        The dashboard overview.
+    """
     return DashboardOverview(
         total=0,
         total_price=0,
@@ -31,13 +39,29 @@ async def dashboard_overview(request: HttpRequest) -> DashboardOverview:
 
 @dashboard_router.get("/recent/items")
 async def dashboard_recent_items(request: HttpRequest) -> DashboardRecentItems:
-    """Get the dashboard recent items."""
+    """
+    Get the dashboard recent items.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        The dashboard recent items.
+    """
     return DashboardRecentItems(items=[])
 
 
 @dashboard_router.get("/history")
 async def dashboard_history(request: HttpRequest) -> DashboardHistory:
-    """Get the dashboard history."""
+    """
+    Get the dashboard history.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        The dashboard history.
+    """
     DATA_SET_PRICE = BarChartDataset(
         label="Price",
         data=[65, 59, 80, 81, 56, 55],
@@ -59,6 +83,3 @@ async def dashboard_history(request: HttpRequest) -> DashboardHistory:
         ],
         data=[DATA_SET_PRICE, DATA_SET_BUDGET],
     )
-
-
-log.info("Dashboard router loaded.")

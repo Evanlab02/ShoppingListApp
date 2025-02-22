@@ -1,7 +1,7 @@
 """Contains factories for the authentication app."""
 
 from django.contrib.auth.models import User
-from factory import Factory, SubFactory  # type: ignore
+from factory import Factory, Sequence, SubFactory  # type: ignore
 from factory.django import DjangoModelFactory, Password
 from faker import Faker
 
@@ -19,7 +19,7 @@ class UserFactory(DjangoModelFactory[User]):
 
         model = User
 
-    username = faker.user_name()
+    username = Sequence(lambda n: f"{faker.user_name()}_user_{n}")  # type: ignore
     email = faker.email()
     first_name = faker.first_name()
     last_name = faker.last_name()

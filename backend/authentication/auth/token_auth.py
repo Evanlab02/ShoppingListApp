@@ -1,7 +1,6 @@
 """Contains the API token authentication class."""
 
 import logging
-from os import getenv
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
@@ -21,10 +20,6 @@ class TokenAuth(APIKeyHeader):
         self, request: HttpRequest, key: str | None
     ) -> ApiClient | AnonymousUser | None:
         """Authenticate the user."""
-        # TODO: Remove this once tests are fixed
-        if getenv("TESTS_ENVIRONMENT", "False").lower() == "true":
-            return AnonymousUser()
-
         if key is None:
             return None
 

@@ -1,108 +1,115 @@
-"""Contains tests for the item repo update functions."""
+"""Contains tests for the update_item function of the item repository."""
 
-from items.database import item_repo
+from asgiref.sync import sync_to_async
+from django.contrib.auth.models import User
+from django.test.testcases import TestCase
+
+from authentication.tests.factory import UserFactory
+from items.database.item_repo import ItemRepo
 from items.models import ShoppingItem as Item
-from items.tests.base.base_test_case import BaseTestCase
+from items.tests.factory import ItemFactory
+from stores.models import ShoppingStore as Store
+from stores.tests.factory import StoreFactory
 
 
-class TestUpdateItem(BaseTestCase):
-    """Test the item repo update functions."""
+class TestItemRepositoryUpdate(TestCase):
+    """Test the item repository update_item function."""
 
-    async def test_update_item_with_no_changes(self) -> None:
-        """Test updating an item with no changes."""
-        # Get item before update
-        item_before_update = await Item.objects.select_related("user", "store").aget(
-            id=self.item.id
+    def setUp(self) -> None:
+        """Set up the tests."""
+        self.user = UserFactory.create()
+        self.store = StoreFactory.create(user=self.user)
+        self.repo = ItemRepo()
+        self.item = ItemFactory.create(
+            user=self.user,
+            store=self.store,
+            name="Original Name",
+            description="Original Description",
+            price=10.0,
         )
+        return super().setUp()
 
-        # Update the item
-        item = await item_repo.update_item(item=self.item)
-
-        # Item ID remains the same
-        self.assertEqual(item.id, item_before_update.id)
-
-        # No values are changed due to no values being passed
-        self.assertEqual(item.name, item_before_update.name)
-        self.assertEqual(item.price, item_before_update.price)
-        self.assertEqual(item.description, item_before_update.description)
-
-        # Created at always remains the same
-        self.assertEqual(item.created_at.isoformat(), item_before_update.created_at.isoformat())
-
-        # Updated at should have changed
-        self.assertNotEqual(item.updated_at.isoformat(), item_before_update.updated_at.isoformat())
-
-        # Check that related models are not changed
-        self.assertEqual(item.store, item_before_update.store)
-        self.assertEqual(item.user, item_before_update.user)
+    def tearDown(self) -> None:
+        """Tear down the tests."""
+        Store.objects.all().delete()
+        Item.objects.all().delete()
+        User.objects.all().delete()
+        return super().tearDown()
 
     async def test_update_item_name(self) -> None:
         """Test updating an item's name."""
-        new_name = "New Name"
+        new_name = "Updated Name"
+        updated_item = await self.repo.update_item(self.item, name=new_name)
 
-        # Get item before update
-        item_before_update = await Item.objects.select_related("user", "store").aget(
-            id=self.item.id
-        )
+        self.assertEqual(updated_item.name, new_name)
+        self.assertEqual(updated_item.description, self.item.description)
+        self.assertEqual(updated_item.price, self.item.price)
+        self.assertEqual(updated_item.store, self.store)
 
-        # Update the item
-        item = await item_repo.update_item(item=self.item, name=new_name)
-
-        self.assertEqual(item.id, item_before_update.id)  # Item ID remains the same
-        self.assertEqual(item.name, new_name)  # Check that the name is updated
-        self.assertNotEqual(
-            item.updated_at.isoformat(), item_before_update.updated_at.isoformat()
-        )  # Updated at should have changed
-
-    async def test_update_item_price(self) -> None:
-        """Test updating an item's price."""
-        new_price = 100.0
-
-        # Get item before update
-        item_before_update = await Item.objects.select_related("user", "store").aget(
-            id=self.item.id
-        )
-
-        # Update the item
-        item = await item_repo.update_item(item=self.item, price=new_price)
-
-        self.assertEqual(item.id, item_before_update.id)  # Item ID remains the same
-        self.assertEqual(item.price, new_price)  # Check that the price is updated
-        self.assertNotEqual(
-            item.updated_at.isoformat(), item_before_update.updated_at.isoformat()
-        )  # Updated at should have changed
+        await self.item.arefresh_from_db()
+        self.assertEqual(self.item.name, new_name)
 
     async def test_update_item_description(self) -> None:
         """Test updating an item's description."""
-        new_description = "ABCD"
+        new_description = "Updated Description"
+        updated_item = await self.repo.update_item(self.item, description=new_description)
 
-        # Get item before update
-        item_before_update = await Item.objects.select_related("user", "store").aget(
-            id=self.item.id
-        )
+        self.assertEqual(updated_item.name, self.item.name)
+        self.assertEqual(updated_item.description, new_description)
+        self.assertEqual(updated_item.price, self.item.price)
+        self.assertEqual(updated_item.store, self.store)
 
-        # Update the item
-        item = await item_repo.update_item(item=self.item, description=new_description)
+        await self.item.arefresh_from_db()
+        self.assertEqual(self.item.description, new_description)
 
-        self.assertEqual(item.id, item_before_update.id)  # Item ID remains the same
-        self.assertEqual(item.description, new_description)  # Check that the description is updated
-        self.assertNotEqual(
-            item.updated_at.isoformat(), item_before_update.updated_at.isoformat()
-        )  # Updated at should have changed
+    async def test_update_item_price(self) -> None:
+        """Test updating an item's price."""
+        new_price = 20.0
+        updated_item = await self.repo.update_item(self.item, price=new_price)
+
+        self.assertEqual(updated_item.name, self.item.name)
+        self.assertEqual(updated_item.description, self.item.description)
+        self.assertEqual(updated_item.price, new_price)
+        self.assertEqual(updated_item.store, self.store)
+
+        await self.item.arefresh_from_db()
+        self.assertEqual(self.item.price, new_price)
 
     async def test_update_item_store(self) -> None:
         """Test updating an item's store."""
-        # Create a temporary store
-        temp_store = await self.create_temporary_store()
+        new_store = await sync_to_async(StoreFactory.create)(user=self.user)
+        updated_item = await self.repo.update_item(self.item, store=new_store)
 
-        # Get item before update
-        item_before_update = await Item.objects.select_related("user", "store").aget(
-            id=self.item.id
+        self.assertEqual(updated_item.name, self.item.name)
+        self.assertEqual(updated_item.description, self.item.description)
+        self.assertEqual(updated_item.price, self.item.price)
+        self.assertEqual(await updated_item.astore(), new_store)
+
+        await self.item.arefresh_from_db()
+        self.assertEqual(await self.item.astore(), new_store)
+
+    async def test_update_item_multiple_fields(self) -> None:
+        """Test updating multiple fields of an item at once."""
+        new_name = "Updated Name"
+        new_description = "Updated Description"
+        new_price = 20.0
+        new_store = await sync_to_async(StoreFactory.create)(user=self.user)
+
+        updated_item = await self.repo.update_item(
+            self.item,
+            name=new_name,
+            description=new_description,
+            price=new_price,
+            store=new_store,
         )
 
-        # Update the item
-        item = await item_repo.update_item(item=self.item, store=temp_store)
+        self.assertEqual(updated_item.name, new_name)
+        self.assertEqual(updated_item.description, new_description)
+        self.assertEqual(updated_item.price, new_price)
+        self.assertEqual(await updated_item.astore(), new_store)
 
-        self.assertEqual(item.id, item_before_update.id)
-        self.assertEqual(item.store, temp_store)
-        self.assertNotEqual(item.updated_at.isoformat(), item_before_update.updated_at.isoformat())
+        await self.item.arefresh_from_db()
+        self.assertEqual(self.item.name, new_name)
+        self.assertEqual(self.item.description, new_description)
+        self.assertEqual(self.item.price, new_price)
+        self.assertEqual(await self.item.astore(), new_store)
