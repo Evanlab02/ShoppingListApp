@@ -78,8 +78,9 @@ class TestItemRepositoryUpdate(TestCase):
     async def test_update_item_store(self) -> None:
         """Test updating an item's store."""
         new_store = await sync_to_async(StoreFactory.create)(user=self.user)
-        updated_item = await self.repo.update_item(self.item, store=new_store)
+        updated_item = await self.repo.update_item(self.item, store=new_store.id)
 
+        await updated_item.arefresh_from_db()
         self.assertEqual(updated_item.name, self.item.name)
         self.assertEqual(updated_item.description, self.item.description)
         self.assertEqual(updated_item.price, self.item.price)
@@ -100,9 +101,10 @@ class TestItemRepositoryUpdate(TestCase):
             name=new_name,
             description=new_description,
             price=new_price,
-            store=new_store,
+            store=new_store.id,
         )
 
+        await updated_item.arefresh_from_db()
         self.assertEqual(updated_item.name, new_name)
         self.assertEqual(updated_item.description, new_description)
         self.assertEqual(updated_item.price, new_price)

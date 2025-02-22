@@ -36,17 +36,18 @@ class TestItemRepositoryCreate(TestCase):
         """Test the create item function."""
         item = await self.repo.create_item(
             user=self.user,
-            store=self.store,
+            store_id=self.store.id,
             price=100,
             name=MOCK_NAME,
             description=MOCK_DESRIPTION,
         )
 
+        await item.arefresh_from_db()
         self.assertEqual(item.name, MOCK_NAME)
         self.assertEqual(item.description, MOCK_DESRIPTION)
         self.assertEqual(item.price, 100)
-        self.assertEqual(item.user, self.user)
-        self.assertEqual(item.store, self.store)
+        self.assertEqual(await item.auser(), self.user)
+        self.assertEqual(await item.astore(), self.store)
         self.assertIsInstance(item.created_at, datetime)
         self.assertIsInstance(item.updated_at, datetime)
 

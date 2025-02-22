@@ -292,7 +292,7 @@ class ItemRepo(IItemRepo):
         if description:
             item.description = description
         if store:
-            item.store.id = store
+            item.store_id = store
 
         await item.asave()
         return item
