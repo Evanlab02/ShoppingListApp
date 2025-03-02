@@ -1,16 +1,18 @@
-"""Contains the store repository."""
+"""Contains interfaces for the store repositories."""
 
-from stores.database.interfaces.i_store_repo import IStoreRepo
-from stores.models import ShoppingStore as Store
+import logging
+from abc import ABC, abstractmethod
 
 
-class StoreRepo(IStoreRepo):
-    """Store repository."""
+class IStoreRepo(ABC):
+    """Interface for the store repository."""
 
     def __init__(self) -> None:
         """Initialize the store repository."""
+        self.log = logging.getLogger(__name__)
         super().__init__()
 
+    @abstractmethod
     async def does_store_exist(self, store_id: int) -> bool:
         """
         Check if a store exists.
@@ -21,4 +23,3 @@ class StoreRepo(IStoreRepo):
         Returns:
             bool: True if the store exists, False otherwise.
         """
-        return await Store.objects.filter(id=store_id).aexists()

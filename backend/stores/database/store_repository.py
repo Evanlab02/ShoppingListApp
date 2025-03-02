@@ -1,0 +1,344 @@
+"""Contains store repository functions."""
+
+import logging
+from datetime import date
+from math import ceil
+from typing import Any, Literal, no_type_check
+
+from asgiref.sync import sync_to_async
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+from django.db.models import Case, Count, F, IntegerField, When
+
+from stores.models import ShoppingStore as Store
+from stores.schemas.output import StorePaginationSchema, StoreSchema
+
+log = logging.getLogger(__name__)
+
+
+async def _filter(
+    page_number: int = 1,
+    stores_per_page: int = 10,
+    name: str | None = None,
+    store_types: list[int] | None = None,
+    created_on: date | None = None,
+    created_before: date | None = None,
+    created_after: date | None = None,
+    updated_on: date | None = None,
+    updated_before: date | None = None,
+    updated_after: date | None = None,
+    user: User | None = None,
+    ids: list[int] | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
+) -> StorePaginationSchema:
+    """
+    Filter stores.
+
+    Args:
+        page_number (int): The page number.
+        stores_per_page (int): The number of stores per page.
+        name (str | None): The name of the store.
+        store_types (list[int] | None): The store types.
+        created_on (date | None): The date the store was created.
+        created_before (date | None): The date the store was created before.
+        created_after (date | None): The date the store was created after.
+        updated_on (date | None): The date the store was updated.
+        updated_before (date | None): The date the store was updated before.
+        updated_after (date | None): The date the store was updated after.
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+        ids (list[int] | None): The ids to filter from.
+
+    Returns:
+        StorePaginationSchema: Store pagination object.
+    """
+    stores = Store.objects.select_related("user").all()
+
+    if ids:
+        stores = stores.filter(id__in=ids)
+    if name:
+        stores = stores.filter(name__icontains=name)
+    if store_types:
+        stores = stores.filter(store_type__in=store_types)
+    if created_on:
+        stores = stores.filter(created_at__date=created_on)
+    if created_before:
+        stores = stores.filter(created_at__date__lte=created_before)
+    if created_after:
+        stores = stores.filter(created_at__date__gte=created_after)
+    if updated_on:
+        stores = stores.filter(updated_at__date=updated_on)
+    if updated_before:
+        stores = stores.filter(updated_at__date__lte=updated_before)
+    if updated_after:
+        stores = stores.filter(updated_at__date__gte=updated_after)
+    if user:
+        stores = stores.filter(user=user)
+
+    sort_field = sort or "updated_at"
+    prefix = "" if sort_dir == "asc" else "-"
+    stores = stores.order_by(f"{prefix}{sort_field}")
+
+    total = await stores.acount()
+    total_pages = ceil(total / stores_per_page)
+
+    start = (page_number - 1) * stores_per_page
+    end = start + stores_per_page
+
+    if start > total:
+        page_number = total_pages
+        start = (page_number - 1) * stores_per_page
+        end = start + stores_per_page
+
+    paginated_stores = stores[start:end]
+    results = [StoreSchema.from_orm(store) async for store in paginated_stores]
+
+    has_previous = page_number > 1
+    previous_page = page_number - 1 if page_number > 1 else None
+    has_next = end < total
+    next_page = page_number + 1 if end < total else None
+
+    result = StorePaginationSchema(
+        stores=results,
+        total=total,
+        page_number=page_number,
+        total_pages=total_pages,
+        has_previous=has_previous,
+        previous_page=previous_page,
+        has_next=has_next,
+        next_page=next_page,
+    )
+
+    return result
+
+
+async def create_store(
+    name: str,
+    store_type: int,
+    description: str,
+    user: User | AnonymousUser | AbstractBaseUser,
+) -> Store:
+    """
+    Create a store.
+
+    Args:
+        name (str): The name of the store.
+        store_type (int): The type of the store.
+        description (str): The description of the store.
+        user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+
+    Returns:
+        ShoppingStore: The created store.
+    """
+    store = await Store.objects.acreate(
+        name=name,
+        store_type=store_type,
+        description=description,
+        user=user,  # type: ignore
+    )
+    return store
+
+
+async def get_stores(
+    page_number: int = 1,
+    stores_per_page: int = 10,
+    user: User | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
+) -> StorePaginationSchema:
+    """
+    Get all stores.
+
+    Args:
+        page (int): The page number, default to 1.
+        stores_per_page (int): The number of stores per page, default to 10.
+        user (User | None): User who owns the stores.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
+
+    Returns:
+        StorePaginationSchema: Store pagination object.
+    """
+    return await _filter(page_number, stores_per_page, user=user, sort=sort, sort_dir=sort_dir)
+
+
+async def filter_stores(
+    page_number: int = 1,
+    stores_per_page: int = 10,
+    name: str | None = None,
+    store_types: list[int] | None = None,
+    created_on: date | None = None,
+    created_before: date | None = None,
+    created_after: date | None = None,
+    updated_on: date | None = None,
+    updated_before: date | None = None,
+    updated_after: date | None = None,
+    user: User | None = None,
+    ids: list[int] | None = None,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
+) -> StorePaginationSchema:
+    """
+    Filter stores.
+
+    Args:
+        page_number (int): The page number.
+        stores_per_page (int): The number of stores per page.
+        name (str | None): The name of the store.
+        store_types (list[int] | None): The store types.
+        created_on (date | None): The date the store was created.
+        created_before (date | None): The date the store was created before.
+        created_after (date | None): The date the store was created after.
+        updated_on (date | None): The date the store was updated.
+        updated_before (date | None): The date the store was updated before.
+        updated_after (date | None): The date the store was updated after.
+        user (User | None): The user who created the store.
+        ids (list[int] | None): The store ids to filter from.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
+
+    Returns:
+        StorePaginationSchema: Store pagination object.
+    """
+    return await _filter(
+        page_number,
+        stores_per_page,
+        name,
+        store_types,
+        created_on,
+        created_before,
+        created_after,
+        updated_on,
+        updated_before,
+        updated_after,
+        user,
+        ids=ids,
+        sort=sort,
+        sort_dir=sort_dir,
+    )
+
+
+async def edit_store(
+    store_id: int,
+    user: User | AnonymousUser | AbstractBaseUser,
+    store_name: str | None = None,
+    store_type: int | None = None,
+    store_description: str | None = None,
+) -> Store:
+    """
+    Edit a store.
+
+    Args:
+        store_id (int): The id of the store.
+        user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+        store_name (str | None): The new name of the store.
+        store_type (int | None): The new type of the store.
+        store_description (str | None): The new description of the store.
+
+    Returns:
+        ShoppingStore: The edited store.
+
+    Raises:
+        Store.DoesNotExist: If the store does not exist.
+    """
+    store = await Store.objects.aget(id=store_id, user=user)
+
+    if store_name:
+        store.name = store_name
+    if store_type:
+        store.store_type = store_type
+    if store_description:
+        store.description = store_description
+
+    await store.asave()
+    return store
+
+
+async def delete_store(store_id: int, user: User | AnonymousUser | AbstractBaseUser) -> None:
+    """
+    Delete a store.
+
+    Args:
+        store_id (int): The id of the store.
+        user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+
+    Raises:
+        Store.DoesNotExist: If the store does not exist.
+    """
+    store = await Store.objects.aget(id=store_id, user=user)
+    await store.adelete()
+
+
+async def get_store(store_id: int) -> Store:
+    """
+    Get a store.
+
+    Args:
+        store_id (int): The id of the store.
+
+    Returns:
+        ShoppingStore: The store.
+
+    Raises:
+        Store.DoesNotExist: If the store does not exist.
+    """
+    store = await Store.objects.select_related("user").aget(id=store_id)
+    return store
+
+
+@sync_to_async
+@no_type_check
+def _pre_aggregate_filter(
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+):
+    """
+    Filter stores by user pre-aggregation.
+
+    Args:
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+
+    Returns:
+        list[ShoppingStore]: The stores.
+    """
+    stores = Store.objects.all()
+
+    if user:
+        stores = stores.filter(user=user)
+
+    return stores
+
+
+@no_type_check
+async def aggregate_stores(
+    user: User | AnonymousUser | AbstractBaseUser | None = None,
+) -> dict[str, Any]:
+    """
+    Aggregate stores.
+
+    Args:
+        user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+
+    Returns:
+        dict[str, Any]: The aggregated stores.
+    """
+    pre_filtered_stores = await _pre_aggregate_filter(user=user)
+    result = await pre_filtered_stores.aaggregate(
+        online_stores=Count(Case(When(store_type=1, then=1), output_field=IntegerField())),
+        in_store_stores=Count(Case(When(store_type=2, then=1), output_field=IntegerField())),
+        combined_stores=Count(Case(When(store_type=3, then=1), output_field=IntegerField())),
+        total_stores=Count(F("id")),
+    )
+
+    return result
+
+
+async def does_name_exist(name: str) -> bool:
+    """
+    Check if a store name exists.
+
+    Args:
+        name (str): The name of the store.
+
+    Returns:
+        bool: True if the store name exists, False otherwise.
+    """
+    return await Store.objects.filter(name=name).aexists()

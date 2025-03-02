@@ -11,7 +11,7 @@ from items.database import item_repo
 from items.schemas.output import ItemPaginationSchema
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
-from stores.database import store_repo
+from stores.database import store_repository
 from stores.errors.api_exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
@@ -117,11 +117,11 @@ async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousU
     else:
         store_type_value = _is_valid_store_type(store_type)
 
-    if await store_repo.does_name_exist(name):
+    if await store_repository.does_name_exist(name):
         log.warning("Store with this name already exists...")
         raise StoreAlreadyExists(name)
 
-    store = await store_repo.create_store(name, store_type_value, description, user)
+    store = await store_repository.create_store(name, store_type_value, description, user)
     return store
 
 
@@ -140,7 +140,7 @@ async def get_store_detail(store_id: int) -> StoreSchema:
     """
     try:
         log.info("Getting store details...")
-        store = await store_repo.get_store(store_id)
+        store = await store_repository.get_store(store_id)
         store_schema = StoreSchema.from_orm(store)
         return store_schema
     except Store.DoesNotExist:
@@ -165,7 +165,7 @@ async def get_store_detail_with_items(
     """
     try:
         log.info("Getting store details with related items...")
-        store = await store_repo.get_store(store_id)
+        store = await store_repository.get_store(store_id)
         store_schema = StoreSchema.from_orm(store)
         related_items = await item_repo.get_items(
             page=page_number, items_per_page=items_per_page, store=store
@@ -186,7 +186,7 @@ async def aggregate(
         StoreAggregationSchema: The store aggregation.
     """
     log.info("Aggregating store details...")
-    aggregation = await store_repo.aggregate_stores(user)
+    aggregation = await store_repository.aggregate_stores(user)
     result = StoreAggregationSchema.model_validate(aggregation)
     result.combined_online_stores = result.online_stores + result.combined_stores
     result.combined_in_store_stores = result.in_store_stores + result.combined_stores
@@ -214,7 +214,7 @@ async def get_stores(
         StorePaginationSchema: The stores in a paginated format.
     """
     log.info(f"Retrieving stores for page {page_number} with limit {limit}...")
-    paginated_stores = await store_repo.get_stores(page_number, limit, user, sort, sort_dir)
+    paginated_stores = await store_repository.get_stores(page_number, limit, user, sort, sort_dir)
     return paginated_stores
 
 
@@ -246,7 +246,7 @@ async def update_store(
     store_type_value = None
 
     log.info("Validating store info...")
-    if store_name and await store_repo.does_name_exist(store_name):
+    if store_name and await store_repository.does_name_exist(store_name):
         log.warning("Store already exists.")
         raise StoreAlreadyExists(store_name)
     elif isinstance(store_type, int):
@@ -259,7 +259,7 @@ async def update_store(
 
     try:
         log.info("Updating store...")
-        store = await store_repo.edit_store(
+        store = await store_repository.edit_store(
             store_id=store_id,
             user=user,
             store_name=store_name,
@@ -288,7 +288,7 @@ async def delete_store(
     """
     try:
         log.info("Deleting store...")
-        await store_repo.delete_store(store_id=store_id, user=user)
+        await store_repository.delete_store(store_id=store_id, user=user)
         return DeleteSchema(
             message="Deleted Store.", detail=f"Store with ID #{store_id} was deleted."
         )
@@ -345,7 +345,7 @@ async def search_stores(
     log.info(f"UPDATED BEFORE - {updated_before}")
     log.info(f"UPDATED AFTER - {updated_after}")
     log.info(f"IDS - {ids}")
-    return await store_repo.filter_stores(
+    return await store_repository.filter_stores(
         page_number=page,
         stores_per_page=limit,
         name=name,

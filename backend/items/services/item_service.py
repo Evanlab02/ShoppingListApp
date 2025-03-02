@@ -12,14 +12,22 @@ from items.schemas.input import ItemSearchSchema
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema
 from items.services.interfaces.i_item_service import IItemService
 from shoppingapp.schemas.shared import DeleteSchema
+from stores.database.interfaces.i_store_repo import IStoreRepo
+from stores.database.store_repo import StoreRepo
+from stores.errors.api_exceptions import StoreDoesNotExist
 
 
 class ItemService(IItemService):
     """Item service."""
 
-    def __init__(self, item_repo: IItemRepo = ItemRepo()) -> None:
+    def __init__(
+        self,
+        item_repo: IItemRepo = ItemRepo(),
+        store_repo: IStoreRepo = StoreRepo(),
+    ) -> None:
         """Initialize the item service."""
         self.repo = item_repo
+        self.store_repo = store_repo
         super().__init__()
 
     async def create_item(
@@ -48,6 +56,8 @@ class ItemService(IItemService):
         """
         if await self.repo.does_item_exist(name=name, store_id=store_id):
             raise ItemAlreadyExists(item_name=name, store_name=str(store_id))
+        if not await self.store_repo.does_store_exist(store_id=store_id):
+            raise StoreDoesNotExist(store_id=store_id)
 
         return await self.repo.create_item(
             user=user,
@@ -179,11 +189,15 @@ class ItemService(IItemService):
             store = new_store_id if new_store_id else item.store.id
             name = new_name if new_name else item.name
             item_exists = await self.repo.does_item_exist(name=name, store_id=store)
+            store_exists = await self.store_repo.does_store_exist(store_id=store)
         except Item.DoesNotExist:
             raise ItemDoesNotExist(item_id=item_id)
 
         if item_exists:
             raise ItemAlreadyExists(item_name=name, store_name=str(store))
+
+        if not store_exists:
+            raise StoreDoesNotExist(store_id=store)
 
         return await self.repo.update_item(
             item=item,
