@@ -1,5 +1,6 @@
 """Tests for the item update service."""
 
+from asgiref.sync import sync_to_async
 from django.test import TestCase
 
 from authentication.tests.factory import UserFactory
@@ -25,6 +26,7 @@ class ItemUpdateServiceTestCase(TestCase):
             user=self.user,
             name="Matching Item",
         )
+        self.create = sync_to_async(ItemFactory.create)
 
     async def test_update_item(self) -> None:
         """Test the update item method."""
@@ -61,6 +63,46 @@ class ItemUpdateServiceTestCase(TestCase):
                 user=self.user,
                 new_store_id=self.new_store.id,
                 new_name=self.matching_item.name,
+            )
+
+    async def test_update_item_name(self) -> None:
+        """Test the update item method when the name is updated."""
+        await self.item_service.update_item(
+            item_id=self.item.id,
+            user=self.user,
+            new_name="New Name",
+        )
+        await self.item.arefresh_from_db()
+        self.assertEqual(self.item.name, "New Name")
+
+    async def test_update_item_that_does_not_exist(self) -> None:
+        """Test the update item method when the item does not exist."""
+        with self.assertRaises(ItemDoesNotExist):
+            await self.item_service.update_item(
+                item_id=99999,
+                user=self.user,
+            )
+
+    async def test_update_item_store(self) -> None:
+        """Test the update item method when the store is updated."""
+        new_store = await self.create(user=self.user)
+        await self.item_service.update_item(
+            item_id=self.item.id,
+            user=self.user,
+            new_store_id=new_store.id,
+        )
+        await self.item.arefresh_from_db()
+        store = await self.item.astore()
+        self.assertEqual(store.id, new_store.id)
+
+    async def test_update_prevents_duplicates(self) -> None:
+        """Test the update item method when the name is updated to a duplicate item."""
+        await self.create(name="Duplicate Item", store=self.store, user=self.user)
+        with self.assertRaises(ItemAlreadyExists):
+            await self.item_service.update_item(
+                item_id=self.item.id,
+                user=self.user,
+                new_name="Duplicate Item",
             )
 
     async def test_update_item_store_to_one_that_does_not_exist(self) -> None:

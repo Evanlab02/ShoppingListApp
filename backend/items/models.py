@@ -22,6 +22,11 @@ log = logging.getLogger(__name__)
 class ShoppingItem(Model):
     """Model for a shopping item."""
 
+    class Meta:
+        """Meta class for the shopping item model."""
+
+        unique_together = ("name", "store")
+
     name = CharField(max_length=100)
     description = TextField(blank=True)
     price = DecimalField(max_digits=10, decimal_places=2)
