@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
+<div id="content-wrapper" class="content-wrapper">
     <div class="form-wrapper">
         <div class="form-top create-top">
             <h2 id="form-heading">Create Item</h2>
@@ -46,8 +46,9 @@
                     <input id="submit-create-item" class="submit-input" type="submit" value="Create Item">
                 </div>
                 <div class="form-row submit-row">
-                    <input id="cancel-create-item" class="cancel-input" type="button" value="Cancel"
-                        onclick="window.location.href='/items/me'">
+                    <a id="cancel-create-item" href="{% url 'item_personalized_overview_page' %}" class="cancel-input">
+                        Cancel
+                    </a>
                 </div>
             </fieldset>
         </form>

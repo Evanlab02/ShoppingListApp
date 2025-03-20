@@ -96,6 +96,37 @@ async def get_my_items(
     )
 
 
+@item_router.get("/aggregate", response={200: ItemAggregationSchema}, url_name="item_aggregate")
+async def aggregate(request: HttpRequest) -> ItemAggregationSchema:
+    """
+    Get the aggregation of all items.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        ItemAggregationSchema: The aggregation of all items.
+    """
+    return await item_service.aggregate()
+
+
+@item_router.get(
+    "/aggregate/me", response={200: ItemAggregationSchema}, url_name="item_aggregate_me"
+)
+async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
+    """
+    Get the aggregation of personal items.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        ItemAggregationSchema: The aggregation of personal items.
+    """
+    user = await request.auser()
+    return await item_service.aggregate(user=user)
+
+
 @item_router.post("/search", response={200: ItemPaginationSchema}, url_name="item_search")
 async def search(
     request: HttpRequest,
@@ -178,32 +209,3 @@ async def delete_item(request: HttpRequest, item_id: int) -> DeleteSchema:
     """
     user = await request.auser()
     return await item_service.delete_item(item_id=item_id, user=user)
-
-
-@item_router.get("/aggregate", response={200: ItemAggregationSchema})
-async def aggregate(request: HttpRequest) -> ItemAggregationSchema:
-    """
-    Get the aggregation of all items.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        ItemAggregationSchema: The aggregation of all items.
-    """
-    return await item_service.aggregate()
-
-
-@item_router.get("/aggregate/me", response={200: ItemAggregationSchema})
-async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
-    """
-    Get the aggregation of personal items.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        ItemAggregationSchema: The aggregation of personal items.
-    """
-    user = await request.auser()
-    return await item_service.aggregate(user=user)
