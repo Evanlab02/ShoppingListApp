@@ -79,6 +79,6 @@ jobs:
         run: |
           docker build -f docker/admin/Dockerfile -t shopping-app-admin .
           docker build -f docker/benchmark/Dockerfile -t shopping-app-benchmark .
-          docker build -f docker/frontend/dev/Dockerfile -t shopping-app-frontend .
+          docker build -f docker/frontend/dev/Dockerfile -t shopping-app-frontend-dev .
           docker build -f docker/server/Dockerfile -t shopping-app-server .
-          docker build -f docker/site/Dockerfile -t shopping-app-site .
+          docker build -f docker/web/Dockerfile -t shopping-app-web .
