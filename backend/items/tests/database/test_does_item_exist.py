@@ -35,7 +35,7 @@ class TestDoesItemExist(TestCase):
 
     async def test_does_item_exist_with_store(self) -> None:
         """Test the does_item_exist function of the item repository with a store."""
-        self.assertTrue(await self.repo.does_item_exist(self.item.name, self.store))
+        self.assertTrue(await self.repo.does_item_exist(self.item.name, self.store.id))
 
     async def test_item_does_not_exist(self) -> None:
         """Test the does_item_exist function of the item repository with a non-existent item."""
@@ -43,4 +43,4 @@ class TestDoesItemExist(TestCase):
 
     async def test_item_does_not_exist_with_store(self) -> None:
         """Test does_item_exist with a non-existent item and store."""
-        self.assertFalse(await self.repo.does_item_exist("Non-existent item", self.store))
+        self.assertFalse(await self.repo.does_item_exist("Non-existent item", self.store.id))
