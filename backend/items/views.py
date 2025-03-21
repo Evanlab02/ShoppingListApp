@@ -8,9 +8,15 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from authentication.decorators.login import async_login_required
-from items.errors.exceptions import ItemAlreadyExists
-from items.schemas.contexts import ItemCreateContext
+from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
+from items.schemas.contexts import (
+    ItemCreateContext,
+    ItemDetailContext,
+    ItemOverviewContext,
+)
+from items.schemas.output import ItemSchema
 from items.services.item_service import ItemService
+from shoppingapp.utilities.utils import get_overview_params
 from stores.services import store_service
 
 CREATE_PAGE = "create"
@@ -94,6 +100,54 @@ async def create_action(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Item Already Exists.")
 
 
+async def _get_overview_context(
+    request: HttpRequest, params: dict[str, int], is_personalized: bool = False
+) -> ItemOverviewContext:
+    """
+    Get overview context using request object and params.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        StoreOverviewContext: The store overview context.
+    """
+    page = params.get("page", 1)
+    limit = params.get("limit", 10)
+
+    user, page_title = (
+        (await request.auser(), "Your Items") if is_personalized else (None, "All Items")
+    )
+
+    pagination = await SERVICE.get_items(page=page, items_per_page=limit, user=user)
+    aggregation = await SERVICE.aggregate(user=user)
+    return ItemOverviewContext(
+        pagination=pagination,
+        aggregation=aggregation,
+        page_title=page_title,
+        is_overview=True,
+        is_personal=is_personalized,
+        show_advanced_navigation=True,
+    )
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def get_overview_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the overview page.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    params = get_overview_params(request)
+    context = await _get_overview_context(request=request, params=params)
+    return render(request, "items/overview.html", context.model_dump())
+
+
 @require_http_methods(["GET"])
 @async_login_required
 async def get_personalized_overview_page(request: HttpRequest) -> HttpResponse:
@@ -106,7 +160,9 @@ async def get_personalized_overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    return HttpResponse(status=200)
+    params = get_overview_params(request)
+    context = await _get_overview_context(request=request, params=params, is_personalized=True)
+    return render(request, "items/overview.html", context.model_dump())
 
 
 @require_http_methods(["GET"])
@@ -117,6 +173,48 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
 
     Args:
         request(HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    try:
+        item = await SERVICE.get_item_detail(item_id=item_id)
+        context = ItemDetailContext(
+            item=ItemSchema.from_orm(item),
+            page_title=f"Item - {item.name}",
+            is_personal=False,
+            show_advanced_navigation=True,
+        )
+        return render(request, "items/detail.html", context.model_dump())
+    except ItemDoesNotExist:
+        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def update_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the update page.
+
+    Args:
+        request (HttpRequest): The request object.
+        item_id (int): The item id.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    return HttpResponse(status=200)
+
+
+@require_http_methods(["GET"])
+@async_login_required
+async def delete_page(request: HttpRequest) -> HttpResponse:
+    """
+    Render the delete page.
+
+    Args:
+        request (HttpRequest): The request object.
+        item_id (int): The item id.
 
     Returns:
         HttpResponse: The response object.

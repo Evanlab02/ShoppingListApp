@@ -115,7 +115,7 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await get_overview_params(request=request)
+    params = get_overview_params(request=request)
     page = params.get("page", 1)
     limit = params.get("limit", 10)
 
@@ -183,7 +183,7 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await get_overview_params(request)
+    params = get_overview_params(request)
     context = await _get_overview_context(request, params)
     return render(request, "stores/overview.html", context.model_dump())
 
@@ -204,7 +204,7 @@ async def personal_overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await get_overview_params(request)
+    params = get_overview_params(request)
     context = await _get_overview_context(request, params, True)
     return render(request, "stores/overview.html", context.model_dump())
 

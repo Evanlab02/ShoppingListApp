@@ -8,7 +8,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
+<div 
+    class="content-wrapper" 
+    id="content-wrapper"
+    data-update-url="{% url 'item_update_page' item_id=0 %}"
+    data-delete-url="{% url 'item_delete_page' item_id=0 %}"
+>
     <div class="card-wrapper">
         <div class="mini-card total-card">
             <div class="mini-card-icon total-card-icon">
@@ -61,22 +66,22 @@
                     {% if is_personal %}
                     <td class="alt-menu-wrapper">
                         <div class="menu-list-button alt-menu-button">
-                            <sl-icon-button name="pencil"
-                                onclick="window.location.href='/items/update/{{ item.id }}'"
-                                onkeypress="window.location.href='/items/update/{{ item.id }}'"
+                            <sl-icon-button 
+                                id="edit-item-{{ item.id }}"
+                                name="pencil"
                             />
                         </div>
                         <div class="menu-list-button alt-menu-button">
-                            <sl-icon-button name="trash"
-                                onclick="window.location.href='/items/delete/{{ item.id }}'"
-                                onkeypress="window.location.href='/items/delete/{{ item.id }}'"   
+                            <sl-icon-button 
+                                id="delete-item-{{ item.id }}"
+                                name="trash"
                             />
                         </div>
                     </td>
                     {% endif %}
 
-                    <td><a href="/items/detail/{{ item.id }}">{{ item.name }}</a></td>
-                    <td><a href="/stores/detail/{{ item.store.id }}">{{ item.store.name }}</a></td>
+                    <td><a href="{% url 'item_detail_page' item_id=item.id %}">{{ item.name }}</a></td>
+                    <td><a href="{% url 'store_detail_page' store_id=item.store.id %}">{{ item.store.name }}</a></td>
                     <td>{{ item.price }}</td>
                     {% if not is_personal %}
                     <td>{{ item.user.username }}</td>
@@ -104,4 +109,33 @@
         </span>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contentWrapper = document.getElementById('content-wrapper');
+        const updateUrl = contentWrapper.dataset.updateUrl;
+        const deleteUrl = contentWrapper.dataset.deleteUrl;
+        
+        const getUpdateUrl = (itemId) => {
+            return updateUrl.replace('/0', `/${itemId}`);
+        };
+
+        const getDeleteUrl = (itemId) => {
+            return deleteUrl.replace('/0', `/${itemId}`);
+        };
+
+        document.querySelectorAll("#edit-item-").forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.id.replace('edit-item-', '');
+                window.location.href = getUpdateUrl(itemId);
+            });
+        });
+
+        document.querySelectorAll("#delete-item-").forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.id.replace('delete-item-', '');
+                window.location.href = getDeleteUrl(itemId);
+            });
+        });
+    });
+</script>
 {% endblock %}
