@@ -91,6 +91,7 @@ class TestLogoutView(BaseEndToEndTestCase):
         TARGET_URL = f"{self.live_server_url}{reverse('dashboard')}"
 
         self.driver.get(URL)
+        time.sleep(1)
         self.assertEqual(self.driver.current_url, URL)
 
         submit_button = self.driver.find_element(value=SUBMIT_CANCEL_LOGOUT)
