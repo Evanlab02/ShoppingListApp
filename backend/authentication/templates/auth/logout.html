@@ -18,21 +18,11 @@
             </div>
             <div class="form-row submit-row">
                 <input class="submit-input" type="submit" value="Yes" id="{{ submit_logout }}">
-                <input 
-                    class="submit-input" 
-                    type="button" 
-                    value="No" 
-                    id="{{ submit_cancel }}"
-                    onclick="redirectToDashboard()"
-                >
+                <a id="cancel" href="{% url 'dashboard' %}">
+                    No
+                </a>
             </div>
         </fieldset>
     </form>
 </div>
-
-<script>
-    function redirectToDashboard() {
-        window.location.href = "{% url 'dashboard' %}";
-    }
-</script>
 {% endblock %}

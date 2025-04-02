@@ -66,16 +66,20 @@
                     {% if is_personal %}
                     <td class="alt-menu-wrapper">
                         <div class="menu-list-button alt-menu-button">
-                            <sl-icon-button 
-                                id="edit-item-{{ item.id }}"
-                                name="pencil"
-                            />
+                            <a href="{% url 'item_update_page' item_id=item.id %}">
+                                <sl-icon-button 
+                                    id="edit-item-{{ item.id }}"
+                                    name="pencil"
+                                />
+                            </a>
                         </div>
                         <div class="menu-list-button alt-menu-button">
-                            <sl-icon-button 
+                            <a href="{% url 'item_delete_page' item_id=item.id %}">
+                                <sl-icon-button 
                                 id="delete-item-{{ item.id }}"
-                                name="trash"
-                            />
+                                    name="trash"
+                                />
+                            </a>
                         </div>
                     </td>
                     {% endif %}
@@ -109,33 +113,4 @@
         </span>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const contentWrapper = document.getElementById('content-wrapper');
-        const updateUrl = contentWrapper.dataset.updateUrl;
-        const deleteUrl = contentWrapper.dataset.deleteUrl;
-        
-        const getUpdateUrl = (itemId) => {
-            return updateUrl.replace('/0', `/${itemId}`);
-        };
-
-        const getDeleteUrl = (itemId) => {
-            return deleteUrl.replace('/0', `/${itemId}`);
-        };
-
-        document.querySelectorAll("#edit-item-").forEach(button => {
-            button.addEventListener('click', function() {
-                const itemId = this.id.replace('edit-item-', '');
-                window.location.href = getUpdateUrl(itemId);
-            });
-        });
-
-        document.querySelectorAll("#delete-item-").forEach(button => {
-            button.addEventListener('click', function() {
-                const itemId = this.id.replace('delete-item-', '');
-                window.location.href = getDeleteUrl(itemId);
-            });
-        });
-    });
-</script>
 {% endblock %}

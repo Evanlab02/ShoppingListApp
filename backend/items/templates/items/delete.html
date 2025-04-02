@@ -27,8 +27,9 @@
                     <input id="submit-delete-item" class="submit-input" type="submit" value="Delete Item">
                 </div>
                 <div class="form-row submit-row">
-                    <input id="cancel-delete-item" class="cancel-input" type="button" value="Cancel"
-                        onclick="window.location.href='/items/me'">
+                    <a href="{% url 'item_personalized_overview_page' %}">
+                        Cancel
+                    </a>
                 </div>
             </fieldset>
         </form>

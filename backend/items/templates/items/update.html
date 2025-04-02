@@ -49,8 +49,11 @@
                     <input id="submit-update-item" class="submit-input" type="submit" value="Update Item">
                 </div>
                 <div class="form-row submit-row">
-                    <input id="cancel-update-item" class="cancel-input" type="button" value="Cancel"
-                        onclick="window.location.href='/items/me'">
+                    <a href="{% url 'item_personalized_overview_page' %}">
+                        <button id="cancel-update-item" class="cancel-input">
+                            Cancel
+                        </button>
+                    </a>
                 </div>
             </fieldset>
         </form>

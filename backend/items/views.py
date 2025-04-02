@@ -192,7 +192,7 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
 
 @require_http_methods(["GET"])
 @async_login_required
-async def update_page(request: HttpRequest) -> HttpResponse:
+async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
     Render the update page.
 
@@ -208,7 +208,7 @@ async def update_page(request: HttpRequest) -> HttpResponse:
 
 @require_http_methods(["GET"])
 @async_login_required
-async def delete_page(request: HttpRequest) -> HttpResponse:
+async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
     Render the delete page.
 

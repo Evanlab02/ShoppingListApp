@@ -21,57 +21,70 @@
 <body 
     id="body-block" 
     class="body-block"
-    data-dashboard-url="{% url 'dashboard' %}"
-    data-my-items-url="{% url 'item_personalized_overview_page' %}"
-    data-all-items-url="{% url 'item_overview_page' %}"
-    data-my-stores-url="{% url 'store_personal_overview_page' %}"
-    data-create-item-url="{% url 'item_create_page' %}"
 >
     <header class="navbar">
         <div class="navbar-item">
             <h2>{{ page_title }}</h2>
             <div class="menu-list-button">
-                <sl-icon-button 
-                    id="dashboard-button"
-                    name="speedometer"
-                />
+                <a href="{% url 'dashboard' %}">
+                    <sl-icon-button 
+                        id="dashboard-button"
+                        name="speedometer"
+                    />
+                    Dashboard
+                </a>
             </div>
             {% if not is_overview %}
             <div class="menu-list-button">
-                <sl-icon-button 
-                    id="my-items-button"
-                    name="bag"
-                />
+                <a href="{% url 'item_personalized_overview_page' %}">
+                    <sl-icon-button 
+                        id="my-items-button"
+                        name="bag"
+                    />
+                    My Items
+                </a>
             </div>
             {% endif %}
             <div class="menu-list-button">
-                <sl-icon-button 
-                    id="my-stores-button"
-                    name="shop-window" 
+                <a href="{% url 'store_personal_overview_page' %}">
+                    <sl-icon-button 
+                        id="my-stores-button"
+                        name="shop-window" 
                 />
+                My Stores
+                </a>
             </div>
             {% if not is_personal and show_advanced_navigation and is_overview %}
             <div class="menu-list-button">
-                <sl-icon-button 
-                    id="alternative-my-items-button"
-                    name="person" 
-                />
+                <a href="{% url 'item_personalized_overview_page' %}">
+                    <sl-icon-button 
+                        id="alternative-my-items-button"
+                        name="person" 
+                    />
+                    My Items
+                </a>
             </div>
             {% endif %}
             {% if is_personal and show_advanced_navigation and is_overview %}
             <div class="menu-list-button">
-                <sl-icon-button 
-                    id="all-items-button"
-                    name="people" 
-                />
+                <a href="{% url 'item_overview_page' %}">
+                    <sl-icon-button 
+                        id="all-items-button"
+                        name="people" 
+                    />
+                    All Items
+                </a>
             </div>
             {% endif %}
             {% if show_advanced_navigation %}
             <div class="menu-list-button">
-                <sl-icon-button 
-                    id="create-item-button"
-                    name="plus-circle" 
-                />
+                <a href="{% url 'item_create_page' %}">
+                    <sl-icon-button 
+                        id="create-item-button"
+                        name="plus-circle" 
+                    />
+                    Create Item
+                </a>
             </div>
             {% endif %}
         </div>
@@ -79,48 +92,3 @@
     {% block content %}
     {% endblock %}
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const bodyBlock = document.getElementById('body-block');
-        const dashboardUrl = bodyBlock.dataset.dashboardUrl;
-        const myItemsUrl = bodyBlock.dataset.myItemsUrl;
-        const allItemsUrl = bodyBlock.dataset.allItemsUrl;
-        const myStoresUrl = bodyBlock.dataset.myStoresUrl;
-        const createItemUrl = bodyBlock.dataset.createItemUrl;
-
-        const dashboardButton = document.getElementById('dashboard-button');
-        dashboardButton.addEventListener('click', function() {
-            window.location.href = dashboardUrl;
-        });
-
-        const myItemsButton = document.getElementById('my-items-button');
-        myItemsButton.addEventListener('click', function() {
-            window.location.href = myItemsUrl;
-        });
-
-        const allItemsButton = document.getElementById('all-items-button');
-        allItemsButton.addEventListener('click', function() {
-            window.location.href = allItemsUrl;
-        });
-
-        const myStoresButton = document.getElementById('my-stores-button');
-        myStoresButton.addEventListener('click', function() {
-            window.location.href = myStoresUrl;
-        });
-
-        const alternativeMyItemsButton = document.getElementById('alternative-my-items-button');
-        alternativeMyItemsButton.addEventListener('click', function() {
-            window.location.href = myItemsUrl;
-        });
-
-        const alternativeAllItemsButton = document.getElementById('alternative-all-items-button');
-        alternativeAllItemsButton.addEventListener('click', function() {
-            window.location.href = allItemsUrl;
-        });
-
-        const createItemButton = document.getElementById('create-item-button');
-        createItemButton.addEventListener('click', function() {
-            window.location.href = createItemUrl;
-        });
-    });
-</script>

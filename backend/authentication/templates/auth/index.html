@@ -28,15 +28,11 @@
                 <input class="submit-input" type="submit" value="Login" id="{{ submit_login }}">
             </div>
             <div class="form-row submit-row">
-                <input id="go-to-register" class="submit-input" type="button" value="Register" onclick="redirectToRegister()">
+                <a id="go-to-register" href="{% url 'register_page' %}">
+                    Register
+                </a>
             </div>
         </fieldset>
     </form>
 </div>
-
-<script>
-    function redirectToRegister() {
-        window.location.href = "{% url 'register_page' %}";
-    }
-</script>
 {% endblock %}
