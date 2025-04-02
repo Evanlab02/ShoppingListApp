@@ -49,6 +49,7 @@ class TestLogoutView(BaseEndToEndTestCase):
         URL = f"{self.live_server_url}{reverse('logout_page')}"
 
         self.driver.get(URL)
+        time.sleep(1)
         self.assertEqual(self.driver.current_url, URL)
 
         heading = self.driver.find_element(value="auth-heading").text
