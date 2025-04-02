@@ -94,8 +94,9 @@ class TestLogoutView(BaseEndToEndTestCase):
 
         submit_button = self.driver.find_element(value=SUBMIT_CANCEL_LOGOUT)
         submit_button.click()
-        self.assertEqual(self.driver.current_url, TARGET_URL)
+
         time.sleep(1)
+        self.assertEqual(self.driver.current_url, TARGET_URL)
         self.driver.get_screenshot_as_file(
             "./screenshots/logout/test_logout_cancel_redirects_to_dashboard.png"
         )
