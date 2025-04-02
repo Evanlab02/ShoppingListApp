@@ -2,13 +2,11 @@
 
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 
 from authentication.tests.factory import UserFactory
 from items.database.item_repo import ItemRepo
 from items.models import ShoppingItem as Item
-from stores.models import ShoppingStore as Store
 from stores.tests.factory import StoreFactory
 
 MOCK_NAME = "Test Item"
@@ -24,13 +22,6 @@ class TestItemRepositoryCreate(TestCase):
         self.store = StoreFactory.create(user=self.user)
         self.repo = ItemRepo()
         return super().setUp()
-
-    def tearDown(self) -> None:
-        """Tear down the tests."""
-        User.objects.all().delete()
-        Store.objects.all().delete()
-        Item.objects.all().delete()
-        return super().tearDown()
 
     async def test_create_item(self) -> None:
         """Test the create item function."""

@@ -3,6 +3,10 @@
 import logging
 from abc import ABC, abstractmethod
 
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+
+from stores.models import ShoppingStore as Store
+
 
 class IStoreRepo(ABC):
     """Interface for the store repository."""
@@ -22,4 +26,25 @@ class IStoreRepo(ABC):
 
         Returns:
             bool: True if the store exists, False otherwise.
+        """
+
+    @abstractmethod
+    async def create_store(
+        self,
+        name: str,
+        store_type: int,
+        description: str,
+        user: User | AnonymousUser | AbstractBaseUser,
+    ) -> Store:
+        """
+        Create a store.
+
+        Args:
+            name (str): The name of the store.
+            store_type (int): The type of the store.
+            description (str): The description of the store.
+            user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+
+        Returns:
+            ShoppingStore: The created store.
         """
