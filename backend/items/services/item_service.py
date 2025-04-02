@@ -156,6 +156,25 @@ class ItemService(IItemService):
             self.log.warning(f"Item with ID: {item_id} does not exist.")
             raise ItemDoesNotExist(item_id=item_id)
 
+    async def get_item_for_user(
+        self, item_id: int, user: User | AbstractBaseUser | AnonymousUser
+    ) -> Item:
+        """
+        Get an item for a user.
+
+        Args:
+            item_id (int): The item id.
+            user (User): The user to filter off.
+
+        Returns:
+            ItemSchema: The item detail.
+        """
+        try:
+            return await self.repo.get_item_for_user(item_id=item_id, user=user)
+        except Item.DoesNotExist:
+            self.log.warning(f"Item with ID: {item_id} does not exist for user: {user}.")
+            raise ItemDoesNotExist(item_id=item_id)
+
     async def update_item(
         self,
         item_id: int,

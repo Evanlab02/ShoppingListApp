@@ -54,3 +54,8 @@ class TestItemDetailView(TestCase):
         self.assertRedirects(
             response, f"{reverse('login_page')}?error=You must be logged in to access that page."
         )
+
+    def test_item_detail_view_with_non_existent_item(self) -> None:
+        """Test the item detail view with a non-existent item."""
+        response = self.client.get(reverse("item_detail_page", kwargs={"item_id": 999999}))
+        self.assertEqual(response.status_code, 404)
