@@ -2,10 +2,13 @@
 
 import logging
 from abc import ABC, abstractmethod
+from typing import Literal
 
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.models import ShoppingStore as Store
+from stores.schemas.input import StoreSearch
+from stores.schemas.output import StorePaginationSchema
 
 
 class IStoreRepo(ABC):
@@ -15,18 +18,6 @@ class IStoreRepo(ABC):
         """Initialize the store repository."""
         self.log = logging.getLogger(__name__)
         super().__init__()
-
-    @abstractmethod
-    async def does_store_exist(self, store_id: int) -> bool:
-        """
-        Check if a store exists.
-
-        Args:
-            store_id (int): The id of the store.
-
-        Returns:
-            bool: True if the store exists, False otherwise.
-        """
 
     @abstractmethod
     async def create_store(
@@ -47,4 +38,66 @@ class IStoreRepo(ABC):
 
         Returns:
             ShoppingStore: The created store.
+        """
+
+    @abstractmethod
+    async def get_stores(
+        self,
+        page_number: int = 1,
+        stores_per_page: int = 10,
+        user: User | None = None,
+        sort: Literal["name", "created_on", "updated_on"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> StorePaginationSchema:
+        """
+        Get all stores.
+
+        Args:
+            page_number (int): The page number.
+            stores_per_page (int): The number of stores per page.
+            user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+            sort (Literal["name", "created_on", "updated_on"] | None): The sort order.
+            sort_dir (Literal["asc", "desc"] | None): The sort direction.
+
+        Returns:
+            StorePaginationSchema: The paginated stores.
+        """
+
+    @abstractmethod
+    async def search_stores(
+        self,
+        page_number: int = 1,
+        stores_per_page: int = 10,
+        name: str | None = None,
+        user: User | None = None,
+        search: StoreSearch | None = None,
+        sort: Literal["name", "created_on", "updated_on"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> StorePaginationSchema:
+        """
+        Search for stores.
+
+        Args:
+            page_number (int): The page number.
+            stores_per_page (int): The number of stores per page.
+            name (str | None): The name of the store.
+            user (User | None): The user who created the store.
+            search (StoreSearch | None): The search object containing the search parameters.
+            sort (Literal["name", "created_on", "updated_on"] | None): The sort order.
+            sort_dir (Literal["asc", "desc"] | None): The sort direction.
+
+        Returns:
+            StorePaginationSchema: The paginated stores.
+        """
+
+    @abstractmethod
+    async def does_store_exist(self, store_id: int) -> bool:
+        """
+        Check if a store exists.
+
+        Args:
+            store_id (int): The id of the store.
+
+        Returns:
+            bool: True if the store exists, False otherwise.
         """

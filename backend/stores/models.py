@@ -16,7 +16,6 @@ from django.db.models import (
 from stores.constants import STORE_TYPE_CHOICES
 
 log = logging.getLogger(__name__)
-log.info("Stores app models loading...")
 
 
 class ShoppingStore(Model):
@@ -32,6 +31,3 @@ class ShoppingStore(Model):
     def __str__(self) -> str:
         """Return a string representation of the shopping store."""
         return f"{self.name}"
-
-
-log.info("Stores app models loaded.")
