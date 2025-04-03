@@ -9,3 +9,4 @@ docutils
 redis[hiredis]
 pyjwt
 django-vite
+cachetools
