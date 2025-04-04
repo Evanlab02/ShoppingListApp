@@ -1,15 +1,12 @@
 """Contains tests for the search function of the item repository."""
 
 from asgiref.sync import sync_to_async
-from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 
 from authentication.tests.factory import UserFactory
 from items.database.item_repo import ItemRepo
-from items.models import ShoppingItem as Item
 from items.schemas.input import ItemSearchSchema
 from items.tests.factory import ItemFactory
-from stores.models import ShoppingStore as Store
 from stores.tests.factory import StoreFactory
 
 MOCK_NAME = "Test Item"
@@ -42,13 +39,6 @@ class TestItemRepositorySearch(TestCase):
         self.create_batch = sync_to_async(ItemFactory.create_batch)
         self.create_store = sync_to_async(StoreFactory.create)
         return super().setUp()
-
-    def tearDown(self) -> None:
-        """Tear down the tests."""
-        Store.objects.all().delete()
-        Item.objects.all().delete()
-        User.objects.all().delete()
-        return super().tearDown()
 
     async def test_get_items(self) -> None:
         """Test the search by description function."""

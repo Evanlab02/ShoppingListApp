@@ -145,7 +145,7 @@ class ItemRepo(IItemRepo):
         start = (page_number - 1) * items_per_page
         end = start + items_per_page
 
-        if start > total:
+        if start >= total:
             page_number = total_pages
             start = (page_number - 1) * items_per_page
             end = start + items_per_page

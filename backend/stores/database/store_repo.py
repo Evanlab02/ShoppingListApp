@@ -148,7 +148,7 @@ class StoreRepo(IStoreRepo):
         start = (page_number - 1) * stores_per_page
         end = start + stores_per_page
 
-        if start > total:
+        if start >= total:
             page_number = total_pages
             start = (page_number - 1) * stores_per_page
             end = start + stores_per_page
