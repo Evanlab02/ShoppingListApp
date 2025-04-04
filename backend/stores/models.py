@@ -2,6 +2,7 @@
 
 import logging
 
+from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from django.db.models import (
     CASCADE,
@@ -31,3 +32,8 @@ class ShoppingStore(Model):
     def __str__(self) -> str:
         """Return a string representation of the shopping store."""
         return f"{self.name}"
+
+    async def auser(self) -> User:
+        """Get the user for the store asynchronously."""
+        func = sync_to_async(lambda: self.user)
+        return await func()

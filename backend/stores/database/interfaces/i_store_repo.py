@@ -2,7 +2,7 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Literal
+from typing import Any, Literal
 
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
@@ -88,6 +88,79 @@ class IStoreRepo(ABC):
 
         Returns:
             StorePaginationSchema: The paginated stores.
+        """
+
+    @abstractmethod
+    async def get_store(self, store_id: int) -> Store:
+        """
+        Get a store.
+
+        Args:
+            store_id (int): The id of the store.
+
+        Returns:
+            ShoppingStore: The store.
+
+        Raises:
+            Store.DoesNotExist: If the store does not exist.
+        """
+
+    @abstractmethod
+    async def update_store(
+        self,
+        store_id: int,
+        user: User | AnonymousUser | AbstractBaseUser,
+        store_name: str | None = None,
+        store_type: int | None = None,
+        store_description: str | None = None,
+    ) -> Store:
+        """
+        Update a store.
+
+        Args:
+            store_id (int): The id of the store.
+            user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+            store_name (str | None): The new name of the store.
+            store_type (int | None): The new type of the store.
+            store_description (str | None): The new description of the store.
+
+        Returns:
+            ShoppingStore: The edited store.
+
+        Raises:
+            Store.DoesNotExist: If the store does not exist.
+        """
+
+    @abstractmethod
+    async def delete_store(
+        self,
+        store_id: int,
+        user: User | AnonymousUser | AbstractBaseUser,
+    ) -> None:
+        """
+        Delete a store.
+
+        Args:
+            store_id (int): The id of the store.
+            user (User | AnonymousUser | AbstractBaseUser): The user who created the store.
+
+        Raises:
+            Store.DoesNotExist: If the store does not exist.
+        """
+
+    @abstractmethod
+    async def aggregate(
+        self,
+        user: User | AnonymousUser | AbstractBaseUser | None = None,
+    ) -> dict[str, Any]:
+        """
+        Aggregate stores.
+
+        Args:
+            user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+
+        Returns:
+            dict[str, Any]: The aggregated stores.
         """
 
     @abstractmethod

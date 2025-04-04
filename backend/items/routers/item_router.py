@@ -8,7 +8,7 @@ from ninja import Router
 
 from authentication.auth import TOKEN_AUTH
 from items.models import ShoppingItem as Item
-from items.schemas.input import ItemSearchSchema, NewItem, UpdateItem
+from items.schemas.input import ItemSearchSchema, NewItem, PatchItem, UpdateItem
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services.item_service import ItemService
 from shoppingapp.schemas.shared import DeleteSchema
@@ -171,7 +171,34 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> Item:
     return await item_service.get_item_detail(item_id=item_id)
 
 
-@item_router.patch("/{item_id}", response={200: ItemSchema}, url_name="item_update")
+@item_router.patch("/{item_id}", response={200: ItemSchema}, url_name="item_patch")
+async def patch_item(request: HttpRequest, item_id: int, item_schema: PatchItem) -> Item:
+    """
+    Patch an item.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        item_id (int): The item id.
+        item_schema (PatchItem): The item data to patch.
+
+    Returns:
+        ItemSchema: The patched item.
+    """
+    user = await request.auser()
+    item = await item_service.update_item(
+        item_id=item_id,
+        user=user,
+        new_store_id=item_schema.store_id,
+        new_name=item_schema.name,
+        new_price=item_schema.price,
+        new_description=item_schema.description,
+    )
+    await item.auser()
+    await item.astore()
+    return item
+
+
+@item_router.put("/{item_id}", response={200: ItemSchema}, url_name="item_update")
 async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateItem) -> Item:
     """
     Update an item.
@@ -185,7 +212,7 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
         ItemSchema: The updated item.
     """
     user = await request.auser()
-    return await item_service.update_item(
+    item = await item_service.update_item(
         item_id=item_id,
         user=user,
         new_store_id=item_schema.store_id,
@@ -193,6 +220,9 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
         new_price=item_schema.price,
         new_description=item_schema.description,
     )
+    await item.auser()
+    await item.astore()
+    return item
 
 
 @item_router.delete("/{item_id}", response={200: DeleteSchema}, url_name="item_delete")
