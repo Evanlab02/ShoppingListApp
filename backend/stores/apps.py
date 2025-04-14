@@ -5,7 +5,6 @@ import logging
 from django.apps import AppConfig
 
 log = logging.getLogger(__name__)
-log.info("Stores app config loading...")
 
 
 class StoresConfig(AppConfig):
@@ -13,6 +12,3 @@ class StoresConfig(AppConfig):
 
     default_auto_field = "django.db.models.BigAutoField"
     name = "stores"
-
-
-log.info("Stores app config loaded.")

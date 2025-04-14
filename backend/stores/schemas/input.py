@@ -6,7 +6,6 @@ from datetime import date
 from ninja import Schema
 
 log = logging.getLogger(__name__)
-log.info("Store input schemas loading...")
 
 
 class NewStore(Schema):
@@ -34,6 +33,3 @@ class StoreSearch(Schema):
     updated_on: date | None = None
     updated_before: date | None = None
     updated_after: date | None = None
-
-
-log.info("Store input schemas loaded.")

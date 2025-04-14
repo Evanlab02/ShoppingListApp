@@ -333,6 +333,3 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
     user = await request.auser()
     await store_service.delete_store(store_id=formatted_store_id, user=user)
     return HttpResponseRedirect("/stores/me")
-
-
-log.info("Stores app views loaded.")

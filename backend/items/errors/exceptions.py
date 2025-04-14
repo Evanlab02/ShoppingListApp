@@ -3,7 +3,6 @@
 import logging
 
 log = logging.getLogger(__name__)
-log.info("Item API exceptions loading...")
 
 
 class ItemAlreadyExists(Exception):
@@ -23,6 +22,3 @@ class ItemDoesNotExist(Exception):
         """Initialize the exception."""
         self.item_id = item_id
         super().__init__(f"Item with id '{item_id}' does not exist.")
-
-
-log.info("Item API exceptions loaded.")

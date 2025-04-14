@@ -3,7 +3,6 @@
 import logging
 
 log = logging.getLogger(__name__)
-log.info("Store custom api exceptions loading...")
 
 
 class InvalidStoreType(Exception):

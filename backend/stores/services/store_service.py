@@ -26,7 +26,6 @@ from stores.schemas.output import (
 )
 
 log = logging.getLogger(__name__)
-log.info("Store service loading...")
 
 STORE_DOES_NOT_EXIST = "Store does not exist."
 
@@ -361,6 +360,3 @@ async def search_stores(
         sort=sort,
         sort_dir=sort_dir,
     )
-
-
-log.info("Store service loaded.")
