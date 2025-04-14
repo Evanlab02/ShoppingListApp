@@ -138,7 +138,6 @@ async def get_store_detail(store_id: int) -> StoreSchema:
         StoreDoesNotExist: If the store does not exist.
     """
     try:
-        log.info("Getting store details...")
         store = await store_repository.get_store(store_id)
         store_schema = StoreSchema.from_orm(store)
         return store_schema
@@ -163,7 +162,6 @@ async def get_store_detail_with_items(
         StoreDoesNotExist: If the store does not exist.
     """
     try:
-        log.info("Getting store details with related items...")
         store = await store_repository.get_store(store_id)
         store_schema = StoreSchema.from_orm(store)
         related_items = await item_repo.get_items(
@@ -184,7 +182,6 @@ async def aggregate(
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
-    log.info("Aggregating store details...")
     aggregation = await store_repository.aggregate_stores(user)
     result = StoreAggregationSchema.model_validate(aggregation)
     result.combined_online_stores = result.online_stores + result.combined_stores
@@ -212,7 +209,6 @@ async def get_stores(
     Returns:
         StorePaginationSchema: The stores in a paginated format.
     """
-    log.info(f"Retrieving stores for page {page_number} with limit {limit}...")
     paginated_stores = await store_repository.get_stores(page_number, limit, user, sort, sort_dir)
     return paginated_stores
 
@@ -244,7 +240,6 @@ async def update_store(
     store_type_label = ""
     store_type_value = None
 
-    log.info("Validating store info...")
     if store_name and await store_repository.does_name_exist(store_name):
         log.warning("Store already exists.")
         raise StoreAlreadyExists(store_name)
@@ -257,7 +252,6 @@ async def update_store(
         store_type_value = _get_store_type_value(store_type_label)
 
     try:
-        log.info("Updating store...")
         store = await store_repository.edit_store(
             store_id=store_id,
             user=user,
@@ -286,7 +280,6 @@ async def delete_store(
         DeleteSchema: The schema result which contains the result message and details.
     """
     try:
-        log.info("Deleting store...")
         await store_repository.delete_store(store_id=store_id, user=user)
         return DeleteSchema(
             message="Deleted Store.", detail=f"Store with ID #{store_id} was deleted."
@@ -334,16 +327,6 @@ async def search_stores(
     Returns:
         StorePaginationSchema: The schema result which contains the stores that were searched for.
     """
-    log.info(f"PAGE NO - {page}")
-    log.info(f"LIMIT - {limit}")
-    log.info(f"STORE TYPES - {store_types}")
-    log.info(f"CREATED ON - {created_on}")
-    log.info(f"CREATED BEFORE - {created_before}")
-    log.info(f"CREATED AFTER - {created_after}")
-    log.info(f"UPDATED ON - {updated_on}")
-    log.info(f"UPDATED BEFORE - {updated_before}")
-    log.info(f"UPDATED AFTER - {updated_after}")
-    log.info(f"IDS - {ids}")
     return await store_repository.filter_stores(
         page_number=page,
         stores_per_page=limit,

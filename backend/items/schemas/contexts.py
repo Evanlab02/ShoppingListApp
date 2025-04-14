@@ -7,7 +7,6 @@ from shoppingapp.schemas.shared import BaseContext
 from stores.schemas.output import StoreSchema
 
 log = logging.getLogger(__name__)
-log.info("Item context schemas loading...")
 
 
 class ItemCreateContext(BaseContext):
@@ -34,6 +33,3 @@ class ItemUpdateContext(BaseContext):
 
     item: ItemSchema
     stores: list[StoreSchema]
-
-
-log.info("Item context schemas loaded.")

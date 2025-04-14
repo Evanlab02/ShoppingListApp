@@ -51,7 +51,6 @@ async def get_mapping(request: HttpRequest) -> dict[int, str]:
     Returns:
         dict[int, str]: The mapping.
     """
-    log.info("User requested store type mapping.")
     return STORE_TYPE_MAPPING
 
 
@@ -67,7 +66,6 @@ async def get_store_detail(request: HttpRequest, store_id: int) -> StoreSchema:
     Returns:
         StoreSchema: The store details.
     """
-    log.info(f"User requested store detail for store: {store_id}.")
     store = await store_service.get_store_detail(store_id)
     return store
 
@@ -83,7 +81,6 @@ async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
-    log.info("User requested store aggregation.")
     result = await store_service.aggregate()
     return result
 
@@ -100,7 +97,6 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
         StoreAggregationSchema: The store aggregation by user.
     """
     user = await request.auser()
-    log.info("User requested personal store aggregation.")
     result = await store_service.aggregate(user=user)
     return result
 
@@ -126,7 +122,6 @@ async def get_stores(
     Returns:
         StorePaginationSchema: The stores.
     """
-    log.info(f"User requested stores with limit ({limit}) for page: {page}.")
     result = await store_service.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
     return result
 
@@ -153,7 +148,6 @@ async def get_personal_stores(
         StorePaginationSchema: The stores.
     """
     user = await request.auser()
-    log.info(f"User requested personal stores with limit ({limit}) for page: {page}.")
     result = await store_service.get_stores(limit, page, user, sort, sort_dir)
     return result
 
@@ -188,7 +182,6 @@ async def update_store(
         formatted_type = store_type
 
     user = await request.auser()
-    log.info(f"User requested to update store: {store_id}")
     result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
     return result
 
@@ -214,7 +207,6 @@ async def delete_store(
         StoreDoesNotExist: If there store_id is invalid or you do not own the store.
     """
     user = await request.auser()
-    log.info(f"User requested to delete store: {store_id}")
     result = await store_service.delete_store(store_id=store_id, user=user)
     return result
 
@@ -250,8 +242,6 @@ async def search(
     if own:
         user = await request.auser()
 
-    log.info("User searching stores...")
-
     return await store_service.search_stores(
         page=page,
         limit=limit,
@@ -268,6 +258,3 @@ async def search(
         sort=sort,
         sort_dir=sort_dir,
     )
-
-
-log.info("Store router loaded.")

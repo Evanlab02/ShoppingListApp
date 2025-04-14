@@ -29,14 +29,12 @@ def get_overview_params(request: HttpRequest) -> dict[str, int]:
         if isinstance(page, str):
             page = int(page)
     except ValueError:
-        log.info("Failed to load page param, defaulting to 1")
         page = 1
 
     try:
         if isinstance(limit, str):
             limit = int(limit)
     except ValueError:
-        log.info("Failed to load limit param, defaulting to 10")
         limit = 10
 
     return {"page": page, "limit": limit}
