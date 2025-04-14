@@ -36,6 +36,3 @@ class StoreDoesNotExist(Exception):
         """Initialize the exception."""
         self.store_id = store_id
         super().__init__(f"Store with id '{store_id}' does not exist.")
-
-
-log.info("Store custom api exceptions loaded.")
