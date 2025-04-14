@@ -23,7 +23,7 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import include, path
 from ninja import NinjaAPI
 
-from authentication.errors.api_exceptions import (
+from authentication.errors.exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
     InvalidUserDetails,
@@ -37,7 +37,7 @@ from authentication.routers.token_router import token_router
 from dashboard.routers.dashboard_router import dashboard_router
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.routers.item_router import item_router
-from stores.errors.api_exceptions import (
+from stores.errors.exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
     StoreDoesNotExist,

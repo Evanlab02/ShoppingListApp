@@ -9,7 +9,7 @@ from django.views.decorators.http import require_http_methods
 
 from authentication.decorators import async_login_required, login_required
 from shoppingapp.utilities.utils import get_overview_params
-from stores.errors.api_exceptions import (
+from stores.errors.exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
     StoreDoesNotExist,

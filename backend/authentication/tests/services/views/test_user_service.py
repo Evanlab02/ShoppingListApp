@@ -5,7 +5,7 @@ import asyncio
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import AsyncRequestFactory, TestCase
 
-from authentication.errors.api_exceptions import (
+from authentication.errors.exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
     InvalidUserDetails,

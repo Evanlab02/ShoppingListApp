@@ -12,7 +12,7 @@ from items.schemas.output import ItemPaginationSchema
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.database import store_repository
-from stores.errors.api_exceptions import (
+from stores.errors.exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
     StoreDoesNotExist,

@@ -7,7 +7,7 @@ from authentication.tests.factory import UserFactory
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.services.item_service import ItemService
 from items.tests.factory import ItemFactory
-from stores.errors.api_exceptions import StoreDoesNotExist
+from stores.errors.exceptions import StoreDoesNotExist
 from stores.tests.factory import StoreFactory
 
 

@@ -14,7 +14,7 @@ from items.services.interfaces.i_item_service import IItemService
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.database.interfaces.i_store_repo import IStoreRepo
 from stores.database.store_repo import StoreRepo
-from stores.errors.api_exceptions import StoreDoesNotExist
+from stores.errors.exceptions import StoreDoesNotExist
 
 
 class ItemService(IItemService):

@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from authentication.decorators import async_login_required, async_redirect_if_logged_in
-from authentication.errors.api_exceptions import (
+from authentication.errors.exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
     InvalidUserDetails,

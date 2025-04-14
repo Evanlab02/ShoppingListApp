@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from authentication.constants import INPUT_MAPPING
 from authentication.database.interfaces.i_user_repo import IUserRepository
 from authentication.database.user_repo import UserRepository
-from authentication.errors.api_exceptions import (
+from authentication.errors.exceptions import (
     EmailAlreadyExists,
     InvalidCredentials,
     InvalidUserDetails,
