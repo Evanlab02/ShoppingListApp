@@ -16,7 +16,7 @@ from stores.schemas.output import (
     StorePaginationSchema,
     StoreSchema,
 )
-from stores.services import store_service
+from stores.services import tstore_service
 
 store_router = Router(tags=["Stores"], auth=TOKEN_AUTH)
 
@@ -36,7 +36,7 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> ShoppingSto
         StoreSchema: The created store.
     """
     user = await request.auser()
-    store = await store_service.create(new_store, user)
+    store = await tstore_service.create(new_store, user)
     return store
 
 
@@ -66,7 +66,7 @@ async def get_store_detail(request: HttpRequest, store_id: int) -> StoreSchema:
     Returns:
         StoreSchema: The store details.
     """
-    store = await store_service.get_store_detail(store_id)
+    store = await tstore_service.get_store_detail(store_id)
     return store
 
 
@@ -81,7 +81,7 @@ async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     Returns:
         StoreAggregationSchema: The store aggregation.
     """
-    result = await store_service.aggregate()
+    result = await tstore_service.aggregate()
     return result
 
 
@@ -97,7 +97,7 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
         StoreAggregationSchema: The store aggregation by user.
     """
     user = await request.auser()
-    result = await store_service.aggregate(user=user)
+    result = await tstore_service.aggregate(user=user)
     return result
 
 
@@ -122,7 +122,7 @@ async def get_stores(
     Returns:
         StorePaginationSchema: The stores.
     """
-    result = await store_service.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
+    result = await tstore_service.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
     return result
 
 
@@ -148,7 +148,7 @@ async def get_personal_stores(
         StorePaginationSchema: The stores.
     """
     user = await request.auser()
-    result = await store_service.get_stores(limit, page, user, sort, sort_dir)
+    result = await tstore_service.get_stores(limit, page, user, sort, sort_dir)
     return result
 
 
@@ -182,7 +182,9 @@ async def update_store(
         formatted_type = store_type
 
     user = await request.auser()
-    result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
+    result = await tstore_service.update_store(
+        store_id, user, name, formatted_type, new_description
+    )
     return result
 
 
@@ -207,7 +209,7 @@ async def delete_store(
         StoreDoesNotExist: If there store_id is invalid or you do not own the store.
     """
     user = await request.auser()
-    result = await store_service.delete_store(store_id=store_id, user=user)
+    result = await tstore_service.delete_store(store_id=store_id, user=user)
     return result
 
 
@@ -242,7 +244,7 @@ async def search(
     if own:
         user = await request.auser()
 
-    return await store_service.search_stores(
+    return await tstore_service.search_stores(
         page=page,
         limit=limit,
         name=name,

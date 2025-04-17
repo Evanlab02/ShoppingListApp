@@ -1,345 +1,92 @@
-"""API Service for the stores app."""
+"""Contains the store service."""
 
-import logging
-from datetime import date
-from typing import Any, Literal
-
-from asgiref.sync import sync_to_async
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
-from items.database import item_repo
-from items.schemas.output import ItemPaginationSchema
-from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
-from stores.database import store_repository
-from stores.errors.exceptions import (
-    InvalidStoreType,
-    StoreAlreadyExists,
-    StoreDoesNotExist,
-)
+from stores.database.store_repo import StoreRepo
+from stores.errors.exceptions import InvalidStoreType, StoreAlreadyExists
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
-from stores.schemas.output import (
-    StoreAggregationSchema,
-    StorePaginationSchema,
-    StoreSchema,
-)
-
-log = logging.getLogger(__name__)
-
-STORE_DOES_NOT_EXIST = "Store does not exist."
+from stores.services.interfaces.i_store_service import IStoreService
 
 
-def _is_valid_store_type(store_type: int) -> int:
-    """
-    Check if the store type is valid.
+class StoreService(IStoreService):
+    """Store service."""
 
-    Raise an error if it is not.
+    def __init__(self) -> None:
+        """Initialize the store service."""
+        self.repo = StoreRepo()
+        super().__init__()
 
-    Args:
-        store_type (int): The store type.
+    def __get_store_type_value(self, store_type_label: str) -> int:
+        """
+        Get the store type value.
 
-    Returns:
-        int: The store type.
+        Args:
+            store_type_label (str): The store type label.
 
-    Raises:
-        InvalidStoreType: If the store type is invalid.
-    """
-    if store_type in STORE_TYPE_MAPPING.keys():
-        return store_type
+        Returns:
+            int: The store type value.
 
-    log.warning("Invalid store type provided.")
-    raise InvalidStoreType(store_type)
+        Raises:
+            InvalidStoreType: If the store type is invalid.
+        """
+        for key, value in STORE_TYPE_MAPPING.items():
+            if value == store_type_label:
+                return key
 
+        self.log.warning("Failed store type conversion to value.")
+        raise InvalidStoreType(store_type_label)
 
-def _get_store_type_label(store_type_value: int) -> str:
-    """
-    Get the store type label.
+    def __get_store_type(self, store_type: int | str) -> int:
+        """
+        Get the store type.
 
-    Args:
-        store_type_value (int): The store type value.
+        Args:
+            store_type (int | str): The store type.
 
-    Returns:
-        str: The store type label.
+        Returns:
+            int: The store type value.
 
-    Raises:
-        InvalidStoreType: If the store type is invalid.
-    """
-    try:
-        return STORE_TYPE_MAPPING[store_type_value]
-    except KeyError:
-        log.warning("Failed store type conversion to label.")
-        raise InvalidStoreType(store_type_value)
+        Raises:
+            InvalidStoreType: If the store type is invalid.
+        """
+        if isinstance(store_type, str):
+            return self.__get_store_type_value(store_type)
 
+        if store_type in STORE_TYPE_MAPPING.keys():
+            return store_type
 
-def _get_store_type_value(store_type_label: str) -> int:
-    """
-    Get the store type value.
+        self.log.warning("Failed store type conversion to value.")
+        raise InvalidStoreType(store_type)
 
-    Args:
-        store_type_label (str): The store type label.
+    async def create(
+        self,
+        new_store: NewStore,
+        user: User | AbstractBaseUser | AnonymousUser,
+    ) -> Store:
+        """
+        Create a new store.
 
-    Returns:
-        int: The store type value.
+        Args:
+            new_store (NewStore): The new store data.
 
-    Raises:
-        InvalidStoreType: If the store type is invalid.
-    """
-    for key, value in STORE_TYPE_MAPPING.items():
-        if value == store_type_label:
-            return key
+        Returns:
+            Store: The created store.
 
-    log.warning("Failed store type conversion to value.")
-    raise InvalidStoreType(store_type_label)
+        Raises:
+            InvalidStoreType: If the store type is invalid.
+            StoreAlreadyExists: If the store already exists.
+        """
+        name = new_store.name
+        store_type = new_store.store_type
+        description = new_store.description
 
+        store_type_value = self.__get_store_type(store_type)
 
-async def create(new_store: NewStore, user: User | AbstractBaseUser | AnonymousUser) -> Store:
-    """
-    Create a new store.
+        if await self.repo.does_name_exist(name):
+            self.log.warning("Store with this name already exists...")
+            raise StoreAlreadyExists(name)
 
-    Args:
-        new_store (NewStore): The new store data.
-
-    Returns:
-        Store: The created store.
-
-    Raises:
-        InvalidStoreType: If the store type is invalid.
-        StoreAlreadyExists: If the store already exists.
-    """
-    name = new_store.name
-    store_type = new_store.store_type
-    description = new_store.description
-
-    if isinstance(store_type, str):
-        store_type_value = _get_store_type_value(store_type)
-    else:
-        store_type_value = _is_valid_store_type(store_type)
-
-    if await store_repository.does_name_exist(name):
-        log.warning("Store with this name already exists...")
-        raise StoreAlreadyExists(name)
-
-    store = await store_repository.create_store(name, store_type_value, description, user)
-    return store
-
-
-async def get_store_detail(store_id: int) -> StoreSchema:
-    """
-    Get the store detail.
-
-    Args:
-        store_id (int): The id of the store.
-
-    Returns:
-        StoreSchema: The store detail.
-
-    Raises:
-        StoreDoesNotExist: If the store does not exist.
-    """
-    try:
-        store = await store_repository.get_store(store_id)
-        store_schema = StoreSchema.from_orm(store)
-        return store_schema
-    except Store.DoesNotExist:
-        log.warning(STORE_DOES_NOT_EXIST)
-        raise StoreDoesNotExist(store_id)
-
-
-async def get_store_detail_with_items(
-    store_id: int, page_number: int = 1, items_per_page: int = 10
-) -> tuple[StoreSchema, ItemPaginationSchema]:
-    """
-    Get the store detail.
-
-    Args:
-        store_id (int): The id of the store.
-
-    Returns:
-        StoreSchema: The store detail.
-
-    Raises:
-        StoreDoesNotExist: If the store does not exist.
-    """
-    try:
-        store = await store_repository.get_store(store_id)
-        store_schema = StoreSchema.from_orm(store)
-        related_items = await item_repo.get_items(
-            page=page_number, items_per_page=items_per_page, store=store
-        )
-        return store_schema, related_items
-    except Store.DoesNotExist:
-        log.warning(STORE_DOES_NOT_EXIST)
-        raise StoreDoesNotExist(store_id)
-
-
-async def aggregate(
-    user: User | AbstractBaseUser | AnonymousUser | None = None,
-) -> StoreAggregationSchema:
-    """
-    Aggregate the stores.
-
-    Returns:
-        StoreAggregationSchema: The store aggregation.
-    """
-    aggregation = await store_repository.aggregate_stores(user)
-    result = StoreAggregationSchema.model_validate(aggregation)
-    result.combined_online_stores = result.online_stores + result.combined_stores
-    result.combined_in_store_stores = result.in_store_stores + result.combined_stores
-    return result
-
-
-async def get_stores(
-    limit: int = 10,
-    page_number: int = 1,
-    user: Any | None = None,
-    sort: Literal["name", "created_on", "updated_on"] | None = None,
-    sort_dir: Literal["asc", "desc"] | None = None,
-) -> StorePaginationSchema:
-    """
-    Get the stores.
-
-    Args:
-        limit (int): The limit of stores per page, defaults 10.
-        page_number (int): The page number, defaults to 1.
-        user (User): User who created the stores.
-        sort (str | None): The field to sort by.
-        sort_dir (str | None): The direction to sort in.
-
-    Returns:
-        StorePaginationSchema: The stores in a paginated format.
-    """
-    paginated_stores = await store_repository.get_stores(page_number, limit, user, sort, sort_dir)
-    return paginated_stores
-
-
-async def update_store(
-    store_id: int,
-    user: User | AnonymousUser | AbstractBaseUser,
-    store_name: str | None = None,
-    store_type: int | str | None = None,
-    store_description: str | None = None,
-) -> StoreSchema:
-    """
-    Update a store with given values.
-
-    Args:
-        store_id (int): The store id to update.
-        user (User | AnonymousUser | AbstractBaseUser): The user who owns the store.
-        store_name (str | None): The new store name, if there is one.
-        store_type (str | int | None): The new store type, if there is one.
-        store_description (str | None): The new description, if there is one.
-
-    Returns:
-        StoreSchema: The store that was edited returned as a schema.
-
-    Raises:
-        StoreAlreadyExists: When a store with that name already exists.
-        InvalidStoreType: When a invalid store type is given to update to.
-    """
-    store_type_label = ""
-    store_type_value = None
-
-    if store_name and await store_repository.does_name_exist(store_name):
-        log.warning("Store already exists.")
-        raise StoreAlreadyExists(store_name)
-    elif isinstance(store_type, int):
-        store_type_label = _get_store_type_label(store_type)
-    elif isinstance(store_type, str):
-        store_type_label = store_type
-
-    if store_type and store_type_label:
-        store_type_value = _get_store_type_value(store_type_label)
-
-    try:
-        store = await store_repository.edit_store(
-            store_id=store_id,
-            user=user,
-            store_name=store_name,
-            store_type=store_type_value,
-            store_description=store_description,
-        )
-        store_schema = await sync_to_async(StoreSchema.from_orm)(store)
-        return store_schema
-    except Store.DoesNotExist:
-        log.warning(STORE_DOES_NOT_EXIST)
-        raise StoreDoesNotExist(store_id)
-
-
-async def delete_store(
-    store_id: int, user: User | AbstractBaseUser | AnonymousUser
-) -> DeleteSchema:
-    """
-    Delete a store.
-
-    Args:
-        store_id (int): The id of the store you wish to delete.
-        user (User): The user that owns this store, to prevent users deleting other users stores.
-
-    Returns:
-        DeleteSchema: The schema result which contains the result message and details.
-    """
-    try:
-        await store_repository.delete_store(store_id=store_id, user=user)
-        return DeleteSchema(
-            message="Deleted Store.", detail=f"Store with ID #{store_id} was deleted."
-        )
-    except Store.DoesNotExist:
-        log.warning(STORE_DOES_NOT_EXIST)
-        raise StoreDoesNotExist(store_id=store_id)
-
-
-async def search_stores(
-    page: int = 1,
-    limit: int = 10,
-    name: str | None = None,
-    user: Any | None = None,
-    ids: list[int] | None = None,
-    store_types: list[int] | None = None,
-    created_on: date | None = None,
-    created_before: date | None = None,
-    created_after: date | None = None,
-    updated_on: date | None = None,
-    updated_before: date | None = None,
-    updated_after: date | None = None,
-    sort: Literal["name", "created_on", "updated_on"] | None = None,
-    sort_dir: Literal["asc", "desc"] | None = None,
-) -> StorePaginationSchema:
-    """
-    Search for stores based on criteria.
-
-    Args:
-        page (int): The page number.
-        limit (int): The number of stores per page.
-        name (str): Partial or full name of store.
-        user (User): The user that owns the store.
-        ids (list[int]): List of ids to filter from.
-        store_types (list[int]): List of store types to filter from.
-        created_on (date): The date the store was created.
-        created_before (date): Date the store was created before.
-        created_after (date): Date the store was created after.
-        updated_on (date): Date the store was last updated.
-        updated_before (date): Date the store was last updated before.
-        updated_after (date): Date the store was last updated after.
-        sort (str | None): The field to sort by.
-        sort_dir (str | None): The direction to sort in.
-
-    Returns:
-        StorePaginationSchema: The schema result which contains the stores that were searched for.
-    """
-    return await store_repository.filter_stores(
-        page_number=page,
-        stores_per_page=limit,
-        name=name,
-        user=user,
-        store_types=store_types,
-        created_on=created_on,
-        created_before=created_before,
-        created_after=created_after,
-        updated_on=updated_on,
-        updated_before=updated_before,
-        updated_after=updated_after,
-        ids=ids,
-        sort=sort,
-        sort_dir=sort_dir,
-    )
+        store = await self.repo.create_store(name, store_type_value, description, user)
+        return store

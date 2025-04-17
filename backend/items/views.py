@@ -18,7 +18,7 @@ from items.schemas.contexts import (
 from items.schemas.output import ItemSchema
 from items.services.item_service import ItemService
 from shoppingapp.utilities.utils import get_overview_params
-from stores.services import store_service
+from stores.services import tstore_service
 
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
@@ -53,7 +53,7 @@ async def create_page(request: HttpRequest) -> HttpResponse:
     if error:
         logging.warning(f"{user.id} encountered error: {error}")
 
-    stores = await store_service.get_stores(limit=1000)
+    stores = await tstore_service.get_stores(limit=1000)
     context = ItemCreateContext(page_title="Create Item", error=error, stores=stores.stores)
     return render(request, "items/create.html", context.model_dump())
 
@@ -206,7 +206,7 @@ async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
     try:
         item = await SERVICE.get_item_detail(item_id=item_id)
-        stores = await store_service.get_stores(limit=1000)
+        stores = await tstore_service.get_stores(limit=1000)
         context = ItemUpdateContext(
             page_title="Update Item",
             item=ItemSchema.from_orm(item),

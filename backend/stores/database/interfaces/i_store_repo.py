@@ -174,3 +174,15 @@ class IStoreRepo(ABC):
         Returns:
             bool: True if the store exists, False otherwise.
         """
+
+    @abstractmethod
+    async def does_name_exist(self, name: str) -> bool:
+        """
+        Check if a store name exists.
+
+        Args:
+            name (str): The name of the store.
+
+        Returns:
+            bool: True if the store name exists, False otherwise.
+        """

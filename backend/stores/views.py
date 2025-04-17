@@ -20,7 +20,7 @@ from stores.schemas.contexts import (
     StoreOverviewContext,
 )
 from stores.schemas.input import NewStore
-from stores.services import store_service
+from stores.services import tstore_service
 
 log = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
     )
 
     try:
-        store = await store_service.create(new_store, user)
+        store = await tstore_service.create(new_store, user)
         store_id = store.id
         return HttpResponseRedirect(f"{reverse("store_detail_page", args=[store_id])}")
     except (StoreAlreadyExists, InvalidStoreType) as error:
@@ -120,7 +120,7 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
     limit = params.get("limit", 10)
 
     try:
-        store, items = await store_service.get_store_detail_with_items(
+        store, items = await tstore_service.get_store_detail_with_items(
             store_id=store_id, page_number=page, items_per_page=limit
         )
         context = StoreDetailContext(
@@ -154,8 +154,8 @@ async def _get_overview_context(
         (await request.auser(), "Your Stores") if is_personalized else (None, "All Stores")
     )
 
-    pagination = await store_service.get_stores(limit=limit, page_number=page, user=user)
-    aggregation = await store_service.aggregate(user=user)
+    pagination = await tstore_service.get_stores(limit=limit, page_number=page, user=user)
+    aggregation = await tstore_service.aggregate(user=user)
     context = StoreOverviewContext(
         pagination=pagination,
         aggregation=aggregation,
@@ -224,7 +224,7 @@ async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
     """
     try:
         error = request.GET.get("error")
-        store = await store_service.get_store_detail(store_id=store_id)
+        store = await tstore_service.get_store_detail(store_id=store_id)
         context = StoreContext(
             error=error,
             page_title="Update Store",
@@ -260,7 +260,7 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
         formatted_store_type = store_type
 
     try:
-        await store_service.update_store(
+        await tstore_service.update_store(
             store_id=store_id,
             user=user,
             store_name=store_name,
@@ -290,7 +290,7 @@ async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
     """
     try:
         error = request.GET.get("error")
-        store = await store_service.get_store_detail(store_id=store_id)
+        store = await tstore_service.get_store_detail(store_id=store_id)
         context = StoreContext(
             error=error,
             page_title="Delete Store",
@@ -331,5 +331,5 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
         )
 
     user = await request.auser()
-    await store_service.delete_store(store_id=formatted_store_id, user=user)
+    await tstore_service.delete_store(store_id=formatted_store_id, user=user)
     return HttpResponseRedirect("/stores/me")
