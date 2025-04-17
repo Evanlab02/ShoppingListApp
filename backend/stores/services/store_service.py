@@ -88,5 +88,9 @@ class StoreService(IStoreService):
             self.log.warning("Store with this name already exists...")
             raise StoreAlreadyExists(name)
 
-        store = await self.repo.create_store(name, store_type_value, description, user)
-        return store
+        return await self.repo.create_store(
+            name=name,
+            store_type=store_type_value,
+            description=description,
+            user=user,
+        )
