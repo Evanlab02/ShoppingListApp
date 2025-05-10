@@ -7,7 +7,7 @@ from typing import Any, Literal
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.models import ShoppingStore as Store
-from stores.schemas.input import NewStore
+from stores.schemas.input import NewStore, StoreSearch
 from stores.schemas.output import StorePaginationSchema
 
 
@@ -56,6 +56,30 @@ class IStoreService(ABC):
             user (User): User who created the stores.
             sort (str | None): The field to sort by.
             sort_dir (str | None): The direction to sort in.
+
+        Returns:
+            StorePaginationSchema: The stores in a paginated format.
+        """
+
+    @abstractmethod
+    async def search_stores(
+        self,
+        page_number: int = 1,
+        stores_per_page: int = 10,
+        name: str | None = None,
+        user: User | None = None,
+        search: StoreSearch | None = None,
+        sort: Literal["name", "created_on", "updated_on"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> StorePaginationSchema:
+        """
+        Search for stores.
+
+        Args:
+            page_number (int): The page number, defaults to 1.
+            stores_per_page (int): The number of stores per page, defaults to 10.
+            name (str | None): The name of the store.
+            user (User | None): The user who created the stores.
 
         Returns:
             StorePaginationSchema: The stores in a paginated format.
