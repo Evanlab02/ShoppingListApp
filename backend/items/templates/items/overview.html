@@ -85,7 +85,7 @@
                     {% endif %}
 
                     <td><a href="{% url 'item_detail_page' item_id=item.id %}">{{ item.name }}</a></td>
-                    <td><a href="{% url 'store_detail_page' store_id=item.store.id %}">{{ item.store.name }}</a></td>
+                    <td><a href="">{{ item.store.name }}</a></td>
                     <td>{{ item.price }}</td>
                     {% if not is_personal %}
                     <td>{{ item.user.username }}</td>
