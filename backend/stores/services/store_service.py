@@ -181,3 +181,42 @@ class StoreService(IStoreService):
         except Store.DoesNotExist:
             self.log.warning(f"Store with id {store_id} does not exist.")
             raise StoreDoesNotExist(store_id)
+
+    async def update(
+        self,
+        store_id: int,
+        user: User | AnonymousUser | AbstractBaseUser,
+        store_name: str | None = None,
+        store_type: int | str | None = None,
+        store_description: str | None = None,
+    ) -> Store:
+        """
+        Update a store.
+
+        Args:
+            store_id (int): The id of the store.
+            user (User | AbstractBaseUser | AnonymousUser): The user who is updating the store.
+
+        Returns:
+            Store: The updated store.
+        """
+        try:
+            if store_type:
+                store_type = self.__get_store_type(store_type)
+            else:
+                store_type = None
+
+            if store_name and await self.repo.does_name_exist(store_name):
+                self.log.warning("Store with this name already exists...")
+                raise StoreAlreadyExists(store_name)
+
+            return await self.repo.update_store(
+                store_id=store_id,
+                user=user,
+                store_name=store_name,
+                store_type=store_type,
+                store_description=store_description,
+            )
+        except Store.DoesNotExist:
+            self.log.warning(f"Store with id {store_id} does not exist.")
+            raise StoreDoesNotExist(store_id)

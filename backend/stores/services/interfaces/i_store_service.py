@@ -99,3 +99,23 @@ class IStoreService(ABC):
         Raises:
             StoreDoesNotExist: If the store does not exist.
         """
+
+    @abstractmethod
+    async def update(
+        self,
+        store_id: int,
+        user: User | AnonymousUser | AbstractBaseUser,
+        store_name: str | None = None,
+        store_type: int | None = None,
+        store_description: str | None = None,
+    ) -> Store:
+        """
+        Update a store.
+
+        Args:
+            store_id (int): The id of the store.
+            user (User | AbstractBaseUser | AnonymousUser): The user who is updating the store.
+
+        Returns:
+            Store: The updated store.
+        """
