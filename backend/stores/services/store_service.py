@@ -6,7 +6,11 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.constants import STORE_TYPE_MAPPING
 from stores.database.store_repo import StoreRepo
-from stores.errors.exceptions import InvalidStoreType, StoreAlreadyExists
+from stores.errors.exceptions import (
+    InvalidStoreType,
+    StoreAlreadyExists,
+    StoreDoesNotExist,
+)
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
 from stores.schemas.output import StorePaginationSchema
@@ -126,3 +130,22 @@ class StoreService(IStoreService):
             sort,
             sort_dir,
         )
+
+    async def get_store(self, store_id: int) -> Store:
+        """
+        Get the store details.
+
+        Args:
+            store_id (int): The id of the store.
+
+        Returns:
+            Store: The store.
+
+        Raises:
+            StoreDoesNotExist: If the store does not exist.
+        """
+        try:
+            return await self.repo.get_store(store_id)
+        except Store.DoesNotExist:
+            self.log.warning(f"Store with id {store_id} does not exist.")
+            raise StoreDoesNotExist(store_id)

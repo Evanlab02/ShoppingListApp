@@ -60,3 +60,18 @@ class IStoreService(ABC):
         Returns:
             StorePaginationSchema: The stores in a paginated format.
         """
+
+    @abstractmethod
+    async def get_store(self, store_id: int) -> Store:
+        """
+        Get the store detail.
+
+        Args:
+            store_id (int): The id of the store.
+
+        Returns:
+            Store: The store.
+
+        Raises:
+            StoreDoesNotExist: If the store does not exist.
+        """

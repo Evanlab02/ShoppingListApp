@@ -32,8 +32,8 @@ class ShoppingItem(Model):
     price = DecimalField(max_digits=10, decimal_places=2)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
-    store = ForeignKey(Store, on_delete=CASCADE)
-    user = ForeignKey(User, on_delete=CASCADE)
+    store = ForeignKey(Store, on_delete=CASCADE, related_name="items", db_index=True)
+    user = ForeignKey(User, on_delete=CASCADE, db_index=True)
 
     def __str__(self) -> str:
         """Return a string representation of the shopping item."""

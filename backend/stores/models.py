@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 class ShoppingStore(Model):
     """Model for a shopping store."""
 
-    name = CharField(max_length=100, unique=True, db_index=True)
+    name = CharField(max_length=100, unique=True)
     store_type = IntegerField(choices=STORE_TYPE_CHOICES, db_index=True)
     description = TextField(blank=True)
     created_at = DateTimeField(auto_now_add=True)
