@@ -220,3 +220,24 @@ class StoreService(IStoreService):
         except Store.DoesNotExist:
             self.log.warning(f"Store with id {store_id} does not exist.")
             raise StoreDoesNotExist(store_id)
+
+    async def delete(self, store_id: int, user: User | AnonymousUser | AbstractBaseUser) -> None:
+        """
+        Delete a store.
+
+        Args:
+            store_id (int): The id of the store you wish to delete.
+            user (User): The user that owns this store,
+            to prevent users deleting other users stores.
+
+        Returns:
+            None
+
+        Raises:
+            StoreDoesNotExist: If the store does not exist.
+        """
+        try:
+            await self.repo.delete_store(store_id, user)
+        except Store.DoesNotExist:
+            self.log.warning(f"Store with id {store_id} does not exist.")
+            raise StoreDoesNotExist(store_id)

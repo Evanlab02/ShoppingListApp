@@ -119,3 +119,20 @@ class IStoreService(ABC):
         Returns:
             Store: The updated store.
         """
+
+    @abstractmethod
+    async def delete(self, store_id: int, user: User | AnonymousUser | AbstractBaseUser) -> None:
+        """
+        Delete a store.
+
+        Args:
+            store_id (int): The id of the store you wish to delete.
+            user (User): The user that owns this store,
+            to prevent users deleting other users stores.
+
+        Returns:
+            None
+
+        Raises:
+            StoreDoesNotExist: If the store does not exist.
+        """
