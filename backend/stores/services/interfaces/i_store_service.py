@@ -2,11 +2,13 @@
 
 import logging
 from abc import ABC, abstractmethod
+from typing import Any, Literal
 
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
+from stores.schemas.output import StorePaginationSchema
 
 
 class IStoreService(ABC):
@@ -34,4 +36,27 @@ class IStoreService(ABC):
         Raises:
             InvalidStoreType: If the store type is invalid.
             StoreAlreadyExists: If the store already exists.
+        """
+
+    @abstractmethod
+    async def get_stores(
+        self,
+        limit: int = 10,
+        page_number: int = 1,
+        user: Any | None = None,
+        sort: Literal["name", "created_on", "updated_on"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> StorePaginationSchema:
+        """
+        Get the stores.
+
+        Args:
+            limit (int): The limit of stores per page, defaults 10.
+            page_number (int): The page number, defaults to 1.
+            user (User): User who created the stores.
+            sort (str | None): The field to sort by.
+            sort_dir (str | None): The direction to sort in.
+
+        Returns:
+            StorePaginationSchema: The stores in a paginated format.
         """

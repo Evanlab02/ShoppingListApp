@@ -1,5 +1,7 @@
 """Contains the store service."""
 
+from typing import Any, Literal
+
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.constants import STORE_TYPE_MAPPING
@@ -7,6 +9,7 @@ from stores.database.store_repo import StoreRepo
 from stores.errors.exceptions import InvalidStoreType, StoreAlreadyExists
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore
+from stores.schemas.output import StorePaginationSchema
 from stores.services.interfaces.i_store_service import IStoreService
 
 
@@ -93,4 +96,33 @@ class StoreService(IStoreService):
             store_type=store_type_value,
             description=description,
             user=user,
+        )
+
+    async def get_stores(
+        self,
+        limit: int = 10,
+        page_number: int = 1,
+        user: Any | None = None,
+        sort: Literal["name", "created_on", "updated_on"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> StorePaginationSchema:
+        """
+        Get the stores.
+
+        Args:
+            limit (int): The limit of stores per page, defaults 10.
+            page_number (int): The page number, defaults to 1.
+            user (User): User who created the stores.
+            sort (str | None): The field to sort by.
+            sort_dir (str | None): The direction to sort in.
+
+        Returns:
+            StorePaginationSchema: The stores in a paginated format.
+        """
+        return await self.repo.get_stores(
+            page_number,
+            limit,
+            user,
+            sort,
+            sort_dir,
         )
