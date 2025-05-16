@@ -143,7 +143,19 @@ class StoreRepo(IStoreRepo):
         stores = self.__filter(name=name, user=user, search=search, sort=sort, sort_dir=sort_dir)
 
         total = await stores.acount()
-        total_pages = ceil(total / stores_per_page)
+        total_pages = ceil(total / stores_per_page) if total > 0 else 1
+
+        if total == 0:
+            return StorePaginationSchema(
+                stores=[],
+                total=0,
+                page_number=1,
+                total_pages=1,
+                has_previous=False,
+                previous_page=None,
+                has_next=False,
+                next_page=None,
+            )
 
         start = (page_number - 1) * stores_per_page
         end = start + stores_per_page
@@ -285,6 +297,7 @@ class StoreRepo(IStoreRepo):
             store.description = store_description
 
         await store.asave()
+        await store.auser()
         return store
 
     async def delete_store(

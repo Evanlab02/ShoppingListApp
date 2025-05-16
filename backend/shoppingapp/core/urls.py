@@ -42,8 +42,7 @@ from stores.errors.exceptions import (
     StoreAlreadyExists,
     StoreDoesNotExist,
 )
-
-# from stores.routers.store_router import store_router
+from stores.routers.store_router import store_router
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ version = open("../version.txt").read().strip()
 api = NinjaAPI(title="Shopping App API", version=version, urls_namespace="ninja-api")
 api.add_router("/auth", auth_router)
 api.add_router("/token", token_router)
-# api.add_router("/stores", store_router)
+api.add_router("/stores", store_router)
 api.add_router("/items", item_router)
 api.add_router("/dashboard", dashboard_router)
 
@@ -159,7 +158,7 @@ def item_does_not_exist_handler(request: HttpRequest, exception: ItemDoesNotExis
 urlpatterns = [
     path("api/v1/", api.urls),
     path("", include("authentication.urls")),
-    # path("stores/", include("stores.urls")),
+    path("stores/", include("stores.urls")),
     path("items/", include("items.urls")),
     path("dashboard/", include("dashboard.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

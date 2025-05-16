@@ -241,3 +241,17 @@ class StoreService(IStoreService):
         except Store.DoesNotExist:
             self.log.warning(f"Store with id {store_id} does not exist.")
             raise StoreDoesNotExist(store_id)
+
+    async def aggregate(
+        self, user: User | AnonymousUser | AbstractBaseUser | None = None
+    ) -> dict[str, Any]:
+        """
+        Aggregate the stores.
+
+        Args:
+            user (User | AnonymousUser | AbstractBaseUser | None): The user who created the stores.
+
+        Returns:
+            dict[str, Any]: The aggregated stores.
+        """
+        return await self.repo.aggregate(user)  # type: ignore

@@ -91,17 +91,35 @@ DATABASES = {
         "PORT": getenv("SHOPPING_DB_PORT", "5432"),
         "OPTIONS": {
             "pool": {
-                "min_size": 1,
+                "min_size": 5,
                 "max_size": 10,
-            }
+            },
+            "connect_timeout": 10,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
         },
+        "CONN_MAX_AGE": 60,
+        "ATOMIC_REQUESTS": False,
+        "CONN_HEALTH_CHECKS": True,
     }
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{getenv("SHOPPING_REDIS_HOST")}:6379",
+        "LOCATION": f"redis://{getenv('SHOPPING_REDIS_HOST')}:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
+            "RETRY_ON_TIMEOUT": True,
+            "MAX_CONNECTIONS": 1000,
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+        },
+        "KEY_PREFIX": "shopping",
+        "TIMEOUT": 300,  # 5 minutes default timeout
     }
 }
 

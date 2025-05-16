@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from items.tests.factory import ItemFactory
 from shoppingapp.tests.base_router_test_case import BaseRouterTestCase
+from stores.tests.factory import StoreFactory
 
 
 class ItemPatchRouterTestCase(BaseRouterTestCase):
@@ -46,3 +47,61 @@ class ItemPatchRouterTestCase(BaseRouterTestCase):
             headers=self.base_headers,
         )
         self.assertEqual(response.status_code, 401)
+
+    def test_item_patch_store_id(self) -> None:
+        """Test patching an item's store_id."""
+        new_store = StoreFactory.create(user=self.user)
+        response = self.client.patch(
+            self.url,
+            {"store_id": new_store.id},
+            content_type=self.content_type,
+            headers=self.base_headers,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["store"]["id"], new_store.id)
+
+    def test_item_patch_price(self) -> None:
+        """Test patching an item's price."""
+        new_price = 99.99
+        response = self.client.patch(
+            self.url,
+            {"price": new_price},
+            content_type=self.content_type,
+            headers=self.base_headers,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["price"], str(new_price))
+
+    def test_item_patch_description(self) -> None:
+        """Test patching an item's description."""
+        new_description = "Updated description"
+        response = self.client.patch(
+            self.url,
+            {"description": new_description},
+            content_type=self.content_type,
+            headers=self.base_headers,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["description"], new_description)
+
+    def test_item_patch_all_fields(self) -> None:
+        """Test patching all fields of an item at once."""
+        new_store = StoreFactory.create(user=self.user)
+        patch_data = {
+            "store_id": new_store.id,
+            "name": "Updated Name",
+            "price": 149.99,
+            "description": "Updated description for all fields",
+        }
+        response = self.client.patch(
+            self.url,
+            patch_data,
+            content_type=self.content_type,
+            headers=self.base_headers,
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(response_data["store"]["id"], new_store.id)
+        self.assertEqual(response_data["name"], "Updated Name")
+        self.assertEqual(response_data["price"], "149.99")
+        self.assertEqual(response_data["description"], "Updated description for all fields")

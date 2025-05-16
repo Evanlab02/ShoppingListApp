@@ -205,30 +205,38 @@ class ItemService(IItemService):
         """
         try:
             item = await self.repo.get_item_for_user(item_id=item_id, user=user)
-            store = new_store_id if new_store_id else item.store.id
-            name = new_name if new_name else item.name
-            item_exists = await self.repo.does_item_exist(name=name, store_id=store)
-            store_exists = await self.store_repo.does_store_exist(store_id=store)
+
+            name = item.name
+            store = item.store.id
+
+            updating_name = False
+            updating_store = False
+
+            if new_name:
+                updating_name = True
+                name = new_name
+
+            if new_store_id:
+                updating_store = True
+                store = new_store_id
+
+            if updating_store and not await self.store_repo.does_store_exist(store_id=store):
+                raise StoreDoesNotExist(store_id=store)
+
+            if (updating_name or updating_store) and await self.repo.does_item_exist(
+                name=name, store_id=store
+            ):
+                raise ItemAlreadyExists(item_name=name, store_name=str(store))
+
+            return await self.repo.update_item(
+                item=item,
+                name=name,
+                price=new_price,
+                description=new_description,
+                store=store,
+            )
         except Item.DoesNotExist:
             raise ItemDoesNotExist(item_id=item_id)
-
-        store = new_store_id if new_store_id else item.store.id
-        name = new_name if new_name else item.name
-
-        item_exists = await self.repo.does_item_exist(name=name, store_id=store)
-        if item_exists:
-            raise ItemAlreadyExists(item_name=name, store_name=str(store))
-
-        if not store_exists:
-            raise StoreDoesNotExist(store_id=store)
-
-        return await self.repo.update_item(
-            item=item,
-            name=name,
-            price=new_price,
-            description=new_description,
-            store=store,
-        )
 
     async def delete_item(
         self,
