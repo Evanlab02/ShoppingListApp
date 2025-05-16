@@ -4,6 +4,13 @@ static:
 	@export SHOPPING_DEV=1 && \
 	rm -rf static/ && \
 	python manage.py collectstatic --no-input
+	@npx @tailwindcss/cli -i ./styles/tailwind.css -o ./static/tailwind.css
+
+static-watch:
+	@export SHOPPING_DEV=1 && \
+	rm -rf static/ && \
+	python manage.py collectstatic --no-input
+	@npx @tailwindcss/cli -i ./styles/tailwind.css -o ./static/tailwind.css --watch
 
 clean:
 	@rm -rf .mypy_cache \

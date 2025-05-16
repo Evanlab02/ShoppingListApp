@@ -33,13 +33,11 @@ ALLOWED_HOSTS = [
 ]
 
 # Application definition
-
 INSTALLED_APPS = [
     "authentication.apps.AuthenticationConfig",
     "items.apps.ItemsConfig",
     "stores.apps.StoresConfig",
     "dashboard.apps.DashboardConfig",
-    "django_vite",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -100,14 +98,7 @@ DATABASES = {
                 "min_size": 5,
                 "max_size": 10,
             },
-            "connect_timeout": 10,
-            "keepalives": 1,
-            "keepalives_idle": 30,
-            "keepalives_interval": 10,
-            "keepalives_count": 5,
         },
-        "ATOMIC_REQUESTS": False,
-        "CONN_HEALTH_CHECKS": True,
     }
 }
 
@@ -244,14 +235,3 @@ FORCED_LEGACY_HASHERS = [
 FORCE_LEGACY_HASHING = getenv("SHOPPING_FORCE_LEGACY_HASHING", "0")
 if FORCE_LEGACY_HASHING == "1":
     PASSWORD_HASHERS = FORCED_LEGACY_HASHERS
-
-DJANGO_VITE = {
-    "default": {
-        "dev_mode": SHOPPING_DEV == 1,
-        "manifest_path": f"{STATIC_URL}dashboard/manifest.json",
-        "static_url_prefix": "dashboard",
-        "dev_server_host": "localhost",
-        "dev_server_port": 5173,
-        "dev_server_protocol": "http",
-    }
-}
