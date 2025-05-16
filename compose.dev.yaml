@@ -107,37 +107,6 @@ services:
           cpus: '1.0'
           memory: 1024M
 
-  dev-shopping-django-fe:
-    container_name: shopping-django-fe-dev
-    build:
-      context: .
-      dockerfile: docker/frontend/dev/Dockerfile
-    env_file:
-      - .env.dev
-    networks:
-      - dev-postgres-django-network
-    ports:
-      - "5173:5173"
-    develop:
-      watch:
-        - action: sync+restart
-          path: ./frontend/vite.config.ts
-          target: /app/vite.config.ts
-        - action: rebuild
-          path: ./frontend/package.json
-          target: /app/package.json
-        - action: rebuild
-          path: ./frontend/package-lock.json
-          target: /app/package-lock.json
-        - action: sync
-          path: ./frontend/src/
-          target: /app/src/
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1024M
-
   dev-shopping-django-site:
     container_name: shopping-django-site
     restart: always
