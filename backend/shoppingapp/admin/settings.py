@@ -3,8 +3,3 @@
 from shoppingapp.core.settings import *  # noqa: F403 F401
 
 ROOT_URLCONF = "shoppingapp.admin.urls"
-
-INSTALLED_APPS += [  # noqa: F405
-    "django.contrib.admindocs",
-    "django.contrib.admin",
-]

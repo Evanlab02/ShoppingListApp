@@ -1,8 +1,9 @@
 .PHONY: static clean format lint test coverage unit-test api-test e2e-test requirements
 
 static:
-	@rm -rf static/
-	@python manage.py collectstatic --no-input
+	@export SHOPPING_DEV=1 && \
+	rm -rf static/ && \
+	python manage.py collectstatic --no-input
 
 clean:
 	@rm -rf .mypy_cache \

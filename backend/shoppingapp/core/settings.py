@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.admindocs",
+    "django.contrib.admin",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if SHOPPING_DEV == 1:
+    INSTALLED_APPS.append("silk")
+    MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
 
 ROOT_URLCONF = "shoppingapp.core.urls"
 
@@ -100,7 +106,6 @@ DATABASES = {
             "keepalives_interval": 10,
             "keepalives_count": 5,
         },
-        "CONN_MAX_AGE": 60,
         "ATOMIC_REQUESTS": False,
         "CONN_HEALTH_CHECKS": True,
     }

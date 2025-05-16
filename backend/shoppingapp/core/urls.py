@@ -162,3 +162,6 @@ urlpatterns = [
     path("items/", include("items.urls")),
     path("dashboard/", include("dashboard.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.SHOPPING_DEV == 1:
+    urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
