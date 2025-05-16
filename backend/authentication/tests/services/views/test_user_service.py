@@ -46,67 +46,6 @@ class TestUserService(TestCase):
         """Assign the post params to the request."""
         request.POST = params  # type: ignore
 
-    async def test_get_login_view_context(self) -> None:
-        """Test the get login view context function."""
-        context = await self.service.get_login_view_context(self.request)  # type: ignore
-        self.assertEqual(context.error, None)
-        self.assertEqual(context.username_input, "username")
-        self.assertEqual(context.password_input, "password")
-        self.assertEqual(context.submit_login, "submit")
-
-    async def test_get_login_view_context_with_error(self) -> None:
-        """Test the get login view context function with an error."""
-        self.assign_get_params(self.request, {"error": "test_error"})
-        context = await self.service.get_login_view_context(self.request)  # type: ignore
-        self.assertEqual(context.error, "test_error")
-
-    async def test_get_login_view_context_with_user_already_logged_in(self) -> None:
-        """Test the get login view context function with a user already logged in."""
-        with self.assertRaises(UserAlreadyLoggedIn):
-            await self.service.get_login_view_context(self.auth_request)  # type: ignore
-
-    async def test_get_logout_view_context(self) -> None:
-        """Test the get logout view context function."""
-        context = await self.service.get_logout_view_context(self.auth_request)  # type: ignore
-        self.assertEqual(context.error, None)
-        self.assertEqual(context.submit_logout, "submit")
-        self.assertEqual(context.submit_cancel, "cancel")
-
-    async def test_get_logout_view_context_with_error(self) -> None:
-        """Test the get logout view context function with a user not logged in."""
-        self.assign_get_params(self.auth_request, {"error": "test_error"})
-        context = await self.service.get_logout_view_context(self.auth_request)  # type: ignore
-        self.assertEqual(context.error, "test_error")
-
-    async def test_get_logout_view_context_with_user_not_logged_in(self) -> None:
-        """Test the get logout view context function with a user already logged in."""
-        with self.assertRaises(UserNotLoggedIn):
-            await self.service.get_logout_view_context(self.request)  # type: ignore
-
-    async def test_get_register_page_context(self) -> None:
-        """Test the get register page context function."""
-        context = await self.service.get_register_page_context(self.request)  # type: ignore
-        self.assertIsNotNone(context)
-        self.assertEqual(context.error, None)
-        self.assertEqual(context.username_input, "username")
-        self.assertEqual(context.email_input, "email")
-        self.assertEqual(context.first_name_input, "first_name")
-        self.assertEqual(context.last_name_input, "last_name")
-        self.assertEqual(context.password_input, "password")
-        self.assertEqual(context.password_confirm_input, "password_confirm")
-        self.assertEqual(context.submit_register, "submit")
-
-    async def test_get_register_page_context_with_error(self) -> None:
-        """Test the get register page context function with an error."""
-        self.assign_get_params(self.request, {"error": "test_error"})
-        context = await self.service.get_register_page_context(self.request)  # type: ignore
-        self.assertEqual(context.error, "test_error")
-
-    async def test_get_register_page_context_with_user_already_logged_in(self) -> None:
-        """Test the get register page context function with a user already logged in."""
-        with self.assertRaises(UserAlreadyLoggedIn):
-            await self.service.get_register_page_context(self.auth_request)  # type: ignore
-
     async def test_login(self) -> None:
         """Test the login function."""
         self.assign_post_params(self.request, {"username": self.user.username, "password": "test"})

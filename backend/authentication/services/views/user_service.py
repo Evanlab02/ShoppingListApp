@@ -73,16 +73,17 @@ class UserService(IUserService):
             self.log.warning("Attempting to register while logged in.")
             raise UserAlreadyLoggedIn()
 
+        username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
         password_confirm = request.POST.get("password_confirm")
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
 
-        if not email or not first_name or not last_name or not password:
+        if not username or not email or not first_name or not last_name or not password:
             self.log.warning("Invalid user details.")
             raise InvalidUserDetails()
-        elif await self.repo.does_username_exist(email):
+        elif await self.repo.does_username_exist(username):
             self.log.warning("Invalid username.")
             raise UsernameAlreadyExists()
         elif await self.repo.does_email_exist(email):
@@ -92,4 +93,4 @@ class UserService(IUserService):
             self.log.warning("Passwords do not match.")
             raise NonMatchingCredentials()
 
-        await self.repo.create_user(email, password, first_name, last_name, email)
+        await self.repo.create_user(username, password, first_name, last_name, email)
