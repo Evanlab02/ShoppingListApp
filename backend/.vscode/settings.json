@@ -18,7 +18,8 @@
         ".coverage": true,
         "htmlcov": true,
         "coverage.xml": true,
-        "debug.log": true
+        "debug.log": true,
+        "node_modules": true
     },
     "mypy-type-checker.severity": {
         "error": "Error",
