@@ -26,7 +26,7 @@ class TestStoreServiceAggregate(TestCase):
 
         # Create a store with a different user
         results = await self.service.aggregate(user=self.user)
-        self.assertEqual(results["online_stores"], expected_online_stores)
-        self.assertEqual(results["in_store_stores"], expected_in_store_stores)
-        self.assertEqual(results["combined_stores"], expected_combined_stores)
-        self.assertEqual(results["total_stores"], expected_total_stores)
+        self.assertEqual(results.online_stores, expected_online_stores)
+        self.assertEqual(results.in_store_stores, expected_in_store_stores)
+        self.assertEqual(results.combined_stores, expected_combined_stores)
+        self.assertEqual(results.total_stores, expected_total_stores)
