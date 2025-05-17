@@ -22,7 +22,7 @@ from stores.schemas.contexts import (
     StoreOverviewContext,
 )
 from stores.schemas.input import NewStore
-from stores.schemas.output import StoreAggregationSchema, StoreSchema
+from stores.schemas.output import StoreSchema
 from stores.services.store_service import StoreService
 
 log = logging.getLogger(__name__)
@@ -168,10 +168,9 @@ async def _get_overview_context(
 
     pagination = await SERVICE.get_stores(limit=limit, page_number=page, user=user)
     aggregation = await SERVICE.aggregate(user=user)
-    aggregation_schema = StoreAggregationSchema(**aggregation)
     return StoreOverviewContext(
         pagination=pagination,
-        aggregation=aggregation_schema,
+        aggregation=aggregation,
         page_title=page_title,
         is_overview=True,
         is_personal=is_personalized,

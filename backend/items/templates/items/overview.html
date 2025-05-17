@@ -2,115 +2,166 @@
 
 {% block static %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'base/overview.css' %}">
-<link rel="stylesheet" href="{% static 'base/cards.css' %}">
-<link rel="stylesheet" href="{% static 'base/table.css' %}">
 {% endblock %}
 
 {% block content %}
-<div 
-    class="content-wrapper" 
-    id="content-wrapper"
-    data-update-url="{% url 'item_update_page' item_id=0 %}"
-    data-delete-url="{% url 'item_delete_page' item_id=0 %}"
->
-    <div class="card-wrapper">
-        <div class="mini-card total-card">
-            <div class="mini-card-icon total-card-icon">
-                <sl-icon name="bag" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Total items</p>
-                <p id="total-items-sub-value" class="sub-value">{{ aggregation.total_items }}</p>
-            </div>
+<div class="container mx-auto p-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#f3e8ff] shadow">
+            <i class="fas fa-shopping-bag text-3xl text-[#602786] mb-2"></i>
+            <div class="text-sm text-gray-500">Total Items</div>
+            <div class="text-2xl font-bold">{{ aggregation.total_items }}</div>
         </div>
-        <div class="mini-card total-price-card">
-            <div class="mini-card-icon total-price-icon">
-                <sl-icon name="wallet2" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Total price of items</p>
-                <p id="total-price-sub-value" class="sub-value">{{ aggregation.total_price}}</p>
-            </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#e3f2fd] shadow">
+            <i class="fas fa-wallet text-3xl text-[#3b5fe2] mb-2"></i>
+            <div class="text-sm text-gray-500">Total Price</div>
+            <div class="text-2xl font-bold">{{ aggregation.total_price }}</div>
         </div>
-        <div class="mini-card average-price-card">
-            <div class="mini-card-icon average-price-card-icon">
-                <sl-icon name="cash-stack" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Average price of items</p>
-                <p id="average-price-sub-value" class="sub-value">{{ aggregation.average_price }}</p>
-            </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#fff3cd] shadow">
+            <i class="fas fa-dollar-sign text-3xl text-[#FFC107] mb-2"></i>
+            <div class="text-sm text-gray-500">Average Price</div>
+            <div class="text-2xl font-bold">{{ aggregation.average_price }}</div>
         </div>
     </div>
-    <div class="table-wrapper">
-        <table class="overview-table">
-            <caption>{{ table_caption }}</caption>
-            <thead>
-                <tr>
-                    {% if is_personal %}
-                    <th class="options-header">Options</th>
-                    {% endif %}
-                    <th>Name</th>
-                    <th>Store</th>
-                    <th>Price</th>
-                    {% if not is_personal %}
-                    <th>Owner</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in pagination.items %}
-                <tr class="item-table-row">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title mb-4">{{ table_caption }}</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            {% if is_personal %}
+                            <th class="w-24">Options</th>
+                            {% endif %}
+                            <th>Name</th>
+                            <th>Store</th>
+                            <th>Price</th>
+                            {% if not is_personal %}
+                            <th>Owner</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in pagination.items %}
+                        <tr>
+                            {% if is_personal %}
+                            <td>
+                                <div class="flex gap-2">
+                                    <a href="{% url 'item_update_page' item_id=item.id %}" class="btn btn-ghost btn-sm hover:bg-[#602786] hover:text-white">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="{% url 'item_delete_page' item_id=item.id %}" class="btn btn-ghost btn-sm hover:bg-[#602786] hover:text-white">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
 
-                    {% if is_personal %}
-                    <td class="alt-menu-wrapper">
-                        <div class="menu-list-button alt-menu-button">
-                            <a href="{% url 'item_update_page' item_id=item.id %}">
-                                <sl-icon-button 
-                                    id="edit-item-{{ item.id }}"
-                                    name="pencil"
-                                />
-                            </a>
-                        </div>
-                        <div class="menu-list-button alt-menu-button">
-                            <a href="{% url 'item_delete_page' item_id=item.id %}">
-                                <sl-icon-button 
-                                id="delete-item-{{ item.id }}"
-                                    name="trash"
-                                />
-                            </a>
-                        </div>
-                    </td>
-                    {% endif %}
+                            <td>
+                                <a href="{% url 'item_detail_page' item_id=item.id %}" class="text-[#602786] hover:text-[#3b5fe2] font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-0.5 after:bg-[#3b5fe2] after:transition-all after:duration-300">
+                                    {{ item.name }}
+                                </a>
+                            </td>
 
-                    <td><a href="{% url 'item_detail_page' item_id=item.id %}">{{ item.name }}</a></td>
-                    <td><a href="">{{ item.store.name }}</a></td>
-                    <td>{{ item.price }}</td>
-                    {% if not is_personal %}
-                    <td>{{ item.user.username }}</td>
+                            <td>
+                                <a href="{% url 'store_detail_page' item.store.id %}" class="text-[#602786] hover:text-[#3b5fe2] font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-0.5 after:bg-[#3b5fe2] after:transition-all after:duration-300">
+                                    {{ item.store.name }}
+                                </a>
+                            </td>
+
+                            <td>{{ item.price }}</td>
+
+                            {% if not is_personal %}
+                            <td>{{ item.user.username }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if pagination.total_pages > 1 %}
+            <div class="flex justify-center items-center gap-2 mt-6">
+                {% if pagination.has_previous %}
+                <a href="?page=1" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+                <a href="?page={{ pagination.previous_page }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+                {% else %}
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                {% endif %}
+
+                <div class="flex items-center gap-1">
+                    {% if pagination.total_pages <= 7 %}
+                        {% with ''|center:pagination.total_pages as range %}
+                        {% for _ in range %}
+                            {% with forloop.counter as i %}
+                            {% if i == pagination.page_number %}
+                            <span class="btn btn-sm bg-[#602786] text-white border-[#602786]">{{ i }}</span>
+                            {% else %}
+                            <a href="?page={{ i }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">{{ i }}</a>
+                            {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                        {% endwith %}
+                    {% else %}
+                        {% if pagination.page_number > 3 %}
+                            <a href="?page=1" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">1</a>
+                            {% if pagination.page_number > 4 %}
+                                <span class="btn btn-sm btn-ghost">...</span>
+                            {% endif %}
+                        {% endif %}
+
+                        {% with ''|center:5 as range %}
+                        {% for _ in range %}
+                            {% with forloop.counter as i %}
+                                {% with pagination.page_number|add:"-3"|add:i as page_num %}
+                                {% if page_num > 0 and page_num <= pagination.total_pages %}
+                                    {% if page_num == pagination.page_number %}
+                                    <span class="btn btn-sm bg-[#602786] text-white border-[#602786]">{{ page_num }}</span>
+                                    {% else %}
+                                    <a href="?page={{ page_num }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">{{ page_num }}</a>
+                                    {% endif %}
+                                {% endif %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
+                        {% endwith %}
+
+                        {% if pagination.page_number < pagination.total_pages|add:"-2" %}
+                            {% if pagination.page_number < pagination.total_pages|add:"-3" %}
+                                <span class="btn btn-sm btn-ghost">...</span>
+                            {% endif %}
+                            <a href="?page={{ pagination.total_pages }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">{{ pagination.total_pages }}</a>
+                        {% endif %}
                     {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="pagination">
-        <span class="step-links">
-            {% if pagination.has_previous %}
-            <a href="?page=1">&laquo; First</a>
-            <a href="?page={{ pagination.previous_page }}">Previous</a>
+                </div>
+
+                {% if pagination.has_next %}
+                <a href="?page={{ pagination.next_page }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+                <a href="?page={{ pagination.total_pages }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+                {% else %}
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+                {% endif %}
+            </div>
             {% endif %}
-
-            <span class="current">
-                Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
-            </span>
-
-            {% if pagination.has_next %}
-            <a href="?page={{ pagination.next_page }}">next</a>
-            <a href="?page={{ pagination.total_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
+        </div>
     </div>
 </div>
 {% endblock %}

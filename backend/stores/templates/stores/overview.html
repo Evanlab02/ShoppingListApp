@@ -2,123 +2,170 @@
 
 {% block static %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'base/overview.css' %}">
-<link rel="stylesheet" href="{% static 'base/cards.css' %}">
-<link rel="stylesheet" href="{% static 'base/table.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
-    <div class="card-wrapper">
-        <div class="mini-card total-card">
-            <div class="mini-card-icon total-card-icon">
-                <sl-icon name="shop-window" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Total stores</p>
-                <p id="total-items-sub-value" class="sub-value">{{ aggregation.total_stores }}</p>
-            </div>
+<div class="container mx-auto p-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#f3e8ff] shadow">
+            <i class="fas fa-store text-3xl text-[#602786] mb-2"></i>
+            <div class="text-sm text-gray-500">Total Stores</div>
+            <div class="text-2xl font-bold">{{ aggregation.total_stores }}</div>
         </div>
-        <div class="mini-card total-in-stores-card">
-            <div class="mini-card-icon total-in-stores-icon">
-                <sl-icon name="cart4" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Total in-store stores</p>
-                <p id="total-in-stores-sub-value" class="sub-value">
-                    {{ aggregation.in_store_stores }} ({{aggregation.combined_in_store_stores }})
-                </p>
-            </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#e3f2fd] shadow">
+            <i class="fas fa-shopping-cart text-3xl text-[#3b5fe2] mb-2"></i>
+            <div class="text-sm text-gray-500">Total In-Store Stores</div>
+            <div class="text-2xl font-bold">{{ aggregation.in_store_stores }} ({{aggregation.combined_in_store_stores }})</div>
         </div>
-        <div class="mini-card total-online-stores-card">
-            <div class="mini-card-icon total-online-stores-icon">
-                <sl-icon name="browser-chrome" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Total online stores</p>
-                <p id="total-online-stores-sub-value" class="sub-value">
-                    {{ aggregation.online_stores }} ({{aggregation.combined_online_stores }})
-                </p>
-            </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#fff3cd] shadow">
+            <i class="fas fa-globe text-3xl text-[#FFC107] mb-2"></i>
+            <div class="text-sm text-gray-500">Total Online Stores</div>
+            <div class="text-2xl font-bold">{{ aggregation.online_stores }} ({{aggregation.combined_online_stores }})</div>
         </div>
     </div>
-    <div class="table-wrapper">
-        <table class="overview-table">
-            <caption>{{ page_title }}</caption>
-            <thead>
-                <tr>
-                    {% if is_personal %}
-                    <th class="options-header">Options</th>
-                    {% endif %}
-                    <th>Name</th>
-                    <th>Store Type</th>
-                    <th>Description</th>
-                    {% if not is_personal %}
-                    <th>Owner</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for store in pagination.stores %}
-                <tr class="store-table-row">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title mb-4">{{ page_title }}</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            {% if is_personal %}
+                            <th class="w-24">Options</th>
+                            {% endif %}
+                            <th>Name</th>
+                            <th>Store Type</th>
+                            <th>Description</th>
+                            {% if not is_personal %}
+                            <th>Owner</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for store in pagination.stores %}
+                        <tr>
+                            {% if is_personal %}
+                            <td class="p-0">
+                                <div class="flex">
+                                    <a href="{% url 'store_update_page' store.id %}" class="btn btn-ghost btn-sm hover:bg-[#602786] hover:text-white">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="{% url 'store_delete_page' store.id %}" class="btn btn-ghost btn-sm hover:bg-[#602786] hover:text-white">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
 
-                    {% if is_personal %}
-                    <td class="alt-menu-wrapper">
-                        <div class="menu-list-button alt-menu-button">
-                            <sl-icon-button name="pencil"
-                                onclick="window.location.href='/stores/update/{{ store.id }}'" 
-                                onkeypress="window.location.href='/stores/update/{{ store.id }}'"
-                            />
-                        </div>
-                        <div class="menu-list-button alt-menu-button">
-                            <sl-icon-button name="trash"
-                                onclick="window.location.href='/stores/delete/{{ store.id }}'" 
-                                onkeypress="window.location.href='/stores/delete/{{ store.id }}'"  
-                            />
-                        </div>
-                    </td>
-                    {% endif %}
+                            <td>
+                                <a href="{% url 'store_detail_page' store.id %}" class="text-[#602786] hover:text-[#3b5fe2] font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-0.5 after:bg-[#3b5fe2] after:transition-all after:duration-300">
+                                    {{ store.name }}
+                                </a>
+                            </td>
 
-                    <td><a href="/stores/detail/{{ store.id }}">{{ store.name }}</a></td>
+                            <td>
+                                {% if store.store_type == 1 %}
+                                <span class="badge badge-primary">Online</span>
+                                {% elif store.store_type == 2 %}
+                                <span class="badge badge-secondary">In-Store</span>
+                                {% else %}
+                                <span class="badge badge-accent">Online & In-Store</span>
+                                {% endif %}
+                            </td>
 
-                    {% if store.store_type == 1 %}
-                    <td>Online</td>
-                    {% elif store.store_type == 2 %}
-                    <td>In-Store</td>
+                            <td>{{ store.description|default:"" }}</td>
+
+                            {% if not is_personal %}
+                            <td>{{ store.user.username }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if pagination.total_pages > 1 %}
+            <div class="flex justify-center items-center gap-2 mt-6">
+                {% if pagination.has_previous %}
+                <a href="?page=1" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+                <a href="?page={{ pagination.previous_page }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+                {% else %}
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                {% endif %}
+
+                <div class="flex items-center gap-1">
+                    {% if pagination.total_pages <= 7 %}
+                        {% with ''|center:pagination.total_pages as range %}
+                        {% for _ in range %}
+                            {% with forloop.counter as i %}
+                            {% if i == pagination.page_number %}
+                            <span class="btn btn-sm bg-[#602786] text-white border-[#602786]">{{ i }}</span>
+                            {% else %}
+                            <a href="?page={{ i }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">{{ i }}</a>
+                            {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                        {% endwith %}
                     {% else %}
-                    <td>Online & In-Store</td>
-                    {% endif %}
+                        {% if pagination.page_number > 3 %}
+                            <a href="?page=1" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">1</a>
+                            {% if pagination.page_number > 4 %}
+                                <span class="btn btn-sm btn-ghost">...</span>
+                            {% endif %}
+                        {% endif %}
 
-                    {% if store.description %}
-                    <td>{{ store.description }}</td>
-                    {% else %}
-                    <td>No description</td>
-                    {% endif %}
+                        {% with ''|center:5 as range %}
+                        {% for _ in range %}
+                            {% with forloop.counter as i %}
+                                {% with pagination.page_number|add:"-3"|add:i as page_num %}
+                                {% if page_num > 0 and page_num <= pagination.total_pages %}
+                                    {% if page_num == pagination.page_number %}
+                                    <span class="btn btn-sm bg-[#602786] text-white border-[#602786]">{{ page_num }}</span>
+                                    {% else %}
+                                    <a href="?page={{ page_num }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">{{ page_num }}</a>
+                                    {% endif %}
+                                {% endif %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
+                        {% endwith %}
 
-                    {% if not is_personal %}
-                    <td>{{ store.user.username }}</td>
+                        {% if pagination.page_number < pagination.total_pages|add:"-2" %}
+                            {% if pagination.page_number < pagination.total_pages|add:"-3" %}
+                                <span class="btn btn-sm btn-ghost">...</span>
+                            {% endif %}
+                            <a href="?page={{ pagination.total_pages }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">{{ pagination.total_pages }}</a>
+                        {% endif %}
                     {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="pagination">
-        <span class="step-links">
-            {% if pagination.has_previous %}
-            <a href="?page=1">&laquo; First</a>
-            <a href="?page={{ pagination.previous_page }}">Previous</a>
+                </div>
+
+                {% if pagination.has_next %}
+                <a href="?page={{ pagination.next_page }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+                <a href="?page={{ pagination.total_pages }}" class="btn btn-sm btn-outline hover:bg-[#602786] hover:text-white hover:border-[#602786]">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+                {% else %}
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                <button disabled class="btn btn-sm btn-outline opacity-50 cursor-not-allowed">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+                {% endif %}
+            </div>
             {% endif %}
-
-            <span class="current">
-                Page {{ pagination.page_number }} of {{ pagination.total_pages }}.
-            </span>
-
-            {% if pagination.has_next %}
-            <a href="?page={{ pagination.next_page }}">next</a>
-            <a href="?page={{ pagination.total_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
+        </div>
     </div>
 </div>
 {% endblock %}

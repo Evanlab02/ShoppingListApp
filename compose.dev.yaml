@@ -99,6 +99,9 @@ services:
         - action: sync+restart
           path: ./backend/shoppingapp
           target: /backend/shoppingapp
+        - action: sync+restart
+          path: ./backend/dashboard
+          target: /backend/dashboard
         - action: rebuild
           path: ./backend/requirements.txt
     deploy:

@@ -2,67 +2,52 @@
 
 {% block static %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'base/detail.css' %}">
-<link rel="stylesheet" href="{% static 'base/cards.css' %}">
-<link rel="stylesheet" href="{% static 'base/table.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper-soft">
-    <div class="card-wrapper">
-        <div class="mini-card name-card">
-            <div class="mini-card-icon name-card-icon">
-                <sl-icon name="bag" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Item Name</p>
-                <p id="item-name-sub-value" class="sub-value">{{ item.name }}</p>
-            </div>
+<div class="container mx-auto p-4">
+    <div class="flex justify-end mb-4">
+        <a href="{% url 'item_update_page' item.id %}" class="btn btn-primary mr-2">
+            <i class="fas fa-edit mr-2"></i>Edit Item
+        </a>
+        <a href="{% url 'item_delete_page' item.id %}" class="btn btn-error">
+            <i class="fas fa-trash mr-2"></i>Delete Item
+        </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#f3e8ff] shadow">
+            <i class="fas fa-bag-shopping text-3xl text-[#602786] mb-2"></i>
+            <div class="text-sm text-gray-500">Item Name</div>
+            <div class="font-semibold">{{ item.name }}</div>
         </div>
-        <div class="mini-card store-card">
-            <div class="mini-card-icon store-card-icon">
-                <sl-icon name="shop" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Store</p>
-                <p id="item-store-sub-value" class="sub-value">{{ item.store.name }}</p>
-            </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#e3f2fd] shadow">
+            <i class="fas fa-store text-3xl text-[#3b5fe2] mb-2"></i>
+            <div class="text-sm text-gray-500">Store</div>
+            <div class="font-semibold">{{ item.store.name }}</div>
         </div>
-        <div class="mini-card price-card">
-            <div class="mini-card-icon price-card-icon">
-                <sl-icon name="cash-stack" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Price</p>
-                <p id="item-price-sub-value" class="sub-value">{{ item.price }}</p>
-            </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#ede7f6] shadow">
+            <i class="fas fa-dollar-sign text-3xl text-[#602786] mb-2"></i>
+            <div class="text-sm text-gray-500">Price</div>
+            <div class="font-semibold">{{ item.price }}</div>
+        </div>
+        <div class="rounded-lg p-4 flex flex-col items-center bg-[#fff3cd] shadow">
+            <i class="fas fa-user-circle text-3xl text-[#FFC107] mb-2"></i>
+            <div class="text-sm text-gray-500">Created By</div>
+            <div class="font-semibold">{{ item.user.username }}</div>
         </div>
     </div>
-    <div class="card-wrapper">
-        <div class="mini-card number-of-lists-card">
-            <div class="mini-card-icon number-of-lists-card-icon">
-                <sl-icon name="card-checklist" />
-            </div>
-            <div class="mini-card-content">
-                <p id="item-related-lists" class="value">COMING SOON</p>
-            </div>
-        </div>
-        <div class="mini-card user-card">
-            <div class="mini-card-icon user-card-icon">
-                <sl-icon name="person-circle" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Created by</p>
-                <p id="user-sub-value" class="sub-value">{{ item.user.username }}</p>
-            </div>
-        </div>
-        <div class="mini-card last-updated-card">
-            <div class="mini-card-icon last-updated-card-icon">
-                <sl-icon name="clock" />
-            </div>
-            <div class="mini-card-content">
-                <p class="value">Last updated</p>
-                <p id="last-updated-sub-value" class="sub-value">{{ item.updated_at }} UTC</p>
+    <div class="rounded-lg p-4 flex flex-col items-center bg-[#e0f7fa] shadow mb-8">
+        <i class="fas fa-clock-rotate-left text-3xl text-[#3b5fe2] mb-2"></i>
+        <div class="text-sm text-gray-500">Last Updated</div>
+        <div class="font-semibold">{{ item.updated_at }} UTC</div>
+    </div>
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Your Shopping Lists</h2>
+            <div class="text-center text-gray-500">
+                <i class="fas fa-lock text-2xl mb-2"></i>
+                <p>COMING SOON</p>
+                <p>Your shopping lists containing this item will appear here</p>
             </div>
         </div>
     </div>

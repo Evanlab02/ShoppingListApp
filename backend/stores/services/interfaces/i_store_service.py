@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore, StoreSearch
-from stores.schemas.output import StorePaginationSchema
+from stores.schemas.output import StoreAggregationSchema, StorePaginationSchema
 
 
 class IStoreService(ABC):
@@ -135,4 +135,18 @@ class IStoreService(ABC):
 
         Raises:
             StoreDoesNotExist: If the store does not exist.
+        """
+
+    @abstractmethod
+    async def aggregate(
+        self, user: User | AnonymousUser | AbstractBaseUser | None = None
+    ) -> StoreAggregationSchema:
+        """
+        Aggregate the stores.
+
+        Args:
+            user (User | AnonymousUser | AbstractBaseUser | None): The user who created the stores.
+
+        Returns:
+            dict[str, Any]: The aggregated stores.
         """

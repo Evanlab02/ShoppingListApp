@@ -2,61 +2,73 @@
 
 {% block static %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'base/form.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
-    <div class="form-wrapper">
-        <div class="form-top update-top">
-            <h2 id="form-heading">Update Item</h2>
-        </div>
-        {% if error %}
-        <div class="form-middle">
-            <p id="form-error" class="error-message">{{ error }}</p>
-        </div>
-        {% endif %}
-        <form class="form-bottom" method="post" action="{% url 'item_update_action' %}">
-            {% csrf_token %}
-            <fieldset>
-                <div class="form-row">
-                    <legend>Item Details</legend>
-                </div>
-                <input type="hidden" name="item-id" value="{{ item.id }}">
-                <div class="form-row">
-                    <label for="item-input">Item:</label>
-                    <input class="text-input" type="text" name="item-input" id="item-input"
-                        placeholder="{{ item.name }}">
-                </div>
-                <div class="form-row">
-                    <label for="store-input">Store:</label>
-                    <select class="text-input" name="store-input" id="store-input">
-                        {% for store in stores %}
-                        <option value="{{store.id}}">{{store.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label for="price-input">Price:</label>
-                    <input class="text-input" type="number" name="price-input" id="price-input" placeholder="{{ item.price }}">
-                </div>
-                <div class="form-row">
-                    <label for="description-input">Description:</label>
-                    <input class="text-input" type="text" name="description-input" id="description-input"
-                        placeholder="{{ item.description }}">
-                </div>
-                <div class="form-row submit-row">
-                    <input id="submit-update-item" class="submit-input" type="submit" value="Update Item">
-                </div>
-                <div class="form-row submit-row">
-                    <a href="{% url 'item_personalized_overview_page' %}">
-                        <button id="cancel-update-item" class="cancel-input">
-                            Cancel
+<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-base-200 p-4">
+    <div class="w-full max-w-md card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold text-center mb-4">Update Item</h2>
+            
+            {% if error %}
+            <div class="alert alert-error mb-4">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'item_update_action' %}">
+                {% csrf_token %}
+                <fieldset class="space-y-4">
+                    <div>
+                        <legend class="text-lg font-semibold mb-4">Item Details</legend>
+                    </div>
+                    <input type="hidden" name="item-id" value="{{ item.id }}">
+                    <div class="form-control w-full">
+                        <label for="item-input" class="label">
+                            <span class="label-text">Item</span>
+                        </label>
+                        <input type="text" name="item-input" id="item-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" placeholder="{{ item.name }}" required>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="store-input" class="label">
+                            <span class="label-text">Store</span>
+                        </label>
+                        <select name="store-input" id="store-input" class="select select-bordered w-full focus:border-[#602786] focus:outline-none">
+                            {% for store in stores %}
+                            <option value="{{store.id}}">{{store.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="price-input" class="label">
+                            <span class="label-text">Price</span>
+                        </label>
+                        <input type="number" name="price-input" id="price-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" placeholder="{{ item.price }}" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="description-input" class="label">
+                            <span class="label-text">Description</span>
+                        </label>
+                        <input type="text" name="description-input" id="description-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" placeholder="{{ item.description }}">
+                    </div>
+
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn bg-[#602786] text-white hover:bg-[#562f6f] w-full">
+                            Update Item
                         </button>
-                    </a>
-                </div>
-            </fieldset>
-        </form>
+                    </div>
+                    <div class="form-control mt-4">
+                        <a href="{% url 'item_personalized_overview_page' %}" class="btn btn-outline w-full">
+                            Cancel
+                        </a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

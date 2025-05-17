@@ -1,14 +1,9 @@
-<!doctype html>
-<html lang="en">
+{% extends 'dashboard/base.html' %}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shopping Dashboard</title>
-</head>
+{% block static %}
+{% load static %}
+{% endblock %}
 
-<body>
-  <div id="root"></div>
-</body>
-
-</html>
+{% block content %}
+<div id="root"></div>
+{% endblock %}

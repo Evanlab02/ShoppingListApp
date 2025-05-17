@@ -2,62 +2,65 @@
 
 {% block static %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'base/form.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
-    <div class="form-wrapper">
-        <div class="form-top create-top">
-            <h2 id="form-heading">Create Store</h2>
+<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-base-200 p-4">
+    <div class="w-full max-w-md card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold text-center mb-4">Create Store</h2>
+            
+            {% if error %}
+            <div class="alert alert-error mb-4">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'store_create_action' %}">
+                {% csrf_token %}
+                <fieldset class="space-y-4">
+                    <div>
+                        <legend class="text-lg font-semibold mb-4">Store Details</legend>
+                    </div>
+                    <div class="form-control w-full">
+                        <label for="store-input" class="label">
+                            <span class="label-text">Store Name</span>
+                        </label>
+                        <input type="text" name="store-input" id="store-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" required>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="store-type-input" class="label">
+                            <span class="label-text">Store Type</span>
+                        </label>
+                        <select name="store-type-input" id="store-type-input" class="select select-bordered w-full focus:border-[#602786] focus:outline-none">
+                            <option value="Online">Online</option>
+                            <option value="In-Store">In-Store</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="description-input" class="label">
+                            <span class="label-text">Description</span>
+                        </label>
+                        <input type="text" name="description-input" id="description-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none">
+                    </div>
+
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn bg-[#602786] text-white hover:bg-[#562f6f] w-full">
+                            Create Store
+                        </button>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'store_personal_overview_page' %}" class="link link-primary">
+                            Cancel
+                        </a>
+                    </div>
+                </fieldset>
+            </form>
         </div>
-        {% if error %}
-        <div class="form-middle">
-            <p id="form-error" class="error-message">{{ error }}</p>
-        </div>
-        {% endif %}
-        <form class="form-bottom" method="post" action="{% url 'store_create_action' %}">
-            {% csrf_token %}
-            <fieldset>
-                <div class="form-row">
-                    <legend>Store Details</legend>
-                </div>
-                <div class="form-row">
-                    <label for="store-input">Store:</label>
-                    <input class="text-input" type="text" name="store-input" id="store-input">
-                </div>
-                <div class="form-row">
-                    <label for="store-type-input">Store Type:</label>
-                    <select class="text-input" name="store-type-input" id="store-type-input">
-                        <option value="Online">Online</option>
-                        <option value="In-Store">In-Store</option>
-                        <option value="Both">Both</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label for="description-input">Description:</label>
-                    <input class="text-input" type="text" name="description-input" id="description-input">
-                </div>
-                <div class="form-row submit-row">
-                    <input id="submit-create-store" class="submit-input" type="submit" value="Create Store">
-                </div>
-                <div class="form-row submit-row">
-                    <input 
-                        id="cancel-create-store" 
-                        class="cancel-input" 
-                        type="button" 
-                        value="Cancel"
-                        onclick="cancelOnClick()"
-                    >
-                </div>
-            </fieldset>
-        </form>
     </div>
 </div>
-
-<script>
-    const cancelOnClick = () => {
-        window.location.href = "{% url 'store_personal_overview_page' %}";
-    }
-</script>
 {% endblock %}

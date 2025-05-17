@@ -212,7 +212,7 @@ class ItemService(IItemService):
             updating_name = False
             updating_store = False
 
-            if new_name:
+            if new_name and new_name != name:
                 updating_name = True
                 name = new_name
 

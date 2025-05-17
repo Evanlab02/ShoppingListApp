@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping App</title>
+    <title>Shopping Dashboard</title>
 
     {% load static %}
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
@@ -24,34 +24,16 @@
                     </svg>
                 </button>
                 <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a href="{% url 'dashboard' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your dashboard" aria-label="Go to Dashboard"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
                     <li><a href="{% url 'item_personalized_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your personal items" aria-label="View My Items"><i class="fas fa-shopping-bag" aria-hidden="true"></i> My Items</a></li>
-                    {% if not is_overview %}
-                    <li><a href="{% url 'store_personal_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your personal stores" aria-label="View My Stores"><i class="fas fa-store" aria-hidden="true"></i> My Stores</a></li>
-                    {% endif %}
-                    {% if show_advanced_navigation %}
-                    <li><a href="{% url 'store_create_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="Create a new store" aria-label="Create New Store"><i class="fas fa-plus-circle" aria-hidden="true"></i> Create Store</a></li>
-                    {% endif %}
+                    <li><a href="{% url 'store_personal_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your stores" aria-label="View My Stores"><i class="fas fa-store" aria-hidden="true"></i> My Stores</a></li>
                 </ul>
             </div>
-            <h1 class="text-xl font-semibold">{{ page_title }}</h1>
+            <h1 class="text-xl font-semibold">Dashboard</h1>
         </div>
         <div class="navbar-center hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
-                <li><a href="{% url 'dashboard' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your dashboard" aria-label="Go to Dashboard"><i class="fas fa-tachometer-alt" aria-hidden="true"></i></a></li>
                 <li><a href="{% url 'item_personalized_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your personal items" aria-label="View My Items"><i class="fas fa-shopping-bag" aria-hidden="true"></i></a></li>
-                {% if not is_overview %}
-                <li><a href="{% url 'store_personal_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your personal stores" aria-label="View My Stores"><i class="fas fa-store" aria-hidden="true"></i></a></li>
-                {% endif %}
-                {% if not is_personal and show_advanced_navigation and is_overview %}
-                <li><a href="{% url 'store_personal_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="Switch to personal view" aria-label="Switch to Personal View"><i class="fas fa-user" aria-hidden="true"></i></a></li>
-                {% endif %}
-                {% if is_personal and show_advanced_navigation and is_overview %}
-                <li><a href="{% url 'store_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View all stores" aria-label="View All Stores"><i class="fas fa-users" aria-hidden="true"></i></a></li>
-                {% endif %}
-                {% if show_advanced_navigation %}
-                <li><a href="{% url 'store_create_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="Create a new store" aria-label="Create New Store"><i class="fas fa-plus-circle" aria-hidden="true"></i></a></li>
-                {% endif %}
+                <li><a href="{% url 'store_personal_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your stores" aria-label="View My Stores"><i class="fas fa-store" aria-hidden="true"></i></a></li>
             </ul>
         </div>
         <div class="navbar-end">

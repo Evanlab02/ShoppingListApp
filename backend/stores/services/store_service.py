@@ -13,7 +13,7 @@ from stores.errors.exceptions import (
 )
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore, StoreSearch
-from stores.schemas.output import StorePaginationSchema
+from stores.schemas.output import StoreAggregationSchema, StorePaginationSchema
 from stores.services.interfaces.i_store_service import IStoreService
 
 
@@ -196,24 +196,40 @@ class StoreService(IStoreService):
         Args:
             store_id (int): The id of the store.
             user (User | AbstractBaseUser | AnonymousUser): The user who is updating the store.
+            store_name (str | None): The new store name.
+            store_type (int | str | None): The new store type.
+            store_description (str | None): The new store description.
 
         Returns:
             Store: The updated store.
+
+        Raises:
+            StoreDoesNotExist: If the store does not exist.
+            StoreAlreadyExists: If a store with the new name already exists.
         """
         try:
+            store = await self.repo.get_store(store_id=store_id)
+
+            name = store.name
+            updating_name = False
+
+            if store_name and store_name != name:
+                updating_name = True
+                name = store_name
+
+            if updating_name and await self.repo.does_name_exist(name):
+                self.log.warning("Store with this name already exists...")
+                raise StoreAlreadyExists(name)
+
             if store_type:
                 store_type = self.__get_store_type(store_type)
             else:
-                store_type = None
-
-            if store_name and await self.repo.does_name_exist(store_name):
-                self.log.warning("Store with this name already exists...")
-                raise StoreAlreadyExists(store_name)
+                store_type = store.store_type
 
             return await self.repo.update_store(
                 store_id=store_id,
                 user=user,
-                store_name=store_name,
+                store_name=name,
                 store_type=store_type,
                 store_description=store_description,
             )
@@ -244,7 +260,7 @@ class StoreService(IStoreService):
 
     async def aggregate(
         self, user: User | AnonymousUser | AbstractBaseUser | None = None
-    ) -> dict[str, Any]:
+    ) -> StoreAggregationSchema:
         """
         Aggregate the stores.
 
@@ -254,4 +270,11 @@ class StoreService(IStoreService):
         Returns:
             dict[str, Any]: The aggregated stores.
         """
-        return await self.repo.aggregate(user)  # type: ignore
+        aggregation = await self.repo.aggregate(user)
+        aggregation["combined_online_stores"] = (
+            aggregation["online_stores"] + aggregation["combined_stores"]
+        )
+        aggregation["combined_in_store_stores"] = (
+            aggregation["in_store_stores"] + aggregation["combined_stores"]
+        )
+        return StoreAggregationSchema(**aggregation)
