@@ -1,7 +1,7 @@
 """Contains store router."""
 
 import logging
-from typing import Any, Literal
+from typing import Literal
 
 from django.http import HttpRequest
 from ninja import Router
@@ -143,7 +143,7 @@ async def search(
 
 
 @store_router.get("/aggregate", response={200: StoreAggregationSchema}, url_name="store_aggregate")
-async def get_store_aggregation(request: HttpRequest) -> dict[str, Any]:
+async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     """
     Get the store aggregation.
 
@@ -159,7 +159,7 @@ async def get_store_aggregation(request: HttpRequest) -> dict[str, Any]:
 @store_router.get(
     "/aggregate/me", response={200: StoreAggregationSchema}, url_name="store_aggregate_me"
 )
-async def get_store_aggregation_by_user(request: HttpRequest) -> dict[str, Any]:
+async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregationSchema:
     """
     Get the store aggregation by user.
 
