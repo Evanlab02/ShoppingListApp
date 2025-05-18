@@ -83,3 +83,23 @@ jobs:
           docker build -f docker/admin/Dockerfile -t shopping-app-admin .
           docker build -f docker/server/Dockerfile -t shopping-app-server .
           docker build -f docker/web/Dockerfile -t shopping-app-web .
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "docs/requirements.txt"
+
+      - name: Build Docs
+        run: |
+          mkdocs build
