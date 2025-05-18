@@ -43,5 +43,5 @@ coverage:
 	@python -m http.server --directory htmlcov
 
 requirements:
-	uv pip compile --no-annotate requirements.in -o requirements.txt
-	uv pip compile --no-annotate requirements.dev.in -o requirements.dev.txt
+	uv pip compile requirements.in -o requirements.txt
+	uv pip compile requirements.dev.in -o requirements.dev.txt
