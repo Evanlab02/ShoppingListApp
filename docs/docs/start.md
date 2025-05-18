@@ -2,6 +2,9 @@
 
 Welcome to the **ShoppingListApp**! 🎉 Please note that this app is integrated into another project of mine called [HomePortal](https://github.com/Evanlab02/HomePortal). You can use ShoppingListApp within that project, but it’s perfectly fine to set it up on its own as well. Let’s get started!
 
+!!! warning "Warning"
+    The documentation is currently under a major rework following a refactor of the project. Please note that is in preparation for V0.18 which is setting the foundations for the project going further and should be significantly more stable and **if** all goes well, maintain backwards compatibility much better than previous versions. The goal is in subsequent releases to have a foundation that guarantees backwards compatibility up until the V1 release and beyond.
+
 ## Pre-requisites
 
 Before you dive in, make sure you have the following installed on your machine:
