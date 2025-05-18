@@ -9,22 +9,33 @@ on:
 permissions:
   contents: read
 
+env:
+  UV_SYSTEM_PYTHON: 1
+
 jobs:
-  be-lint:
+  backend:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-          cache: "pip"
-      - name: Setup
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/requirements.dev.txt"
+
+      - name: Install backend dependencies
         run: |
-          pip install -r requirements.dev.txt
+          uv pip install -r requirements.dev.txt
+
       - name: Lint and Docs Styling
         run: |
           black . --check

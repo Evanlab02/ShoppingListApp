@@ -13,7 +13,7 @@ env:
   UV_SYSTEM_PYTHON: 1
 
 jobs:
-  static-files-build:
+  static:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -41,15 +41,40 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "backend/requirements.txt"
 
-      - name: Install dependencies
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.11.0"
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
         run: |
           uv pip install -r requirements.txt
+
+      - name: Install frontend dependencies
+        run: |
+          npm ci
+
+      - name: Check initial static files state
+        run: |
+          git status --porcelain static/ > /tmp/before_build.txt
 
       - name: Create/Build Static Files
         run: |
           python manage.py collectstatic --no-input
+          npm run build
 
-  docker-images-build:
+      - name: Check for static file changes
+        run: |
+          git status --porcelain static/ > /tmp/after_build.txt
+          if ! cmp -s /tmp/before_build.txt /tmp/after_build.txt; then
+            echo "Error: Static files have changed during build. Please commit the latest built files."
+            git diff static/
+            exit 1
+          fi
+
+  docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
