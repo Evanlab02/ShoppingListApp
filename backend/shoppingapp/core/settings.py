@@ -106,16 +106,6 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": f"redis://{getenv('SHOPPING_REDIS_HOST')}:6379",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "SOCKET_CONNECT_TIMEOUT": 5,
-            "SOCKET_TIMEOUT": 5,
-            "RETRY_ON_TIMEOUT": True,
-            "MAX_CONNECTIONS": 1000,
-            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-        },
-        "KEY_PREFIX": "shopping",
-        "TIMEOUT": 300,  # 5 minutes default timeout
     }
 }
 

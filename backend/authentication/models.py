@@ -6,6 +6,7 @@ from uuid import uuid4
 
 import jwt
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
+from django.core.cache import cache
 from django.db.models import (
     CASCADE,
     BooleanField,
@@ -24,7 +25,7 @@ class ApiClient(Model):
     user = ForeignKey(User, on_delete=CASCADE, db_index=True)
     is_active = BooleanField(default=True)
     client_secret = CharField(max_length=255, default="", blank=True)
-    token = CharField(max_length=255, default="", blank=True, db_index=True)
+    token = CharField(max_length=255, default="", blank=True, db_index=True, unique=True)
     token_expiration = FloatField(default=0)
 
     def __str__(self) -> str:
@@ -35,11 +36,8 @@ class ApiClient(Model):
         """
         Get a JWT token generated with the secret.
 
-        Args:
-            secret: The secret of the client.
-
         Returns:
-            str: The token
+            tuple[str, str]: The token and its secret.
         """
         secret = uuid4().hex
         expiration = (datetime.now() + timedelta(minutes=5)).timestamp()
@@ -56,4 +54,5 @@ class ApiClient(Model):
         self.token_expiration = expiration
         self.client_secret = secret
         await self.asave()
+        await cache.aset(f"client_{user.id}", self, timeout=240)  # type: ignore
         return jwt_token, secret

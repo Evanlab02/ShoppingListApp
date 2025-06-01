@@ -77,6 +77,8 @@ services:
     build:
       context: .
       dockerfile: docker/server/Dockerfile
+      args:
+        - WORKERS=8
     env_file:
       - .env.dev
     networks:
@@ -107,8 +109,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1024M
+          cpus: '8.0'
+          memory: 8192M
 
   dev-shopping-django-site:
     container_name: shopping-django-site
@@ -128,7 +130,7 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: ./site/Caddyfile
+          path: ./web/Caddyfile
           target: /etc/caddy/Caddyfile
         - action: sync+restart
           path: ./backend/static

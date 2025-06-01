@@ -1,0 +1,11 @@
+-r requirements.txt
+black
+mypy
+flake8
+pydocstyle
+isort
+pytest-cov
+coverage
+flake8-docstrings
+pytest-sugar
+factory_boy

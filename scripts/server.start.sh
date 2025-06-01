@@ -1,1 +1,2 @@
+echo "Starting server with $GUNICORN_WORKERS workers"
 gunicorn -b 0.0.0.0:80 -w $GUNICORN_WORKERS --log-config shoppingapp/logging.config --capture-output --log-level info --worker-class uvicorn_worker.UvicornWorker 'shoppingapp.config.asgi:app'

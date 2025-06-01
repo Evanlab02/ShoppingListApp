@@ -1,6 +1,7 @@
 """Contains the API token authentication class."""
 
 import logging
+from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
@@ -24,6 +25,9 @@ class TokenAuth(APIKeyHeader):
             return None
 
         try:
-            return await ApiClient.objects.aget(token=key)
+            client = await ApiClient.objects.aget(token=key)
+            if datetime.now().timestamp() > client.token_expiration:
+                return None
+            return client
         except ApiClient.DoesNotExist:
             return None
