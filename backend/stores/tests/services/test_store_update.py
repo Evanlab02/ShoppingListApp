@@ -1,101 +1,120 @@
-"""Test store service - Update function."""
+"""Test the store service functionality."""
 
-import pytest
-from django.contrib.auth.models import User
+from asgiref.sync import sync_to_async
 from django.test import TestCase
 
-from stores.errors.api_exceptions import (
+from authentication.tests.factory import UserFactory
+from stores.constants import STORE_TYPE_MAPPING
+from stores.errors.exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
     StoreDoesNotExist,
 )
-from stores.models import ShoppingStore as Store
-from stores.services import store_service
-
-TEST_STORE = "Test Store Update"
-TEST_STORE_TYPE = 1
-TEST_DESCRIPTION = "Test description for test store."
+from stores.services.store_service import StoreService
+from stores.tests.factory import StoreFactory
 
 
-class TestUpdatesStore(TestCase):
-    """Test update store function."""
+class TestStoreService(TestCase):
+    """Test the store service functionality."""
 
     def setUp(self) -> None:
-        """Set up the tests."""
-        self.user = User.objects.create_user(
-            username="testuser",
-            email="testuser@gmail.com",
-            password="testing123",
-        )
-        self.user.save()
-        self.store = Store.objects.create(
-            name=TEST_STORE,
-            store_type=TEST_STORE_TYPE,
-            description=TEST_DESCRIPTION,
+        """Set up the test."""
+        self.user = UserFactory.create()
+        self.store = StoreFactory.create(user=self.user)
+        self.service = StoreService()
+
+        self.create = sync_to_async(StoreFactory.create)
+
+    async def test_update_store_name(self) -> None:
+        """Test updating store name."""
+        store = await self.service.update(
+            store_id=self.store.id,
             user=self.user,
+            store_name="New Name",
         )
-        self.store.save()
-        return super().setUp()
+        self.assertEqual(store.name, "New Name")
+        self.assertEqual(store.store_type, self.store.store_type)
+        self.assertEqual(store.description, self.store.description)
+        self.assertEqual(await store.auser(), self.user)
 
-    def tearDown(self) -> None:
-        """Clean up after tests."""
-        User.objects.all().delete()
-        Store.objects.all().delete()
-        return super().tearDown()
-
-    async def test_update_store_with_no_values(self) -> None:
-        """Test update store with no params."""
-        await store_service.update_store(self.store.id, self.user)
-
-        await self.store.arefresh_from_db()
-        self.assertEqual(self.store.name, TEST_STORE)
-        self.assertEqual(self.store.store_type, TEST_STORE_TYPE)
-        self.assertEqual(self.store.description, TEST_DESCRIPTION)
-
-    async def test_update_store_with_name(self) -> None:
-        """Test update store with updated name."""
-        new_store_name = "Updated Test Store"
-        await store_service.update_store(self.store.id, self.user, new_store_name)
-
-        await self.store.arefresh_from_db()
-        self.assertEqual(self.store.name, new_store_name)
-
-    async def test_update_store_with_type(self) -> None:
-        """Test update store with updated type."""
-        new_store_type = 3
-        await store_service.update_store(self.store.id, self.user, None, new_store_type)
-
-        await self.store.arefresh_from_db()
-        self.assertEqual(self.store.store_type, new_store_type)
-
-    async def test_update_store_with_description(self) -> None:
-        """Test update store with updated description."""
-        new_store_description = "Empty"
-        await store_service.update_store(
-            self.store.id, self.user, None, None, new_store_description
+    async def test_update_store_type_with_int(self) -> None:
+        """Test updating store type with integer value."""
+        store = await self.service.update(
+            store_id=self.store.id,
+            user=self.user,
+            store_type=3,
         )
+        self.assertEqual(store.name, self.store.name)
+        self.assertEqual(store.store_type, 3)
+        self.assertEqual(store.description, self.store.description)
+        self.assertEqual(await store.auser(), self.user)
 
-        await self.store.arefresh_from_db()
-        self.assertEqual(self.store.description, new_store_description)
+    async def test_update_store_type_with_string(self) -> None:
+        """Test updating store type with string value."""
+        store_type_label = STORE_TYPE_MAPPING[3]
+        store = await self.service.update(
+            store_id=self.store.id,
+            user=self.user,
+            store_type=store_type_label,
+        )
+        self.assertEqual(store.name, self.store.name)
+        self.assertEqual(store.store_type, 3)
+        self.assertEqual(store.description, self.store.description)
+        self.assertEqual(await store.auser(), self.user)
 
-    async def test_update_store_with_name_that_already_exists(self) -> None:
-        """Test update store with name that already exists."""
-        new_store_name = TEST_STORE
+    async def test_update_store_description(self) -> None:
+        """Test updating store description."""
+        store = await self.service.update(
+            store_id=self.store.id,
+            user=self.user,
+            store_description="New Description",
+        )
+        self.assertEqual(store.name, self.store.name)
+        self.assertEqual(store.store_type, self.store.store_type)
+        self.assertEqual(store.description, "New Description")
+        self.assertEqual(await store.auser(), self.user)
 
-        with pytest.raises(StoreAlreadyExists):
-            await store_service.update_store(self.store.id, self.user, new_store_name)
+    async def test_update_store_all_fields(self) -> None:
+        """Test updating all store fields."""
+        store_type_label = STORE_TYPE_MAPPING[3]
+        store = await self.service.update(
+            store_id=self.store.id,
+            user=self.user,
+            store_name="New Name",
+            store_type=store_type_label,
+            store_description="New Description",
+        )
+        self.assertEqual(store.name, "New Name")
+        self.assertEqual(store.store_type, 3)
+        self.assertEqual(store.description, "New Description")
+        self.assertEqual(await store.auser(), self.user)
 
-    async def test_update_store_with_invalid_store_type_number(self) -> None:
-        """Test update store with store type number."""
-        with pytest.raises(InvalidStoreType):
-            await store_service.update_store(self.store.id, self.user, store_type=5)
+    async def test_update_store_does_not_exist(self) -> None:
+        """Test updating non-existent store."""
+        with self.assertRaises(StoreDoesNotExist):
+            await self.service.update(
+                store_id=99999999999,
+                user=self.user,
+                store_name="New Name",
+            )
 
-    async def test_update_store_with_invalid_store_type_string(self) -> None:
-        """Test update store with store type string."""
-        with pytest.raises(InvalidStoreType):
-            await store_service.update_store(self.store.id, self.user, store_type="Mac")
+    async def test_update_store_invalid_type(self) -> None:
+        """Test updating store with invalid type."""
+        with self.assertRaises(InvalidStoreType):
+            await self.service.update(
+                store_id=self.store.id,
+                user=self.user,
+                store_type="Invalid Type",
+            )
 
-    async def test_update_store_with_invalid_id(self) -> None:
-        """Test updating store with invalid raises an error."""
-        with pytest.raises(StoreDoesNotExist):
-            await store_service.update_store(9999, self.user, store_type=3)
+    async def test_update_store_name_already_exists(self) -> None:
+        """Test updating store with name that already exists."""
+        # Create another store with a different name
+        other_store = await self.create(user=self.user, name="Other Store")
+
+        with self.assertRaises(StoreAlreadyExists):
+            await self.service.update(
+                store_id=self.store.id,
+                user=self.user,
+                store_name=other_store.name,
+            )

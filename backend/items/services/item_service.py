@@ -1,299 +1,278 @@
-"""Contains item service functions."""
+"""Contains the item service."""
 
-import logging
 from typing import Literal
 
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
 
-from items.database import item_repo
+from items.database.interfaces.i_item_repo import IItemRepo
+from items.database.item_repo import ItemRepo
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
 from items.models import ShoppingItem as Item
 from items.schemas.input import ItemSearchSchema
-from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
+from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema
+from items.services.interfaces.i_item_service import IItemService
 from shoppingapp.schemas.shared import DeleteSchema
-from stores.database import store_repo
-from stores.errors.api_exceptions import StoreDoesNotExist
-from stores.models import ShoppingStore as Store
-
-log = logging.getLogger(__name__)
-log.info("Item Service Loading...")
+from stores.database.interfaces.i_store_repo import IStoreRepo
+from stores.database.store_repo import StoreRepo
+from stores.errors.exceptions import StoreDoesNotExist
 
 
-async def create_item(
-    user: User | AbstractBaseUser | AnonymousUser,
-    store_id: int,
-    name: str,
-    price: float,
-    description: str = "",
-) -> ItemSchema:
-    """
-    Create an item.
+class ItemService(IItemService):
+    """Item service."""
 
-    Args:
-        user (User): The user that created the item.
-        store (int): The store id that the item belongs to.
-        name (str): The new item name.
-        price (float): The price of the item.
-        description (str): The description of the item.
+    def __init__(
+        self,
+        item_repo: IItemRepo = ItemRepo(),
+        store_repo: IStoreRepo = StoreRepo(),
+    ) -> None:
+        """Initialize the item service."""
+        self.repo = item_repo
+        self.store_repo = store_repo
+        super().__init__()
 
-    Returns:
-        ItemSchema: The item that was created.
+    async def create_item(
+        self,
+        user: User | AbstractBaseUser | AnonymousUser,
+        store_id: int,
+        name: str,
+        price: float,
+        description: str = "",
+    ) -> Item:
+        """
+        Create an item.
 
-    Raises:
-        StoreDoesNotExist: If the store id provided is invalid.
-        ItemAlreadyExists: If you are attempting to create a duplicate item at the given store.
-    """
-    try:
-        store = await store_repo.get_store(store_id=store_id)
+        Args:
+            user (User): The user that created the item.
+            store (int): The store id that the item belongs to.
+            name (str): The new item name.
+            price (float): The price of the item.
+            description (str): The description of the item.
 
-        if await item_repo.does_item_exist(name=name, store=store):
-            raise ItemAlreadyExists(item_name=name, store_name=store.name)
+        Returns:
+            ItemSchema: The item that was created.
 
-        item = await item_repo.create_item(
-            description=description,
+        Raises:
+            ItemAlreadyExists: If you are attempting to create a duplicate item at the given store.
+        """
+        if await self.repo.does_item_exist(name=name, store_id=store_id):
+            raise ItemAlreadyExists(item_name=name, store_name=str(store_id))
+        if not await self.store_repo.does_store_exist(store_id=store_id):
+            raise StoreDoesNotExist(store_id=store_id)
+
+        return await self.repo.create_item(
+            user=user,
+            store_id=store_id,
             name=name,
             price=price,
-            store=store,
-            user=user,
+            description=description,
         )
-        item_schema = ItemSchema.from_orm(item)
-        return item_schema
-    except Store.DoesNotExist:
-        raise StoreDoesNotExist(store_id=store_id)
 
+    async def get_items(
+        self,
+        page: int = 1,
+        items_per_page: int = 10,
+        user: User | AbstractBaseUser | AnonymousUser | None = None,
+        store: int | None = None,
+        sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> ItemPaginationSchema:
+        """
+        Get all items.
 
-async def get_items(
-    page: int = 1,
-    items_per_page: int = 10,
-    user: User | AbstractBaseUser | AnonymousUser | None = None,
-    store: Store | None = None,
-    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
-    sort_dir: Literal["asc", "desc"] | None = None,
-) -> ItemPaginationSchema:
-    """
-    Get all items.
+        Args:
+            page (int): The page number.
+            items_per_page (int): The number of items per page.
+            user (User): The user to filter off.
+            store (int): Specific store to filter off.
+            sort (str): The field to sort by.
+            sort_dir (str): The direction to sort in.
 
-    Args:
-        page (int): The page number.
-        items_per_page (int): The number of items per page.
-        user (User): The user to filter off.
-        store (Store): Specific store to filter off.
-        sort (str): The field to sort by.
-        sort_dir (str): The direction to sort in.
+        Returns:
+            ItemPaginationSchema: A paginated list of items.
+        """
+        return await self.repo.get_items(
+            page=page,
+            items_per_page=items_per_page,
+            user=user,
+            store=store,
+            sort=sort,
+            sort_dir=sort_dir,
+        )
 
-    Returns:
-        ItemPaginationSchema: A paginated list of items.
-    """
-    items = await item_repo.get_items(
-        page=page,
-        items_per_page=items_per_page,
-        user=user,
-        store=store,
-        sort=sort,
-        sort_dir=sort_dir,
-    )
-    return items
+    async def search_items(
+        self,
+        page: int = 1,
+        limit: int = 10,
+        user: User | AbstractBaseUser | AnonymousUser | None = None,
+        name: str | None = None,
+        store_id: int | None = None,
+        search: ItemSearchSchema | None = None,
+        sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+        sort_dir: Literal["asc", "desc"] | None = None,
+    ) -> ItemPaginationSchema:
+        """
+        Search items based on the provided filters.
 
+        Args:
+            page (int): The page number.
+            limit (int): The number of items per page.
+            user (User): The user to filter off.
+            name (int): The full or partial name of the item to filter by.
+            store_id (int): Specific store to filter off.
+            search (ItemSearchSchema): The search object for advanced filtering/searching.
+            sort (str): The field to sort by.
+            sort_dir (str): The direction to sort in.
 
-async def aggregate(
-    user: User | AbstractBaseUser | AnonymousUser | None = None,
-) -> ItemAggregationSchema:
-    """
-    Aggregate the items.
+        Returns:
+            ItemPaginationSchema: Returns the item pagination schema.
+        """
+        return await self.repo.get_items(
+            name=name,
+            items_per_page=limit,
+            page=page,
+            store=store_id,
+            user=user,
+            search=search,
+            sort=sort,
+            sort_dir=sort_dir,
+        )
 
-    Returns:
-        ItemAggregationSchema: The aggregation of the items.
-    """
-    aggregation = await item_repo.aggregate(user=user)
-    result = ItemAggregationSchema.model_validate(aggregation)
-    return result
+    async def get_item_detail(self, item_id: int) -> Item:
+        """
+        Get an item using the item id.
 
+        Args:
+            item_id (int): The item id.
 
-async def get_item_detail(item_id: int) -> ItemSchema:
-    """
-    Get an item using the item id.
+        Returns:
+            ItemSchema: The item detail.
 
-    Args:
-        item_id (int): The item id.
-
-    Returns:
-        ItemSchema: The item detail.
-    """
-    try:
-        item = await item_repo.get_item(item_id=item_id)
-        logging.info("Item retrieved, converting to schema...")
-        item_schema = ItemSchema.from_orm(item)
-        return item_schema
-    except Item.DoesNotExist:
-        logging.warning(f"Item with ID: {item_id} does not exist.")
-        raise ItemDoesNotExist(item_id=item_id)
-
-
-async def _validate_for_update(
-    item_id: int,
-    user: User | AbstractBaseUser | AnonymousUser,
-    name: str | None = None,
-    store_id: int | None = None,
-) -> tuple[Item, Store | None]:
-    """
-    Check that all provided details are valid for updating an item.
-
-    Args:
-        item_id (int): The item id.
-        user (User): The user that created the item.
-        name (str): The new item name.
-        store_id (int): The store id that the item belongs to.
-
-    Returns:
-        tuple[Item, Store | None]: The item and store details, store can be None.
-
-    Raises:
-        ItemDoesNotExist: If the item id provided does not exist.
-        ItemAlreadyExists: If you are attempting to create a duplicate item at the given store.
-        StoreDoesNotExist: If the store id provided is invalid.
-    """
-    logging.info("Validating new updated item details...")
-    store = None
-    item = None
-
-    if store_id:
-        logging.info(f"Getting store with ID: {store_id} (For update on item with ID: {item_id})")
+        Raises:
+            ItemDoesNotExist: If the item id provided does not exist.
+        """
         try:
-            store = await store_repo.get_store(store_id=store_id)
-        except Store.DoesNotExist:
-            raise StoreDoesNotExist(store_id=store_id)
+            return await self.repo.get_item(item_id=item_id)
+        except Item.DoesNotExist:
+            self.log.warning(f"Item with ID: {item_id} does not exist.")
+            raise ItemDoesNotExist(item_id=item_id)
 
-    logging.info("Attempting to retrieve item details...")
-    try:
-        item = await item_repo.get_item_for_user(item_id=item_id, user=user)
-    except Item.DoesNotExist:
-        raise ItemDoesNotExist(item_id=item_id)
+    async def get_item_for_user(
+        self, item_id: int, user: User | AbstractBaseUser | AnonymousUser
+    ) -> Item:
+        """
+        Get an item for a user.
 
-    logging.info("Checking if item already exists...")
-    if name and store and await item_repo.does_item_exist(name=name, store=store):
-        raise ItemAlreadyExists(item_name=name, store_name=store.name)
+        Args:
+            item_id (int): The item id.
+            user (User): The user to filter off.
 
-    if name and not store and await item_repo.does_item_exist(name=name, store=item.store):
-        raise ItemAlreadyExists(item_name=name, store_name=item.store.name)
-
-    return item, store
-
-
-async def update_item(
-    item_id: int,
-    user: User | AbstractBaseUser | AnonymousUser,
-    name: str | None = None,
-    price: float | None = None,
-    description: str | None = None,
-    store_id: int | None = None,
-) -> ItemSchema:
-    """
-    Update an item using the item id.
-
-    Args:
-        item_id (int): The item id.
-        name (str): The new item name.
-        price (float): The price of the item.
-        description (str): The description of the item.
-        store_id (int): The store id that the item belongs to.
-
-    Returns:
-        ItemSchema: The item details.
-
-    Raises:
-        ItemDoesNotExist: If the item id provided does not exist.
-        ItemAlreadyExists: If you are attempting to create a duplicate item at the given store.
-        StoreDoesNotExist: If the store id provided is invalid.
-    """
-    item, store = await _validate_for_update(
-        item_id=item_id, user=user, name=name, store_id=store_id
-    )
-
-    logging.info("Update checks passed.")
-    item = await item_repo.update_item(
-        item=item,
-        name=name,
-        price=price,
-        description=description,
-        store=store,
-    )
-    item_schema = ItemSchema.from_orm(item)
-    return item_schema
-
-
-async def delete_item(item_id: int, user: User | AbstractBaseUser | AnonymousUser) -> DeleteSchema:
-    """
-    Delete an item using the item id.
-
-    Args:
-        item_id (int): The item id.
-        user (User): The user that created the item.
-
-    Returns:
-        DeleteSchema: The deletion result.
-    """
-    try:
-        await item_repo.delete_item(item_id=item_id, user=user)
-        return DeleteSchema(message="Deleted Item.", detail=f"Item with ID #{item_id} was deleted.")
-    except Item.DoesNotExist:
-        logging.warning(f"Item with ID: {item_id} does not exist for user: {user}. (For deletion)")
-        raise ItemDoesNotExist(item_id=item_id)
-
-
-async def search_items(
-    page: int = 1,
-    limit: int = 10,
-    user: User | AbstractBaseUser | AnonymousUser | None = None,
-    name: str | None = None,
-    store_id: int | None = None,
-    search: ItemSearchSchema | None = None,
-    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
-    sort_dir: Literal["asc", "desc"] | None = None,
-) -> ItemPaginationSchema:
-    """
-    Search items based on the provided filters.
-
-    Args:
-        page (int): The page number.
-        limit (int): The number of items per page.
-        user (User): The user to filter off.
-        name (int): The full or partial name of the item to filter by.
-        store_id (int): Specific store to filter off.
-        search (ItemSearchSchema): The search object for advanced filtering/searching.
-        sort (str): The field to sort by.
-        sort_dir (str): The direction to sort in.
-
-    Returns:
-        ItemPaginationSchema: Returns the item pagination schema.
-    """
-    stores = None
-    if search and search.stores:
+        Returns:
+            ItemSchema: The item detail.
+        """
         try:
-            stores = [await store_repo.get_store(store_id) for store_id in search.stores]
-        except Store.DoesNotExist:
-            log.warning("Could not find selected stores.")
-            raise StoreDoesNotExist(store_id=0)
+            return await self.repo.get_item_for_user(item_id=item_id, user=user)
+        except Item.DoesNotExist:
+            self.log.warning(f"Item with ID: {item_id} does not exist for user: {user}.")
+            raise ItemDoesNotExist(item_id=item_id)
 
-    store = None
-    if store_id:
+    async def update_item(
+        self,
+        item_id: int,
+        user: User | AbstractBaseUser | AnonymousUser,
+        new_name: str | None = None,
+        new_price: float | None = None,
+        new_description: str | None = None,
+        new_store_id: int | None = None,
+    ) -> Item:
+        """
+        Update an item using the item id.
+
+        Args:
+            item_id (int): The item id.
+            user (User): The user that is updating the item.
+            name (str): The new item name.
+            price (float): The price of the item.
+            description (str): The description of the item.
+            store_id (int): The store id that the item belongs to.
+
+        Returns:
+            Item: The item details.
+
+        Raises:
+            ItemDoesNotExist: If the item id provided does not exist.
+            ItemAlreadyExists: If you are attempting to create a duplicate item at the given store.
+            StoreDoesNotExist: If the store id provided is invalid.
+        """
         try:
-            store = await store_repo.get_store(store_id)
-        except Store.DoesNotExist:
-            log.warning("Could not find selected store.")
-            raise StoreDoesNotExist(store_id=store_id)
+            item = await self.repo.get_item_for_user(item_id=item_id, user=user)
 
-    result = await item_repo.get_items(
-        name=name,
-        items_per_page=limit,
-        page=page,
-        store=store,
-        user=user,
-        search=search,
-        stores=stores,
-        sort=sort,
-        sort_dir=sort_dir,
-    )
-    return result
+            name = item.name
+            store = item.store.id
 
+            updating_name = False
+            updating_store = False
 
-log.info("Item Service Loaded.")
+            if new_name and new_name != name:
+                updating_name = True
+                name = new_name
+
+            if new_store_id:
+                updating_store = True
+                store = new_store_id
+
+            if updating_store and not await self.store_repo.does_store_exist(store_id=store):
+                raise StoreDoesNotExist(store_id=store)
+
+            if (updating_name or updating_store) and await self.repo.does_item_exist(
+                name=name, store_id=store
+            ):
+                raise ItemAlreadyExists(item_name=name, store_name=str(store))
+
+            return await self.repo.update_item(
+                item=item,
+                name=name,
+                price=new_price,
+                description=new_description,
+                store=store,
+            )
+        except Item.DoesNotExist:
+            raise ItemDoesNotExist(item_id=item_id)
+
+    async def delete_item(
+        self,
+        item_id: int,
+        user: User | AbstractBaseUser | AnonymousUser,
+    ) -> DeleteSchema:
+        """
+        Delete an item using the item id.
+
+        Args:
+            item_id (int): The item id.
+            user (User): The user that created the item.
+
+        Returns:
+            DeleteSchema: The deletion result.
+        """
+        try:
+            await self.repo.delete_item(item_id=item_id, user=user)
+            return DeleteSchema(
+                message="Deleted Item.", detail=f"Item with ID #{item_id} was deleted."
+            )
+        except Item.DoesNotExist:
+            self.log.warning(
+                f"Item with ID: {item_id} does not exist for user: {user}. (For deletion)"
+            )
+            raise ItemDoesNotExist(item_id=item_id)
+
+    async def aggregate(
+        self,
+        user: User | AbstractBaseUser | AnonymousUser | None = None,
+    ) -> ItemAggregationSchema:
+        """
+        Aggregate the items.
+
+        Returns:
+            ItemAggregationSchema: The aggregation of the items.
+        """
+        aggregation = await self.repo.aggregate(user=user)
+        return ItemAggregationSchema.model_validate(aggregation)

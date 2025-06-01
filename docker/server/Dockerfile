@@ -1,12 +1,27 @@
-FROM python:3.12.4-alpine3.20
+FROM python:3.13.2-alpine3.21
+
+ARG WORKERS=1
+
+ENV GUNICORN_WORKERS=${WORKERS}
+ENV UV_SYSTEM_PYTHON 1
+ENV DJANGO_SETTINGS_MODULE shoppingapp.core.settings
 
 RUN apk add --no-cache bash
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 COPY backend/requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN uv pip install -r requirements.txt
 
 COPY version.txt version.txt
 
 WORKDIR /backend
+
+COPY backend/shoppingapp/core /backend/shoppingapp/core
+COPY backend/shoppingapp/config /backend/shoppingapp/config
+COPY backend/shoppingapp/schemas /backend/shoppingapp/schemas
+COPY backend/shoppingapp/utilities /backend/shoppingapp/utilities
+COPY backend/shoppingapp/__init__.py /backend/shoppingapp/__init__.py
+COPY backend/shoppingapp/logging.config /backend/shoppingapp/logging.config
 
 COPY backend/authentication /backend/authentication
 COPY backend/stores /backend/stores
@@ -14,4 +29,11 @@ COPY backend/items /backend/items
 COPY backend/shoppingapp /backend/shoppingapp
 COPY backend/dashboard /backend/dashboard
 
+COPY backend/static /backend/static
+COPY scripts/server.start.sh /backend/server.start.sh
+
+RUN chmod +x /backend/server.start.sh
+
 EXPOSE 80
+
+ENTRYPOINT [ "sh", "./server.start.sh" ]

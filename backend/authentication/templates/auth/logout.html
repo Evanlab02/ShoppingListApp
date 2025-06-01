@@ -1,27 +1,30 @@
 {% extends "auth/base.html" %}
 
 {% block content %}
-<div class="auth-block">
-    <div class="auth-top">
-        <h2 id="auth-heading">Shopping App Logout</h2>
-    </div>
-    {% if error %}
-    <div class="auth-middle">
-        <p>{{ error }}</p>
-    </div>
-    {% endif %}
-    <form class="auth-bottom" method="post" action="{% url 'logout_action' %}">
-        {% csrf_token %}
-        <fieldset>
-            <div class="form-row">
-                <legend>Confirm Logout</legend>
+<div class="min-h-screen flex items-center justify-center bg-base-200 p-4">
+    <div class="w-full max-w-md card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold text-center mb-4">Shopping App Logout</h2>
+            {% if error %}
+            <div class="alert alert-error mb-4">
+                <p id="error-text">{{ error }}</p>
             </div>
-            <div class="form-row submit-row">
-                <input class="submit-input" type="submit" value="Yes" id="{{ submit_logout }}">
-                <input class="submit-input" type="button" value="No" id="{{ submit_cancel }}"
-                    onclick="location.href='/shopping/dashboard/'">
-            </div>
-        </fieldset>
-    </form>
+            {% endif %}
+            <form id="logout-form" method="post" action="{% url 'logout_action' %}">
+                {% csrf_token %}
+                <fieldset class="space-y-4">
+                    <div>
+                        <legend class="text-lg font-semibold mb-4">Confirm Logout</legend>
+                    </div>
+                    <div class="form-control mt-6 space-y-4">
+                        <input class="btn btn-primary w-full" type="submit" value="Yes" id="{{ submit_logout }}">
+                        <a href="{% url 'dashboard' %}" class="btn btn-ghost w-full">
+                            No
+                        </a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

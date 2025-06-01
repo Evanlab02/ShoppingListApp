@@ -1,37 +1,65 @@
-"""Contains tests for the item repository delete functions."""
+"""Contains tests for the delete_item function of the item repository."""
 
-from items.database import item_repo
+from asgiref.sync import sync_to_async
+from django.contrib.auth.models import User
+from django.test.testcases import TestCase
+
+from authentication.tests.factory import UserFactory
+from items.database.item_repo import ItemRepo
 from items.models import ShoppingItem as Item
-from items.tests.base.base_test_case import BaseTestCase
+from items.tests.factory import ItemFactory
+from stores.models import ShoppingStore as Store
+from stores.tests.factory import StoreFactory
 
 
-class TestDeleteItem(BaseTestCase):
-    """Test the item repo delete functions."""
+class TestItemRepositoryDelete(TestCase):
+    """Test the item repository delete_item function."""
+
+    def setUp(self) -> None:
+        """Set up the tests."""
+        self.user = UserFactory.create()
+        self.store = StoreFactory.create(user=self.user)
+        self.repo = ItemRepo()
+        self.item = ItemFactory.create(
+            user=self.user,
+            store=self.store,
+            name="Test Item",
+            description="Test Description",
+            price=10.0,
+        )
+        return super().setUp()
+
+    def tearDown(self) -> None:
+        """Tear down the tests."""
+        Store.objects.all().delete()
+        Item.objects.all().delete()
+        User.objects.all().delete()
+        return super().tearDown()
 
     async def test_delete_item(self) -> None:
         """Test deleting an item."""
         # Delete the item
-        await item_repo.delete_item(item_id=self.item.id, user=self.user)
+        await self.repo.delete_item(self.item.id, self.user)
 
-        # Check that the item no longer exists
-        item_exists = await Item.objects.filter(id=self.item.id).aexists()
-        self.assertFalse(item_exists)
-
-    async def test_delete_item_invalid_id(self) -> None:
-        """Test deleting an item with an invalid id."""
+        # Verify the item no longer exists
         with self.assertRaises(Item.DoesNotExist):
-            await item_repo.delete_item(item_id=100, user=self.user)
+            await Item.objects.aget(id=self.item.id)
 
-        # Check that the item still exists
-        item_exists = await Item.objects.filter(id=self.item.id).aexists()
-        self.assertTrue(item_exists)
+    async def test_delete_item_wrong_user(self) -> None:
+        """Test deleting an item with wrong user raises DoesNotExist."""
+        other_user = await sync_to_async(UserFactory.create)()
 
-    async def test_delete_item_invalid_user(self) -> None:
-        """Test deleting an item with an invalid user."""
-        user = await self.create_temporary_user()
+        # Attempt to delete with wrong user should raise DoesNotExist
         with self.assertRaises(Item.DoesNotExist):
-            await item_repo.delete_item(item_id=self.item.id, user=user)
+            await self.repo.delete_item(self.item.id, other_user)
 
-        # Check that the item still exists
-        item_exists = await Item.objects.filter(id=self.item.id).aexists()
-        self.assertTrue(item_exists)
+        # Verify item still exists
+        item = await Item.objects.aget(id=self.item.id)
+        self.assertEqual(item.id, self.item.id)
+
+    async def test_delete_nonexistent_item(self) -> None:
+        """Test deleting a non-existent item raises DoesNotExist."""
+        non_existent_id = 99999
+
+        with self.assertRaises(Item.DoesNotExist):
+            await self.repo.delete_item(non_existent_id, self.user)

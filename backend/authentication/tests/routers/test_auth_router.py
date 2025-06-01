@@ -1,12 +1,11 @@
 """Contains tests for the authentication routes."""
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
+from django.urls import reverse
 
-REGISTER_ENDPOINT = "/api/v1/auth/register"
-LOGIN_ENDPOINT = "/api/v1/auth/login"
-LOGOUT_ENDPOINT = "/api/v1/auth/logout"
+from authentication.tests.factory import NewUserSchemaFactory, UserFactory
+
 CONTENT_TYPE = "application/json"
 SUCCESS_REGISTER_MESSAGE = "User successfully registered."
 SUCCESS_LOGIN_MESSAGE = "User successfully logged in."
@@ -16,20 +15,15 @@ TEST_EMAIL = "test@login.com"
 class TestAuthentication(TestCase):
     """Tests for the authentication app."""
 
+    def setUp(self) -> None:
+        """Set up the test."""
+        self.client = Client()
+
     def test_register(self) -> None:
         """Test the register endpoint."""
-        client = Client()
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test",
-                "email": "test@testuser.com",
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
+        response = self.client.post(
+            reverse("ninja-api:auth_register"),
+            NewUserSchemaFactory.create().model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -38,26 +32,12 @@ class TestAuthentication(TestCase):
 
     def test_register_with_already_logged_in_user(self) -> None:
         """Test the register endpoint with an already logged in user."""
-        test_user = User.objects.create_user(
-            username="testalreadyloggedin",
-            email="testalreadyloggedin@gmail.com",
-            password="testalreadyloggedinpassword",
-        )
-        test_user.save()
+        test_user = UserFactory.create()
+        self.client.force_login(test_user)
 
-        client = Client()
-        client.force_login(test_user)
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "testuser",
-                "email": "testnewuser@user.com",
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
+        response = self.client.post(
+            reverse("ninja-api:auth_register"),
+            NewUserSchemaFactory.create().model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -66,18 +46,16 @@ class TestAuthentication(TestCase):
 
     def test_register_with_incomplete_details(self) -> None:
         """Test the register endpoint with incomplete details."""
-        client = Client()
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test",
-                "email": "",
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "",
-                "last_name": "",
-            },
+        response = self.client.post(
+            reverse("ninja-api:auth_register"),
+            NewUserSchemaFactory.create(
+                username="",
+                email="",
+                password="",
+                password_confirmation="",
+                first_name="",
+                last_name="",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -89,25 +67,18 @@ class TestAuthentication(TestCase):
 
     def test_register_user_with_existing_username(self) -> None:
         """Test the register endpoint with an existing username."""
-        test_user = User.objects.create_user(
-            username="testuser",
-            email="testusername@user.com",
-            password="testuserpassword",
-        )
-        test_user.save()
+        UserFactory.create(username="testuser")
 
-        client = Client()
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "testuser",
-                "email": "tester@test.com",
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
+        response = self.client.post(
+            reverse("ninja-api:auth_register"),
+            NewUserSchemaFactory.create(
+                username="testuser",
+                email="testusername@user.com",
+                password="testuserpassword",
+                password_confirmation="testuserpassword",
+                first_name="test",
+                last_name="user",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -116,25 +87,18 @@ class TestAuthentication(TestCase):
 
     def test_register_user_with_existing_email(self) -> None:
         """Test the register endpoint with an existing email."""
-        test_user = User.objects.create_user(
-            username="testuser",
-            email="testemail@user.com",
-            password="testuserpassword",
-        )
-        test_user.save()
+        UserFactory.create(email="testemail@user.com")
 
-        client = Client()
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "tester",
-                "email": "testemail@user.com",
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
+        response = self.client.post(
+            reverse("ninja-api:auth_register"),
+            NewUserSchemaFactory.create(
+                username="testuser",
+                email="testemail@user.com",
+                password="testpassword",
+                password_confirmation="testpassword",
+                first_name="test",
+                last_name="user",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -143,18 +107,16 @@ class TestAuthentication(TestCase):
 
     def test_register_with_non_matching_passwords(self) -> None:
         """Test the register endpoint with non matching passwords."""
-        client = Client()
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test",
-                "email": "testpassword@test.com",
-                "password": "testpassword",
-                "password_confirmation": "testpassword1",
-                "first_name": "test",
-                "last_name": "user",
-            },
+        response = self.client.post(
+            reverse("ninja-api:auth_register"),
+            NewUserSchemaFactory.create(
+                username="test",
+                email="testpassword@test.com",
+                password="testpassword",
+                password_confirmation="testpassword1",
+                first_name="test",
+                last_name="user",
+            ).model_dump(),
             content_type=CONTENT_TYPE,
         )
 
@@ -166,65 +128,26 @@ class TestAuthentication(TestCase):
 
     def test_login_valid_credentials(self) -> None:
         """Test the login endpoint."""
-        client = Client()
+        user = UserFactory.create()
 
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test-login",
-                "email": TEST_EMAIL,
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
-            content_type=CONTENT_TYPE,
-        )
-
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
-
-        response = client.post(
-            LOGIN_ENDPOINT,
-            {"username": "test-login", "password": "testpassword"},
+        response = self.client.post(
+            reverse("ninja-api:auth_login"),
+            {"username": user.username, "password": "test"},
             content_type=CONTENT_TYPE,
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""})
 
-    def test_login_retry(self) -> None:
-        """Test the login endpoint."""
-        client = Client()
+    def test_login_while_already_logged_in(self) -> None:
+        """Test the login endpoint while already logged in."""
+        user = UserFactory.create()
 
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test-login",
-                "email": TEST_EMAIL,
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
-            content_type=CONTENT_TYPE,
-        )
+        self.client.force_login(user)
 
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
-
-        response = client.post(
-            LOGIN_ENDPOINT,
-            {"username": "test-login", "password": "testpassword"},
-            content_type=CONTENT_TYPE,
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""})
-
-        response = client.post(
-            LOGIN_ENDPOINT,
-            {"username": "test-login", "password": "testpassword"},
+        response = self.client.post(
+            reverse("ninja-api:auth_login"),
+            {"username": user.username, "password": "test"},
             content_type=CONTENT_TYPE,
         )
 
@@ -233,27 +156,9 @@ class TestAuthentication(TestCase):
 
     def test_login_invalid_credentials(self) -> None:
         """Test the login endpoint."""
-        client = Client()
-
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test-login",
-                "email": TEST_EMAIL,
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
-            content_type=CONTENT_TYPE,
-        )
-
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
-
-        response = client.post(
-            LOGIN_ENDPOINT,
-            {"username": "test-login", "password": "test"},
+        response = self.client.post(
+            reverse("ninja-api:auth_login"),
+            {"username": "invaliduser", "password": "invalidpassword"},
             content_type=CONTENT_TYPE,
         )
 
@@ -262,34 +167,11 @@ class TestAuthentication(TestCase):
 
     def test_logout(self) -> None:
         """Test the logout endpoint."""
-        client = Client()
+        user = UserFactory.create()
 
-        response = client.post(
-            REGISTER_ENDPOINT,
-            {
-                "username": "test-login",
-                "email": TEST_EMAIL,
-                "password": "testpassword",
-                "password_confirmation": "testpassword",
-                "first_name": "test",
-                "last_name": "user",
-            },
-            content_type=CONTENT_TYPE,
-        )
+        self.client.force_login(user)
 
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {"message": SUCCESS_REGISTER_MESSAGE, "detail": ""})
-
-        response = client.post(
-            LOGIN_ENDPOINT,
-            {"username": "test-login", "password": "testpassword"},
-            content_type=CONTENT_TYPE,
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"message": SUCCESS_LOGIN_MESSAGE, "detail": ""})
-
-        response = client.post(LOGOUT_ENDPOINT)
+        response = self.client.post(reverse("ninja-api:auth_logout"))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -298,9 +180,7 @@ class TestAuthentication(TestCase):
 
     def test_logout_without_being_logged_in(self) -> None:
         """Test the logout endpoint."""
-        client = Client()
-
-        response = client.post(LOGOUT_ENDPOINT)
+        response = self.client.post(reverse("ninja-api:auth_logout"))
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"detail": "User is not logged in."})

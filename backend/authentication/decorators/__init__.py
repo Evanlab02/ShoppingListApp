@@ -10,7 +10,6 @@ from .login import (
 )
 
 log = logging.getLogger(__name__)
-log.info("Loading auth decorators...")
 
 __all__ = [
     "async_login_required",

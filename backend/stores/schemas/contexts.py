@@ -11,7 +11,6 @@ from stores.schemas.output import (
 )
 
 log = logging.getLogger(__name__)
-log.info("Store context schemas loading...")
 
 
 class StoreContext(BaseContext):
@@ -31,6 +30,3 @@ class StoreOverviewContext(BaseContext):
 
     pagination: StorePaginationSchema
     aggregation: StoreAggregationSchema | None
-
-
-log.info("Store context schemas loaded.")

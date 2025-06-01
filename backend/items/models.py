@@ -2,6 +2,7 @@
 
 import logging
 
+from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from django.db.models import (
     CASCADE,
@@ -16,23 +17,34 @@ from django.db.models import (
 from stores.models import ShoppingStore as Store
 
 log = logging.getLogger(__name__)
-log.info("Items models loading...")
 
 
 class ShoppingItem(Model):
     """Model for a shopping item."""
+
+    class Meta:
+        """Meta class for the shopping item model."""
+
+        unique_together = ("name", "store")
 
     name = CharField(max_length=100)
     description = TextField(blank=True)
     price = DecimalField(max_digits=10, decimal_places=2)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
-    store = ForeignKey(Store, on_delete=CASCADE)
-    user = ForeignKey(User, on_delete=CASCADE)
+    store = ForeignKey(Store, on_delete=CASCADE, related_name="items", db_index=True)
+    user = ForeignKey(User, on_delete=CASCADE, db_index=True)
 
     def __str__(self) -> str:
         """Return a string representation of the shopping item."""
         return f"{self.name}@{self.store.name}"
 
+    async def astore(self) -> Store:
+        """Get the store for the item asynchronously."""
+        func = sync_to_async(lambda: self.store)
+        return await func()
 
-log.info("Items models loaded.")
+    async def auser(self) -> User:
+        """Get the user for the item asynchronously."""
+        func = sync_to_async(lambda: self.user)
+        return await func()

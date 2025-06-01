@@ -1,1 +1,1 @@
-"""Contains tests for the store app repositories."""
+"""Contains tests for the repositories of the stores app."""

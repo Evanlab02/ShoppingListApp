@@ -1,8 +1,16 @@
 .PHONY: static clean format lint test coverage unit-test api-test e2e-test requirements
 
 static:
-	@rm -rf static/
-	@python manage.py collectstatic --no-input
+	@export SHOPPING_DEV=1 && \
+	rm -rf static/ && \
+	python manage.py collectstatic --no-input
+	@npx @tailwindcss/cli -i ./styles/tailwind.css -o ./static/tailwind.css
+
+static-watch:
+	@export SHOPPING_DEV=1 && \
+	rm -rf static/ && \
+	python manage.py collectstatic --no-input
+	@npx @tailwindcss/cli -i ./styles/tailwind.css -o ./static/tailwind.css --watch
 
 clean:
 	@rm -rf .mypy_cache \
@@ -27,28 +35,13 @@ lint:
 	@mypy . --strict
 
 test:
-	@pytest . -n auto --cov=. --no-cov-on-fail --cov-report term-missing
+	@pytest . --cov=. --no-cov-on-fail --cov-report term-missing
 	@coverage xml
 	@coverage html
 
 coverage:
 	@python -m http.server --directory htmlcov
 
-unit-test:
-	@pytest . -vv --cov=. --no-cov-on-fail --cov-report term-missing \
-	--ignore=authentication/tests/api/ \
-	--ignore=authentication/tests/E2E/ \
-	--ignore=items/tests/api/ \
-	--ignore=items/tests/E2E/ \
-	--ignore=stores/tests/api/ \
-	--ignore=stores/tests/E2E/ \
-
-api-test:
-	@pytest **/tests/api/ -vv
-
-e2e-test:
-	@pytest **/tests/E2E/ -n auto
-
 requirements:
-	pipenv requirements > requirements.txt
-	pipenv requirements --dev > requirements-dev.txt
+	uv pip compile requirements.in -o requirements.txt
+	uv pip compile requirements.dev.in -o requirements.dev.txt

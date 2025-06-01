@@ -7,7 +7,6 @@ from decimal import Decimal
 from ninja import Schema
 
 log = logging.getLogger(__name__)
-log.info("Item input schemas loading...")
 
 
 class NewItem(Schema):
@@ -21,6 +20,15 @@ class NewItem(Schema):
 
 class UpdateItem(Schema):
     """Update Item Schema."""
+
+    store_id: int
+    name: str
+    price: float
+    description: str
+
+
+class PatchItem(Schema):
+    """Patch Item Schema."""
 
     store_id: int | None = None
     name: str | None = None
@@ -43,6 +51,3 @@ class ItemSearchSchema(Schema):
     price: str | Decimal | None = None
     price_is_lt: float | None = None
     price_is_gt: float | None = None
-
-
-log.info("Item input schemas loaded.")

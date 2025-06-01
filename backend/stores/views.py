@@ -4,12 +4,14 @@ import logging
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from authentication.decorators import async_login_required
-from shoppingapp.schemas.shared import BaseContext
+from authentication.decorators import login_required
+from authentication.decorators.login import async_login_required
+from items.services.item_service import ItemService
 from shoppingapp.utilities.utils import get_overview_params
-from stores.errors.api_exceptions import (
+from stores.errors.exceptions import (
     InvalidStoreType,
     StoreAlreadyExists,
     StoreDoesNotExist,
@@ -20,10 +22,12 @@ from stores.schemas.contexts import (
     StoreOverviewContext,
 )
 from stores.schemas.input import NewStore
-from stores.services import store_service
+from stores.schemas.output import StoreSchema
+from stores.services.store_service import StoreService
 
 log = logging.getLogger(__name__)
-log.info("Stores app views loading...")
+SERVICE = StoreService()
+ITEM_SERVICE = ItemService()
 
 CREATE_PAGE = "create"
 CREATE_ACTION = "create/action"
@@ -37,8 +41,8 @@ DELETE_ACTION = "delete/action"
 
 
 @require_http_methods(["GET"])
-@async_login_required
-async def create_page(request: HttpRequest) -> HttpResponse:
+@login_required
+def create_page(request: HttpRequest) -> HttpResponse:
     """
     Render the create page.
 
@@ -49,11 +53,14 @@ async def create_page(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     error = request.GET.get("error")
-    context = BaseContext(
-        page_title="Create Store",
-        error=error,
+    return render(
+        request=request,
+        template_name="stores/create.html",
+        context={
+            "page_title": "Create Store",
+            "error": error,
+        },
     )
-    return render(request, "stores/create.html", context.model_dump())
 
 
 @require_http_methods(["POST"])
@@ -78,7 +85,7 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
 
     if not store_name or not store_type:
         return HttpResponseRedirect(
-            f"/stores/{CREATE_PAGE}?error=Store name and type are required."
+            f"{reverse("store_create_page")}?error=Store name and type are required."
         )
 
     new_store = NewStore(
@@ -88,11 +95,11 @@ async def create_page_action(request: HttpRequest) -> HttpResponse:
     )
 
     try:
-        store = await store_service.create(new_store, user)
-        store_id = store.id  # type: ignore
-        return HttpResponseRedirect(f"/stores/detail/{store_id}")
+        store = await SERVICE.create(new_store, user)
+        store_id = store.id
+        return HttpResponseRedirect(f"{reverse("store_detail_page", args=[store_id])}")
     except (StoreAlreadyExists, InvalidStoreType) as error:
-        return HttpResponseRedirect(f"/stores/{CREATE_PAGE}?error={str(error)}")
+        return HttpResponseRedirect(f"{reverse("store_create_page")}?error={str(error)}")
 
 
 @require_http_methods(["GET"])
@@ -113,17 +120,24 @@ async def detail_page(request: HttpRequest, store_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await get_overview_params(request=request)
+    params = get_overview_params(request=request)
     page = params.get("page", 1)
     limit = params.get("limit", 10)
 
     try:
-        store, items = await store_service.get_store_detail_with_items(
-            store_id=store_id, page_number=page, items_per_page=limit
+        store = await SERVICE.get_store(
+            store_id=store_id,
         )
+        items = await ITEM_SERVICE.search_items(
+            store_id=store_id,
+            page=page,
+            limit=limit,
+        )
+
+        store_schema = StoreSchema.from_orm(store)
         context = StoreDetailContext(
-            store=store,
-            page_title=f"Store - {store.name}",  # type: ignore
+            store=store_schema,
+            page_title=f"Store - {store.name}",
             is_personal=False,
             show_advanced_navigation=True,
             items=items,
@@ -152,9 +166,9 @@ async def _get_overview_context(
         (await request.auser(), "Your Stores") if is_personalized else (None, "All Stores")
     )
 
-    pagination = await store_service.get_stores(limit=limit, page_number=page, user=user)
-    aggregation = await store_service.aggregate(user=user)
-    context = StoreOverviewContext(
+    pagination = await SERVICE.get_stores(limit=limit, page_number=page, user=user)
+    aggregation = await SERVICE.aggregate(user=user)
+    return StoreOverviewContext(
         pagination=pagination,
         aggregation=aggregation,
         page_title=page_title,
@@ -162,7 +176,6 @@ async def _get_overview_context(
         is_personal=is_personalized,
         show_advanced_navigation=True,
     )
-    return context
 
 
 @require_http_methods(["GET"])
@@ -181,7 +194,7 @@ async def overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await get_overview_params(request)
+    params = get_overview_params(request)
     context = await _get_overview_context(request, params)
     return render(request, "stores/overview.html", context.model_dump())
 
@@ -202,7 +215,7 @@ async def personal_overview_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    params = await get_overview_params(request)
+    params = get_overview_params(request)
     context = await _get_overview_context(request, params, True)
     return render(request, "stores/overview.html", context.model_dump())
 
@@ -222,11 +235,11 @@ async def update_page(request: HttpRequest, store_id: int) -> HttpResponse:
     """
     try:
         error = request.GET.get("error")
-        store = await store_service.get_store_detail(store_id=store_id)
+        store = await SERVICE.get_store(store_id=store_id)
         context = StoreContext(
             error=error,
             page_title="Update Store",
-            store=store,
+            store=StoreSchema.from_orm(store),
         )
         return render(request, "stores/update.html", context.model_dump())
     except StoreDoesNotExist:
@@ -246,7 +259,7 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response from the API.
     """
-    formatted_store_type: str | int | None = None
+    formatted_store_type: int | str | None = None
     user = await request.auser()
     store_name = request.POST.get("store-input")
     store_type = request.POST.get("store-type-input")
@@ -258,7 +271,7 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
         formatted_store_type = store_type
 
     try:
-        await store_service.update_store(
+        await SERVICE.update(
             store_id=store_id,
             user=user,
             store_name=store_name,
@@ -266,33 +279,35 @@ async def update_action(request: HttpRequest, store_id: int) -> HttpResponse:
             store_description=store_description,
         )
     except (StoreAlreadyExists, InvalidStoreType) as error:
-        return HttpResponseRedirect(f"/stores/update/{store_id}?error={error}")
+        return HttpResponseRedirect(
+            f"{reverse('store_update_page', args=[store_id])}?error={error}"
+        )
     except StoreDoesNotExist:
         return HttpResponse("Store does not exist or does not belong to you.", status=404)
 
-    return HttpResponseRedirect(f"/stores/detail/{store_id}")
+    return HttpResponseRedirect(f"{reverse('store_detail_page', args=[store_id])}")
 
 
 @require_http_methods(["GET"])
 @async_login_required
 async def delete_page(request: HttpRequest, store_id: int) -> HttpResponse:
     """
-    Retrieve/render the delete page.
+        Retrieve/render the delete page.
 
     Args:
-        request(HttpRequest): The HTTP Request.
+        request (HttpRequest): The HTTP Request.
         store_id (int): The store id of the store to delete.
 
-    Response:
+    Returns:
         HttpResponse: The HTTP Response.
     """
     try:
         error = request.GET.get("error")
-        store = await store_service.get_store_detail(store_id=store_id)
+        store = await SERVICE.get_store(store_id=store_id)
         context = StoreContext(
             error=error,
             page_title="Delete Store",
-            store=store,
+            store=StoreSchema.from_orm(store),
         )
         return render(request, "stores/delete.html", context.model_dump())
     except StoreDoesNotExist:
@@ -329,8 +344,5 @@ async def delete_action(request: HttpRequest) -> HttpResponse:
         )
 
     user = await request.auser()
-    await store_service.delete_store(store_id=formatted_store_id, user=user)
-    return HttpResponseRedirect("/stores/me")
-
-
-log.info("Stores app views loaded.")
+    await SERVICE.delete(store_id=formatted_store_id, user=user)
+    return HttpResponseRedirect(reverse("store_personal_overview_page"))

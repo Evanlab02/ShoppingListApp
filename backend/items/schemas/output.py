@@ -9,7 +9,6 @@ from shoppingapp.schemas.shared import PaginationSchema, UserSchema
 from stores.schemas.output import StoreSchemaNoUser
 
 log = logging.getLogger(__name__)
-log.info("Item output schemas loading...")
 
 
 class ItemSchema(ModelSchema):
@@ -46,6 +45,3 @@ class ItemAggregationSchema(Schema):
     average_price: float | None = None
     max_price: float | None = None
     min_price: float | None = None
-
-
-log.info("Item output schemas loaded.")

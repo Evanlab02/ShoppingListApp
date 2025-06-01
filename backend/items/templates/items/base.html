@@ -1,53 +1,83 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en-US" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping App</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.9.0/cdn/themes/light.css" />
-    <script type="module"
-        src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.9.0/cdn/shoelace-autoloader.js"></script>
-
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'base/base.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'tailwind.css' %}">
     {% block static %}
     {% endblock %}
 </head>
 
-<body class="body-block">
-    <header class="navbar">
-        <div class="navbar-item">
-            <h2>{{ page_title }}</h2>
-            <div class="menu-list-button">
-                <sl-icon-button name="speedometer" onclick="window.location.href='/shopping/dashboard/'" />
+<body class="min-h-screen bg-base-100">
+    <nav class="navbar bg-[#602786] text-white shadow-lg" role="navigation" aria-label="Main navigation">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <button type="button" class="btn btn-ghost text-white lg:hidden" aria-label="Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </button>
+                <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="{% url 'dashboard' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your dashboard" aria-label="Go to Dashboard"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Dashboard</a></li>
+                    {% if not is_overview %}
+                    <li><a href="{% url 'item_personalized_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your personal items" aria-label="View My Items"><i class="fas fa-shopping-bag" aria-hidden="true"></i> My Items</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'store_personal_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View your stores" aria-label="View My Stores"><i class="fas fa-store" aria-hidden="true"></i> My Stores</a></li>
+                    {% if not is_personal and show_advanced_navigation and is_overview %}
+                    <li><a href="{% url 'item_personalized_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="Switch to personal view" aria-label="Switch to Personal View"><i class="fas fa-user" aria-hidden="true"></i> My Items</a></li>
+                    {% endif %}
+                    {% if is_personal and show_advanced_navigation and is_overview %}
+                    <li><a href="{% url 'item_overview_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="View all items" aria-label="View All Items"><i class="fas fa-users" aria-hidden="true"></i> All Items</a></li>
+                    {% endif %}
+                    {% if show_advanced_navigation %}
+                    <li><a href="{% url 'item_create_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white tooltip tooltip-right" data-tip="Create a new item" aria-label="Create New Item"><i class="fas fa-plus-circle" aria-hidden="true"></i> Create Item</a></li>
+                    {% endif %}
+                </ul>
             </div>
-            {% if not is_overview %}
-            <div class="menu-list-button">
-                <sl-icon-button name="bag" onclick="window.location.href='/items/me'" />
-            </div>
-            {% endif %}
-            <div class="menu-list-button">
-                <sl-icon-button name="shop-window" onclick="window.location.href='/stores/me'" />
-            </div>
-            {% if not is_personal and show_advanced_navigation and is_overview %}
-            <div class="menu-list-button">
-                <sl-icon-button name="person" onclick="window.location.href='/items/me'" />
-            </div>
-            {% endif %}
-            {% if is_personal and show_advanced_navigation and is_overview %}
-            <div class="menu-list-button">
-                <sl-icon-button name="people" onclick="window.location.href='/items'" />
-            </div>
-            {% endif %}
-            {% if show_advanced_navigation %}
-            <div class="menu-list-button">
-                <sl-icon-button name="plus-circle" onclick="window.location.href='/items/create'" />
-            </div>
-            {% endif %}
+            <h1 class="text-xl font-semibold">{{ page_title }}</h1>
         </div>
-    </header>
-    {% block content %}
-    {% endblock %}
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="{% url 'dashboard' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your dashboard" aria-label="Go to Dashboard"><i class="fas fa-tachometer-alt" aria-hidden="true"></i></a></li>
+                {% if not is_overview %}
+                <li><a href="{% url 'item_personalized_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your personal items" aria-label="View My Items"><i class="fas fa-shopping-bag" aria-hidden="true"></i></a></li>
+                {% endif %}
+                <li><a href="{% url 'store_personal_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View your stores" aria-label="View My Stores"><i class="fas fa-store" aria-hidden="true"></i></a></li>
+                {% if not is_personal and show_advanced_navigation and is_overview %}
+                <li><a href="{% url 'item_personalized_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="Switch to personal view" aria-label="Switch to Personal View"><i class="fas fa-user" aria-hidden="true"></i></a></li>
+                {% endif %}
+                {% if is_personal and show_advanced_navigation and is_overview %}
+                <li><a href="{% url 'item_overview_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="View all items" aria-label="View All Items"><i class="fas fa-users" aria-hidden="true"></i></a></li>
+                {% endif %}
+                {% if show_advanced_navigation %}
+                <li><a href="{% url 'item_create_page' %}" class="text-white hover:bg-[#562f6f] tooltip tooltip-bottom" data-tip="Create a new item" aria-label="Create New Item"><i class="fas fa-plus-circle" aria-hidden="true"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown dropdown-end">
+                <button type="button" class="btn btn-ghost btn-circle text-white" aria-label="User menu">
+                    <div class="w-10 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-2xl" aria-hidden="true"></i>
+                    </div>
+                </button>
+                <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a class="text-black" aria-label="View Profile" disabled aria-disabled="true">Profile (Coming Soon)</a></li>
+                    <li><a class="text-black" aria-label="View Settings" disabled aria-disabled="true">Settings (Coming Soon)</a></li>
+                    <li><a href="{% url 'logout_page' %}" class="text-[#602786] hover:bg-[#562f6f] hover:text-white" aria-label="Logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
+</html>

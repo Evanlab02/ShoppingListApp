@@ -1,0 +1,6 @@
+[run]
+branch = False
+omit =
+    ./tests/*
+    ./**/tests/*
+    ./conftest.py

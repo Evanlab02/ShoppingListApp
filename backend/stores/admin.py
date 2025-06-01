@@ -8,7 +8,6 @@ from django.contrib.admin import ModelAdmin
 from stores.models import ShoppingStore as Store
 
 log = logging.getLogger(__name__)
-log.info("Loading stores admin config...")
 
 
 class StoreAdmin(ModelAdmin):  # type: ignore
@@ -36,5 +35,3 @@ class StoreAdmin(ModelAdmin):  # type: ignore
 
 
 admin.site.register(Store, StoreAdmin)
-
-log.info("Loaded stores admin config.")

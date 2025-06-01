@@ -1,4 +1,4 @@
-"""Contains store router functions."""
+"""Contains store router."""
 
 import logging
 from typing import Literal
@@ -6,43 +6,26 @@ from typing import Literal
 from django.http import HttpRequest
 from ninja import Router
 
-from authentication.auth.api_key import ApiKey
+from authentication.auth import TOKEN_AUTH
 from shoppingapp.schemas.shared import DeleteSchema
 from stores.constants import STORE_TYPE_MAPPING
-from stores.schemas.input import NewStore, StoreDescription, StoreSearch
+from stores.models import ShoppingStore as Store
+from stores.schemas.input import NewStore, StorePatch, StoreSearch, StoreUpdate
 from stores.schemas.output import (
     StoreAggregationSchema,
     StorePaginationSchema,
     StoreSchema,
 )
-from stores.services import store_service
+from stores.services.store_service import StoreService
 
-store_router = Router(tags=["Stores"], auth=ApiKey())
-
+store_router = Router(tags=["Stores"], auth=TOKEN_AUTH)
 
 log = logging.getLogger(__name__)
-log.info("Store router loading...")
+
+SERVICE = StoreService()
 
 
-@store_router.post("/create", response={201: StoreSchema})
-async def create_store(request: HttpRequest, new_store: NewStore) -> StoreSchema:
-    """
-    Create a new store.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-        new_store (NewStore): The new store data.
-
-    Returns:
-        StoreSchema: The created store.
-    """
-    log.info("User requested to create a store.")
-    user = await request.auser()
-    store = await store_service.create(new_store, user)
-    return store
-
-
-@store_router.get("/types/mapping")
+@store_router.get("/types/mapping", url_name="store_types_mapping")
 async def get_mapping(request: HttpRequest) -> dict[int, str]:
     """
     Get the store types mapping.
@@ -53,61 +36,26 @@ async def get_mapping(request: HttpRequest) -> dict[int, str]:
     Returns:
         dict[int, str]: The mapping.
     """
-    log.info("User requested store type mapping.")
     return STORE_TYPE_MAPPING
 
 
-@store_router.get("/detail/{store_id}", response={200: StoreSchema})
-async def get_store_detail(request: HttpRequest, store_id: int) -> StoreSchema:
+@store_router.post("", response={201: StoreSchema}, url_name="store_create")
+async def create_store(request: HttpRequest, new_store: NewStore) -> Store:
     """
-    Get the store details.
+    Create a new store.
 
     Args:
         request (HttpRequest): The HTTP request.
-        store_id (int): The store ID.
+        new_store (NewStore): The new store data.
 
     Returns:
-        StoreSchema: The store details.
-    """
-    log.info(f"User requested store detail for store: {store_id}.")
-    store = await store_service.get_store_detail(store_id)
-    return store
-
-
-@store_router.get("/aggregate", response={200: StoreAggregationSchema})
-async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
-    """
-    Get the store aggregation.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        StoreAggregationSchema: The store aggregation.
-    """
-    log.info("User requested store aggregation.")
-    result = await store_service.aggregate()
-    return result
-
-
-@store_router.get("/aggregate/me", response={200: StoreAggregationSchema})
-async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregationSchema:
-    """
-    Get the store aggregation by user.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        StoreAggregationSchema: The store aggregation by user.
+        StoreSchema: The created store.
     """
     user = await request.auser()
-    log.info("User requested personal store aggregation.")
-    result = await store_service.aggregate(user=user)
-    return result
+    return await SERVICE.create(new_store, user)
 
 
-@store_router.get("", response={200: StorePaginationSchema})
+@store_router.get("", response={200: StorePaginationSchema}, url_name="store_get")
 async def get_stores(
     request: HttpRequest,
     limit: int = 10,
@@ -128,12 +76,10 @@ async def get_stores(
     Returns:
         StorePaginationSchema: The stores.
     """
-    log.info(f"User requested stores with limit ({limit}) for page: {page}.")
-    result = await store_service.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
-    return result
+    return await SERVICE.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
 
 
-@store_router.get("/me", response={200: StorePaginationSchema})
+@store_router.get("/me", response={200: StorePaginationSchema}, url_name="store_get_me")
 async def get_personal_stores(
     request: HttpRequest,
     limit: int = 10,
@@ -155,19 +101,99 @@ async def get_personal_stores(
         StorePaginationSchema: The stores.
     """
     user = await request.auser()
-    log.info(f"User requested personal stores with limit ({limit}) for page: {page}.")
-    result = await store_service.get_stores(limit, page, user, sort, sort_dir)
-    return result
+    return await SERVICE.get_stores(limit, page, user, sort, sort_dir)
 
 
-@store_router.patch("/update/{store_id}", response={200: StoreSchema})
-async def update_store(
+@store_router.post("/search", response={200: StorePaginationSchema}, url_name="store_search")
+async def search(
+    request: HttpRequest,
+    filters: StoreSearch,
+    page: int = 1,
+    limit: int = 10,
+    sort: Literal["name", "created_on", "updated_on"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
+) -> StorePaginationSchema:
+    """
+    Perform search for stores.
+
+    Args:
+        request (HttpRequest): The HTTP request to the API.
+        filters (StoreSearch): The body containing the filters.
+        page (int): The page number.
+        limit (int): The number of stores per page.
+        sort (str | None): The field to sort by.
+        sort_dir (str | None): The direction to sort in.
+
+    Returns:
+        StorePaginationSchema: The stores in a paginated response.
+    """
+    user = None
+    if filters.own:
+        user = await request.auser()
+
+    return await SERVICE.search_stores(
+        page_number=page,
+        stores_per_page=limit,
+        name=filters.name,
+        user=user,  # type: ignore
+        search=filters,
+        sort=sort,
+        sort_dir=sort_dir,
+    )
+
+
+@store_router.get("/aggregate", response={200: StoreAggregationSchema}, url_name="store_aggregate")
+async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
+    """
+    Get the store aggregation.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        StoreAggregationSchema: The store aggregation.
+    """
+    return await SERVICE.aggregate()
+
+
+@store_router.get(
+    "/aggregate/me", response={200: StoreAggregationSchema}, url_name="store_aggregate_me"
+)
+async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregationSchema:
+    """
+    Get the store aggregation by user.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        StoreAggregationSchema: The store aggregation by user.
+    """
+    user = await request.auser()
+    return await SERVICE.aggregate(user=user)
+
+
+@store_router.get("/{store_id}", response={200: StoreSchema}, url_name="store_get_detail")
+async def get_store_detail(request: HttpRequest, store_id: int) -> Store:
+    """
+    Get the store details.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        store_id (int): The store ID.
+
+    Returns:
+        StoreSchema: The store details.
+    """
+    return await SERVICE.get_store(store_id)
+
+
+@store_router.patch("/{store_id}", response={200: StoreSchema}, url_name="store_patch")
+async def patch_store(
     request: HttpRequest,
     store_id: int,
-    description: StoreDescription | None = None,
-    name: str | None = None,
-    store_type: str | None = None,
-) -> StoreSchema:
+    patch: StorePatch,
+) -> Store:
     """
     Update the store.
 
@@ -181,21 +207,32 @@ async def update_store(
     Returns:
         StoreSchema: The schema for the updated store.
     """
-    formatted_type: int | str | None = None
-    new_description = description.description if description else None
-
-    try:
-        formatted_type = int(store_type) if store_type else None
-    except ValueError:
-        formatted_type = store_type
-
     user = await request.auser()
-    log.info(f"User requested to update store: {store_id}")
-    result = await store_service.update_store(store_id, user, name, formatted_type, new_description)
-    return result
+    return await SERVICE.update(store_id, user, patch.name, patch.store_type, patch.description)
 
 
-@store_router.delete("/delete/{store_id}", response={200: DeleteSchema})
+@store_router.put("/{store_id}", response={200: StoreSchema}, url_name="store_put")
+async def update_store(
+    request: HttpRequest,
+    store_id: int,
+    update: StoreUpdate,
+) -> Store:
+    """
+    Update the store.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        store_id (int): The store id, the one you want to update.
+        update (StoreUpdate): The update payload.
+
+    Returns:
+        StoreSchema: The schema for the updated store.
+    """
+    user = await request.auser()
+    return await SERVICE.update(store_id, user, update.name, update.store_type, update.description)
+
+
+@store_router.delete("/{store_id}", response={200: DeleteSchema}, url_name="store_delete")
 async def delete_store(
     request: HttpRequest,
     store_id: int,
@@ -216,60 +253,8 @@ async def delete_store(
         StoreDoesNotExist: If there store_id is invalid or you do not own the store.
     """
     user = await request.auser()
-    log.info(f"User requested to delete store: {store_id}")
-    result = await store_service.delete_store(store_id=store_id, user=user)
-    return result
-
-
-@store_router.post("/search", response={200: StorePaginationSchema})
-async def search(
-    request: HttpRequest,
-    filters: StoreSearch,
-    page: int = 1,
-    limit: int = 10,
-    name: str | None = None,
-    own: bool = False,
-    sort: Literal["name", "created_on", "updated_on"] | None = None,
-    sort_dir: Literal["asc", "desc"] | None = None,
-) -> StorePaginationSchema:
-    """
-    Perform search for stores.
-
-    Args:
-        request (HttpRequest): The HTTP request to the API.
-        filters (StoreSearch): The body containing the filters.
-        page (int): The page number.
-        limit (int): The number of stores per page.
-        name (str): Full or partial name to search for.
-        own (bool): Flag indicating if you would like to see only your own stores.
-        sort (str | None): The field to sort by.
-        sort_dir (str | None): The direction to sort in.
-
-    Returns:
-        StorePaginationSchema: The stores in a paginated response.
-    """
-    user = None
-    if own:
-        user = await request.auser()
-
-    log.info("User searching stores...")
-
-    return await store_service.search_stores(
-        page=page,
-        limit=limit,
-        name=name,
-        user=user,
-        ids=filters.ids,
-        store_types=filters.store_types,
-        created_on=filters.created_on,
-        created_before=filters.created_before,
-        created_after=filters.created_after,
-        updated_on=filters.updated_on,
-        updated_before=filters.updated_before,
-        updated_after=filters.updated_after,
-        sort=sort,
-        sort_dir=sort_dir,
+    await SERVICE.delete(store_id, user)
+    return DeleteSchema(
+        message="Store deleted successfully",
+        detail=f"Store with id #{store_id} has been deleted.",
     )
-
-
-log.info("Store router loaded.")

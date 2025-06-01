@@ -1,22 +1,22 @@
 """Contains tests for the dashboard router."""
 
-from django.test import Client
+from django.test import Client, TestCase
 
-from items.tests.base.base_test_case import BaseTestCase
+from authentication.tests.factory import UserFactory
 
 
-class TestDeleteEndpoint(BaseTestCase):
-    """Test the delete endpoint in the item router."""
+class TestDashboardRouter(TestCase):
+    """Test the dashboard router."""
 
     def setUp(self) -> None:
         """Set up the tests."""
-        super().setUp()
         self.client = Client()
+        self.user = UserFactory.create()
         self.client.force_login(self.user)
 
     def tearDown(self) -> None:
         """Tear down the tests."""
-        return super().tearDown()
+        self.user.delete()
 
     def test_session_overview_api(self) -> None:
         """Test the overview API."""

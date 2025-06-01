@@ -1,1 +1,1 @@
-"""Contains tests for the item app routers."""
+"""Contains tests for the item routers endpoints."""

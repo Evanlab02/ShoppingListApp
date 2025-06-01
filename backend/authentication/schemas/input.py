@@ -5,7 +5,6 @@ import logging
 from ninja import Schema
 
 log = logging.getLogger(__name__)
-log.info("Loading authentication input schemas...")
 
 
 class NewUser(Schema):
@@ -24,6 +23,3 @@ class UserCredentials(Schema):
 
     username: str
     password: str
-
-
-log.info("Loaded authentication input schemas.")

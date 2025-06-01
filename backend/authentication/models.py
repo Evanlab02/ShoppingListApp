@@ -1,66 +1,58 @@
 """Contains the models for the authentication app."""
 
 import logging
+from datetime import datetime, timedelta
 from uuid import uuid4
 
-from django.contrib.auth.hashers import make_password
+import jwt
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser, User
-from django.db.models import CASCADE, BooleanField, CharField, ForeignKey, Model
-
-from authentication.errors.api_exceptions import ApiClientAlreadyRegistered
+from django.core.cache import cache
+from django.db.models import (
+    CASCADE,
+    BooleanField,
+    CharField,
+    FloatField,
+    ForeignKey,
+    Model,
+)
 
 log = logging.getLogger(__name__)
-log.info("Auth app models loading...")
 
 
 class ApiClient(Model):
     """Model for an API client."""
 
-    name = CharField(max_length=255)
-    user = ForeignKey(User, on_delete=CASCADE)
-    is_active = BooleanField(default=False)
-    client_secret = CharField(max_length=255)
+    user = ForeignKey(User, on_delete=CASCADE, db_index=True)
+    is_active = BooleanField(default=True)
+    client_secret = CharField(max_length=255, default="", blank=True)
+    token = CharField(max_length=255, default="", blank=True, db_index=True, unique=True)
+    token_expiration = FloatField(default=0)
 
     def __str__(self) -> str:
         """Return the string representation of the model."""
         return f"ApiClient for {self.user.username}"
 
-    @classmethod
-    async def enable_client(cls, user: User | AbstractBaseUser | AnonymousUser) -> str:
+    async def get_token(self, user: User | AbstractBaseUser | AnonymousUser) -> tuple[str, str]:
         """
-        Enable a client.
-
-        Args:
-            user: The user to enable the client for.
+        Get a JWT token generated with the secret.
 
         Returns:
-            The client secret (Not accessible as plain text to the user after this).
+            tuple[str, str]: The token and its secret.
         """
-        client_secret = uuid4().hex
-
-        if await cls.objects.filter(user=user).aexists():
-            raise ApiClientAlreadyRegistered()
-
-        client = await cls.objects.acreate(
-            name=f"{user.username}'s API Client",  # type: ignore
-            user=user,
-            is_active=True,
-            client_secret=make_password(client_secret),
+        secret = uuid4().hex
+        expiration = (datetime.now() + timedelta(minutes=5)).timestamp()
+        jwt_token = jwt.encode(
+            {
+                "username": user.username,  # type: ignore
+                "client_id": self.id,
+                "exp": expiration,
+            },
+            secret,
+            algorithm="HS256",
         )
-        await client.asave()
-        return client_secret
-
-    @classmethod
-    async def disable_client(cls, user: User | AbstractBaseUser | AnonymousUser) -> None:
-        """
-        Disable a client.
-
-        Args:
-            user: The user to disable the client for.
-        """
-        client = await cls.objects.aget(user=user)
-        client.is_active = False
-        await client.asave()
-
-
-log.info("Auth app models loaded.")
+        self.token = jwt_token
+        self.token_expiration = expiration
+        self.client_secret = secret
+        await self.asave()
+        await cache.aset(f"client_{user.id}", self, timeout=240)  # type: ignore
+        return jwt_token, secret

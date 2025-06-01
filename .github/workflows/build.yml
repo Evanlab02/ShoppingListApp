@@ -13,7 +13,7 @@ env:
   UV_SYSTEM_PYTHON: 1
 
 jobs:
-  static-files-build:
+  static:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,10 +30,10 @@ jobs:
           quiet: false
           if-file-not-found: error
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.13
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v4
@@ -41,42 +41,72 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "backend/requirements.txt"
 
-      - name: Install dependencies
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.11.0"
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
         run: |
           uv pip install -r requirements.txt
+
+      - name: Install frontend dependencies
+        run: |
+          npm ci
+
+      - name: Check initial static files state
+        run: |
+          git status --porcelain static/ > /tmp/before_build.txt
 
       - name: Create/Build Static Files
         run: |
           python manage.py collectstatic --no-input
-
-  assets-files-build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20.17.0"
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Setup
-        run: |
-          npm ci
-
-      - name: Create/Build FE assets
-        run: |
           npm run build
 
-  docker-images-build:
+      - name: Check for static file changes
+        run: |
+          git status --porcelain static/ > /tmp/after_build.txt
+          if ! cmp -s /tmp/before_build.txt /tmp/after_build.txt; then
+            echo "Error: Static files have changed during build. Please commit the latest built files."
+            git diff static/
+            exit 1
+          fi
+
+  docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker Images
         run: |
-          docker build -f docker/admin/Dockerfile -t shopping-app .
-          docker build -f docker/server/Dockerfile -t shopping-app-admin .
-          docker build -f docker/site/Dockerfile -t shopping-app-site .
+          docker build -f docker/admin/Dockerfile -t shopping-app-admin .
+          docker build -f docker/server/Dockerfile -t shopping-app-server .
+          docker build -f docker/web/Dockerfile -t shopping-app-web .
+
+  docs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "docs/requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          uv pip install -r requirements.txt
+
+      - name: Build Docs
+        run: |
+          mkdocs build

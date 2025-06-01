@@ -1,0 +1,12 @@
+django
+django-ninja
+uvicorn
+gunicorn
+uvicorn-worker
+psycopg[binary, pool]
+argon2-cffi
+docutils
+redis[hiredis]
+pyjwt
+cachetools
+django-silk

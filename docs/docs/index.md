@@ -12,13 +12,27 @@ This app allows households to **share items**, **stores**, and **shopping lists*
 
 **NOTE: ShoppingListApp is still under development and still on its way to V1 release.**
 
-**NOTE: Unfortunately, ShoppingListApp will have poor mobile support with the V1 release, this will be addressed in V2.**
-
 ## Tech Stack
 
-- **Backend:** Python
-- **Frontend:** React
-- **Containerization:** Docker
+**Backend:**
+
+  - Python 3.13
+  - Django 5.1.6
+  - Django Ninja 1.3.0
+
+**Frontend:**
+
+  - Django Templating
+  - Tailwind 4.1.7
+  - Daisy UI 5.0.35
+
+**Database:**
+
+  - Postgres 16.2
+
+**Cache:**
+
+  - Redis 7.4.1
 
 ## Features
 
@@ -35,6 +49,4 @@ Feel free to check it out, contribute, or just laugh at my coding choices. Happy
 
 ## Getting Started
 
-Please take a look at the docs to get started, you can view them [here](https://evanlab-gme8r.ondigitalocean.app/shopping/)
-
-Also remember that the docs are also available on the ShoppingListApp when running it at `<host>/docs/`
+Please take a look at the docs to get started, you can view them [here](https://evanlab02.github.io/ShoppingListApp/)

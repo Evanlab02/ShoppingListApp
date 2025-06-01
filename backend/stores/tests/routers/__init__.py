@@ -1,1 +1,1 @@
-"""Contains tests for the store routers."""
+"""Tests for the store routers."""

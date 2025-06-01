@@ -1,1 +1,1 @@
-"""Contains tests for the services on the stores app."""
+"""Contains the tests for the store services."""

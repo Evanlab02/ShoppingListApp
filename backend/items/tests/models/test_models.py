@@ -1,38 +1,32 @@
 """Test item app models."""
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 
-from items.models import ShoppingItem
-from stores.models import ShoppingStore as Store
+from authentication.tests.factory import UserFactory
+from items.tests.factory import ItemFactory
+from stores.tests.factory import StoreFactory
 
 
 class TestItemsApp(TestCase):
     """Test the items app."""
 
-    async def test_item_model_to_string(self) -> None:
+    def setUp(self) -> None:
+        """Set up the tests."""
+        self.user = UserFactory.create()
+        self.store = StoreFactory.create(user=self.user)
+        self.item = ItemFactory.create(user=self.user, store=self.store)
+        return super().setUp()
+
+    def test_item_model_to_string(self) -> None:
         """Test the item model to string method."""
-        user = await User.objects.acreate(
-            username="testuser",
-            email="testuser@gmail.com",
-            password="testpass",
-            first_name="Test",
-            last_name="User",
-        )
+        self.assertEqual(str(self.item), f"{self.item.name}@{self.item.store.name}")
 
-        store = await Store.objects.acreate(
-            name="Test Store",
-            store_type=1,
-            description="",
-            user=user,
-        )
+    async def test_get_store(self) -> None:
+        """Test the get store method."""
+        store = await self.item.astore()
+        self.assertEqual(store, self.store)
 
-        item = await ShoppingItem.objects.acreate(
-            name="My Test Item",
-            price=100,
-            description="",
-            user=user,
-            store=store,
-        )
-
-        self.assertEqual(str(item), "My Test Item@Test Store")
+    async def test_get_user(self) -> None:
+        """Test the get user method."""
+        user = await self.item.auser()
+        self.assertEqual(user, self.user)

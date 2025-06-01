@@ -1,11 +1,9 @@
 """Contains tests for the login view."""
 
-from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.urls import reverse
 
-from authentication.views import DASHBOARD_ROUTE, LOGIN_ROUTE
-
-TEST_EMAIL = "user@test.com"
+from authentication.tests.factory import UserFactory
 
 
 class TestLoginView(TestCase):
@@ -14,14 +12,7 @@ class TestLoginView(TestCase):
     def setUp(self) -> None:
         """Set up the test environment."""
         self.client = Client()
-        self.user = User.objects.create_user(
-            username="testuser",
-            email=TEST_EMAIL,
-            password="testpassword",
-            first_name="test",
-            last_name="user",
-        )
-        self.user.save()
+        self.user = UserFactory.create()
 
     def tearDown(self) -> None:
         """Tear down the test environment."""
@@ -30,13 +21,13 @@ class TestLoginView(TestCase):
 
     def test_get_login_page(self) -> None:
         """Test the login page."""
-        response = self.client.get(f"/{LOGIN_ROUTE}")
+        response = self.client.get(reverse("login_page"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "auth/index.html")
 
     def test_get_login_page_when_already_logged_in(self) -> None:
         """Test the login page."""
         self.client.force_login(self.user)
-        response = self.client.get(f"/{LOGIN_ROUTE}")
+        response = self.client.get(reverse("login_page"))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f"/{DASHBOARD_ROUTE}", 302, 404)
+        self.assertRedirects(response, reverse("dashboard"), 302, 200)

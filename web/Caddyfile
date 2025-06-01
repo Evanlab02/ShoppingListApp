@@ -1,0 +1,25 @@
+:80 {
+	handle_path /* {
+		reverse_proxy shopping-django-app:80
+	}
+
+	handle_path /admin/* {
+		reverse_proxy shopping-django-admin:80
+		rewrite * /admin{uri}
+	}
+
+	handle_path /pgadmin* {
+		rewrite * /pgadmin{uri}
+		reverse_proxy shopping-pgadmin:80
+	}
+
+	handle_path /static/* {
+		root * /var/www/html/static/
+		file_server
+	}
+
+	handle_path /docs/* {
+		root * /var/www/html/docs/
+		file_server
+	}
+}

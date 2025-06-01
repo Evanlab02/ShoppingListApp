@@ -157,3 +157,8 @@ cython_debug/
 
 secrets/*
 .env.dev
+.env.staging
+
+!backend/static/silk/lib/
+!backend/static/silk/lib/*
+node_modules

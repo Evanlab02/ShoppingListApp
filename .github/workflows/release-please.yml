@@ -17,11 +17,12 @@ jobs:
       patch: ${{ steps.release.outputs.patch }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
-          release-type: simple
           token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
   release-backend:
     runs-on: ubuntu-latest

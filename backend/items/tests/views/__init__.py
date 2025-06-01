@@ -1,1 +1,1 @@
-"""Contains tests for the views on the items app."""
+"""Contains the tests for the views of the items app."""

@@ -1,0 +1,15 @@
+-r requirements.txt
+black
+mypy
+flake8
+pydocstyle
+pytest
+isort
+pytest-django
+pytest-cov
+coverage
+flake8-docstrings
+pytest-sugar
+django-stubs
+factory_boy
+types-cachetools
