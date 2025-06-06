@@ -16,7 +16,7 @@ cffi==1.17.1
     # via argon2-cffi-bindings
 click==8.1.8
     # via uvicorn
-django==5.2.1
+django==5.2.2
     # via
     #   -r requirements.in
     #   django-ninja
@@ -39,7 +39,7 @@ hiredis==3.1.0
     # via redis
 packaging==24.2
     # via gunicorn
-psycopg==3.2.9
+psycopg[binary,pool]==3.2.9
     # via -r requirements.in
 psycopg-binary==3.2.9
     # via psycopg
@@ -55,7 +55,7 @@ pydantic-core==2.27.2
     # via pydantic
 pyjwt==2.10.1
     # via -r requirements.in
-redis==6.1.0
+redis[hiredis]==6.1.0
     # via -r requirements.in
 sqlparse==0.5.3
     # via
