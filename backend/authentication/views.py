@@ -79,22 +79,6 @@ async def login_action(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(f"{reverse('login_page')}?error={error}")
 
 
-@require_http_methods(["POST"])
-@async_login_required
-async def logout_action(request: HttpRequest) -> HttpResponse:
-    """
-    Handle the logout action.
-
-    Args:
-        request (HttpRequest): The request object.
-
-    Returns:
-        HttpResponse: The response object.
-    """
-    await service.logout(request)
-    return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
-
-
 @require_http_methods(["GET"])
 @async_login_required
 async def logout_view(request: HttpRequest) -> HttpResponse:
@@ -109,11 +93,28 @@ async def logout_view(request: HttpRequest) -> HttpResponse:
     """
     error = request.GET.get("error")
     user = await request.auser()
+
     if not repo.is_user_authenticated(user):
         log.warning("User is not logged in.")
         raise UserNotLoggedIn()
 
     return render(request, "auth/logout.html", {"error": error})
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def logout_action(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the logout action.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    await service.logout(request)
+    return HttpResponseRedirect(reverse("login_page"))
 
 
 @require_http_methods(["POST"])
