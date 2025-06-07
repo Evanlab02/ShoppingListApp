@@ -1,0 +1,22 @@
+{% extends "dashboard/err/base.html" %}
+
+{% block error_content %}
+<div class="mb-6">
+    <i class="fas fa-exclamation-triangle text-6xl text-warning mb-4"></i>
+    <h1 class="text-3xl font-bold text-error mb-2">400</h1>
+    <h2 class="text-xl font-semibold mb-4">Bad Request</h2>
+    <div class="alert alert-warning">
+        <i class="fas fa-info-circle"></i>
+        <span>The request could not be understood by the server. Please check your input and try again.</span>
+    </div>
+    {% if exception %}
+    <div class="alert alert-error mt-4">
+        <i class="fas fa-bug"></i>
+        <div>
+            <div class="font-semibold">Exception Details:</div>
+            <div class="text-sm mt-1 font-mono">{{ exception }}</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

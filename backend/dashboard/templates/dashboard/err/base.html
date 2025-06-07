@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en-US" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <title>Error - Shopping App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tailwind.css' %}">
+</head>
+
+<body class="min-h-screen bg-base-200">
+    <main class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md card bg-base-100 shadow-xl">
+            <div class="card-body text-center">
+                {% block error_content %}
+                {% endblock %}
+                
+                {% block navigation %}
+                <div class="divider"></div>
+                <div class="flex flex-col space-y-2">
+                    <a href="{% url 'dashboard' %}" class="btn bg-[#602786] text-white hover:bg-[#562f6f] w-full">
+                        <i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard
+                    </a>
+                    <a href="{% url 'login_page' %}" class="btn btn-outline w-full">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login Page
+                    </a>
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>
