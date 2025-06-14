@@ -10,51 +10,33 @@
         <div class="card-body">
             <h2 class="card-title text-2xl font-bold text-center mb-4">Update Item</h2>
             
-            {% if error %}
+            {% if form.errors %}
             <div class="alert alert-error mb-4">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>{{ error }}</span>
+                <span>{{ form.errors.as_text }}</span>
             </div>
             {% endif %}
 
-            <form method="post" action="{% url 'item_update_action' %}">
+            <form method="post">
                 {% csrf_token %}
                 <fieldset class="space-y-4">
                     <div>
-                        <legend class="text-lg font-semibold mb-4">Item Details</legend>
+                        <legend class="text-lg font-semibold mb-4">{{ form.instance.name }}</legend>
                     </div>
-                    <input type="hidden" name="item-id" value="{{ item.id }}">
+                    {% for field in form %}
                     <div class="form-control w-full">
-                        <label for="item-input" class="label">
-                            <span class="label-text">Item</span>
+                        <label for="{{ field.id_for_label }}" class="label">
+                            <span class="label-text">{{ field.label }}</span>
                         </label>
-                        <input type="text" name="item-input" id="item-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" placeholder="{{ item.name }}" required>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-red-500 text-sm flex flex-row items-center gap-2">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>{{ field.errors }}</span>
+                        </div>
+                        {% endif %}
                     </div>
-
-                    <div class="form-control w-full">
-                        <label for="store-input" class="label">
-                            <span class="label-text">Store</span>
-                        </label>
-                        <select name="store-input" id="store-input" class="select select-bordered w-full focus:border-[#602786] focus:outline-none">
-                            {% for store in stores %}
-                            <option value="{{store.id}}">{{store.name}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-control w-full">
-                        <label for="price-input" class="label">
-                            <span class="label-text">Price</span>
-                        </label>
-                        <input type="number" name="price-input" id="price-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" placeholder="{{ item.price }}" step="0.01" min="0" required>
-                    </div>
-
-                    <div class="form-control w-full">
-                        <label for="description-input" class="label">
-                            <span class="label-text">Description</span>
-                        </label>
-                        <input type="text" name="description-input" id="description-input" class="input input-bordered w-full focus:border-[#602786] focus:outline-none" placeholder="{{ item.description }}">
-                    </div>
+                    {% endfor %}
 
                     <div class="form-control mt-6">
                         <button type="submit" class="btn bg-[#602786] text-white hover:bg-[#562f6f] w-full">

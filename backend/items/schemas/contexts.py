@@ -4,7 +4,6 @@ import logging
 
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from shoppingapp.schemas.shared import BaseContext
-from stores.schemas.output import StoreSchema
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +19,3 @@ class ItemDetailContext(BaseContext):
     """Item detail context."""
 
     item: ItemSchema
-
-
-class ItemUpdateContext(BaseContext):
-    """Item update context."""
-
-    item: ItemSchema
-    stores: list[StoreSchema]

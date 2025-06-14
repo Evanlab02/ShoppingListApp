@@ -1,8 +1,10 @@
 """Contains shared schemas."""
 
 import logging
+from typing import Any
 
 from django.contrib.auth.models import User
+from django.forms import BaseForm
 from ninja import ModelSchema, Schema
 
 log = logging.getLogger(__name__)
@@ -45,3 +47,17 @@ class BaseContext(Schema):
     is_overview: bool = False
     show_advanced_navigation: bool = False
     error: str | None = None
+
+    def attach_form(self, form: BaseForm) -> dict[str, Any]:
+        """
+        Attach a form to the context and return the context as a dictionary.
+
+        Args:
+            form (BaseForm): The form to attach to the context.
+
+        Returns:
+            dict: The context as a dictionary.
+        """
+        context_dict = self.model_dump()
+        context_dict["form"] = form
+        return context_dict

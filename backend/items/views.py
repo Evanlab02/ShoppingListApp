@@ -2,19 +2,16 @@
 
 import logging
 
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from authentication.decorators.login import async_login_required, login_required
-from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
+from items.errors.exceptions import ItemDoesNotExist
 from items.forms.item import ItemForm
-from items.schemas.contexts import (
-    ItemDetailContext,
-    ItemOverviewContext,
-    ItemUpdateContext,
-)
+from items.models import ShoppingItem as Item
+from items.schemas.contexts import ItemDetailContext, ItemOverviewContext
 from items.schemas.output import ItemSchema
 from items.services.item_service import ItemService
 from shoppingapp.schemas import BaseContext
@@ -26,7 +23,6 @@ OVERVIEW_PAGE = ""
 PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
 UPDATE_PAGE = "update/<int:item_id>"
-UPDATE_ACTION = "update/action"
 DELETE_PAGE = "delete/<int:item_id>"
 DELETE_ACTION = "delete/action"
 
@@ -34,6 +30,8 @@ log = logging.getLogger(__name__)
 
 SERVICE = ItemService()
 STORE_SERVICE = StoreService()
+
+ITEM_404_ERROR = "Item does not exist."
 
 
 @require_http_methods(["GET", "POST"])
@@ -58,9 +56,7 @@ def create_page(request: HttpRequest) -> HttpResponse:
         form = ItemForm(user=request.user)
 
     context = BaseContext(page_title="Create Item")
-    context_dict = context.model_dump()
-    context_dict["form"] = form
-    return render(request, "items/create.html", context_dict)
+    return render(request, "items/create.html", context.attach_form(form))
 
 
 async def _get_overview_context(
@@ -150,14 +146,16 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
         )
         return render(request, "items/detail.html", context.model_dump())
     except ItemDoesNotExist:
-        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+        raise Http404(ITEM_404_ERROR)
 
 
-@require_http_methods(["GET"])
-@async_login_required
-async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
+@require_http_methods(["GET", "POST"])
+@login_required
+def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
     Render the update page.
+
+    TODO: Need to create sync services to use in these views.
 
     Args:
         request (HttpRequest): The request object.
@@ -167,69 +165,21 @@ async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
         HttpResponse: The response object.
     """
     try:
-        item = await SERVICE.get_item_detail(item_id=item_id)
-        stores = await STORE_SERVICE.get_stores(limit=1000)
-        context = ItemUpdateContext(
-            page_title="Update Item",
-            item=ItemSchema.from_orm(item),
-            stores=stores.stores,
-            error=request.GET.get("error"),
-        )
-        return render(request, "items/update.html", context.model_dump())
-    except ItemDoesNotExist:
-        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+        user = request.user
+        item = Item.objects.get(id=item_id, user=user)  # type: ignore
+        if request.method == "POST":
+            form = ItemForm(request.POST, user=user, instance=item)
+            if form.is_valid():
+                item = form.save()
+                url = reverse("item_detail_page", kwargs={"item_id": item.id})
+                return HttpResponseRedirect(url)
+        else:
+            form = ItemForm(user=user, instance=item)
 
-
-@require_http_methods(["POST"])
-@async_login_required
-async def update_action(request: HttpRequest) -> HttpResponse:
-    """
-    Update an item with the given id.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        HttpResponse: The response from the API.
-    """
-    user = await request.auser()
-    item_id = request.POST.get("item-id")
-    item_name = request.POST.get("item-input")
-    store_id = request.POST.get("store-input")
-    price = request.POST.get("price-input")
-    description = request.POST.get("description-input")
-
-    try:
-        formatted_item_id = int(item_id) if item_id else None
-        formatted_store_id = int(store_id) if store_id else None
-        formatted_price = float(price) if price else None
-    except ValueError:
-        error = "Could not format input for item update, please try again."
-        return HttpResponse(error, status=400)
-
-    if not item_id or not formatted_item_id:
-        error = "Could not find ID for update, please try again."
-        return HttpResponse(error, status=400)
-
-    try:
-        item = await SERVICE.update_item(
-            user=user,
-            item_id=formatted_item_id,
-            new_name=item_name,
-            new_store_id=formatted_store_id,
-            new_price=formatted_price,
-            new_description=description,
-        )
-        redirect_url = f"{reverse('item_detail_page', kwargs={'item_id': item.id})}"
-        return HttpResponseRedirect(redirect_url)
-    except ItemDoesNotExist:
-        error = f"Could not find item with ID: {formatted_item_id}."
-        return HttpResponse(error, status=400)
-    except ItemAlreadyExists:
-        error = "Item already exists in that store."
-        return HttpResponseRedirect(
-            f"{reverse('item_update_page', kwargs={'item_id': item_id})}?error={error}"
-        )
+        context = BaseContext(page_title="Update Item")
+        return render(request, "items/update.html", context.attach_form(form))
+    except Item.DoesNotExist:
+        raise Http404(ITEM_404_ERROR)
 
 
 @require_http_methods(["GET"])
@@ -258,7 +208,7 @@ async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
         return render(request, "items/delete.html", context.model_dump())
     except ItemDoesNotExist:
         logging.error("Could not find item for deletion.")
-        return HttpResponse("Item does not exist.", status=404)
+        return HttpResponse(ITEM_404_ERROR, status=404)
 
 
 @require_http_methods(["POST"])
