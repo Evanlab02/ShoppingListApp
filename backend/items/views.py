@@ -7,21 +7,21 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from authentication.decorators.login import async_login_required
+from authentication.decorators.login import async_login_required, login_required
 from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
+from items.forms.item import ItemForm
 from items.schemas.contexts import (
-    ItemCreateContext,
     ItemDetailContext,
     ItemOverviewContext,
     ItemUpdateContext,
 )
 from items.schemas.output import ItemSchema
 from items.services.item_service import ItemService
+from shoppingapp.schemas import BaseContext
 from shoppingapp.utilities.utils import get_overview_params
 from stores.services.store_service import StoreService
 
 CREATE_PAGE = "create"
-CREATE_ACTION = "create/action"
 OVERVIEW_PAGE = ""
 PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
@@ -36,9 +36,9 @@ SERVICE = ItemService()
 STORE_SERVICE = StoreService()
 
 
-@require_http_methods(["GET"])
-@async_login_required
-async def create_page(request: HttpRequest) -> HttpResponse:
+@require_http_methods(["GET", "POST"])
+@login_required
+def create_page(request: HttpRequest) -> HttpResponse:
     """
     Render the create page.
 
@@ -48,58 +48,19 @@ async def create_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = await request.auser()
-    error = request.GET.get("error")
+    if request.method == "POST":
+        form = ItemForm(request.POST, user=request.user)
+        if form.is_valid():
+            item = form.save()
+            url = reverse("item_detail_page", kwargs={"item_id": item.id})
+            return HttpResponseRedirect(url)
+    else:
+        form = ItemForm(user=request.user)
 
-    if error:
-        logging.warning(f"{user.id} encountered error: {error}")
-
-    stores = await STORE_SERVICE.get_stores(limit=1000)
-    context = ItemCreateContext(page_title="Create Item", error=error, stores=stores.stores)
-    return render(request, "items/create.html", context.model_dump())
-
-
-@require_http_methods(["POST"])
-@async_login_required
-async def create_action(request: HttpRequest) -> HttpResponse:
-    """
-    Create an item.
-
-    Args:
-        request (HttpRequest): The request object.
-
-    Returns:
-        HttpResponse: The response object.
-    """
-    user = await request.auser()
-
-    item_name = request.POST.get("item-input")
-    store_input = request.POST.get("store-input")
-    price_input = request.POST.get("price-input")
-    description_input = request.POST.get("description-input", "")
-
-    if not store_input or not price_input or not item_name:
-        return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Missing required fields.")
-
-    try:
-        store_id = int(store_input)
-        price = float(price_input)
-        item = await SERVICE.create_item(
-            user=user,
-            store_id=store_id,
-            description=description_input,
-            price=price,
-            name=item_name,
-        )
-        item_id = item.id
-        redirect_url = f"{reverse('item_detail_page', kwargs={'item_id': item_id})}"
-        return HttpResponseRedirect(redirect_url)
-    except ValueError as err:
-        logging.warning(err)
-        return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Invalid input.")
-    except ItemAlreadyExists as err:
-        logging.warning(err)
-        return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Item Already Exists.")
+    context = BaseContext(page_title="Create Item")
+    context_dict = context.model_dump()
+    context_dict["form"] = form
+    return render(request, "items/create.html", context_dict)
 
 
 async def _get_overview_context(

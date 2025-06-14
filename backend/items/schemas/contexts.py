@@ -9,12 +9,6 @@ from stores.schemas.output import StoreSchema
 log = logging.getLogger(__name__)
 
 
-class ItemCreateContext(BaseContext):
-    """Item create context."""
-
-    stores: list[StoreSchema]
-
-
 class ItemOverviewContext(BaseContext):
     """Item overview context."""
 
