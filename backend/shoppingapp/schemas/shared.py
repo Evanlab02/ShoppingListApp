@@ -61,3 +61,9 @@ class BaseContext(Schema):
         context_dict = self.model_dump()
         context_dict["form"] = form
         return context_dict
+
+
+class ErrorSchema(Schema):
+    """Error schema."""
+
+    detail: str

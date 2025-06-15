@@ -12,13 +12,17 @@ from dashboard.schemas.output import (
     DashboardRecentItems,
 )
 from dashboard.schemas.sub_output import BarChartDataset
+from shoppingapp.schemas.shared import ErrorSchema
 
 log = logging.getLogger(__name__)
 
 dashboard_router = Router(tags=["Dashboard"], auth=SessionAuth())
 
 
-@dashboard_router.get("/overview")
+@dashboard_router.get(
+    "/overview",
+    response={200: DashboardOverview, 400: ErrorSchema, 500: ErrorSchema},
+)
 async def dashboard_overview(request: HttpRequest) -> DashboardOverview:
     """
     Get the dashboard overview.
@@ -37,7 +41,10 @@ async def dashboard_overview(request: HttpRequest) -> DashboardOverview:
     )
 
 
-@dashboard_router.get("/recent/items")
+@dashboard_router.get(
+    "/recent/items",
+    response={200: DashboardRecentItems, 400: ErrorSchema, 500: ErrorSchema},
+)
 async def dashboard_recent_items(request: HttpRequest) -> DashboardRecentItems:
     """
     Get the dashboard recent items.
@@ -51,7 +58,10 @@ async def dashboard_recent_items(request: HttpRequest) -> DashboardRecentItems:
     return DashboardRecentItems(items=[])
 
 
-@dashboard_router.get("/history")
+@dashboard_router.get(
+    "/history",
+    response={200: DashboardHistory, 400: ErrorSchema, 500: ErrorSchema},
+)
 async def dashboard_history(request: HttpRequest) -> DashboardHistory:
     """
     Get the dashboard history.

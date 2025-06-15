@@ -17,11 +17,11 @@ down:
 	@docker compose -f compose.dev.yaml down
 
 super-user:
-	docker exec -it shopping-django-admin python manage.py createsuperuser
+	docker exec -it shopping-admin python manage.py createsuperuser
 
 requirements:
 	@pipenv requirements > src/requirements.txt
 	@pipenv requirements --dev > src/requirements-dev.txt
 
 exec:
-	docker exec -it shopping-django-app bash
+	docker exec -it shopping-app bash

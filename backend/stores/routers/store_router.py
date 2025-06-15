@@ -7,7 +7,7 @@ from django.http import HttpRequest
 from ninja import Router
 
 from authentication.auth import TOKEN_AUTH
-from shoppingapp.schemas.shared import DeleteSchema
+from shoppingapp.schemas.shared import DeleteSchema, ErrorSchema
 from stores.constants import STORE_TYPE_MAPPING
 from stores.models import ShoppingStore as Store
 from stores.schemas.input import NewStore, StorePatch, StoreSearch, StoreUpdate
@@ -25,7 +25,11 @@ log = logging.getLogger(__name__)
 SERVICE = StoreService()
 
 
-@store_router.get("/types/mapping", url_name="store_types_mapping")
+@store_router.get(
+    "/types/mapping",
+    response={200: dict[str, str], 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_types_mapping",
+)
 async def get_mapping(request: HttpRequest) -> dict[int, str]:
     """
     Get the store types mapping.
@@ -39,7 +43,11 @@ async def get_mapping(request: HttpRequest) -> dict[int, str]:
     return STORE_TYPE_MAPPING
 
 
-@store_router.post("", response={201: StoreSchema}, url_name="store_create")
+@store_router.post(
+    "",
+    response={201: StoreSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_create",
+)
 async def create_store(request: HttpRequest, new_store: NewStore) -> Store:
     """
     Create a new store.
@@ -55,7 +63,16 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> Store:
     return await SERVICE.create(new_store, user)
 
 
-@store_router.get("", response={200: StorePaginationSchema}, url_name="store_get")
+@store_router.get(
+    "",
+    response={
+        200: StorePaginationSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="store_get",
+)
 async def get_stores(
     request: HttpRequest,
     limit: int = 10,
@@ -79,7 +96,11 @@ async def get_stores(
     return await SERVICE.get_stores(limit, page, sort=sort, sort_dir=sort_dir)
 
 
-@store_router.get("/me", response={200: StorePaginationSchema}, url_name="store_get_me")
+@store_router.get(
+    "/me",
+    response={200: StorePaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_get_me",
+)
 async def get_personal_stores(
     request: HttpRequest,
     limit: int = 10,
@@ -104,7 +125,11 @@ async def get_personal_stores(
     return await SERVICE.get_stores(limit, page, user, sort, sort_dir)
 
 
-@store_router.post("/search", response={200: StorePaginationSchema}, url_name="store_search")
+@store_router.post(
+    "/search",
+    response={200: StorePaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_search",
+)
 async def search(
     request: HttpRequest,
     filters: StoreSearch,
@@ -142,7 +167,11 @@ async def search(
     )
 
 
-@store_router.get("/aggregate", response={200: StoreAggregationSchema}, url_name="store_aggregate")
+@store_router.get(
+    "/aggregate",
+    response={200: StoreAggregationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_aggregate",
+)
 async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
     """
     Get the store aggregation.
@@ -157,7 +186,9 @@ async def get_store_aggregation(request: HttpRequest) -> StoreAggregationSchema:
 
 
 @store_router.get(
-    "/aggregate/me", response={200: StoreAggregationSchema}, url_name="store_aggregate_me"
+    "/aggregate/me",
+    response={200: StoreAggregationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_aggregate_me",
 )
 async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregationSchema:
     """
@@ -173,7 +204,17 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
     return await SERVICE.aggregate(user=user)
 
 
-@store_router.get("/{store_id}", response={200: StoreSchema}, url_name="store_get_detail")
+@store_router.get(
+    "/{store_id}",
+    response={
+        200: StoreSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="store_get_detail",
+)
 async def get_store_detail(request: HttpRequest, store_id: int) -> Store:
     """
     Get the store details.
@@ -188,7 +229,17 @@ async def get_store_detail(request: HttpRequest, store_id: int) -> Store:
     return await SERVICE.get_store(store_id)
 
 
-@store_router.patch("/{store_id}", response={200: StoreSchema}, url_name="store_patch")
+@store_router.patch(
+    "/{store_id}",
+    response={
+        200: StoreSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="store_patch",
+)
 async def patch_store(
     request: HttpRequest,
     store_id: int,
@@ -211,7 +262,17 @@ async def patch_store(
     return await SERVICE.update(store_id, user, patch.name, patch.store_type, patch.description)
 
 
-@store_router.put("/{store_id}", response={200: StoreSchema}, url_name="store_put")
+@store_router.put(
+    "/{store_id}",
+    response={
+        200: StoreSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="store_put",
+)
 async def update_store(
     request: HttpRequest,
     store_id: int,
@@ -232,7 +293,17 @@ async def update_store(
     return await SERVICE.update(store_id, user, update.name, update.store_type, update.description)
 
 
-@store_router.delete("/{store_id}", response={200: DeleteSchema}, url_name="store_delete")
+@store_router.delete(
+    "/{store_id}",
+    response={
+        200: DeleteSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="store_delete",
+)
 async def delete_store(
     request: HttpRequest,
     store_id: int,

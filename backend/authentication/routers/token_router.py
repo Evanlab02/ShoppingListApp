@@ -8,13 +8,18 @@ from ninja import Router
 from authentication.auth import SESSION_AUTH
 from authentication.schemas.output import TokenResponse
 from authentication.services.api.client_service import ClientService
+from shoppingapp.schemas.shared import ErrorSchema
 
 log = logging.getLogger(__name__)
 token_router = Router(tags=["Token"], auth=SESSION_AUTH)
 service = ClientService()
 
 
-@token_router.get("", response={200: TokenResponse}, url_name="auth_token")
+@token_router.get(
+    "",
+    response={200: TokenResponse, 400: ErrorSchema},
+    url_name="auth_token",
+)
 async def get_token(request: HttpRequest) -> TokenResponse:
     """
     Get a token.
