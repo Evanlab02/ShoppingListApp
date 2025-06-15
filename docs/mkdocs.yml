@@ -1,4 +1,11 @@
 site_name: Shopping List App
+site_url: https://evanlab02.github.io/ShoppingListApp/
+repo_url: https://github.com/evanlab02/ShoppingListApp
+
+extra:
+  version:
+    provider: mike
+
 plugins:
   - search
 markdown_extensions:

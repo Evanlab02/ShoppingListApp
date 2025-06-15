@@ -1,34 +1,36 @@
+name: shopping-dev
+
 services:
-  dev-shopping-app-pgadmin:
+  pgadmin:
     container_name: shopping-pgadmin
-    image: dpage/pgadmin4:8.5
-    restart: always
+    image: dpage/pgadmin4:9.4.0
+    restart: unless-stopped
     env_file:
       - .env.dev
     environment:
       SCRIPT_NAME: /pgadmin
     networks:
-      - dev-postgres-django-network
+      - shopping-network-dev
     volumes:
-      - dev-pgadmin-data:/var/lib/pgadmin
+      - shopping-pgadmin-data-dev:/var/lib/pgadmin
     deploy:
       resources:
         limits:
           cpus: '1.0'
           memory: 512M
 
-  dev-shopping-app-db:
+  db:
     container_name: shopping-db
-    image: postgres:16.2-alpine3.18
-    restart: always
+    image: postgres:17.5-alpine3.22
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
     env_file:
       - .env.dev
     networks:
-      - dev-postgres-django-network
+      - shopping-network-dev
     volumes:
-      - dev-postgres-data:/var/lib/postgresql/data
+      - shopping-db-data-dev:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 5s
@@ -40,31 +42,31 @@ services:
           cpus: '1.0'
           memory: 1024M
 
-  dev-shopping-app-redis:
-    image: redis:7.4.1-alpine3.20
+  redis:
+    image: redis:8.0.2-alpine3.21
     container_name: shopping-redis
     volumes:
-      - dev-redis-data:/data
+      - shopping-redis-data-dev:/data
     networks:
-      - dev-postgres-django-network
-    restart: always
+      - shopping-network-dev
+    restart: unless-stopped
     deploy:
       resources:
         limits:
           cpus: '1.0'
           memory: 1024M
 
-  dev-shopping-django-administration:
-    container_name: shopping-django-admin
+  admin:
+    container_name: shopping-admin
     build:
       context: .
       dockerfile: docker/admin/Dockerfile
     env_file:
       - .env.dev
     networks:
-      - dev-postgres-django-network
+      - shopping-network-dev
     depends_on:
-      dev-shopping-app-db:
+      db:
         condition: service_healthy
     deploy:
       resources:
@@ -72,21 +74,21 @@ services:
           cpus: '1.0'
           memory: 1024M
 
-  dev-shopping-django-app:
-    container_name: shopping-django-app
+  app:
+    container_name: shopping-app
     build:
       context: .
-      dockerfile: docker/server/Dockerfile
+      dockerfile: docker/app/Dockerfile
       args:
         - WORKERS=8
     env_file:
       - .env.dev
     networks:
-      - dev-postgres-django-network
+      - shopping-network-dev
     depends_on:
-      dev-shopping-app-db:
+      db:
         condition: service_healthy
-    restart: always
+    restart: unless-stopped
     develop:
       watch:
         - action: sync+restart
@@ -112,9 +114,9 @@ services:
           cpus: '8.0'
           memory: 8192M
 
-  dev-shopping-django-site:
-    container_name: shopping-django-site
-    restart: always
+  web:
+    container_name: shopping-web
+    restart: unless-stopped
     build:
       context: .
       dockerfile: docker/web/Dockerfile
@@ -123,9 +125,9 @@ services:
     ports:
       - "8001:80"
     networks:
-      - dev-postgres-django-network
+      - shopping-network-dev
     depends_on:
-      dev-shopping-app-db:
+      db:
         condition: service_healthy
     develop:
       watch:
@@ -142,13 +144,13 @@ services:
           memory: 1024M
 
 networks:
-  dev-postgres-django-network:
+  shopping-network-dev:
     driver: bridge
 
 volumes:
-  dev-postgres-data:
+  shopping-db-data-dev:
     external: false
-  dev-pgadmin-data:
+  shopping-pgadmin-data-dev:
     external: false
-  dev-redis-data:
+  shopping-redis-data-dev:
     external: false
