@@ -2,9 +2,6 @@
 
 Welcome to the **ShoppingListApp**! 🎉 Let’s get started!
 
-!!! warning "Warning"
-    The documentation is currently under a major rework following a refactor of the project. Please note that is in preparation for V0.18 which is setting the foundations for the project going further and should be significantly more stable and **if** all goes well, maintain backwards compatibility much better than previous versions. The goal is in subsequent releases to have a foundation that guarantees backwards compatibility up until the V1 release and beyond.
-
 ## Pre-requisites
 
 Before you dive in, make sure you have the following installed on your machine:

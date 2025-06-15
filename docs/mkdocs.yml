@@ -1,6 +1,7 @@
 site_name: Shopping List App
 site_url: https://evanlab02.github.io/ShoppingListApp/
 repo_url: https://github.com/evanlab02/ShoppingListApp
+repo_name: ShoppingListApp
 
 extra:
   version:
@@ -35,3 +36,6 @@ theme:
 nav:
   - Home: index.md
   - Getting Started: start.md
+  - API:
+    - Getting Started: api/index.md
+    - Error Handling: api/errors.md
