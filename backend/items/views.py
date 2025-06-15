@@ -24,7 +24,6 @@ PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
 UPDATE_PAGE = "update/<int:item_id>"
 DELETE_PAGE = "delete/<int:item_id>"
-DELETE_ACTION = "delete/action"
 
 log = logging.getLogger(__name__)
 
@@ -183,7 +182,7 @@ def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
         raise Http404(ITEM_404_ERROR)
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 @async_login_required
 async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
@@ -196,52 +195,21 @@ async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = await request.auser()
-    error = request.GET.get("error")
-
     try:
-        item = await SERVICE.get_item_for_user(item_id=item_id, user=user)
-        context = ItemDetailContext(
-            error=error,
-            page_title="Delete Item",
-            item=ItemSchema.from_orm(item),
-        )
-        return render(request, "items/delete.html", context.model_dump())
+        user = await request.auser()
+        error = request.GET.get("error")
+
+        if request.method == "POST":
+            await SERVICE.delete_item(user=user, item_id=item_id)
+            return HttpResponseRedirect(f"{reverse('item_personalized_overview_page')}")
+        else:
+            item = await SERVICE.get_item_for_user(item_id=item_id, user=user)
+            context = ItemDetailContext(
+                error=error,
+                page_title="Delete Item",
+                item=ItemSchema.from_orm(item),
+            )
+            return render(request, "items/delete.html", context.model_dump())
     except ItemDoesNotExist:
         logging.error("Could not find item for deletion.")
-        return HttpResponse(ITEM_404_ERROR, status=404)
-
-
-@require_http_methods(["POST"])
-@async_login_required
-async def delete_action(request: HttpRequest) -> HttpResponse:
-    """
-    Delete an item with the given id.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        HttpResponse: The response from the API.
-    """
-    user = await request.auser()
-    item_id = request.POST.get("item-id")
-
-    try:
-        formatted_item_id = int(item_id) if item_id else None
-    except ValueError:
-        logging.error("Retrieved input that could not be formatted for item deletion.")
-        return HttpResponse(
-            "Could not format input for item deletion, please try again.", status=400
-        )
-
-    if not item_id or not formatted_item_id:
-        logging.error("Item ID is required for deletion of an item.")
-        return HttpResponse("Could not find ID for deletion, please try again.", status=400)
-
-    try:
-        await SERVICE.delete_item(user=user, item_id=formatted_item_id)
-        return HttpResponseRedirect(f"{reverse('item_personalized_overview_page')}")
-    except ItemDoesNotExist:
-        logging.error("Item does not exist for deletion.")
-        return HttpResponse(f"Could not find item with ID: {formatted_item_id}.", status=404)
+        raise Http404(ITEM_404_ERROR)

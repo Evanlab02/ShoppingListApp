@@ -4,7 +4,6 @@ from typing import Any
 
 from asgiref.sync import async_to_sync
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
 from django.forms import ModelForm
 
 from items.database import IItemRepo, ItemRepo
@@ -42,11 +41,6 @@ class ItemForm(ModelForm):  # type: ignore
 
         # User
         self.user: User = kwargs.pop("user")
-
-        # Instance
-        self.instance: Item | None = kwargs.get("instance")
-        if self.instance and self.instance.user != self.user:
-            raise PermissionDenied("You are not allowed to update this item.")
 
         super().__init__(*args, **kwargs)
         self.fields["store"].queryset = Store.objects.all()  # type: ignore
@@ -86,5 +80,5 @@ class ItemForm(ModelForm):  # type: ignore
         Returns:
             Item: The saved item.
         """
-        self.instance.user = self.user  # type: ignore
+        self.instance.user = self.user
         return super().save(commit=commit)  # type: ignore
