@@ -9,10 +9,20 @@ from stores.tests.factory import StoreFactory
 
 
 class TestItemUpdateView(TestCase):
-    """Test the item update view."""
+    """
+    Test the item update view.
+
+    Tests: items.views.update_page
+    """
 
     def setUp(self) -> None:
-        """Set up the test environment."""
+        """
+        Set up the test environment.
+
+        1. Creates a client, user, and 20 stores.
+        2. Creates an item for the user and the first store.
+        3. Sets the URL for the item update view.
+        """
         self.client = Client()
         self.user = UserFactory.create()
         self.client.force_login(self.user)
@@ -20,14 +30,30 @@ class TestItemUpdateView(TestCase):
         self.stores = StoreFactory.create_batch(20)
         self.item = ItemFactory.create(user=self.user, store=self.stores[0])
         self.url = reverse("item_update_page", kwargs={"item_id": self.item.id})
-        self.action_url = reverse("item_update_action")
 
-    def test_item_update_view_get(self) -> None:
-        """Test the item update view."""
+    def test_item_update_view_get_status_code_and_template(self) -> None:
+        """
+        Test the item update view.
+
+        Given: A user is logged in.
+        When: The user visits the item update view.
+        Then: The response is 200.
+        And: The template used is "items/update.html".+
+        """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "items/update.html")
 
+    def test_item_update_view_get_context(self) -> None:
+        """
+        Test the item update view context.
+
+        Given: A user is logged in.
+        When: The user visits the item update view.
+        Then: The context contains the page title and flags for navigation.
+        And: The form data.
+        """
+        response = self.client.get(self.url)
         context = response.context
 
         # Base Context
@@ -36,22 +62,23 @@ class TestItemUpdateView(TestCase):
         self.assertFalse(context["is_overview"])
         self.assertFalse(context["show_advanced_navigation"])
 
-        # Item Context
-        self.assertEqual(context["item"]["id"], self.item.id)
-        self.assertEqual(context["item"]["name"], self.item.name)
-        self.assertEqual(context["item"]["description"], self.item.description)
-        self.assertEqual(context["item"]["price"], self.item.price)
-
-        # Stores Context
-        self.assertEqual(len(context["stores"]), 20)
-
-    def test_item_update_view_post(self) -> None:
-        """Test the item update view with a POST request."""
-        response = self.client.post(self.url, data={"name": "Test Item"})
-        self.assertEqual(response.status_code, 405)
+        # Form Context
+        form = context["form"]
+        self.assertEqual(form.initial["name"], self.item.name)
+        self.assertEqual(form.initial["description"], self.item.description)
+        self.assertEqual(form.initial["price"], self.item.price)
+        self.assertEqual(form.initial["store"], self.item.store.id)
+        self.assertEqual(form.user, self.user)
 
     def test_item_update_view_needs_login(self) -> None:
-        """Test the item update view needs a login."""
+        """
+        Test the item update view needs a login.
+
+        Given: A user is logged out.
+        When: The user visits the item update view.
+        Then: The response is 302.
+        And: The user is redirected to the login page.
+        """
         self.client.logout()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
@@ -60,21 +87,35 @@ class TestItemUpdateView(TestCase):
         )
 
     def test_item_update_with_invalid_item_id(self) -> None:
-        """Test the item update view with an invalid item id."""
+        """
+        Test the item update view with an invalid item id.
+
+        Given: A user is logged in.
+        When: The user visits the item update view with an invalid item id.
+        Then: The response is 404.
+        """
         url = reverse("item_update_page", kwargs={"item_id": 999999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, "dashboard/err/404.html")
 
-    def test_item_update_action(self) -> None:
-        """Test the item update action."""
+    def test_item_update_view_post_redirects_to_detail_page(self) -> None:
+        """
+        Test the item update view post redirects to detail page.
+
+        Given: A user is logged in.
+        When: The user updates the item using a POST request.
+        Then: The response is 302.
+        And: The user is redirected to the item detail page.
+        And: The item is updated with the new data.
+        """
         response = self.client.post(
-            self.action_url,
+            self.url,
             data={
-                "item-id": self.item.id,
-                "item-input": "Test Item",
-                "store-input": self.stores[1].id,
-                "price-input": 999888,
-                "description-input": "Test Description",
+                "name": "Test Item",
+                "store": self.stores[1].id,
+                "price": 999888,
+                "description": "Test Description",
             },
         )
 
@@ -90,117 +131,69 @@ class TestItemUpdateView(TestCase):
         self.assertEqual(self.item.price, 999888)
         self.assertEqual(self.item.description, "Test Description")
 
-    def test_item_update_action_invalid_method(self) -> None:
-        """Test the item update action with an invalid method."""
-        response = self.client.get(self.action_url)
-        self.assertEqual(response.status_code, 405)
+    def test_item_update_view_post_invalid_price(self) -> None:
+        """
+        Test the item update view post with an invalid price.
 
-    def test_item_update_action_when_not_logged_in(self) -> None:
-        """Test the item update action when not logged in."""
-        self.client.logout()
-        response = self.client.post(self.action_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, f"{reverse('login_page')}?error=You must be logged in to access that page."
-        )
-
-    def test_item_update_action_invalid_id(self) -> None:
-        """Test the item update action with an invalid id."""
+        Given: A user is logged in.
+        When: The user updates the item using a POST request with an invalid price.
+        Then: The form contains form errors indicating the price is invalid.
+        """
         response = self.client.post(
-            self.action_url,
+            self.url,
             data={
-                "item-id": "not an int",
-                "item-input": "Test Item",
-                "store-input": self.stores[1].id,
-                "price-input": 999888,
-                "description-input": "Test Description",
+                "name": "Test Item",
+                "store": self.stores[1].id,
+                "price": "not a number",
+                "description": "Test Description",
             },
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            b"Could not format input for item update, please try again.", response.content
-        )
+        self.assertEqual(response.status_code, 200)
 
-    def test_item_update_action_invalid_store_id(self) -> None:
-        """Test the item update action with an invalid store id."""
+        form = response.context["form"]
+        self.assertEqual(form.errors["price"], ["Enter a number."])
+
+    def test_item_update_view_post_empty_name(self) -> None:
+        """
+        Test the item update view post with an empty name.
+
+        Given: A user is logged in.
+        When: The user updates the item using a POST request with an empty name.
+        Then: The form contains form errors indicating the name is required.
+        """
         response = self.client.post(
-            self.action_url,
+            self.url,
             data={
-                "item-id": self.item.id,
-                "item-input": "Test Item",
-                "store-input": "not an int",
-                "price-input": 999888,
-                "description-input": "Test Description",
+                "name": "",
+                "store": self.stores[1].id,
+                "price": 999888,
+                "description": "Test Description",
             },
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            b"Could not format input for item update, please try again.", response.content
-        )
+        self.assertEqual(response.status_code, 200)
 
-    def test_item_update_action_invalid_price(self) -> None:
-        """Test the item update action with an invalid price."""
+        form = response.context["form"]
+        self.assertEqual(form.errors["name"], ["This field is required."])
+
+    def test_item_update_view_post_with_item_already_exists(self) -> None:
+        """
+        Test the item update view post with an item that already exists.
+
+        Given: A user is logged in.
+        When: The user updates the item using a POST request with an item that already exists.
+        Then: The form contains form errors indicating the item already exists.
+        """
+        ItemFactory.create(user=self.user, store=self.stores[1], name="Test Item")
         response = self.client.post(
-            self.action_url,
+            self.url,
             data={
-                "item-id": self.item.id,
-                "item-input": "Test Item",
-                "store-input": self.stores[1].id,
-                "price-input": "not a number",
-                "description-input": "Test Description",
+                "name": "Test Item",
+                "store": self.stores[1].id,
+                "price": 999888,
+                "description": "Test Description",
             },
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            b"Could not format input for item update, please try again.", response.content
-        )
+        self.assertEqual(response.status_code, 200)
 
-    def test_item_update_action_empty_id(self) -> None:
-        """Test the item update action with an empty id."""
-        response = self.client.post(
-            self.action_url,
-            data={
-                "item-id": "",
-                "item-input": "Test Item",
-                "store-input": self.stores[1].id,
-                "price-input": 999888,
-                "description-input": "Test Description",
-            },
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Could not find ID for update, please try again.", response.content)
-
-    def test_item_update_action_with_non_existent_item(self) -> None:
-        """Test the item update action with a non-existent item."""
-        response = self.client.post(
-            self.action_url,
-            data={
-                "item-id": 999999,
-                "item-input": "Test Item",
-                "store-input": self.stores[1].id,
-                "price-input": 999888,
-                "description-input": "Test Description",
-            },
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Could not find item with ID: 999999.", response.content)
-
-    def test_item_update_action_with_item_already_exists(self) -> None:
-        """Test the item update action with an item that already exists."""
-        item = ItemFactory.create(user=self.user, store=self.stores[1], name="Test Item")
-        response = self.client.post(
-            self.action_url,
-            data={
-                "item-id": item.id,
-                "item-input": "Test Item",
-                "store-input": self.stores[1].id,
-                "price-input": 999888,
-                "description-input": "Test Description",
-            },
-        )
-        expected_error = "Item already exists in that store."
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response,
-            f"{reverse('item_update_page', kwargs={'item_id': item.id})}?error={expected_error}",
-        )
+        form = response.context["form"]
+        self.assertEqual(form.errors["name"], ["Item with this name already exists in this store."])

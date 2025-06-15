@@ -167,6 +167,7 @@ def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
     try:
         user = request.user
         item = Item.objects.get(id=item_id, user=user)  # type: ignore
+
         if request.method == "POST":
             form = ItemForm(request.POST, user=user, instance=item)
             if form.is_valid():
