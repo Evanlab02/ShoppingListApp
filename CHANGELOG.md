@@ -1,5 +1,80 @@
 # Changelog
 
+## [0.18.0](https://github.com/Evanlab02/ShoppingListApp/compare/v0.17.0...v0.18.0) (2025-06-17)
+
+
+### Features
+
+* **#87:** Can now bulk update the store types on the store admin page ([cc21dff](https://github.com/Evanlab02/ShoppingListApp/commit/cc21dff082370152971f4e4387e3944d775a7479))
+* **#87:** Can now filter by some select fields on the store admin page ([3456748](https://github.com/Evanlab02/ShoppingListApp/commit/34567482081dd44f0f1828367feca744ce640ed7))
+* **#87:** Can now search the stores on the store admin page ([e548a53](https://github.com/Evanlab02/ShoppingListApp/commit/e548a53acfe7ed1dbecf1a830aa39cf1f11f97af))
+* **#87:** Now display all fields of stores on store admin page ([3a932c3](https://github.com/Evanlab02/ShoppingListApp/commit/3a932c3df597178ce600623e7c5d3d660db04595))
+* **#88:** Add store sorting to store list and store search endpoints ([f86caf4](https://github.com/Evanlab02/ShoppingListApp/commit/f86caf4667c3f420a6f69de59a3a3275fe4807f0))
+* **#95 #216:** Added Argon2 as the default password hasher. ([77251c2](https://github.com/Evanlab02/ShoppingListApp/commit/77251c2730bd1ae3535758fd6e78934ddced39a5))
+* **#95 #216:** Added the ability to enable/disable legacy password hashing to allow for the upgrade to Argon2 ([a4d3c76](https://github.com/Evanlab02/ShoppingListApp/commit/a4d3c764e62b9604c2089e9eddd4ea478490c917))
+* **#95 #216:** Added the ability to force only legacy password hashing as an escape hatch (Not recommended unless absolutely required) ([e139585](https://github.com/Evanlab02/ShoppingListApp/commit/e13958594d199d6c10caabd69c1c7553eaff8fa3))
+* **#95 #216:** Updated the documentation to contain some initial info on code patterns within the django apps ([5cb8ff4](https://github.com/Evanlab02/ShoppingListApp/commit/5cb8ff4d49d58dee9e4a209d0e93dad62c21c91c))
+* **#95 #216:** Updated the V0.18.0 update/upgrade guide to outline the changes to the password hashing ([fe8cfbb](https://github.com/Evanlab02/ShoppingListApp/commit/fe8cfbb283f85cd96a363cc07d74d35e4c77c7d1))
+* Add error handling views ([69ff4a0](https://github.com/Evanlab02/ShoppingListApp/commit/69ff4a053d9720af7e15765b2c1038d671552d84))
+* **Admin:** Can now use the built in admin-documentation on the admin page. ([43446c4](https://github.com/Evanlab02/ShoppingListApp/commit/43446c460d186a56dc295e83257af260b4d3b501))
+* **Authentication:** Use JWT authentication for backend auth ([b656698](https://github.com/Evanlab02/ShoppingListApp/commit/b656698792c40a7dc79018eafc755c422209fcbd))
+* **Backend:** Complete overhaul of the authentication application ([fe4e9df](https://github.com/Evanlab02/ShoppingListApp/commit/fe4e9dffcaebabb6efea04ffab82e00337766539))
+* **Caching:** Added redis cache to backend config and compose files ([b7304af](https://github.com/Evanlab02/ShoppingListApp/commit/b7304af304bad448f39e143bbe5fab176f2cacd9))
+* **Documentation:** Added a developer getting started guide to the documentation. ([b2612ab](https://github.com/Evanlab02/ShoppingListApp/commit/b2612abab00504d00c7438905f6f0e0f65fdfada))
+* **Documentation:** Added documentation on the build github workflow ([3805a22](https://github.com/Evanlab02/ShoppingListApp/commit/3805a22221a24270f07e34c4680964a730be6287))
+* **Documentation:** Added more documentation on code/app patterns ([b1dec92](https://github.com/Evanlab02/ShoppingListApp/commit/b1dec920d04c44e5d68af1da4b236b5b32c9e19c))
+* **Items:** Can now sort items listing endpoints ([38994c0](https://github.com/Evanlab02/ShoppingListApp/commit/38994c0d455a8e0890a0d77a68ca961c8d9c0e4f))
+* **Optimization:** Optimized store list endpoints to not use synchronous code and instead use async capabilities when paginating results ([0d3b15f](https://github.com/Evanlab02/ShoppingListApp/commit/0d3b15f0cea6dac4df007cbfb811f9ac09530887))
+
+
+### Bug Fixes
+
+* Combined item delete views into a single views removing need for redirects ([0095b39](https://github.com/Evanlab02/ShoppingListApp/commit/0095b396a9a9087efdf4faa96cea934534320e83))
+* **Compose:** Cleaned up the compose files ([720a834](https://github.com/Evanlab02/ShoppingListApp/commit/720a8348e76b6975eb1570aadf336ea3fe50841a))
+* **Dashboard:** Clean-up dashboard application ([e5cba97](https://github.com/Evanlab02/ShoppingListApp/commit/e5cba9762654b554fea8ce4ca00574597c82d074))
+* **Dependencies:** Added Argon2 to the backend dependencies. ([b2512e0](https://github.com/Evanlab02/ShoppingListApp/commit/b2512e01f1ff1f76e46400845bd3f8d7c52a85a2))
+* **Items:** Use django forms for item create view ([666ed1b](https://github.com/Evanlab02/ShoppingListApp/commit/666ed1b40b6be4ba3e589f91280b6b4e9bf781ea))
+* Update static files ([0aa3834](https://github.com/Evanlab02/ShoppingListApp/commit/0aa38346dcf7914c983acbf895bbc9067bc2d0c6))
+* Updated compose files ([c786bc1](https://github.com/Evanlab02/ShoppingListApp/commit/c786bc1e348916f8dc099f357c55c9a4c846ef14))
+* Use django forms for item update view ([c915563](https://github.com/Evanlab02/ShoppingListApp/commit/c9155638a132eb2c7a993f3463e1841619eb445e))
+
+
+### Performance Improvements
+
+* **Stores:** Improved performance on store creation API endpoint ([3189b8b](https://github.com/Evanlab02/ShoppingListApp/commit/3189b8bad1dab7fee66fef3afa735ff215d87913))
+
+
+### Dependencies
+
+* **Backend:** Update backend dependencies ([15fcb60](https://github.com/Evanlab02/ShoppingListApp/commit/15fcb60a2294fa8433fe2ba75018c9dd12f1de8f))
+* **Docs:** Update docs dependencies ([624bd6d](https://github.com/Evanlab02/ShoppingListApp/commit/624bd6de8158f5678f4ababaccafa04d9d950ca1))
+
+
+### Documentation
+
+* Documentation on API error handling ([376df05](https://github.com/Evanlab02/ShoppingListApp/commit/376df05323c05cfc407dc6e9ccc0bc0fb4580d9c))
+* OpenAPI documentation now shows error schemas ([80af4a7](https://github.com/Evanlab02/ShoppingListApp/commit/80af4a763a25d882ad83c3ecf1ad9a36f7cb3ea0))
+
+
+### Styles
+
+* Update tailwind stylesheet ([d1e2ea6](https://github.com/Evanlab02/ShoppingListApp/commit/d1e2ea68f4f6cf5cffc15d63f525fd49c7433a12))
+
+
+### Code Refactoring
+
+* **Restructure:** Completely restructured repository and dev workflows ([842158a](https://github.com/Evanlab02/ShoppingListApp/commit/842158a70d2916a0a0b546caa034a18e11956ecc))
+
+
+### Tests
+
+* Tests for the error handling views ([de273ea](https://github.com/Evanlab02/ShoppingListApp/commit/de273ea1288f2b16888ddb244d386466fcc16a96))
+
+
+### Continuous Integration
+
+* Update release workflows and config ([ebaecf3](https://github.com/Evanlab02/ShoppingListApp/commit/ebaecf39873c473444bec6712acdd86dae36f435))
+
 ## [0.17.0](https://github.com/Evanlab02/ShoppingListApp/compare/v0.16.5...v0.17.0) (2024-10-24)
 
 
