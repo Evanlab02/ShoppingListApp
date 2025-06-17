@@ -206,7 +206,9 @@ class TestItemRepositorySearch(TestCase):
         self.assertEqual(items.total, 2)
 
         result = items.items[0].model_dump()
-        self.assertEqual(result.get("store", None).get("id"), self.store.id)
+        store = result.get("store", None)
+        self.assertIsNotNone(store)
+        self.assertEqual(store.get("id"), self.store.id)  # type: ignore
 
     async def test_get_items_for_user(self) -> None:
         """Test the search by user function."""
@@ -217,7 +219,9 @@ class TestItemRepositorySearch(TestCase):
         self.assertEqual(items.total, 2)
 
         result = items.items[0].model_dump()
-        self.assertEqual(result.get("user", None).get("username"), self.user.username)
+        user = result.get("user", None)
+        self.assertIsNotNone(user)
+        self.assertEqual(user.get("username"), self.user.username)  # type: ignore
 
     async def test_paginate_out_of_bounds(self) -> None:
         """Test the paginate out of bounds function."""
