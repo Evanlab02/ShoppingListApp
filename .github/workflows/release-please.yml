@@ -7,6 +7,9 @@ permissions: write-all
 
 name: Release
 
+env:
+  UV_SYSTEM_PYTHON: 1
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
@@ -120,7 +123,7 @@ jobs:
           fetch-depth: 0
       - name: Upload Caddyfile
         run: |
-          gh release upload ${{ needs.release-please.outputs.tag_name }} Caddyfile
+          gh release upload ${{ needs.release-please.outputs.tag_name }} web/Caddyfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
