@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.18.1](https://github.com/Evanlab02/ShoppingListApp/compare/v0.18.0...v0.18.1) (2025-06-17)
+
+
+### Bug Fixes
+
+* Update release workflow to set UV_SYSTEM_PYTHON environment variable and correct Caddyfile upload path ([488f85a](https://github.com/Evanlab02/ShoppingListApp/commit/488f85a948ca4c6bc44fb16a059e3d8ca8bceb4c))
+
+
+### Dependencies
+
+* Update cachetools, django, and pydantic ([f6d3873](https://github.com/Evanlab02/ShoppingListApp/commit/f6d387364faf679570641973840dd30aa7fdf05d))
+* Update multiple dependencies including argon2-cffi, click, coverage, django, and pytest ([95084fd](https://github.com/Evanlab02/ShoppingListApp/commit/95084fd32a2ab81e01b8cc95b811129b6a2e907f))
+
 ## [0.18.0](https://github.com/Evanlab02/ShoppingListApp/compare/v0.17.0...v0.18.0) (2025-06-17)
 
 
