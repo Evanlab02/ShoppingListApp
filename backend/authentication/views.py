@@ -14,9 +14,7 @@ from authentication.errors.exceptions import (
     InvalidCredentials,
     InvalidUserDetails,
     NonMatchingCredentials,
-    UserAlreadyLoggedIn,
     UsernameAlreadyExists,
-    UserNotLoggedIn,
 )
 from authentication.services.views.user_service import UserService
 
@@ -50,12 +48,6 @@ async def login_view(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     error = request.GET.get("error")
-    user = await request.auser()
-
-    if repo.is_user_authenticated(user):
-        log.warning("Duplicate login request.")
-        raise UserAlreadyLoggedIn()
-
     return render(request, "auth/index.html", {"error": error})
 
 
@@ -79,22 +71,6 @@ async def login_action(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(f"{reverse('login_page')}?error={error}")
 
 
-@require_http_methods(["POST"])
-@async_login_required
-async def logout_action(request: HttpRequest) -> HttpResponse:
-    """
-    Handle the logout action.
-
-    Args:
-        request (HttpRequest): The request object.
-
-    Returns:
-        HttpResponse: The response object.
-    """
-    await service.logout(request)
-    return HttpResponseRedirect(f"/{LOGIN_ROUTE}")
-
-
 @require_http_methods(["GET"])
 @async_login_required
 async def logout_view(request: HttpRequest) -> HttpResponse:
@@ -108,12 +84,39 @@ async def logout_view(request: HttpRequest) -> HttpResponse:
         HttpResponse: The response object.
     """
     error = request.GET.get("error")
-    user = await request.auser()
-    if not repo.is_user_authenticated(user):
-        log.warning("User is not logged in.")
-        raise UserNotLoggedIn()
-
     return render(request, "auth/logout.html", {"error": error})
+
+
+@require_http_methods(["POST"])
+@async_login_required
+async def logout_action(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the logout action.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    await service.logout(request)
+    return HttpResponseRedirect(reverse("login_page"))
+
+
+@require_http_methods(["GET"])
+@async_redirect_if_logged_in
+async def register_view(request: HttpRequest) -> HttpResponse:
+    """
+    Handle the register view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The response object.
+    """
+    error = request.GET.get("error")
+    return render(request, "auth/register.html", {"error": error})
 
 
 @require_http_methods(["POST"])
@@ -139,25 +142,3 @@ async def register_action(request: HttpRequest) -> HttpResponse:
     ) as error:
         log.warning(f"Registration error: {error}")
         return HttpResponseRedirect(f"{reverse('register_page')}?error={error}")
-
-
-@require_http_methods(["GET"])
-@async_redirect_if_logged_in
-async def register_view(request: HttpRequest) -> HttpResponse:
-    """
-    Handle the register view.
-
-    Args:
-        request (HttpRequest): The request object.
-
-    Returns:
-        HttpResponse: The response object.
-    """
-    error = request.GET.get("error")
-    user = await request.auser()
-
-    if repo.is_user_authenticated(user):
-        log.warning("Attempting to register while logged in.")
-        raise UserAlreadyLoggedIn()
-
-    return render(request, "auth/register.html", {"error": error})

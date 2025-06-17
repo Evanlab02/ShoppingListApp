@@ -1,9 +1,6 @@
 # Getting Started
 
-Welcome to the **ShoppingListApp**! 🎉 Please note that this app is integrated into another project of mine called [HomePortal](https://github.com/Evanlab02/HomePortal). You can use ShoppingListApp within that project, but it’s perfectly fine to set it up on its own as well. Let’s get started!
-
-!!! warning "Warning"
-    The documentation is currently under a major rework following a refactor of the project. Please note that is in preparation for V0.18 which is setting the foundations for the project going further and should be significantly more stable and **if** all goes well, maintain backwards compatibility much better than previous versions. The goal is in subsequent releases to have a foundation that guarantees backwards compatibility up until the V1 release and beyond.
+Welcome to the **ShoppingListApp**! 🎉 Let’s get started!
 
 ## Pre-requisites
 
@@ -11,70 +8,160 @@ Before you dive in, make sure you have the following installed on your machine:
 
 - Docker
 - Docker Compose
-- Git
 
-## Method 1: Using Git
+## Running using docker & docker compose
 
-Clone the repository onto your machine with the following command:
+You can use the following compose file to get the shopping list app running via docker on your machine.
 
-```bash
-git clone git@github.com:Evanlab02/ShoppingListApp.git
+```yaml
+name: shopping
+
+services:
+  pgadmin:
+    container_name: shopping-pgadmin
+    image: dpage/pgadmin4:9.4.0
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SCRIPT_NAME: /pgadmin
+    networks:
+      - shopping-network
+    volumes:
+      - shopping-pgadmin-data:/var/lib/pgadmin
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  db:
+    container_name: shopping-db
+    image: postgres:17.5-alpine3.22
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+    env_file:
+      - .env
+    networks:
+      - shopping-network
+    volumes:
+      - shopping-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
+  redis:
+    image: redis:8.0.2-alpine3.21
+    container_name: shopping-redis
+    volumes:
+      - shopping-redis-data:/data
+    networks:
+      - shopping-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
+  admin:
+    container_name: shopping-admin
+    image: ghcr.io/evanlab02/shopping-admin:latest
+    env_file:
+      - .env
+    networks:
+      - shopping-network
+    depends_on:
+      db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
+  app:
+    container_name: shopping-app
+    image: ghcr.io/evanlab02/shopping-app:latest
+    env_file:
+      - .env
+    environment:
+      - GUNICORN_WORKERS=1
+    networks:
+      - shopping-network
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend/authentication
+          target: /backend/authentication
+        - action: sync+restart
+          path: ./backend/stores
+          target: /backend/stores
+        - action: sync+restart
+          path: ./backend/items
+          target: /backend/items
+        - action: sync+restart
+          path: ./backend/shoppingapp
+          target: /backend/shoppingapp
+        - action: sync+restart
+          path: ./backend/dashboard
+          target: /backend/dashboard
+        - action: rebuild
+          path: ./backend/requirements.txt
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
+  web:
+    container_name: shopping-web
+    restart: unless-stopped
+    image: ghcr.io/evanlab02/shopping-web:latest
+    expose:
+      - "80"
+    ports:
+      - "8001:80"
+    networks:
+      - shopping-network
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./web/Caddyfile
+          target: /etc/caddy/Caddyfile
+        - action: sync+restart
+          path: ./backend/static
+          target: /var/www/html/static/
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+networks:
+  shopping-network:
+    driver: bridge
+
+volumes:
+  shopping-db-data:
+    external: false
+  shopping-pgadmin-data:
+    external: false
+  shopping-redis-data:
+    external: false
 ```
-
-### Step 1: Create a .env File
-
-Set up a `.env` file in the root of your project that looks similar to this:
-
-```.env
-# POSTGRES CONFIG
-POSTGRES_PASSWORD=<PASSWORD_OF_YOUR_CHOOSING>
-POSTGRES_DB=shopping-db
-
-# PGADMIN CONFIG
-PGADMIN_DEFAULT_EMAIL=<EMAIL_OF_YOUR_CHOOSING>
-PGADMIN_DEFAULT_PASSWORD=<PASSWORD_OF_YOUR_CHOOSING>
-
-# SHOPPING APP CONFIG
-SHOPPING_DJANGO_KEY=<SOMETHING_LONGER_THAN_50_CHARACTERS_CONTAINING_SPECIAL_CHARACTERS>
-SHOPPING_DJANGO_HOST=localhost
-SHOPPING_DATABASE_NAME=shopping-db
-SHOPPING_DATABASE_USER=postgres
-SHOPPING_DATABASE_PASSWORD=<PASSWORD_USED_ABOVE_FOR_POSTGRES_PASSWORD>
-SHOPPING_DB_HOST=shopping-db
-SHOPPING_DB_PORT=5432
-SHOPPING_DEFAULT_SETTINGS_MODULE=shoppingapp.settings.settings
-```
-
-You only need to adjust the following values:
-
-- `POSTGRES_PASSWORD`
-- `PGADMIN_DEFAULT_EMAIL`
-- `PGADMIN_DEFAULT_PASSWORD`
-- `SHOPPING_DJANGO_KEY`
-- `SHOPPING_DATABASE_PASSWORD`
-- `SHOPPING_DJANGO_HOST`
-
-### Step 2: Run Using Docker
-
-Once you’ve set up your `.env` variables, you can run the app using Docker:
-
-```bash
-docker compose pull
-docker compose up -d
-```
-
-### Step 3: Create Your Superuser
-
-To access all the cool features, you need to create a superuser. Run the following command:
-
-```bash
-docker exec -it shopping-django-admin python manage.py createsuperuser
-```
-
-### Step 4: Login and Use the Shopping List App
-
-Congratulations! You should now be able to log in and access the Shopping List App on your host. Happy shopping! 🛒
-
-## Method 2: Using Pre-packaged Zip
-
-COMING SOON!

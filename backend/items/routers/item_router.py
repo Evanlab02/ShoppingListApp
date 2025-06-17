@@ -11,7 +11,7 @@ from items.models import ShoppingItem as Item
 from items.schemas.input import ItemSearchSchema, NewItem, PatchItem, UpdateItem
 from items.schemas.output import ItemAggregationSchema, ItemPaginationSchema, ItemSchema
 from items.services.item_service import ItemService
-from shoppingapp.schemas.shared import DeleteSchema
+from shoppingapp.schemas.shared import DeleteSchema, ErrorSchema
 
 log = logging.getLogger(__name__)
 
@@ -19,8 +19,12 @@ item_router = Router(tags=["Items"], auth=TOKEN_AUTH)
 item_service = ItemService()
 
 
-@item_router.post("", response={201: ItemSchema}, url_name="item_create")
-async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
+@item_router.post(
+    "",
+    response={201: ItemSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_create",
+)
+async def create_item(request: HttpRequest, new_item: NewItem) -> tuple[int, Item]:
     """
     Create a new item.
 
@@ -40,10 +44,14 @@ async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
         description=new_item.description,
     )
     await item.astore()
-    return ItemSchema.from_orm(item)
+    return 201, item
 
 
-@item_router.get("", response={200: ItemPaginationSchema}, url_name="item_list")
+@item_router.get(
+    "",
+    response={200: ItemPaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_list",
+)
 async def get_items(
     request: HttpRequest,
     page: int = 1,
@@ -69,7 +77,11 @@ async def get_items(
     )
 
 
-@item_router.get("/me", response={200: ItemPaginationSchema}, url_name="item_list_me")
+@item_router.get(
+    "/me",
+    response={200: ItemPaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_list_me",
+)
 async def get_my_items(
     request: HttpRequest,
     page: int = 1,
@@ -96,7 +108,11 @@ async def get_my_items(
     )
 
 
-@item_router.get("/aggregate", response={200: ItemAggregationSchema}, url_name="item_aggregate")
+@item_router.get(
+    "/aggregate",
+    response={200: ItemAggregationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_aggregate",
+)
 async def aggregate(request: HttpRequest) -> ItemAggregationSchema:
     """
     Get the aggregation of all items.
@@ -111,7 +127,9 @@ async def aggregate(request: HttpRequest) -> ItemAggregationSchema:
 
 
 @item_router.get(
-    "/aggregate/me", response={200: ItemAggregationSchema}, url_name="item_aggregate_me"
+    "/aggregate/me",
+    response={200: ItemAggregationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_aggregate_me",
 )
 async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
     """
@@ -127,7 +145,11 @@ async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
     return await item_service.aggregate(user=user)
 
 
-@item_router.post("/search", response={200: ItemPaginationSchema}, url_name="item_search")
+@item_router.post(
+    "/search",
+    response={200: ItemPaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_search",
+)
 async def search(
     request: HttpRequest,
     search: ItemSearchSchema,
@@ -156,7 +178,17 @@ async def search(
     )
 
 
-@item_router.get("/{item_id}", response={200: ItemSchema}, url_name="item_detail")
+@item_router.get(
+    "/{item_id}",
+    response={
+        200: ItemSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="item_detail",
+)
 async def get_item_detail(request: HttpRequest, item_id: int) -> Item:
     """
     Get an item detail.
@@ -171,7 +203,17 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> Item:
     return await item_service.get_item_detail(item_id=item_id)
 
 
-@item_router.patch("/{item_id}", response={200: ItemSchema}, url_name="item_patch")
+@item_router.patch(
+    "/{item_id}",
+    response={
+        200: ItemSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="item_patch",
+)
 async def patch_item(request: HttpRequest, item_id: int, item_schema: PatchItem) -> Item:
     """
     Patch an item.
@@ -198,7 +240,17 @@ async def patch_item(request: HttpRequest, item_id: int, item_schema: PatchItem)
     return item
 
 
-@item_router.put("/{item_id}", response={200: ItemSchema}, url_name="item_update")
+@item_router.put(
+    "/{item_id}",
+    response={
+        200: ItemSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="item_update",
+)
 async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateItem) -> Item:
     """
     Update an item.
@@ -225,7 +277,17 @@ async def update_item(request: HttpRequest, item_id: int, item_schema: UpdateIte
     return item
 
 
-@item_router.delete("/{item_id}", response={200: DeleteSchema}, url_name="item_delete")
+@item_router.delete(
+    "/{item_id}",
+    response={
+        200: DeleteSchema,
+        400: ErrorSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+    },
+    url_name="item_delete",
+)
 async def delete_item(request: HttpRequest, item_id: int) -> DeleteSchema:
     """
     Delete an item.

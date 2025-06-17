@@ -1,4 +1,4 @@
-name: shopping-dev
+name: shopping
 
 services:
   pgadmin:
@@ -6,13 +6,13 @@ services:
     image: dpage/pgadmin4:9.4.0
     restart: unless-stopped
     env_file:
-      - .env.dev
+      - .env
     environment:
       SCRIPT_NAME: /pgadmin
     networks:
-      - shopping-network-dev
+      - shopping-network
     volumes:
-      - shopping-pgadmin-data-dev:/var/lib/pgadmin
+      - shopping-pgadmin-data:/var/lib/pgadmin
     deploy:
       resources:
         limits:
@@ -26,11 +26,11 @@ services:
     environment:
       POSTGRES_USER: postgres
     env_file:
-      - .env.dev
+      - .env
     networks:
-      - shopping-network-dev
+      - shopping-network
     volumes:
-      - shopping-db-data-dev:/var/lib/postgresql/data
+      - shopping-db-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 5s
@@ -46,9 +46,9 @@ services:
     image: redis:8.0.2-alpine3.21
     container_name: shopping-redis
     volumes:
-      - shopping-redis-data-dev:/data
+      - shopping-redis-data:/data
     networks:
-      - shopping-network-dev
+      - shopping-network
     restart: unless-stopped
     deploy:
       resources:
@@ -58,13 +58,11 @@ services:
 
   admin:
     container_name: shopping-admin
-    build:
-      context: .
-      dockerfile: docker/admin/Dockerfile
+    image: ghcr.io/evanlab02/shopping-admin:latest
     env_file:
-      - .env.dev
+      - .env
     networks:
-      - shopping-network-dev
+      - shopping-network
     depends_on:
       db:
         condition: service_healthy
@@ -76,15 +74,13 @@ services:
 
   app:
     container_name: shopping-app
-    build:
-      context: .
-      dockerfile: docker/app/Dockerfile
-      args:
-        - WORKERS=8
+    image: ghcr.io/evanlab02/shopping-app:latest
     env_file:
-      - .env.dev
+      - .env
+    environment:
+      - GUNICORN_WORKERS=1
     networks:
-      - shopping-network-dev
+      - shopping-network
     depends_on:
       db:
         condition: service_healthy
@@ -111,21 +107,19 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8.0'
-          memory: 8192M
+          cpus: '1.0'
+          memory: 1024M
 
   web:
     container_name: shopping-web
     restart: unless-stopped
-    build:
-      context: .
-      dockerfile: docker/web/Dockerfile
+    image: ghcr.io/evanlab02/shopping-web:latest
     expose:
       - "80"
     ports:
       - "8001:80"
     networks:
-      - shopping-network-dev
+      - shopping-network
     depends_on:
       db:
         condition: service_healthy
@@ -137,22 +131,20 @@ services:
         - action: sync+restart
           path: ./backend/static
           target: /var/www/html/static/
-        - action: rebuild
-          path: ./docs
     deploy:
       resources:
         limits:
           cpus: '1.0'
-          memory: 1024M
+          memory: 512M
 
 networks:
-  shopping-network-dev:
+  shopping-network:
     driver: bridge
 
 volumes:
-  shopping-db-data-dev:
+  shopping-db-data:
     external: false
-  shopping-pgadmin-data-dev:
+  shopping-pgadmin-data:
     external: false
-  shopping-redis-data-dev:
+  shopping-redis-data:
     external: false

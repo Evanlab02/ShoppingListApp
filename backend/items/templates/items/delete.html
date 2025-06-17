@@ -8,7 +8,7 @@
 <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-base-200 p-4">
     <div class="w-full max-w-md card bg-base-100 shadow-xl">
         <div class="card-body">
-            <h2 class="card-title text-2xl font-bold text-center mb-4">Delete Item</h2>
+            <h2 class="card-title text-2xl font-bold text-center mb-4">Delete - {{ item.name }}</h2>
             
             {% if error %}
             <div class="alert alert-error mb-4">
@@ -17,7 +17,7 @@
             </div>
             {% endif %}
 
-            <form method="post" action="{% url 'item_delete_action' %}">
+            <form method="post">
                 {% csrf_token %}
                 <fieldset class="space-y-4">
                     <div>
@@ -27,8 +27,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         <span>This action cannot be undone.</span>
                     </div>
-                    <input hidden id="item-id" name="item-id" type="text" value="{{ item.id }}" />
-                    
+
                     <div class="form-control mt-6">
                         <button type="submit" class="btn bg-error text-white hover:bg-error-focus w-full">
                             Delete Item

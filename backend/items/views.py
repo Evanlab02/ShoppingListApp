@@ -2,43 +2,40 @@
 
 import logging
 
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from authentication.decorators.login import async_login_required
-from items.errors.exceptions import ItemAlreadyExists, ItemDoesNotExist
-from items.schemas.contexts import (
-    ItemCreateContext,
-    ItemDetailContext,
-    ItemOverviewContext,
-    ItemUpdateContext,
-)
+from authentication.decorators.login import async_login_required, login_required
+from items.errors.exceptions import ItemDoesNotExist
+from items.forms.item import ItemForm
+from items.models import ShoppingItem as Item
+from items.schemas.contexts import ItemDetailContext, ItemOverviewContext
 from items.schemas.output import ItemSchema
 from items.services.item_service import ItemService
+from shoppingapp.schemas import BaseContext
 from shoppingapp.utilities.utils import get_overview_params
 from stores.services.store_service import StoreService
 
 CREATE_PAGE = "create"
-CREATE_ACTION = "create/action"
 OVERVIEW_PAGE = ""
 PERSONALIZED_OVERVIEW_PAGE = "me"
 DETAIL_PAGE = "detail/<int:item_id>"
 UPDATE_PAGE = "update/<int:item_id>"
-UPDATE_ACTION = "update/action"
 DELETE_PAGE = "delete/<int:item_id>"
-DELETE_ACTION = "delete/action"
 
 log = logging.getLogger(__name__)
 
 SERVICE = ItemService()
 STORE_SERVICE = StoreService()
 
+ITEM_404_ERROR = "Item does not exist."
 
-@require_http_methods(["GET"])
-@async_login_required
-async def create_page(request: HttpRequest) -> HttpResponse:
+
+@require_http_methods(["GET", "POST"])
+@login_required
+def create_page(request: HttpRequest) -> HttpResponse:
     """
     Render the create page.
 
@@ -48,58 +45,17 @@ async def create_page(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = await request.auser()
-    error = request.GET.get("error")
+    if request.method == "POST":
+        form = ItemForm(request.POST, user=request.user)
+        if form.is_valid():
+            item = form.save()
+            url = reverse("item_detail_page", kwargs={"item_id": item.id})
+            return HttpResponseRedirect(url)
+    else:
+        form = ItemForm(user=request.user)
 
-    if error:
-        logging.warning(f"{user.id} encountered error: {error}")
-
-    stores = await STORE_SERVICE.get_stores(limit=1000)
-    context = ItemCreateContext(page_title="Create Item", error=error, stores=stores.stores)
-    return render(request, "items/create.html", context.model_dump())
-
-
-@require_http_methods(["POST"])
-@async_login_required
-async def create_action(request: HttpRequest) -> HttpResponse:
-    """
-    Create an item.
-
-    Args:
-        request (HttpRequest): The request object.
-
-    Returns:
-        HttpResponse: The response object.
-    """
-    user = await request.auser()
-
-    item_name = request.POST.get("item-input")
-    store_input = request.POST.get("store-input")
-    price_input = request.POST.get("price-input")
-    description_input = request.POST.get("description-input", "")
-
-    if not store_input or not price_input or not item_name:
-        return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Missing required fields.")
-
-    try:
-        store_id = int(store_input)
-        price = float(price_input)
-        item = await SERVICE.create_item(
-            user=user,
-            store_id=store_id,
-            description=description_input,
-            price=price,
-            name=item_name,
-        )
-        item_id = item.id
-        redirect_url = f"{reverse('item_detail_page', kwargs={'item_id': item_id})}"
-        return HttpResponseRedirect(redirect_url)
-    except ValueError as err:
-        logging.warning(err)
-        return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Invalid input.")
-    except ItemAlreadyExists as err:
-        logging.warning(err)
-        return HttpResponseRedirect(f"{reverse('item_create_page')}?error=Item Already Exists.")
+    context = BaseContext(page_title="Create Item")
+    return render(request, "items/create.html", context.attach_form(form))
 
 
 async def _get_overview_context(
@@ -189,14 +145,16 @@ async def get_item_detail(request: HttpRequest, item_id: int) -> HttpResponse:
         )
         return render(request, "items/detail.html", context.model_dump())
     except ItemDoesNotExist:
-        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+        raise Http404(ITEM_404_ERROR)
 
 
-@require_http_methods(["GET"])
-@async_login_required
-async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
+@require_http_methods(["GET", "POST"])
+@login_required
+def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
     Render the update page.
+
+    TODO: Need to create sync services to use in these views.
 
     Args:
         request (HttpRequest): The request object.
@@ -206,72 +164,25 @@ async def update_page(request: HttpRequest, item_id: int) -> HttpResponse:
         HttpResponse: The response object.
     """
     try:
-        item = await SERVICE.get_item_detail(item_id=item_id)
-        stores = await STORE_SERVICE.get_stores(limit=1000)
-        context = ItemUpdateContext(
-            page_title="Update Item",
-            item=ItemSchema.from_orm(item),
-            stores=stores.stores,
-            error=request.GET.get("error"),
-        )
-        return render(request, "items/update.html", context.model_dump())
-    except ItemDoesNotExist:
-        return HttpResponse(f"Item with id '{item_id}' does not exist.", status=404)
+        user = request.user
+        item = Item.objects.get(id=item_id, user=user)  # type: ignore
+
+        if request.method == "POST":
+            form = ItemForm(request.POST, user=user, instance=item)
+            if form.is_valid():
+                item = form.save()
+                url = reverse("item_detail_page", kwargs={"item_id": item.id})
+                return HttpResponseRedirect(url)
+        else:
+            form = ItemForm(user=user, instance=item)
+
+        context = BaseContext(page_title="Update Item")
+        return render(request, "items/update.html", context.attach_form(form))
+    except Item.DoesNotExist:
+        raise Http404(ITEM_404_ERROR)
 
 
-@require_http_methods(["POST"])
-@async_login_required
-async def update_action(request: HttpRequest) -> HttpResponse:
-    """
-    Update an item with the given id.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        HttpResponse: The response from the API.
-    """
-    user = await request.auser()
-    item_id = request.POST.get("item-id")
-    item_name = request.POST.get("item-input")
-    store_id = request.POST.get("store-input")
-    price = request.POST.get("price-input")
-    description = request.POST.get("description-input")
-
-    try:
-        formatted_item_id = int(item_id) if item_id else None
-        formatted_store_id = int(store_id) if store_id else None
-        formatted_price = float(price) if price else None
-    except ValueError:
-        error = "Could not format input for item update, please try again."
-        return HttpResponse(error, status=400)
-
-    if not item_id or not formatted_item_id:
-        error = "Could not find ID for update, please try again."
-        return HttpResponse(error, status=400)
-
-    try:
-        item = await SERVICE.update_item(
-            user=user,
-            item_id=formatted_item_id,
-            new_name=item_name,
-            new_store_id=formatted_store_id,
-            new_price=formatted_price,
-            new_description=description,
-        )
-        redirect_url = f"{reverse('item_detail_page', kwargs={'item_id': item.id})}"
-        return HttpResponseRedirect(redirect_url)
-    except ItemDoesNotExist:
-        error = f"Could not find item with ID: {formatted_item_id}."
-        return HttpResponse(error, status=400)
-    except ItemAlreadyExists:
-        error = "Item already exists in that store."
-        return HttpResponseRedirect(
-            f"{reverse('item_update_page', kwargs={'item_id': item_id})}?error={error}"
-        )
-
-
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 @async_login_required
 async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
     """
@@ -284,52 +195,21 @@ async def delete_page(request: HttpRequest, item_id: int) -> HttpResponse:
     Returns:
         HttpResponse: The response object.
     """
-    user = await request.auser()
-    error = request.GET.get("error")
-
     try:
-        item = await SERVICE.get_item_for_user(item_id=item_id, user=user)
-        context = ItemDetailContext(
-            error=error,
-            page_title="Delete Item",
-            item=ItemSchema.from_orm(item),
-        )
-        return render(request, "items/delete.html", context.model_dump())
+        user = await request.auser()
+        error = request.GET.get("error")
+
+        if request.method == "POST":
+            await SERVICE.delete_item(user=user, item_id=item_id)
+            return HttpResponseRedirect(f"{reverse('item_personalized_overview_page')}")
+        else:
+            item = await SERVICE.get_item_for_user(item_id=item_id, user=user)
+            context = ItemDetailContext(
+                error=error,
+                page_title="Delete Item",
+                item=ItemSchema.from_orm(item),
+            )
+            return render(request, "items/delete.html", context.model_dump())
     except ItemDoesNotExist:
         logging.error("Could not find item for deletion.")
-        return HttpResponse("Item does not exist.", status=404)
-
-
-@require_http_methods(["POST"])
-@async_login_required
-async def delete_action(request: HttpRequest) -> HttpResponse:
-    """
-    Delete an item with the given id.
-
-    Args:
-        request (HttpRequest): The request.
-
-    Returns:
-        HttpResponse: The response from the API.
-    """
-    user = await request.auser()
-    item_id = request.POST.get("item-id")
-
-    try:
-        formatted_item_id = int(item_id) if item_id else None
-    except ValueError:
-        logging.error("Retrieved input that could not be formatted for item deletion.")
-        return HttpResponse(
-            "Could not format input for item deletion, please try again.", status=400
-        )
-
-    if not item_id or not formatted_item_id:
-        logging.error("Item ID is required for deletion of an item.")
-        return HttpResponse("Could not find ID for deletion, please try again.", status=400)
-
-    try:
-        await SERVICE.delete_item(user=user, item_id=formatted_item_id)
-        return HttpResponseRedirect(f"{reverse('item_personalized_overview_page')}")
-    except ItemDoesNotExist:
-        logging.error("Item does not exist for deletion.")
-        return HttpResponse(f"Could not find item with ID: {formatted_item_id}.", status=404)
+        raise Http404(ITEM_404_ERROR)

@@ -1,10 +1,10 @@
 :80 {
 	handle_path /* {
-		reverse_proxy shopping-django-app:80
+		reverse_proxy shopping-app:80
 	}
 
 	handle_path /admin/* {
-		reverse_proxy shopping-django-admin:80
+		reverse_proxy shopping-admin:80
 		rewrite * /admin{uri}
 	}
 

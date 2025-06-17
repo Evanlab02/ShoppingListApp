@@ -162,3 +162,4 @@ secrets/*
 !backend/static/silk/lib/
 !backend/static/silk/lib/*
 node_modules
+specs

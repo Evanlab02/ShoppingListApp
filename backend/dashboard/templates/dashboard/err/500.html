@@ -1,0 +1,13 @@
+{% extends "dashboard/err/base.html" %}
+
+{% block error_content %}
+<div class="mb-6">
+    <i class="fas fa-server text-6xl text-error mb-4"></i>
+    <h1 class="text-3xl font-bold text-error mb-2">500</h1>
+    <h2 class="text-xl font-semibold mb-4">Internal Server Error</h2>
+    <div class="alert alert-error">
+        <i class="fas fa-tools"></i>
+        <span>Something went wrong on our end. We're working to fix it. Please try again later or contact support if the problem persists.</span>
+    </div>
+</div>
+{% endblock %}

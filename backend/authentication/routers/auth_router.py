@@ -8,14 +8,21 @@ from ninja import Router
 from authentication.schemas.input import NewUser, UserCredentials
 from authentication.schemas.output import GeneralResponse
 from authentication.services.api.user_service import UserService
+from shoppingapp.schemas.shared import ErrorSchema
 
 log = logging.getLogger(__name__)
 auth_router = Router(tags=["Authentication"])
 service = UserService()
 
 
-@auth_router.post("/login", response={200: GeneralResponse}, url_name="auth_login")
-async def login_user(request: HttpRequest, user_creds: UserCredentials) -> GeneralResponse:
+@auth_router.post(
+    "/login",
+    response={200: GeneralResponse, 400: ErrorSchema, 500: ErrorSchema},
+    url_name="auth_login",
+)
+async def login_user(
+    request: HttpRequest, user_creds: UserCredentials
+) -> GeneralResponse | ErrorSchema:
     """
     Login a user.
 
@@ -29,8 +36,12 @@ async def login_user(request: HttpRequest, user_creds: UserCredentials) -> Gener
     return await service.login(request, user_creds.username, user_creds.password)
 
 
-@auth_router.post("/logout", response={200: GeneralResponse}, url_name="auth_logout")
-async def logout_user(request: HttpRequest) -> GeneralResponse:
+@auth_router.post(
+    "/logout",
+    response={200: GeneralResponse, 400: ErrorSchema, 500: ErrorSchema},
+    url_name="auth_logout",
+)
+async def logout_user(request: HttpRequest) -> GeneralResponse | ErrorSchema:
     """
     Logout a user.
 
@@ -43,8 +54,12 @@ async def logout_user(request: HttpRequest) -> GeneralResponse:
     return await service.logout(request)
 
 
-@auth_router.post("/register", response={201: GeneralResponse}, url_name="auth_register")
-async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
+@auth_router.post(
+    "/register",
+    response={201: GeneralResponse, 400: ErrorSchema, 500: ErrorSchema},
+    url_name="auth_register",
+)
+async def register(request: HttpRequest, new_user: NewUser) -> tuple[int, GeneralResponse]:
     """
     Register a new user.
 
@@ -56,4 +71,5 @@ async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse:
         GeneralResponse: The response object
     """
     user = await request.auser()
-    return await service.register_user(user, new_user)
+    response = await service.register_user(user, new_user)
+    return 201, response

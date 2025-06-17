@@ -165,3 +165,8 @@ urlpatterns = [
 
 if settings.SHOPPING_DEV == 1:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+
+handler400 = "dashboard.views.bad_request_view"
+handler403 = "dashboard.views.permission_denied_view"
+handler404 = "dashboard.views.not_found_view"
+handler500 = "dashboard.views.server_error_view"

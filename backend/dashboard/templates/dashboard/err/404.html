@@ -1,0 +1,22 @@
+{% extends "dashboard/err/base.html" %}
+
+{% block error_content %}
+<div class="mb-6">
+    <i class="fas fa-search text-6xl text-info mb-4"></i>
+    <h1 class="text-3xl font-bold text-error mb-2">404</h1>
+    <h2 class="text-xl font-semibold mb-4">Page Not Found</h2>
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <span>The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.</span>
+    </div>
+    {% if exception %}
+    <div class="alert alert-error mt-4">
+        <i class="fas fa-bug"></i>
+        <div>
+            <div class="font-semibold">Exception Details:</div>
+            <div class="text-sm mt-1 font-mono">{{ exception }}</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -2,28 +2,26 @@
 #    uv pip compile requirements.in -o requirements.txt
 annotated-types==0.7.0
     # via pydantic
-argon2-cffi==23.1.0
+argon2-cffi==25.1.0
     # via -r requirements.in
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asgiref==3.8.1
     # via django
-autopep8==2.3.2
-    # via django-silk
-cachetools==5.5.2
+cachetools==6.0.0
     # via -r requirements.in
 cffi==1.17.1
     # via argon2-cffi-bindings
-click==8.1.8
+click==8.2.1
     # via uvicorn
-django==5.2.1
+django==5.2.2
     # via
     #   -r requirements.in
     #   django-ninja
     #   django-silk
-django-ninja==1.4.1
+django-ninja==1.4.3
     # via -r requirements.in
-django-silk==5.3.2
+django-silk==5.4.0
     # via -r requirements.in
 docutils==0.21.2
     # via -r requirements.in
@@ -33,40 +31,41 @@ gunicorn==23.0.0
     # via
     #   -r requirements.in
     #   uvicorn-worker
-h11==0.14.0
+h11==0.16.0
     # via uvicorn
-hiredis==3.1.0
+hiredis==3.2.1
     # via redis
-packaging==24.2
+packaging==25.0
     # via gunicorn
 psycopg==3.2.9
     # via -r requirements.in
 psycopg-binary==3.2.9
     # via psycopg
-psycopg-pool==3.2.4
+psycopg-pool==3.2.6
     # via psycopg
-pycodestyle==2.13.0
-    # via autopep8
 pycparser==2.22
     # via cffi
-pydantic==2.10.6
+pydantic==2.11.5
     # via django-ninja
-pydantic-core==2.27.2
+pydantic-core==2.33.2
     # via pydantic
 pyjwt==2.10.1
     # via -r requirements.in
-redis==6.1.0
+redis==6.2.0
     # via -r requirements.in
 sqlparse==0.5.3
     # via
     #   django
     #   django-silk
-typing-extensions==4.12.2
+typing-extensions==4.14.0
     # via
     #   psycopg-pool
     #   pydantic
     #   pydantic-core
-uvicorn==0.34.2
+    #   typing-inspection
+typing-inspection==0.4.1
+    # via pydantic
+uvicorn==0.34.3
     # via
     #   -r requirements.in
     #   uvicorn-worker

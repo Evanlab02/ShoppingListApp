@@ -1,0 +1,22 @@
+{% extends "dashboard/err/base.html" %}
+
+{% block error_content %}
+<div class="mb-6">
+    <i class="fas fa-ban text-6xl text-error mb-4"></i>
+    <h1 class="text-3xl font-bold text-error mb-2">403</h1>
+    <h2 class="text-xl font-semibold mb-4">Forbidden</h2>
+    <div class="alert alert-error">
+        <i class="fas fa-shield-alt"></i>
+        <span>You don't have permission to access this resource. Please contact an administrator if you believe this is an error.</span>
+    </div>
+    {% if exception %}
+    <div class="alert alert-error mt-4">
+        <i class="fas fa-bug"></i>
+        <div>
+            <div class="font-semibold">Exception Details:</div>
+            <div class="text-sm mt-1 font-mono">{{ exception }}</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
