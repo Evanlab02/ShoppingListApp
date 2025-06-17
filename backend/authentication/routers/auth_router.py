@@ -59,7 +59,7 @@ async def logout_user(request: HttpRequest) -> GeneralResponse | ErrorSchema:
     response={201: GeneralResponse, 400: ErrorSchema, 500: ErrorSchema},
     url_name="auth_register",
 )
-async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse | ErrorSchema:
+async def register(request: HttpRequest, new_user: NewUser) -> tuple[int, GeneralResponse]:
     """
     Register a new user.
 
@@ -71,4 +71,5 @@ async def register(request: HttpRequest, new_user: NewUser) -> GeneralResponse |
         GeneralResponse: The response object
     """
     user = await request.auser()
-    return await service.register_user(user, new_user)
+    response = await service.register_user(user, new_user)
+    return 201, response

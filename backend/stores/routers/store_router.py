@@ -27,7 +27,7 @@ SERVICE = StoreService()
 
 @store_router.get(
     "/types/mapping",
-    response={200: dict[str, str], 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    response={200: dict[int, str], 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
     url_name="store_types_mapping",
 )
 async def get_mapping(request: HttpRequest) -> dict[int, str]:
@@ -48,7 +48,7 @@ async def get_mapping(request: HttpRequest) -> dict[int, str]:
     response={201: StoreSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
     url_name="store_create",
 )
-async def create_store(request: HttpRequest, new_store: NewStore) -> Store:
+async def create_store(request: HttpRequest, new_store: NewStore) -> tuple[int, Store]:
     """
     Create a new store.
 
@@ -60,7 +60,8 @@ async def create_store(request: HttpRequest, new_store: NewStore) -> Store:
         StoreSchema: The created store.
     """
     user = await request.auser()
-    return await SERVICE.create(new_store, user)
+    store = await SERVICE.create(new_store, user)
+    return 201, store
 
 
 @store_router.get(

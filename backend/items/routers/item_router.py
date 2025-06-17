@@ -24,7 +24,7 @@ item_service = ItemService()
     response={201: ItemSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
     url_name="item_create",
 )
-async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
+async def create_item(request: HttpRequest, new_item: NewItem) -> tuple[int, Item]:
     """
     Create a new item.
 
@@ -44,7 +44,7 @@ async def create_item(request: HttpRequest, new_item: NewItem) -> ItemSchema:
         description=new_item.description,
     )
     await item.astore()
-    return ItemSchema.from_orm(item)
+    return 201, item
 
 
 @item_router.get(
