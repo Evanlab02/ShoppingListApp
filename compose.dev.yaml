@@ -137,6 +137,8 @@ services:
         - action: sync+restart
           path: ./backend/static
           target: /var/www/html/static/
+        - action: rebuild
+          path: ./docs
     deploy:
       resources:
         limits:

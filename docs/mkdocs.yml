@@ -9,6 +9,7 @@ extra:
 
 plugins:
   - search
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -20,10 +21,18 @@ markdown_extensions:
   - "admonition"
   - "pymdownx.details"
   - "pymdownx.superfences"
+
 theme:
   name: material
   features:
     - content.code.copy
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.prune
+    - navigation.path
+    - navigation.top
   palette: 
     - scheme: default
       toggle:
@@ -35,7 +44,11 @@ theme:
         name: Switch to light mode
 nav:
   - Home: index.md
-  - Getting Started: start.md
+  - Installation: start.md
   - API:
     - Getting Started: api/index.md
     - Error Handling: api/errors.md
+  - Developers/Contributors:
+    - Getting Started: dev/index.md
+    - Error Handling: dev/errors.md
+  - Reporting Bugs: bugs.md

@@ -1,8 +1,8 @@
-# Getting Started - Shopping API
+# Getting Started - Constributors/Developers
 
 !!! warning "Warning"
     This page is under construction.
 
 ## Additional Resources
 
-- [Errors & Error Handling](./errors.md)
+- [Error Handling](./errors.md)
