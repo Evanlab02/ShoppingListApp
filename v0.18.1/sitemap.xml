@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/bugs/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/start/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/api/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/api/errors/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/dev/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://evanlab02.github.io/ShoppingListApp/v0.18.1/dev/errors/</loc>
+         <lastmod>2025-06-17</lastmod>
+    </url>
+</urlset>
