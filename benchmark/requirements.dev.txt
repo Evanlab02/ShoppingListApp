@@ -4,43 +4,29 @@ annotated-types==0.7.0
     # via
     #   -r requirements.txt
     #   pydantic
-bidict==0.23.1
-    # via
-    #   -r requirements.txt
-    #   python-socketio
 black==25.1.0
     # via -r requirements.dev.in
-blinker==1.9.0
-    # via
-    #   -r requirements.txt
-    #   flask
-brotli==1.1.0
-    # via
-    #   -r requirements.txt
-    #   geventhttpclient
 certifi==2025.4.26
     # via
     #   -r requirements.txt
-    #   geventhttpclient
+    #   geventhttpclient-wheels
     #   requests
 charset-normalizer==3.4.2
     # via
     #   -r requirements.txt
     #   requests
-click==8.2.0
-    # via
-    #   -r requirements.txt
-    #   black
-    #   flask
+click==8.1.8
+    # via black
 configargparse==1.7
     # via
     #   -r requirements.txt
     #   locust
-    #   locust-cloud
-coverage==7.8.0
+coverage[toml]==7.8.0
     # via
     #   -r requirements.dev.in
     #   pytest-cov
+exceptiongroup==1.3.0
+    # via pytest
 factory-boy==3.3.3
     # via -r requirements.dev.in
 faker==37.3.0
@@ -51,27 +37,21 @@ flake8==7.2.0
     #   flake8-docstrings
 flake8-docstrings==1.7.0
     # via -r requirements.dev.in
-flask==3.1.1
+flask==0.10.1
     # via
     #   -r requirements.txt
-    #   flask-cors
-    #   flask-login
+    #   flask-basicauth
     #   locust
-flask-cors==6.0.0
-    # via
-    #   -r requirements.txt
-    #   locust
-flask-login==0.6.3
+flask-basicauth==0.2.0
     # via
     #   -r requirements.txt
     #   locust
 gevent==24.11.1
     # via
     #   -r requirements.txt
-    #   geventhttpclient
+    #   geventhttpclient-wheels
     #   locust
-    #   locust-cloud
-geventhttpclient==2.3.3
+geventhttpclient-wheels==1.3.1.dev3
     # via
     #   -r requirements.txt
     #   locust
@@ -79,10 +59,6 @@ greenlet==3.2.2
     # via
     #   -r requirements.txt
     #   gevent
-h11==0.16.0
-    # via
-    #   -r requirements.txt
-    #   wsproto
 idna==3.10
     # via
     #   -r requirements.txt
@@ -99,16 +75,11 @@ jinja2==3.1.6
     # via
     #   -r requirements.txt
     #   flask
-locust==2.37.3
+locust==1.0.1
     # via -r requirements.txt
-locust-cloud==1.21.7
-    # via
-    #   -r requirements.txt
-    #   locust
 markupsafe==3.0.2
     # via
     #   -r requirements.txt
-    #   flask
     #   jinja2
     #   werkzeug
 mccabe==0.7.0
@@ -131,10 +102,7 @@ packaging==25.0
 pathspec==0.12.1
     # via black
 platformdirs==4.3.8
-    # via
-    #   -r requirements.txt
-    #   black
-    #   locust-cloud
+    # via black
 pluggy==1.6.0
     # via pytest
 psutil==7.0.0
@@ -163,15 +131,7 @@ pytest-cov==6.1.1
     # via -r requirements.dev.in
 pytest-sugar==1.0.0
     # via -r requirements.dev.in
-python-engineio==4.12.1
-    # via
-    #   -r requirements.txt
-    #   python-socketio
-python-socketio==5.13.0
-    # via
-    #   -r requirements.txt
-    #   locust-cloud
-pyzmq==26.4.0
+pyzmq==27.0.0
     # via
     #   -r requirements.txt
     #   locust
@@ -179,24 +139,25 @@ requests==2.32.3
     # via
     #   -r requirements.txt
     #   locust
-    #   python-socketio
-setuptools==80.7.1
+six==1.17.0
     # via
     #   -r requirements.txt
-    #   locust
-    #   zope-event
-    #   zope-interface
-simple-websocket==1.1.0
-    # via
-    #   -r requirements.txt
-    #   python-engineio
+    #   geventhttpclient-wheels
 snowballstemmer==3.0.1
     # via pydocstyle
 termcolor==3.1.0
     # via pytest-sugar
+tomli==2.2.1
+    # via
+    #   black
+    #   coverage
+    #   mypy
+    #   pytest
 typing-extensions==4.13.2
     # via
     #   -r requirements.txt
+    #   black
+    #   exceptiongroup
     #   mypy
     #   pydantic
     #   pydantic-core
@@ -207,26 +168,14 @@ typing-inspection==0.4.0
     #   pydantic
 tzdata==2025.2
     # via faker
-urllib3==2.4.0
+urllib3==2.5.0
     # via
     #   -r requirements.txt
-    #   geventhttpclient
     #   requests
-websocket-client==1.8.0
-    # via
-    #   -r requirements.txt
-    #   python-socketio
 werkzeug==3.1.3
     # via
     #   -r requirements.txt
     #   flask
-    #   flask-cors
-    #   flask-login
-    #   locust
-wsproto==1.2.0
-    # via
-    #   -r requirements.txt
-    #   simple-websocket
 zope-event==5.0
     # via
     #   -r requirements.txt
