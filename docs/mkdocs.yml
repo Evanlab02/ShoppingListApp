@@ -46,6 +46,7 @@ nav:
   - Getting Started:
     - Home: index.md
     - Installation: start.md
+    - Configuration: config.md
   - Admin:
     - Getting Started: admin/index.md
     - Items: admin/items.md
