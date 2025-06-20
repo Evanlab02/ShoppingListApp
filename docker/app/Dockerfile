@@ -3,8 +3,8 @@ FROM python:3.13.2-alpine3.21
 ARG WORKERS=1
 
 ENV GUNICORN_WORKERS=${WORKERS}
-ENV UV_SYSTEM_PYTHON 1
-ENV DJANGO_SETTINGS_MODULE shoppingapp.core.settings
+ENV UV_SYSTEM_PYTHON=1
+ENV DJANGO_SETTINGS_MODULE=shoppingapp.core.settings
 
 RUN apk add --no-cache bash
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/

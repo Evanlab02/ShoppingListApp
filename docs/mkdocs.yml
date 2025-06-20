@@ -43,8 +43,13 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 nav:
-  - Home: index.md
-  - Installation: start.md
+  - Getting Started:
+    - Home: index.md
+    - Installation: start.md
+    - Configuration: config.md
+  - Admin:
+    - Getting Started: admin/index.md
+    - Items: admin/items.md
   - API:
     - Getting Started: api/index.md
     - Error Handling: api/errors.md
