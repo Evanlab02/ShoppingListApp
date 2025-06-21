@@ -259,7 +259,10 @@ class StoreService(IStoreService):
             raise StoreDoesNotExist(store_id)
 
     async def aggregate(
-        self, user: User | AnonymousUser | AbstractBaseUser | None = None
+        self,
+        user: User | AnonymousUser | AbstractBaseUser | None = None,
+        name: str | None = None,
+        search: StoreSearch | None = None,
     ) -> StoreAggregationSchema:
         """
         Aggregate the stores.
@@ -270,7 +273,7 @@ class StoreService(IStoreService):
         Returns:
             dict[str, Any]: The aggregated stores.
         """
-        aggregation = await self.repo.aggregate(user)
+        aggregation = await self.repo.aggregate(user=user, name=name, search=search)
         aggregation["combined_online_stores"] = (
             aggregation["online_stores"] + aggregation["combined_stores"]
         )

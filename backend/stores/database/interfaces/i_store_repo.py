@@ -151,13 +151,17 @@ class IStoreRepo(ABC):
     @abstractmethod
     async def aggregate(
         self,
+        name: str | None = None,
         user: User | AnonymousUser | AbstractBaseUser | None = None,
+        search: StoreSearch | None = None,
     ) -> dict[str, Any]:
         """
         Aggregate stores.
 
         Args:
+            name (str | None): The name of the store.
             user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+            search (StoreSearch | None): The search object containing the search parameters.
 
         Returns:
             dict[str, Any]: The aggregated stores.

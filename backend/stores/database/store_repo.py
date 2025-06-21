@@ -321,18 +321,22 @@ class StoreRepo(IStoreRepo):
     @no_type_check
     async def aggregate(
         self,
+        name: str | None = None,
         user: User | AnonymousUser | AbstractBaseUser | None = None,
+        search: StoreSearch | None = None,
     ) -> dict[str, Any]:
         """
         Aggregate stores.
 
         Args:
+            name (str | None): The name of the store.
             user (User | AnonymousUser | AbstractBaseUser | None): The user who created the store.
+            search (StoreSearch | None): The search object containing the search parameters.
 
         Returns:
             dict[str, Any]: The aggregated stores.
         """
-        stores = self.__filter(user=user)
+        stores = self.__filter(user=user, name=name, search=search)
         return await stores.aaggregate(
             online_stores=Count(Case(When(store_type=1, then=1), output_field=IntegerField())),
             in_store_stores=Count(Case(When(store_type=2, then=1), output_field=IntegerField())),
