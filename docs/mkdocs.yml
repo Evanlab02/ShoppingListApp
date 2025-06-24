@@ -47,6 +47,7 @@ nav:
     - Home: index.md
     - Installation: start.md
     - Configuration: config.md
+    - Custom Web Image: custom.md
   - Admin:
     - Getting Started: admin/index.md
     - Items: admin/items.md
