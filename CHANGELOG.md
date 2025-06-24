@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.19.0](https://github.com/Evanlab02/ShoppingListApp/compare/v0.18.1...v0.19.0) (2025-06-24)
+
+
+### Features
+
+* **API:** Create store aggregation endpoint with search ([29bc955](https://github.com/Evanlab02/ShoppingListApp/commit/29bc955f1032a9b840746111d01be80d7845e6a0))
+
+
+### Bug Fixes
+
+* **admin:** Shopping item admin now has similiar functionality to the other admin interfaces ([cbcdcdf](https://github.com/Evanlab02/ShoppingListApp/commit/cbcdcdfc9ef39aa2a9d801acdd9a2020f9af0faf))
+
+
+### Documentation
+
+* Add documentation on creating a custom web/caddy image with the static files required for shoppinglistapp ([ca67e2f](https://github.com/Evanlab02/ShoppingListApp/commit/ca67e2fa161e6522f2833ccb4932ccd8a330a5a9))
+* **admin:** Add admin documentation for managing shopping items ([95fb16e](https://github.com/Evanlab02/ShoppingListApp/commit/95fb16e09ba1d342074fcd8f1aa1a683da648f94))
+* **config:** Add configuration documentation for environment variables ([872d663](https://github.com/Evanlab02/ShoppingListApp/commit/872d663e5f1486f02981be972da8c4cfd11cf80b))
+* Update documentation to contain information on new aggregate search endpoint ([7dcaa61](https://github.com/Evanlab02/ShoppingListApp/commit/7dcaa6195a461a1c0f499bd0846efca8f9fcec16))
+
+
+### Miscellaneous Chores
+
+* **compose:** Change port mapping from 8001:80 to 80:80 for service exposure ([f2d1c14](https://github.com/Evanlab02/ShoppingListApp/commit/f2d1c1458bdb54b5272fab1aeb633cb9b5e97998))
+* Custom reference dockerfile for creating custom web images ([d6eb9aa](https://github.com/Evanlab02/ShoppingListApp/commit/d6eb9aa9a29c7f05e34085245a5bc9f75327b714))
+* **docker:** Standardize environment variable syntax in Dockerfiles for admin and app ([2d12131](https://github.com/Evanlab02/ShoppingListApp/commit/2d12131b2dc237d5e7daa5d7264c775f7cf91eea))
+* Move some endpoints around ([49b021a](https://github.com/Evanlab02/ShoppingListApp/commit/49b021ad2ed6d6dedf21d494903d463a46e291e7))
+* **release-please:** Adjust release please config to have chore commits in changelog ([01cb7b5](https://github.com/Evanlab02/ShoppingListApp/commit/01cb7b53bdebe81c6cef2a41df499ba400ec5938))
+* Update static files ([6f064eb](https://github.com/Evanlab02/ShoppingListApp/commit/6f064eb73e63b40fa5e62244ce7c685f1037d5f2))
+
+
+### Tests
+
+* Tests for the aggregation search functions and endpoint ([4557f7b](https://github.com/Evanlab02/ShoppingListApp/commit/4557f7bb93cb32e9ff3b6293e43d98f51a71488b))
+
 ## [0.18.1](https://github.com/Evanlab02/ShoppingListApp/compare/v0.18.0...v0.18.1) (2025-06-17)
 
 
