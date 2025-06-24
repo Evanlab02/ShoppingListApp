@@ -52,7 +52,11 @@ nav:
     - Items: admin/items.md
   - API:
     - Getting Started: api/index.md
-    - Error Handling: api/errors.md
+    - Stores:
+      - /api/v1/stores/types/mapping: api/v1/stores/types/mapping.md
+      - /api/v1/stores/aggregate/search: api/v1/stores/aggregate/search.md
+    - Additional Resources:
+      - Error Handling: api/errors.md
   - Developers/Contributors:
     - Getting Started: dev/index.md
     - Error Handling: dev/errors.md
