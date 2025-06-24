@@ -1732,6 +1732,13 @@
       opacity: 20%;
     }
   }
+  .stats {
+    position: relative;
+    display: inline-grid;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    border-radius: var(--radius-box);
+  }
   .progress {
     position: relative;
     height: calc(0.25rem * 2);

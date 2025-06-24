@@ -108,6 +108,39 @@ async def get_my_items(
     )
 
 
+@item_router.post(
+    "/search",
+    response={200: ItemPaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="item_search",
+)
+async def search(
+    request: HttpRequest,
+    search: ItemSearchSchema,
+    page: int = 1,
+    limit: int = 10,
+    name: str | None = None,
+    own: bool = False,
+    store: int | None = None,
+    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
+    sort_dir: Literal["asc", "desc"] | None = None,
+) -> ItemPaginationSchema:
+    """Search for items based off filters."""
+    user = None
+    if own:
+        user = await request.auser()
+
+    return await item_service.search_items(
+        user=user,
+        limit=limit,
+        name=name,
+        page=page,
+        search=search,
+        store_id=store,
+        sort=sort,
+        sort_dir=sort_dir,
+    )
+
+
 @item_router.get(
     "/aggregate",
     response={200: ItemAggregationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
@@ -143,39 +176,6 @@ async def aggregate_my_items(request: HttpRequest) -> ItemAggregationSchema:
     """
     user = await request.auser()
     return await item_service.aggregate(user=user)
-
-
-@item_router.post(
-    "/search",
-    response={200: ItemPaginationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
-    url_name="item_search",
-)
-async def search(
-    request: HttpRequest,
-    search: ItemSearchSchema,
-    page: int = 1,
-    limit: int = 10,
-    name: str | None = None,
-    own: bool = False,
-    store: int | None = None,
-    sort: Literal["name", "created_on", "updated_on", "price"] | None = None,
-    sort_dir: Literal["asc", "desc"] | None = None,
-) -> ItemPaginationSchema:
-    """Search for items based off filters."""
-    user = None
-    if own:
-        user = await request.auser()
-
-    return await item_service.search_items(
-        user=user,
-        limit=limit,
-        name=name,
-        page=page,
-        search=search,
-        store_id=store,
-        sort=sort,
-        sort_dir=sort_dir,
-    )
 
 
 @item_router.get(

@@ -83,6 +83,7 @@ jobs:
           docker build -f docker/admin/Dockerfile -t shopping-admin .
           docker build -f docker/app/Dockerfile -t shopping-app .
           docker build -f docker/web/Dockerfile -t shopping-web .
+          docker build -f docker/custom/Dockerfile -t shopping-custom .
           docker compose -f compose.dev.yaml build
 
   docs:

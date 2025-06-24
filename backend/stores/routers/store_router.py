@@ -205,6 +205,31 @@ async def get_store_aggregation_by_user(request: HttpRequest) -> StoreAggregatio
     return await SERVICE.aggregate(user=user)
 
 
+@store_router.post(
+    "/aggregate/search",
+    response={200: StoreAggregationSchema, 400: ErrorSchema, 401: ErrorSchema, 500: ErrorSchema},
+    url_name="store_aggregate_search",
+)
+async def get_store_aggregation_by_search(
+    request: HttpRequest, search: StoreSearch
+) -> StoreAggregationSchema:
+    """
+    Get the store aggregation based off search.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+        search (StoreSearch): The search schema.
+
+    Returns:
+        StoreAggregationSchema: The store aggregation.
+    """
+    user = None
+    if search.own:
+        user = await request.auser()
+
+    return await SERVICE.aggregate(name=search.name, user=user, search=search)
+
+
 @store_router.get(
     "/{store_id}",
     response={
